@@ -1,0 +1,57 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+
+    <div class="text-center" style="margin: 10px;">
+      <img src="assets/ดาวน์โหลด.jfif" class="w3-round" style="text-align: center" width="180px" height="180px" />
+    </div>
+
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/drug-device']" [routerLinkActive]="['active']"><i class="fas fa-tablets"></i>
+        &nbsp; <strong>Drug Stock</strong>
+
+      </a>
+      <a mat-list-item [routerLink]="['/atms']" [routerLinkActive]="['active']"><i
+          class="fas fa-capsules"></i>&nbsp;<strong>ATMS</strong>
+
+      </a>
+      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
+        <mat-expansion-panel-header>
+          <strong><i class="fas fa-syringe"></i> &nbsp; IPD</strong>
+        </mat-expansion-panel-header>
+        <mat-nav-list dense>
+          <a mat-list-item routerLink="#">
+            <mat-icon>attach_money</mat-icon>Billing
+          </a>
+          <a mat-list-item routerLink="#">
+            <mat-icon>notification_important</mat-icon>Notification
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
+        <mat-expansion-panel-header>
+          <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
+        </mat-expansion-panel-header>
+        <mat-nav-list dense>
+          <a mat-list-item routerLink="#">
+            <mat-icon>person_add</mat-icon>Partnership Request
+          </a>
+          <a mat-list-item routerLink="#">
+            <mat-icon>visibility</mat-icon>Profile Visibility
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">MENU</mat-icon>
+      </button>
+      <span>OPMIT</span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

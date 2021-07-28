@@ -1,0 +1,16 @@
+
+table{
+  width: 100%;
+ }
+ th{
+  border-right: 1px solid #E0E0E0;
+  background-color: #e7e4e488;
+}
+ td{
+  border-right: 1px solid #E0E0E0;
+}
+
+mat-paginator {
+  display: flex;
+  justify-content: center;
+}

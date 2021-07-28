@@ -1,0 +1,21 @@
+
+table{
+  width: 100%;
+ }
+
+//  th{
+//   background-color: #e7e4e488;
+// }
+ th{
+  border-right: 1px solid #E0E0E0;
+  text-align: center;
+  background-color: #e7e4e488;
+
+}
+ td{
+  border-right: 1px solid #E0E0E0;
+}
+
+mat-accordion {
+  flex-grow: 1;
+}
