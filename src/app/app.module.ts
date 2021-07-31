@@ -19,9 +19,18 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MaterialModules } from './materialModule';
 import { AtmsComponent } from './pages/atms/atms.component';
+import { IpdComponent } from './pages/ipd/ipd.component';
+import { OpdComponent } from './pages/opd/opd.component';
 
 @NgModule({
-  declarations: [AppComponent, MianNavComponent, DrugDeviceComponent, AtmsComponent],
+  declarations: [
+    AppComponent,
+    MianNavComponent,
+    DrugDeviceComponent,
+    AtmsComponent,
+    IpdComponent,
+    OpdComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

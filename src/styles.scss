@@ -54,4 +54,22 @@ mat-form-field {
   line-height: unset !important;
 }
 
+.mat-paginator {
+  background: rgba(255, 255, 255, 0) !important;
+}
+
+mat-paginator {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+
+th{
+  border-right: 1px solid #E0E0E0;
+  background-color: #e7e4e488;
+  padding-left: 50px;
+}
+ td{
+  border-right: 1px solid #E0E0E0;
+}
 

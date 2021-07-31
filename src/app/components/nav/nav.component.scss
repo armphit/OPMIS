@@ -13,10 +13,38 @@
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 }
 
 .mat-list-item.active{
   color: #3f51b5;
   background-color: #7a84bb33;
 }
+
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+
+  // background: rgb(243, 243, 243);
+  box-shadow: 1px 0px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mat-toolbar {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+  // background: rgb(103, 58, 183);
+  color: rgb(255, 255, 255);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 80px;
+}
+
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:hover {
+  color: #3f51b5 !important;
+  background-color:#7a84bb33 !important;
+}
+
+

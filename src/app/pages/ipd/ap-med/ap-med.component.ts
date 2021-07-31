@@ -1,4 +1,10 @@
-import { Component, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  LOCALE_ID,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   DateAdapter,
@@ -23,18 +29,6 @@ export interface PeriodicElement {
   totalQty: number;
 }
 
-// export const MY_FORMATS = {
-//   parse: {
-//     dateInput: 'LL',
-//   },
-//   display: {
-//     dateInput: 'YYYY-MM-DD',
-//     monthYearLabel: 'YYYY',
-//     dateA11yLabel: 'LL',
-//     monthYearA11yLabel: 'YYYY',
-//   },
-// };
-
 export const GRI_DATE_FORMATS: MatDateFormats = {
   ...MAT_NATIVE_DATE_FORMATS,
   display: {
@@ -48,11 +42,11 @@ export const GRI_DATE_FORMATS: MatDateFormats = {
 };
 
 @Component({
-  selector: 'app-atms',
-  templateUrl: './atms.component.html',
-  styleUrls: ['./atms.component.scss'],
+  selector: 'app-ap-med',
+  templateUrl: './ap-med.component.html',
+  styleUrls: ['./ap-med.component.scss'],
 })
-export class AtmsComponent implements OnInit {
+export class ApMedComponent implements OnInit {
   public Date = new Date();
   public dataDrug: any = null;
   public campaignOne = new FormGroup({
@@ -61,6 +55,7 @@ export class AtmsComponent implements OnInit {
   });
   public startDate: any = null;
   public endDate: any = null;
+  public fileName: any = null;
 
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public displayedColumns: string[] = [
@@ -88,18 +83,19 @@ export class AtmsComponent implements OnInit {
   ngOnInit(): void {
     this.getData();
   }
-
   public getData = async () => {
     const momentDate = new Date();
     const endDate = moment(momentDate).format('YYMMDD');
     const startDate = moment(momentDate).format('YYMMDD');
+    this.fileName =
+      'ap-med' + '(' + String(startDate) + '-' + String(endDate) + ')';
     this.startDate = startDate + '000000000';
     this.endDate = endDate + '999999999';
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
 
-    let getData: any = await this.http.post('postATMSsearch', formData);
+    let getData: any = await this.http.post('APDispense', formData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -123,13 +119,20 @@ export class AtmsComponent implements OnInit {
   public async endChange(event: any) {
     const momentDate = new Date(event.value);
     this.endDate = moment(momentDate).format('YYMMDD');
+    this.fileName =
+      'ap-med' +
+      '(' +
+      String(this.startDate) +
+      '-' +
+      String(this.endDate) +
+      ')';
     this.startDate = this.startDate + '000000000';
     this.endDate = this.endDate + '999999999';
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
 
-    let getData: any = await this.http.post('postATMSsearch', formData);
+    let getData: any = await this.http.post('APDispense', formData);
     // console.log(getData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -149,31 +152,4 @@ export class AtmsComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-
-  // public updateData = async () => {
-  //   const momentDate = new Date();
-  //   const formattedDate = moment(momentDate).format('YYMMDD');
-  //   const enddate = Number(formattedDate) - 5;
-  //   const start = String(enddate);
-  //   const momentDate1 = new Date();
-  //   const formattedDate1 = moment(momentDate).format('YYMMDD');
-
-  //   let formData = new FormData();
-  //   formData.append('startDate', '210719');
-  //   formData.append('endDate', '210724');
-
-  //   let getData: any = await this.http.post('postATMS', formData);
-  //   console.log(getData);
-  //   console.log(formattedDate1);
-  //   console.log(start);
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       this.dataDrug = getData.response.result;
-  //     } else {
-  //       this.dataDrug = null;
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // };
 }

@@ -1,0 +1,155 @@
+<mat-tab-group>
+  <mat-tab label="List Stock">
+
+    <div style="margin: 10px;">
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter($event)" #input>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+      <div style="padding-top:65px;">
+        <button mat-raised-button
+          (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+        <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
+        <button mat-raised-button (click)="exporter.exportTable('json')">Json</button>
+        <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button>
+        <table mat-table [dataSource]="dataSource" #SortT1="matSort" matSort class="mat-elevation-z8" matTableExporter
+          #exporter="matTableExporter">
+
+
+          <ng-container matColumnDef="drugCode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Code </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.drugCode}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Name </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Name}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Spec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Spec </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Spec}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Quantity">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Quantity </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Quantity}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="Maximum">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Maximum </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Maximum}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="percenStock">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> percenStock </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.percenStock}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="totalQty">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> totalQty </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.totalQty}}
+            </td>
+          </ng-container>
+
+
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator #paginator="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </div>
+
+  </mat-tab>
+
+
+
+  <mat-tab label="Dispense">
+    <div style="margin: 10px;">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float:left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter2($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <button mat-raised-button
+        (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+      <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
+      <button mat-raised-button (click)="exporter.exportTable('json')">Json</button>
+      <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button>
+      <table mat-table [dataSource]="dataSource2" #SortT2="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter="matTableExporter">
+
+
+        <ng-container matColumnDef="Code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Code </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Code}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Name </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Name}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Spec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Spec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Spec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalQty">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> totalQty </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.totalQty}}
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+      </table>
+
+      <mat-paginator MatPaginator #paginator2="matPaginator" [length]="10" [pageSize]="10"
+        [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
+      </mat-paginator>
+
+
+    </div>
+  </mat-tab>
+
+</mat-tab-group>

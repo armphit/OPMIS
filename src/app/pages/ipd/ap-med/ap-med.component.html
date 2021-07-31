@@ -13,7 +13,7 @@
         <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
       </mat-form-field>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-3" *ngIf="dataDrug">
       <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter($event)" #input>
         <mat-placeholder>ค้นหา</mat-placeholder>
@@ -27,8 +27,8 @@
   <div class="responsive-table">
 
 
-
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <table mat-table matTableExporter [dataSource]="dataSource" matSort #exporter="matTableExporter"
+      class="mat-elevation-z8">
 
 
       <ng-container matColumnDef="drugCode">
@@ -68,6 +68,11 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
+        (click)="exporter.exportTable('xlsx', {fileName:fileName, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+      <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+      <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
+      <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div>
 
     <mat-paginator style="display: flex;justify-content: center;" [length]="10" [pageSize]="10"
       [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>

@@ -52,7 +52,7 @@
 
 
 
-  <div class="table-responsive">
+  <div style="overflow: auto;">
     <!-- <table class="table table-bordered">
       <thead>
         <tr>
@@ -265,69 +265,69 @@
 
       <!-- Position Column -->
       <ng-container matColumnDef="LED">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> LED </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> LED </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.LED}} </td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="Row">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Row </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Row </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Row}} </td>
       </ng-container>
 
       <!-- Weight Column -->
       <ng-container matColumnDef="Column">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Column </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Column </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Column}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Code">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Code </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Code </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Code}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Name </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Name </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Spec">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Spec </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Spec </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Spec}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Quantity">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Quantity </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Quantity </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Quantity}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="Minimum">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Minimum </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Minimum </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Minimum}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="Maximum">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Maximum </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Maximum </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Maximum}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="SupplierName">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> SupplierName </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> SupplierName </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.SupplierName}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="ProductExpirationDate">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> ProductExpirationDate </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> ProductExpirationDate </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
           {{substringDate(element.ProductExpirationDate)}} </td>
       </ng-container>
 
       <ng-container matColumnDef="Lotnumber">
-        <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Lotnumber </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Lotnumber </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Lotnumber}}
         </td>
       </ng-container>

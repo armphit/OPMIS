@@ -23,6 +23,25 @@ const routes: Routes = [
         redirectTo: 'pages/drug-device',
         pathMatch: 'full',
       },
+
+      {
+        path: 'ipd',
+        loadChildren: () =>
+          import('./pages/ipd/ipd.module').then((m) => m.IpdModule),
+      },
+      {
+        path: 'opd',
+        loadChildren: () =>
+          import('./pages/opd/opd.module').then((m) => m.OpdModule),
+      },
+      // {
+      //   path: 'teacher',
+      //   canActivate: [TeacherGuard],
+      //   loadChildren: () =>
+      //     import('./components/teacher/teacher.module').then(
+      //       (m) => m.TeacherModule
+      //     ),
+      // },
     ],
   },
 ];
