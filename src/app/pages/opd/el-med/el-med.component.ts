@@ -18,7 +18,7 @@ export interface PeriodicElement {
   LED: string;
   Row: number;
   Column: number;
-  Code: string;
+  // Code: string;
   Name: string;
   Spec: string;
   Quantity: number;
@@ -61,6 +61,7 @@ export class ElMedComponent implements OnInit {
   public dataInput = {
     quantity: null,
   };
+  public nameExcel = 'EL-Med' + '(' + new Date() + ')';
   public inputGroup = new FormGroup({
     quantity: new FormControl(),
     Row: new FormControl({ disabled: true }),
@@ -83,7 +84,7 @@ export class ElMedComponent implements OnInit {
     'LED',
     'Row',
     'Column',
-    'Code',
+    // 'Code',
     'Name',
     'Spec',
     'Quantity',
@@ -116,6 +117,7 @@ export class ElMedComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
+
         // for (let i = 0; i <= this.dataDrug.length; i++) {
         //   if (i != 0 && i % 10 == 0) {
         //     this.page_.push(i);
@@ -175,14 +177,15 @@ export class ElMedComponent implements OnInit {
       Minimum: [i.Minimum, Validators.required],
       Maximum: [i.Maximum, Validators.required],
       SupplierName: [i.SupplierName, Validators.required],
-      ProductExpirationDate: [this.show_date, Validators.required],
-      Lotnumber: [i.Lotnumber, Validators.required],
+      ProductExpirationDate: [this.show_date],
+      Lotnumber: [i.Lotnumber],
     });
   }
 
   public updateData = async () => {
     const momentDate = new Date(this.inputGroup.value.ProductExpirationDate);
     const formattedDate = moment(momentDate).format('YYYY-MM-DD');
+
     let dateTime = formattedDate + ' ' + '00:00:00.000';
     let formData = new FormData();
     formData.append('ProductId', this.upt_code);
@@ -190,7 +193,7 @@ export class ElMedComponent implements OnInit {
     formData.append('ExpDate', formattedDate);
     formData.append('LotNum', this.inputGroup.value.Lotnumber);
 
-    let getData: any = await this.http.post('updateELStock', formData);
+    let getData: any = await this.http.post('ELUpdateStock', formData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let win: any = window;
@@ -204,15 +207,15 @@ export class ElMedComponent implements OnInit {
       alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
     }
   };
-  public onChangeLED = async (e: any) => {
-    this.dataLed = e;
-  };
-  public onChangeRow = async (e: any) => {
-    this.dataRow = e;
-  };
-  public onChangeColumn = async (e: any) => {
-    this.dataLed = e;
-  };
+  // public onChangeLED = async (e: any) => {
+  //   this.dataLed = e;
+  // };
+  // public onChangeRow = async (e: any) => {
+  //   this.dataRow = e;
+  // };
+  // public onChangeColumn = async (e: any) => {
+  //   this.dataLed = e;
+  // };
 
   public events: Array<any> = [];
   // public dateChange(event: any) {
@@ -221,13 +224,15 @@ export class ElMedComponent implements OnInit {
   //   console.log(event);
   // }
 
-  public change_date(ProductExpirationDate: any) {
-    if (ProductExpirationDate == null) {
-      return ProductExpirationDate;
-    } else {
-      return ProductExpirationDate.substring(0, 10);
-    }
-  }
+  // public change_date(ProductExpirationDate: any) {
+  //   if (ProductExpirationDate == null) {
+  //     return ProductExpirationDate;
+  //   } else {
+  //     ProductExpirationDate.substring(0, 10);
+
+  //     return ProductExpirationDate;
+  //   }
+  // }
 
   public searchData = async () => {
     let formData = new FormData();
@@ -245,14 +250,21 @@ export class ElMedComponent implements OnInit {
 
   public substringDate(i: any) {
     if (i) {
-      return i.substring(0, 10);
+      if (i == '1970-01-01 00:00:00.000') {
+        return '';
+      } else {
+        let j = i.substring(0, 10);
+        let k = j.split('-', 3);
+        let l = k[2] + '/' + k[1] + '/' + k[0];
+
+        return l;
+      }
     }
     return i;
   }
 
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    console.log(filterValue);
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

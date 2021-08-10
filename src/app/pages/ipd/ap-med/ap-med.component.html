@@ -1,4 +1,4 @@
-<div style="margin: 10px;">
+<div style="overflow: auto;margin: 10px;">
 
   <div class="row">
     <div class="col-lg-9">
@@ -24,11 +24,11 @@
 
 
 
-  <div class="responsive-table">
+  <div class="responsive-table" [hidden]="!dataDrug">
 
 
     <table mat-table matTableExporter [dataSource]="dataSource" matSort #exporter="matTableExporter"
-      class="mat-elevation-z8">
+      class="mat-elevation-z8" matSortActive="totalQty" matSortDirection="desc">
 
 
       <ng-container matColumnDef="drugCode">
@@ -69,7 +69,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
     <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
-        (click)="exporter.exportTable('xlsx', {fileName:fileName, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+        (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
       <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
       <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
       <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div>

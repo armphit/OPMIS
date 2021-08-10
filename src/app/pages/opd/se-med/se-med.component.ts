@@ -1,5 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  DateAdapter,
+  MatDateFormats,
+  MAT_NATIVE_DATE_FORMATS,
+} from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -23,6 +28,18 @@ export interface PeriodicElement2 {
   Spec: string;
   totalQty: string;
 }
+
+export const GRI_DATE_FORMATS: MatDateFormats = {
+  ...MAT_NATIVE_DATE_FORMATS,
+  display: {
+    ...MAT_NATIVE_DATE_FORMATS.display,
+    dateInput: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    } as Intl.DateTimeFormatOptions,
+  },
+};
 
 @Component({
   selector: 'app-se-med',
@@ -56,6 +73,8 @@ export class SeMedComponent implements OnInit {
   });
   public startDate: any = null;
   public endDate: any = null;
+  public nameStock: any = null;
+  public nameSEDispense: any = null;
 
   @ViewChild('SortT1') SortT1!: MatSort;
   @ViewChild('SortT2') SortT2!: MatSort;
@@ -69,19 +88,35 @@ export class SeMedComponent implements OnInit {
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild('paginator2') paginator2!: MatPaginator;
 
-  // ngAfterViewInit() {
-  //   this.dataSource.sort = this.sort;
-  // }
-  constructor(private http: HttpService, private formBuilder: FormBuilder) {}
+  typeFilter = new FormControl('');
+  filterValues = {
+    drugCode: '',
+  };
+
+  constructor(
+    private http: HttpService,
+    private formBuilder: FormBuilder,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.dateAdapter.setLocale('en-GB');
+  }
 
   ngOnInit(): void {
     this.getDataSEListStock();
     this.getDataSEDispense();
+    // this.dataSource.filterPredicate = (
+    //   data: PeriodicElement,
+    //   filter: string
+    // ) => {
+    //   return data.isPrepack == filter;
+    // };
   }
 
   public getDataSEListStock = async () => {
     let getData: any = await this.http.get('SEListStock');
-
+    const endDate = moment(new Date()).format('DD/MM/YYYY');
+    this.nameStock = 'Stock' + '(' + endDate + ')';
+    // console.log(getData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
@@ -96,18 +131,56 @@ export class SeMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
+
+  public getDataPrepack = async (e: any) => {
+    if (e == 'All') {
+      this.getDataSEListStock();
+    } else {
+      const endDate = moment(new Date()).format('DD/MM/YYYY');
+      if (e == 'Y') {
+        this.nameStock = 'SE-Med Prepack' + '(' + endDate + ')';
+      } else if (e == 'N') {
+        this.nameStock = 'SE-Med Main Drug' + '(' + endDate + ')';
+      }
+
+      let formData = new FormData();
+      formData.append('prepack', e);
+      let getData: any = await this.http.post('SEPrepack', formData);
+      // console.log(getData);
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.SortT1;
+          this.dataSource.paginator = this.paginator;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  };
+
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   public getDataSEDispense = async () => {
     const momentDate = new Date();
-    const endDate = moment(momentDate).format('YY-MM-DD');
-    const startDate = moment(momentDate).format('YY-MM-DD');
+    const endDate = moment(momentDate).format('YYYY-MM-DD');
+    const startDate = moment(momentDate).format('YYYY-MM-DD');
+    const end_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
     this.startDate = startDate;
     this.endDate = endDate;
-
+    this.nameSEDispense =
+      'SEDispense' + '(' + String(start_Date2) + '-' + String(end_Date2) + ')';
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
@@ -127,14 +200,19 @@ export class SeMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
-
+  public start_date: any = null;
   public startChange(event: any) {
+    this.nameSEDispense = null;
     const momentDate = new Date(event.value);
     this.startDate = moment(momentDate).format('YYYY-MM-DD');
+    const start_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.start_date = 'SEDispense' + '(' + String(start_Date);
   }
 
   public async endChange(event: any) {
     const momentDate = new Date(event.value);
+    const end_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
     this.endDate = moment(momentDate).format('YYYY-MM-DD');
     let formData = new FormData();
     formData.append('startDate', this.startDate);
@@ -159,5 +237,14 @@ export class SeMedComponent implements OnInit {
   public applyFilter2(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource2.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+  applyFilterType(filterValue: string) {
+    this.dataSource.filter = filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

@@ -15,7 +15,7 @@ const routes: Routes = [
         component: DrugDeviceComponent,
       },
       {
-        path: 'atms',
+        path: 'tsd',
         component: AtmsComponent,
       },
       {

@@ -1,5 +1,15 @@
-import { Component, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import {
+  Component,
+  ElementRef,
+  LOCALE_ID,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import {
   DateAdapter,
   MatDateFormats,
@@ -16,36 +26,12 @@ import Swal from 'sweetalert2';
 // import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
 export interface PeriodicElement {
-  drugCode: string;
-  drugName: string;
-  tblt_maker: string;
-  tblt_spec: string;
-  totalQty: number;
+  Code: string;
+  Name: string;
+  Spec: string;
+  firmName: string;
+  Unit: string;
 }
-
-// export const MY_FORMATS = {
-//   parse: {
-//     dateInput: 'LL',
-//   },
-//   display: {
-//     dateInput: 'YYYY-MM-DD',
-//     monthYearLabel: 'YYYY',
-//     dateA11yLabel: 'LL',
-//     monthYearA11yLabel: 'YYYY',
-//   },
-// };
-
-export const GRI_DATE_FORMATS: MatDateFormats = {
-  ...MAT_NATIVE_DATE_FORMATS,
-  display: {
-    ...MAT_NATIVE_DATE_FORMATS.display,
-    dateInput: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    } as Intl.DateTimeFormatOptions,
-  },
-};
 
 @Component({
   selector: 'app-atms',
@@ -59,21 +45,41 @@ export class AtmsComponent implements OnInit {
     start: new FormControl(new Date()),
     end: new FormControl(new Date()),
   });
-  public startDate: any = null;
+  public dateBirth: any = null;
   public endDate: any = null;
 
-  public dataSource!: MatTableDataSource<PeriodicElement>;
-  public displayedColumns: string[] = [
-    'drugCode',
-    'drugName',
-    'tblt_maker',
-    'tblt_spec',
-    'totalQty',
+  displayedColumns: string[] = [
+    'select',
+    'Code',
+    'Name',
+    'Spec',
+    'firmName',
+    'Unit',
   ];
 
+  public inputGroup = new FormGroup({
+    id: new FormControl(),
+    name: new FormControl(),
+    sex: new FormControl(),
+    age: new FormControl(),
+    orderNo: new FormControl(),
+    orderType: new FormControl(),
+    pharmacy: new FormControl(),
+    dateB: new FormControl(),
+    dateP: new FormControl(),
+  });
+
+  public drugList: any = null;
+
+  selection = new SelectionModel<PeriodicElement>(true, []);
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource: any;
+  public jsonArr = new Array();
+  @ViewChildren('checkboxes')
+  checkboxes!: QueryList<ElementRef>;
+  globalcheckbox: boolean = false;
 
   constructor(
     private http: HttpService,
@@ -83,23 +89,14 @@ export class AtmsComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
   }
 
-  ngAfterViewInit() {}
-
   ngOnInit(): void {
     this.getData();
   }
 
+  disableClick = false;
+  isOpen = false;
   public getData = async () => {
-    const momentDate = new Date();
-    const endDate = moment(momentDate).format('YYMMDD');
-    const startDate = moment(momentDate).format('YYMMDD');
-    this.startDate = startDate + '000000000';
-    this.endDate = endDate + '999999999';
-    let formData = new FormData();
-    formData.append('startDate', this.startDate);
-    formData.append('endDate', this.endDate);
-
-    let getData: any = await this.http.post('postATMSsearch', formData);
+    let getData: any = await this.http.get('dataDrug');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -115,33 +112,12 @@ export class AtmsComponent implements OnInit {
     }
   };
 
-  public startChange(event: any) {
-    const momentDate = new Date(event.value);
-    this.startDate = moment(momentDate).format('YYMMDD');
-  }
-
-  public async endChange(event: any) {
-    const momentDate = new Date(event.value);
-    this.endDate = moment(momentDate).format('YYMMDD');
-    this.startDate = this.startDate + '000000000';
-    this.endDate = this.endDate + '999999999';
-    let formData = new FormData();
-    formData.append('startDate', this.startDate);
-    formData.append('endDate', this.endDate);
-
-    let getData: any = await this.http.post('postATMSsearch', formData);
-    // console.log(getData);
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
-        this.dataSource = new MatTableDataSource(this.dataDrug);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      } else {
-        this.dataDrug = null;
-      }
+  toggleDisable() {
+    this.disableClick = !this.disableClick;
+    if (this.disableClick) {
+      this.inputGroup.disable();
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      this.inputGroup.enable();
     }
   }
 
@@ -150,30 +126,161 @@ export class AtmsComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  // public updateData = async () => {
-  //   const momentDate = new Date();
-  //   const formattedDate = moment(momentDate).format('YYMMDD');
-  //   const enddate = Number(formattedDate) - 5;
-  //   const start = String(enddate);
-  //   const momentDate1 = new Date();
-  //   const formattedDate1 = moment(momentDate).format('YYMMDD');
+  value = new Array();
+  value2 = new Array();
 
-  //   let formData = new FormData();
-  //   formData.append('startDate', '210719');
-  //   formData.append('endDate', '210724');
+  async showOptions(e: any, val: any): Promise<void> {
+    // console.log(this.checkboxes);
+    // this.checkboxes.forEach((element) => {
+    //   console.log(element.nativeElement.value.deviceName);
+    // });
+    if (e.checked) {
+      const { value: text } = await Swal.fire({
+        input: 'text',
+        inputLabel: 'จำนวนยา',
+        inputPlaceholder: '',
+        inputValidator: (value) => {
+          return new Promise((resolve) => {
+            if (value) {
+              resolve('');
+            } else {
+              resolve('Input Value');
+            }
+          });
+        },
+      });
+      if (text) {
+        Swal.fire(`จำนวนยา: ${text}`);
+      }
+      val.alias = '';
+      val.method = '';
+      val.type = '';
+      val.note = '';
+      val.Qyt = `${text}`;
+      val.itemNo = this.value2.length + 1;
+      this.value.push(val);
+      let value = {
+        drug: this.value,
+      };
+      this.value2.push(value);
+      console.log(this.value2);
+    }
+    this.value = [];
+  }
+  public date_Birth(event: any) {
+    const momentDate = new Date(event.value);
+    this.dateBirth = moment(momentDate).format('YYYY-MM-DD');
+  }
+  public datePayment: any = null;
+  public date_payment(event: any) {
+    const momentDate = new Date(event.value);
+    this.datePayment = moment(momentDate).format('YYYY-MM-DD');
+  }
 
-  //   let getData: any = await this.http.post('postATMS', formData);
-  //   console.log(getData);
-  //   console.log(formattedDate1);
-  //   console.log(start);
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       this.dataDrug = getData.response.result;
-  //     } else {
-  //       this.dataDrug = null;
+  public jsonDrug: any = null;
+  public test() {}
+
+  // public async send() {
+  //   console.log(this.jsonDrug);
+  // }
+
+  public send() {
+    this.jsonDrug = {
+      outpOrderDispense: {
+        patient: {
+          patID: this.inputGroup.value.id,
+          patName: this.inputGroup.value.name,
+          gender: this.inputGroup.value.sex,
+          birthday: this.dateBirth,
+          age: this.inputGroup.value.age,
+          identity: '',
+          insuranceNo: '',
+          chargeType: '',
+        },
+        prescriptions: {
+          prescription: {
+            orderNo: this.inputGroup.value.orderNo,
+            ordertype: this.inputGroup.value.orderType,
+            pharmacy: this.inputGroup.value.pharmacy,
+            windowNo: '',
+            paymentIP: '',
+            paymentDT: this.datePayment,
+            outpNo: '',
+            visitNo: '',
+            deptCode: '',
+            deptName: '',
+            doctCode: '',
+            doctName: '',
+            diagnosis: '',
+            drugs: this.value2,
+          },
+        },
+      },
+    };
+    this.jsonArr.push(this.jsonDrug);
+    console.log(this.jsonArr);
+    // window.location.reload();
+    // this.inputGroup.reset();
+    // this.inputGroup.enable();
+  }
+
+  unselectedRows: Array<{}> = [];
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row: PeriodicElement) =>
+          this.selection.select(row)
+        );
+  }
+
+  public checkDrug = new Array();
+
+  // store() {
+  //   setTimeout(async () => {
+  //     this.checkDrug = this.selection.selected;
+  //     if (this.checkDrug) {
+  //       const { value: text } = await Swal.fire({
+  //         input: 'text',
+  //         inputLabel: 'จำนวนยา',
+  //         inputPlaceholder: '',
+  //         inputValidator: (value) => {
+  //           return new Promise((resolve) => {
+  //             if (value) {
+  //               resolve('');
+  //             } else {
+  //               resolve('Input Value');
+  //             }
+  //           });
+  //         },
+  //       });
+  //       if (text) {
+  //         Swal.fire(`จำนวนยา: ${text}`);
+  //       }
+  //       var obj: any = {};
+  //       // this.checkDrug.qty = `${text}`;
+  //       // this.checkDrug.push(obj);
+  //       // let a = {
+  //       //   drug: this.value,
+  //       // };
+  //       console.log(this.selection.selected);
   //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // };
+  //     // if (e.currentTarget.checked) {
+  //     //   let List = {
+  //     //     drug: val,
+  //     //   };
+  //     //   this.value.push(List);
+  //     // }
+  //   });
+  // }
+
+  someFunction(globalcheckbox: any) {
+    console.log(globalcheckbox);
+  }
 }

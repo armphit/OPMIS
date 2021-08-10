@@ -1,5 +1,6 @@
 import {
   Component,
+  Input,
   LOCALE_ID,
   OnInit,
   ViewChild,
@@ -29,17 +30,17 @@ export interface PeriodicElement {
   totalQty: number;
 }
 
-export const GRI_DATE_FORMATS: MatDateFormats = {
-  ...MAT_NATIVE_DATE_FORMATS,
-  display: {
-    ...MAT_NATIVE_DATE_FORMATS.display,
-    dateInput: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    } as Intl.DateTimeFormatOptions,
-  },
-};
+// export const GRI_DATE_FORMATS: MatDateFormats = {
+//   ...MAT_NATIVE_DATE_FORMATS,
+//   display: {
+//     ...MAT_NATIVE_DATE_FORMATS.display,
+//     dateInput: {
+//       year: 'numeric',
+//       month: 'short',
+//       day: 'numeric',
+//     } as Intl.DateTimeFormatOptions,
+//   },
+// };
 
 @Component({
   selector: 'app-ap-med',
@@ -56,7 +57,7 @@ export class ApMedComponent implements OnInit {
   public startDate: any = null;
   public endDate: any = null;
   public fileName: any = null;
-
+  public nameExcel: any = null;
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public displayedColumns: string[] = [
     'drugCode',
@@ -65,7 +66,7 @@ export class ApMedComponent implements OnInit {
     'tblt_spec',
     'totalQty',
   ];
-
+  @Input() max: any;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -84,11 +85,14 @@ export class ApMedComponent implements OnInit {
     this.getData();
   }
   public getData = async () => {
+    this.nameExcel = null;
     const momentDate = new Date();
     const endDate = moment(momentDate).format('YYMMDD');
     const startDate = moment(momentDate).format('YYMMDD');
-    this.fileName =
-      'ap-med' + '(' + String(startDate) + '-' + String(endDate) + ')';
+    const end_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    this.nameExcel =
+      'ap-med' + '(' + String(start_Date2) + '-' + String(end_Date2) + ')';
     this.startDate = startDate + '000000000';
     this.endDate = endDate + '999999999';
     let formData = new FormData();
@@ -112,20 +116,20 @@ export class ApMedComponent implements OnInit {
   };
 
   public startChange(event: any) {
+    this.nameExcel = null;
+    this.dataDrug = null;
     const momentDate = new Date(event.value);
     this.startDate = moment(momentDate).format('YYMMDD');
+
+    const start_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.fileName = 'ap-med' + '(' + String(start_Date);
   }
 
   public async endChange(event: any) {
     const momentDate = new Date(event.value);
     this.endDate = moment(momentDate).format('YYMMDD');
-    this.fileName =
-      'ap-med' +
-      '(' +
-      String(this.startDate) +
-      '-' +
-      String(this.endDate) +
-      ')';
+    const end_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.nameExcel = this.fileName + '-' + String(end_Date) + ')';
     this.startDate = this.startDate + '000000000';
     this.endDate = this.endDate + '999999999';
     let formData = new FormData();
@@ -133,7 +137,7 @@ export class ApMedComponent implements OnInit {
     formData.append('endDate', this.endDate);
 
     let getData: any = await this.http.post('APDispense', formData);
-    // console.log(getData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;

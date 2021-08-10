@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -21,6 +21,7 @@ import { MaterialModules } from './materialModule';
 import { AtmsComponent } from './pages/atms/atms.component';
 import { IpdComponent } from './pages/ipd/ipd.component';
 import { OpdComponent } from './pages/opd/opd.component';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [

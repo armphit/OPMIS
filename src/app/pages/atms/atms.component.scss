@@ -6,17 +6,27 @@ table{
 //  th{
 //   background-color: #e7e4e488;
 // }
- th{
-  border-right: 1px solid #E0E0E0;
-  text-align: center;
-  background-color: #e7e4e488;
-  padding-left: 10px !important;
+//  th{
+//   border-right: 1px solid #E0E0E0;
+//   text-align: center;
+//   background-color: #e7e4e488;
+//   padding-left: 10px !important;
+
+// }
+//  td{
+//   border-right: 1px solid #E0E0E0;
+// }
+
+// mat-accordion {
+//   flex-grow: 1;
+// }
+
+.form-group {
+  display: inline-block;
 
 }
- td{
-  border-right: 1px solid #E0E0E0;
-}
 
-mat-accordion {
-  flex-grow: 1;
+th{
+
+  z-index: 1 !important;
 }

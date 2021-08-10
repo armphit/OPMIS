@@ -1,11 +1,31 @@
 <div style="overflow: auto;margin: 10px;">
 
-  <mat-form-field class="example-full-width" style="float: right;">
+  <!-- <mat-form-field class="example-full-width" style="float: right;">
     <input matInput (keyup)="applyFilter($event)" #input>
     <mat-placeholder>ค้นหา</mat-placeholder>
     <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-  </mat-form-field>
-
+  </mat-form-field> -->
+  <div class="row">
+    <div class="col-lg-9">
+      <!-- <mat-form-field class="example-form-field" style="float:left">
+        <mat-label>เลือกวันที่</mat-label>
+        <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+          [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+          <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start" (dateChange)="startChange($event)">
+          <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+      </mat-form-field> -->
+    </div>
+    <div class="col-lg-3" *ngIf="dataDrug">
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter($event)" #input>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
   <!-- <mat-form-field appearance="fill">
     <mat-label>Select an option</mat-label>
     <mat-select [(value)]="selected">
@@ -15,15 +35,17 @@
     </mat-select>
   </mat-form-field> -->
 
-  <!-- <button mat-raised-button
-    (click)="exporter.exportTable('xlsx', {fileName:'test', sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
+  <button mat-raised-button
+    (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
   <button mat-raised-button (click)="exporter.exportTable('csv')">Csv</button>
   <button mat-raised-button (click)="exporter.exportTable('json')">Json</button>
-  <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button> -->
+  <button mat-raised-button (click)="exporter.exportTable('txt')">Txt</button>
 
 
   <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" matTableExporter
     #exporter="matTableExporter">
+
+
 
     <!-- Position Column -->
     <ng-container matColumnDef="LED">
@@ -43,10 +65,10 @@
       <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Column}} </td>
     </ng-container>
 
-    <ng-container matColumnDef="Code">
+    <!-- <ng-container matColumnDef="Code">
       <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Code </th>
       <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Code}} </td>
-    </ng-container>
+    </ng-container> -->
 
     <ng-container matColumnDef="Name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Name </th>
@@ -83,14 +105,16 @@
     </ng-container>
 
     <ng-container matColumnDef="ProductExpirationDate">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> ProductExpirationDate </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;">
+        ProductExpirationDate </th>
       <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
         {{substringDate(element.ProductExpirationDate)}} </td>
     </ng-container>
 
     <ng-container matColumnDef="Lotnumber">
       <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Lotnumber </th>
-      <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.Lotnumber}}
+      <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+        {{element.Lotnumber}}
       </td>
     </ng-container>
 
@@ -101,6 +125,8 @@
           style="margin-left: 20px;">Update</button>
       </td>
     </ng-container>
+
+
 
 
 
@@ -131,58 +157,107 @@
 
 
         <div class="modal-body">
-          <div class="form-group">
-            <label for="text">LED:</label>
-            <input type="text" class="form-control" formControlName="LED" required>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>LED:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.LED}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Row:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Row}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Column:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Column}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Code:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Code}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Name:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Name}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Spec:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Spec}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Minimum:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Minimum}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Maximum:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.Maximum}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3.5" style="padding-left:15px;">
+              <label for="text"><strong>Supplier Name:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{inputGroup.value.SupplierName}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2" style="padding-top: 10px;">
+              <label for="text"><strong>Quantity:</strong></label>
+            </div>
+            <div class="col">
+              <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control"
+                formControlName="quantity" required>
+            </div>
+          </div>
 
+          <div class="row">
+            <div class="col-4" style="padding-top: 20px;">
+              <label for="text"><strong>ProductExpirationDate:</strong></label>
+            </div>
+            <div class="col">
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker" formControlName="ProductExpirationDate" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker [startAt]="show_date" #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="text">Row:</label>
-            <input type="text" class="form-control" formControlName="Row" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Column:</label>
-            <input type="text" class="form-control" formControlName="Column" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Code:</label>
-            <input type="text" class="form-control" formControlName="Code" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Name:</label>
-            <input type="text" class="form-control" formControlName="Name" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Spec:</label>
-            <input type="text" class="form-control" formControlName="Spec" required>
-          </div>
-
-          <div class="form-group">
-            <label for="text">Minimum:</label>
-            <input type="text" class="form-control" formControlName="Minimum" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Maximum:</label>
-            <input type="text" class="form-control" formControlName="Maximum" required>
-          </div>
-          <div class="form-group">
-            <label for="text">SupplierName:</label>
-            <input type="text" class="form-control" formControlName="SupplierName" required>
-          </div>
-          <div class="form-group">
-            <label for="text">Quantity:</label>
-            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control"
-              formControlName="quantity" required>
-          </div>
-          <mat-form-field>
-            <input matInput [matDatepicker]="picker" formControlName="ProductExpirationDate" required />
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker [startAt]="show_date" #picker></mat-datepicker>
-          </mat-form-field>
-          <div class="form-group">
-            <label for="text">Lotnumber:</label>
-            <input type="number" min="0" oninput="validity.valid||(value='');" class="form-control"
-              formControlName="Lotnumber" required>
+          <div class="row">
+            <div class="col-2" style="padding-top: 10px;">
+              <label for="text"><strong>Lotnumber:</strong></label>
+            </div>
+            <div class="col">
+              <input type="number" class="form-control" formControlName="Lotnumber">
+            </div>
           </div>
 
 
