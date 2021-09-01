@@ -1,0 +1,493 @@
+<mat-tab-group (selectedTabChange)="getTab($event.index)">
+
+
+  <mat-tab label="เครื่องนับยาเม็ด">
+
+    <div style="margin: 10px;">
+
+      <!-- <mat-form-field>
+        <mat-label>SELECT TYPE</mat-label>
+        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
+          <mat-option value="All">All</mat-option>
+          <mat-option value="N">Main Drug</mat-option>
+          <mat-option value="Y">Prepack</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter($event)" #input>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+
+
+      <table mat-table [dataSource]="dataSource" #MatSort="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugCode}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageSpec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> packageSpec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.packageSpec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.firmName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.deviceName}}
+
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div style="float: right;"><button mat-raised-button color="primary"
+          (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          Excel</button>
+
+      </div>
+      <mat-paginator #MatPaginator="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  </mat-tab>
+
+  <mat-tab label="ตู้ยาฉีด">
+
+    <div style="margin: 10px;">
+
+      <!-- <mat-form-field>
+        <mat-label>SELECT TYPE</mat-label>
+        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
+          <mat-option value="All">All</mat-option>
+          <mat-option value="N">Main Drug</mat-option>
+          <mat-option value="Y">Prepack</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter2($event)" #input>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+
+
+      <table mat-table [dataSource]="dataSource2" #MatSort2="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter2="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugCode}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageSpec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> packageSpec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.packageSpec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.firmName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.deviceName}}
+
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div style="float: right;"><button mat-raised-button color="primary"
+          (click)="exporter2.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          Excel</button>
+
+      </div>
+      <mat-paginator #MatPaginator2="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  </mat-tab>
+
+
+  <mat-tab label="ตู้เย็น">
+
+    <div style="margin: 10px;">
+
+      <mat-form-field *ngIf="getName">
+        <mat-label>SELECT TYPE</mat-label>
+        <mat-select [(ngModel)]="selected" (selectionChange)="getDataR($event.value);input3.value = ''">
+          <mat-option value="">All</mat-option>
+          <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter3($event)" #input3>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+
+
+      <table mat-table [dataSource]="dataSource3" #MatSort3="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter3="matTableExporter" matSortActive="deviceName" matSortDirection="asc">
+
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugCode}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageSpec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> packageSpec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.packageSpec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.firmName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.deviceName}}
+
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div style="float: right;"><button mat-raised-button color="primary"
+          (click)="exporter3.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          Excel</button>
+
+      </div>
+      <mat-paginator #MatPaginator3="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  </mat-tab>
+
+
+  <mat-tab label="ตู้จัดมือ">
+
+    <div style="margin: 10px;">
+
+
+      <mat-form-field *ngIf="getName">
+        <mat-label>SELECT TYPE</mat-label>
+        <mat-select [(ngModel)]="selected" (selectionChange)="getDataM($event.value);input4.value = ''">
+          <mat-option value="">All</mat-option>
+          <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter4($event)" #input4>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+
+
+      <table mat-table [dataSource]="dataSource4" #MatSort4="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter4="matTableExporter" matSortActive="deviceName" matSortDirection="asc">
+
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugCode}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageSpec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> packageSpec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.packageSpec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.firmName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.deviceName}}
+
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div style="float: right;"><button mat-raised-button color="primary"
+          (click)="exporter4.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          Excel</button>
+
+      </div>
+      <mat-paginator #MatPaginator4="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  </mat-tab>
+
+
+
+  <mat-tab label="ยาเศษ">
+
+    <div style="margin: 10px;">
+
+      <!-- <mat-form-field>
+        <mat-label>SELECT TYPE</mat-label>
+        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
+          <mat-option value="All">All</mat-option>
+          <mat-option value="N">Main Drug</mat-option>
+          <mat-option value="Y">Prepack</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <mat-form-field class="example-full-width" style="float: right;">
+        <input matInput (keyup)="applyFilter5($event)" #input>
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+
+
+
+
+      <table mat-table [dataSource]="dataSource5" #MatSort5="matSort" matSort class="mat-elevation-z8" matTableExporter
+        #exporter5="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugCode}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="packageSpec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> packageSpec </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.packageSpec}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.firmName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.deviceName}}
+
+          </td>
+        </ng-container>
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <div style="float: right;"><button mat-raised-button color="primary"
+          (click)="exporter5.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          Excel</button>
+
+      </div>
+      <mat-paginator #MatPaginator5="matPaginator" [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+  </mat-tab>
+
+</mat-tab-group>

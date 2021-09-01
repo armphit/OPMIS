@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+
 html,
 body {
   height: 100%;
@@ -6,6 +8,10 @@ body {
 
 body {
   margin: 0;
+}
+
+* {
+  font-family: "Sarabun", serif !important;
 }
 
 
@@ -27,7 +33,7 @@ body {
   font-family: "Material Icons" !important;
 }
 
-.mat-drawer-content{
+.mat-drawer-content {
   position: initial !important;
 }
 
@@ -64,15 +70,22 @@ mat-paginator {
 }
 
 
-th{
+th {
   border-right: 1px solid #E0E0E0;
   background-color: #e7e4e488;
   padding-left: 50px;
 
 }
- td{
+
+td {
   border-right: 1px solid #E0E0E0;
 }
 
 
 
+.mat-sort-header-content {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  padding-left: 20px !important;
+}

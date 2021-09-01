@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
 import {
   FormBuilder,
@@ -25,7 +25,7 @@ export interface PeriodicElement {
   Minimum: number;
   Maximum: number;
   SupplierName: string;
-  ProductExpirationDate: string;
+  ExpirationDate: string;
   Lotnumber: number;
   Action: string;
 }
@@ -91,7 +91,7 @@ export class ElMedComponent implements OnInit {
     'Minimum',
     'Maximum',
     'SupplierName',
-    'ProductExpirationDate',
+    'ExpirationDate',
     'Lotnumber',
     'Action',
   ];
@@ -101,7 +101,7 @@ export class ElMedComponent implements OnInit {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-
+  @ViewChild('swiper') swiper!: ElementRef;
   // ngAfterViewInit() {
   //   this.dataSource.sort = this.sort;
   // }
@@ -109,6 +109,12 @@ export class ElMedComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.swiper.nativeElement.focus();
+    }, 1000);
   }
 
   public getData = async () => {
@@ -145,6 +151,7 @@ export class ElMedComponent implements OnInit {
     }
   };
 
+  public id_valid: any = null;
   public clickUpdate(i: any) {
     this.upt_code = i.ProductId;
     this.inputGroup.controls['Row'].disable();
@@ -156,11 +163,12 @@ export class ElMedComponent implements OnInit {
     this.inputGroup.controls['Minimum'].disable();
     this.inputGroup.controls['Maximum'].disable();
     this.inputGroup.controls['SupplierName'].disable();
-
-    if (i.ProductExpirationDate == null) {
+    this.inputGroup.value.ProductExpirationDate;
+    this.id_valid = i.id;
+    if (i.ExpirationDate == null) {
       this.show_date = null;
     } else {
-      const momentDate = new Date(i.ProductExpirationDate);
+      const momentDate = new Date(i.ExpirationDate);
       const formattedDate = moment(momentDate).format('M-D-YYYY');
 
       this.show_date = new Date(new Date(formattedDate).getTime());
@@ -194,6 +202,16 @@ export class ElMedComponent implements OnInit {
     formData.append('LotNum', this.inputGroup.value.Lotnumber);
 
     let getData: any = await this.http.post('ELUpdateStock', formData);
+    if (this.id_valid) {
+      let getDataValid: any = await this.http.post(
+        'UpdateValidityLots',
+        formData
+      );
+    } else {
+      let getDataValid: any = await this.http.post('ADDValidityLots', formData);
+    }
+    this.getData();
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let win: any = window;

@@ -22,6 +22,7 @@ import { AtmsComponent } from './pages/atms/atms.component';
 import { IpdComponent } from './pages/ipd/ipd.component';
 import { OpdComponent } from './pages/opd/opd.component';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatGridListModule,
     MaterialModules,
   ],
-  providers: [],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

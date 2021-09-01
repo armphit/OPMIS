@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { ElMedComponent } from './el-med/el-med.component';
 import { OpdComponent } from './opd.component';
+import { OtherMedComponent } from './other-med/other-med.component';
+import { PatientListComponent } from './patient-list/patient-list.component';
+import { PharmacistStatisticsComponent } from './pharmacist-statistics/pharmacist-statistics.component';
 import { SeMedComponent } from './se-med/se-med.component';
 
 const routes: Routes = [
@@ -16,6 +20,22 @@ const routes: Routes = [
       {
         path: 'se-med',
         component: SeMedComponent,
+      },
+      {
+        path: 'pharmacist-statistics',
+        component: PharmacistStatisticsComponent,
+      },
+      {
+        path: 'patient-list',
+        component: PatientListComponent,
+      },
+      {
+        path: 'other-med',
+        component: OtherMedComponent,
+      },
+      {
+        path: 'drug-appoint',
+        component: DrugAppointComponent,
       },
       {
         path: '',

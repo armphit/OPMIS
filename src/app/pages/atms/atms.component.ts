@@ -2,35 +2,27 @@ import { SelectionModel } from '@angular/cdk/collections';
 import {
   Component,
   ElementRef,
-  LOCALE_ID,
   OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
-import {
-  DateAdapter,
-  MatDateFormats,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  MAT_NATIVE_DATE_FORMATS,
-} from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
-// import {MomentDateAdapter} from '@angular/material-moment-adapter';
+import * as JsonToXML from 'js2xmlparser';
 
 export interface PeriodicElement {
   Code: string;
   Name: string;
   Spec: string;
-  firmName: string;
   Unit: string;
+  firmName: string;
 }
 
 @Component({
@@ -53,8 +45,8 @@ export class AtmsComponent implements OnInit {
     'Code',
     'Name',
     'Spec',
-    'firmName',
     'Unit',
+    'firmName',
   ];
 
   public inputGroup = new FormGroup({
@@ -62,11 +54,7 @@ export class AtmsComponent implements OnInit {
     name: new FormControl(),
     sex: new FormControl(),
     age: new FormControl(),
-    orderNo: new FormControl(),
-    orderType: new FormControl(),
-    pharmacy: new FormControl(),
     dateB: new FormControl(),
-    dateP: new FormControl(),
   });
 
   public drugList: any = null;
@@ -80,7 +68,7 @@ export class AtmsComponent implements OnInit {
   @ViewChildren('checkboxes')
   checkboxes!: QueryList<ElementRef>;
   globalcheckbox: boolean = false;
-
+  @ViewChild('swiper') swiper!: ElementRef;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -93,10 +81,15 @@ export class AtmsComponent implements OnInit {
     this.getData();
   }
 
+  ngAfterViewInit() {
+    this.swiper.nativeElement.focus();
+  }
+
   disableClick = false;
   isOpen = false;
   public getData = async () => {
     let getData: any = await this.http.get('dataDrug');
+    console.log(getData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -130,10 +123,7 @@ export class AtmsComponent implements OnInit {
   value2 = new Array();
 
   async showOptions(e: any, val: any): Promise<void> {
-    // console.log(this.checkboxes);
-    // this.checkboxes.forEach((element) => {
-    //   console.log(element.nativeElement.value.deviceName);
-    // });
+    console.log(val);
     if (e.checked) {
       const { value: text } = await Swal.fire({
         input: 'text',
@@ -150,22 +140,21 @@ export class AtmsComponent implements OnInit {
         },
       });
       if (text) {
-        Swal.fire(`จำนวนยา: ${text}`);
+        Swal.fire(`จำนวนยา: ${text} ${val.unit}`);
       }
       val.alias = '';
       val.method = '';
       val.type = '';
       val.note = '';
-      val.Qyt = `${text}`;
+      val.Qty = `${text}`;
       val.itemNo = this.value2.length + 1;
       this.value.push(val);
-      let value = {
-        drug: this.value,
-      };
-      this.value2.push(value);
-      console.log(this.value2);
+    } else {
+      let index = this.value.indexOf(val);
+      if (index > -1) {
+        this.value.splice(index, 1);
+      }
     }
-    this.value = [];
   }
   public date_Birth(event: any) {
     const momentDate = new Date(event.value);
@@ -183,48 +172,100 @@ export class AtmsComponent implements OnInit {
   // public async send() {
   //   console.log(this.jsonDrug);
   // }
+  sss = 1;
+  public async send() {
+    const momentDate = new Date();
+    this.datePayment = moment(momentDate).format('YYYY-MM-DD');
+    let numRandom =
+      'TO' +
+      Math.floor(Math.random() * 1000000000) +
+      '_' +
+      Math.floor(Math.random() * 100);
+    for (var i = 0; i < this.value.length; i++) {
+      let num = i + 1;
+      this.value[i].itemNo = num;
 
-  public send() {
+      let value = {
+        drug: this.value[i],
+      };
+      this.value2.push(value);
+    }
     this.jsonDrug = {
-      outpOrderDispense: {
-        patient: {
-          patID: this.inputGroup.value.id,
-          patName: this.inputGroup.value.name,
-          gender: this.inputGroup.value.sex,
-          birthday: this.dateBirth,
-          age: this.inputGroup.value.age,
-          identity: '',
-          insuranceNo: '',
-          chargeType: '',
-        },
-        prescriptions: {
-          prescription: {
-            orderNo: this.inputGroup.value.orderNo,
-            ordertype: this.inputGroup.value.orderType,
-            pharmacy: this.inputGroup.value.pharmacy,
-            windowNo: '',
-            paymentIP: '',
-            paymentDT: this.datePayment,
-            outpNo: '',
-            visitNo: '',
-            deptCode: '',
-            deptName: '',
-            doctCode: '',
-            doctName: '',
-            diagnosis: '',
-            drugs: this.value2,
-          },
+      patient: {
+        patID: this.inputGroup.value.id,
+        patName: this.inputGroup.value.name,
+        gender: this.inputGroup.value.sex,
+        birthday: this.dateBirth,
+        age: this.inputGroup.value.age,
+        identity: '',
+        insuranceNo: '',
+        chargeType: '',
+      },
+      prescriptions: {
+        prescription: {
+          orderNo: numRandom,
+          ordertype: 'M',
+          pharmacy: 'OPD',
+          windowNo: '',
+          paymentIP: '',
+          paymentDT: this.datePayment,
+          outpNo: '3',
+          visitNo: '',
+          deptCode: '',
+          deptName: '',
+          doctCode: '',
+          doctName: '',
+          diagnosis: '',
+          drugs: this.value2,
         },
       },
     };
-    this.jsonArr.push(this.jsonDrug);
-    console.log(this.jsonArr);
-    // window.location.reload();
+    let xmlDrug = JsonToXML.parse('outpOrderDispense', this.jsonDrug);
+    // let formData = new FormData();
+    // formData.append('xmlDrug', xmlDrug);
+
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = xmlDrug;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    // let getData: any = await this.http.post('drugManual', formData);
+    // console.log(xmlDrug);
+    // let XMLService =
+    //   'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
+
     // this.inputGroup.reset();
     // this.inputGroup.enable();
+    // if (getData) {
+    //   Swal.fire({
+    //     position: 'center',
+    //     icon: 'success',
+    //     title: 'Send information successfully',
+    //     showConfirmButton: false,
+    //     timer: 1500,
+    //   });
+    //   this.value2 = [];
+    //   window.location.reload();
+    // } else {
+    //   Swal.fire({
+    //     position: 'center',
+    //     icon: 'error',
+    //     title: 'Failed to submit information',
+    //     showConfirmButton: false,
+    //     timer: 1500,
+    //   });
+    //   this.value2 = [];
+    // }
+    this.value2 = [];
   }
 
-  unselectedRows: Array<{}> = [];
+  public sendFail() {}
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -238,49 +279,5 @@ export class AtmsComponent implements OnInit {
       : this.dataSource.data.forEach((row: PeriodicElement) =>
           this.selection.select(row)
         );
-  }
-
-  public checkDrug = new Array();
-
-  // store() {
-  //   setTimeout(async () => {
-  //     this.checkDrug = this.selection.selected;
-  //     if (this.checkDrug) {
-  //       const { value: text } = await Swal.fire({
-  //         input: 'text',
-  //         inputLabel: 'จำนวนยา',
-  //         inputPlaceholder: '',
-  //         inputValidator: (value) => {
-  //           return new Promise((resolve) => {
-  //             if (value) {
-  //               resolve('');
-  //             } else {
-  //               resolve('Input Value');
-  //             }
-  //           });
-  //         },
-  //       });
-  //       if (text) {
-  //         Swal.fire(`จำนวนยา: ${text}`);
-  //       }
-  //       var obj: any = {};
-  //       // this.checkDrug.qty = `${text}`;
-  //       // this.checkDrug.push(obj);
-  //       // let a = {
-  //       //   drug: this.value,
-  //       // };
-  //       console.log(this.selection.selected);
-  //     }
-  //     // if (e.currentTarget.checked) {
-  //     //   let List = {
-  //     //     drug: val,
-  //     //   };
-  //     //   this.value.push(List);
-  //     // }
-  //   });
-  // }
-
-  someFunction(globalcheckbox: any) {
-    console.log(globalcheckbox);
   }
 }

@@ -18,4 +18,8 @@ export class NavComponent {
     );
 
   constructor(private breakpointObserver: BreakpointObserver) {}
+
+  public checkClick() {
+    console.log(12334);
+  }
 }

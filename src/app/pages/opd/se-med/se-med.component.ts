@@ -1,5 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import {
   DateAdapter,
   MatDateFormats,
@@ -20,12 +25,14 @@ export interface PeriodicElement {
   Maximum: string;
   percenStock: string;
   totalQty: string;
+  drugLocation: string;
+  Action: string;
 }
 
 export interface PeriodicElement2 {
   Code: string;
   Name: string;
-  Spec: string;
+  Firmname: string;
   totalQty: string;
 }
 
@@ -56,10 +63,12 @@ export class SeMedComponent implements OnInit {
     'Quantity',
     'Maximum',
     'percenStock',
-    'totalQty',
+    // 'totalQty',
+    'drugLocation',
+    'Action',
   ];
 
-  public displayedColumns2: string[] = ['Code', 'Name', 'Spec', 'totalQty'];
+  public displayedColumns2: string[] = ['Code', 'Name', 'Firmname', 'totalQty'];
 
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public dataSource2!: MatTableDataSource<PeriodicElement2>;
@@ -87,12 +96,16 @@ export class SeMedComponent implements OnInit {
   // paginator2!: MatPaginator;
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild('paginator2') paginator2!: MatPaginator;
-
+  // @ViewChild('testq') testq!: ElementRef;
   typeFilter = new FormControl('');
   filterValues = {
     drugCode: '',
   };
 
+  public clickLo: any = null;
+  public inputGroup = new FormGroup({
+    location: new FormControl(),
+  });
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -100,6 +113,12 @@ export class SeMedComponent implements OnInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
   }
+
+  // ngAfterViewInit() {
+  //   setTimeout(() => {
+  //     this.testq.nativeElement.focus();
+  //   }, 1000);
+  // }
 
   ngOnInit(): void {
     this.getDataSEListStock();
@@ -185,7 +204,7 @@ export class SeMedComponent implements OnInit {
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
     let getData: any = await this.http.post('SEDispense', formData);
-
+    console.log(getData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataSEDispense = getData.response.result;
@@ -198,6 +217,39 @@ export class SeMedComponent implements OnInit {
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+
+  public PrepackDispense = async (e: any) => {
+    if (e == 'All') {
+      this.getDataSEDispense();
+    } else {
+      const endDate = moment(new Date()).format('DD/MM/YYYY');
+      if (e == 'Y') {
+        this.nameSEDispense = 'Dispense Prepack' + '(' + endDate + ')';
+      } else if (e == 'N') {
+        this.nameSEDispense = 'Dispense Main Drug' + '(' + endDate + ')';
+      }
+
+      let formData = new FormData();
+      formData.append('prepack', e);
+      formData.append('startDate', this.startDate);
+      formData.append('endDate', this.endDate);
+      let getData: any = await this.http.post('SEDispense', formData);
+
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataSEDispense = getData.response.result;
+
+          this.dataSource2 = new MatTableDataSource(this.dataSEDispense);
+          this.dataSource2.sort = this.SortT2;
+          this.dataSource2.paginator = this.paginator2;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
     }
   };
   public start_date: any = null;
@@ -245,6 +297,37 @@ export class SeMedComponent implements OnInit {
     this.dataSource.filter = filterValue;
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  async clickData(i: any) {
+    this.inputGroup = this.formBuilder.group({
+      location: [i.drugLocation, Validators.required],
+      code: [i.drugCode],
+    });
+  }
+  public dataDrugEdit: any = null;
+  public async updateData() {
+    let formData = new FormData();
+    formData.append('drugLocation', this.inputGroup.value.location);
+    formData.append('drugCode', this.inputGroup.value.code);
+    // formData.forEach((value, key) => {
+    //   console.log(key + '=' + value);
+    // });
+    let getData: any = await this.http.post('updateXLocat', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let win: any = window;
+        win.$('#myModal').modal('hide');
+        Swal.fire('แก้ไขข้อมูลเสร็จสิ้น', '', 'success');
+        this.getDataSEListStock();
+      } else {
+        Swal.fire('แก้ไขข้อมูลไม่สำเร็จ', '', 'error');
+        this.dataDrugEdit = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 }
