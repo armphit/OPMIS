@@ -68,7 +68,7 @@ export class SeMedComponent implements OnInit {
     'Action',
   ];
 
-  public displayedColumns2: string[] = ['Code', 'Name', 'Firmname', 'totalQty'];
+  public displayedColumns2: string[] = ['Code', 'Name', 'Spec', 'totalQty'];
 
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public dataSource2!: MatTableDataSource<PeriodicElement2>;
@@ -112,6 +112,8 @@ export class SeMedComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
+    this.getDataSEListStock();
+    this.getDataSEDispense();
   }
 
   // ngAfterViewInit() {
@@ -121,8 +123,6 @@ export class SeMedComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-    this.getDataSEListStock();
-    this.getDataSEDispense();
     // this.dataSource.filterPredicate = (
     //   data: PeriodicElement,
     //   filter: string
@@ -204,7 +204,7 @@ export class SeMedComponent implements OnInit {
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
     let getData: any = await this.http.post('SEDispense', formData);
-    console.log(getData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataSEDispense = getData.response.result;

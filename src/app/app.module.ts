@@ -23,6 +23,7 @@ import { IpdComponent } from './pages/ipd/ipd.component';
 import { OpdComponent } from './pages/opd/opd.component';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ngxLoadingAnimationTypes, NgxLoadingModule } from 'ngx-loading';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,15 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     ReactiveFormsModule,
     MatGridListModule,
     MaterialModules,
+    NgxLoadingModule.forRoot({
+      animationType: ngxLoadingAnimationTypes.threeBounce,
+      backdropBackgroundColour: 'rgba(0,0,0,0.3)',
+      fullScreenBackdrop: false,
+      backdropBorderRadius: '0px',
+      primaryColour: '#3f51b5',
+      secondaryColour: '#3f51b5',
+      tertiaryColour: '#3f51b5',
+    }),
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],

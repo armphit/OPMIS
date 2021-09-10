@@ -77,13 +77,12 @@ export class ApMedComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
+    this.getData();
   }
 
   ngAfterViewInit() {}
 
-  ngOnInit(): void {
-    this.getData();
-  }
+  ngOnInit(): void {}
   public getData = async () => {
     this.nameExcel = null;
     const momentDate = new Date();

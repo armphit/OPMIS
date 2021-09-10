@@ -5,25 +5,34 @@
 
     <div style="margin: 10px;">
 
-      <!-- <mat-form-field>
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
-          <mat-option value="All">All</mat-option>
-          <mat-option value="N">Main Drug</mat-option>
-          <mat-option value="Y">Prepack</mat-option>
-        </mat-select>
-      </mat-form-field> -->
-      <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter($event)" #input>
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float:left" *ngIf="name=='JV'">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
 
 
 
       <table mat-table [dataSource]="dataSource" #MatSort="matSort" matSort class="mat-elevation-z8" matTableExporter
-        #exporter="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+        #exporter="matTableExporter" matSortActive="amount" matSortDirection="desc">
 
 
 
@@ -62,8 +71,23 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.miniUnit}}
+
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.amount}}
+
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
             {{element.deviceName}}
 
@@ -71,13 +95,11 @@
         </ng-container>
 
 
-
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
       <div style="float: right;"><button mat-raised-button color="primary"
-          (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          (click)="exporter.exportTable('xlsx', {fileName:nameExcel2, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
           Excel</button>
 
       </div>
@@ -102,6 +124,29 @@
 
     <div style="margin: 10px;">
 
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float:left" *ngIf="name=='INJ'">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter2($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
       <!-- <mat-form-field>
         <mat-label>SELECT TYPE</mat-label>
         <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
@@ -110,17 +155,19 @@
           <mat-option value="Y">Prepack</mat-option>
         </mat-select>
       </mat-form-field> -->
-      <mat-form-field class="example-full-width" style="float: right;">
+
+
+      <!-- <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter2($event)" #input>
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+      </mat-form-field> -->
 
 
 
 
       <table mat-table [dataSource]="dataSource2" #MatSort2="matSort" matSort class="mat-elevation-z8" matTableExporter
-        #exporter2="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+        #exporter2="matTableExporter" matSortActive="amount" matSortDirection="desc">
 
 
 
@@ -159,8 +206,23 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.miniUnit}}
+
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.amount}}
+
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
             {{element.deviceName}}
 
@@ -168,13 +230,11 @@
         </ng-container>
 
 
-
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
       <div style="float: right;"><button mat-raised-button color="primary"
-          (click)="exporter2.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          (click)="exporter2.exportTable('xlsx', {fileName:nameExcel2, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
           Excel</button>
 
       </div>
@@ -200,25 +260,51 @@
 
     <div style="margin: 10px;">
 
-      <mat-form-field *ngIf="getName">
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select [(ngModel)]="selected" (selectionChange)="getDataR($event.value);input3.value = ''">
-          <mat-option value="">All</mat-option>
-          <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="row">
+        <div class="col-lg-4">
+          <mat-form-field class="example-form-field" style="float:left" *ngIf="name=='R'">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-5">
+          <mat-form-field *ngIf="getName">
+            <mat-label>SELECT TYPE</mat-label>
+            <mat-select [(ngModel)]="selected" (selectionChange)="getDataR($event.value);input3.value = ''">
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter3($event)" #input3>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
-      <mat-form-field class="example-full-width" style="float: right;">
+
+
+      <!-- <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter3($event)" #input3>
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+      </mat-form-field> -->
 
 
 
 
       <table mat-table [dataSource]="dataSource3" #MatSort3="matSort" matSort class="mat-elevation-z8" matTableExporter
-        #exporter3="matTableExporter" matSortActive="deviceName" matSortDirection="asc">
+        #exporter3="matTableExporter" matSortActive="amount" matSortDirection="desc">
 
 
 
@@ -257,8 +343,24 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.miniUnit}}
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.amount}}
+
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
             {{element.deviceName}}
 
@@ -266,13 +368,11 @@
         </ng-container>
 
 
-
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
       <div style="float: right;"><button mat-raised-button color="primary"
-          (click)="exporter3.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          (click)="exporter3.exportTable('xlsx', {fileName:nameExcel2, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
           Excel</button>
 
       </div>
@@ -298,25 +398,51 @@
 
     <div style="margin: 10px;">
 
+      <div class="row">
+        <div class="col-lg-4">
+          <mat-form-field class="example-form-field" style="float:left" *ngIf="name=='M'">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-5">
+          <mat-form-field *ngIf="getName">
+            <mat-label>SELECT TYPE</mat-label>
+            <mat-select [(ngModel)]="selected" (selectionChange)="getDataM($event.value);input4.value = ''">
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter4($event)" #input4>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
-      <mat-form-field *ngIf="getName">
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select [(ngModel)]="selected" (selectionChange)="getDataM($event.value);input4.value = ''">
-          <mat-option value="">All</mat-option>
-          <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <!--
+
       <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter4($event)" #input4>
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+      </mat-form-field> -->
 
 
 
 
       <table mat-table [dataSource]="dataSource4" #MatSort4="matSort" matSort class="mat-elevation-z8" matTableExporter
-        #exporter4="matTableExporter" matSortActive="deviceName" matSortDirection="asc">
+        #exporter4="matTableExporter" matSortActive="amount" matSortDirection="desc">
 
 
 
@@ -355,8 +481,23 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.miniUnit}}
+
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.amount}}
+
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
             {{element.deviceName}}
 
@@ -364,13 +505,11 @@
         </ng-container>
 
 
-
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
       <div style="float: right;"><button mat-raised-button color="primary"
-          (click)="exporter4.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          (click)="exporter4.exportTable('xlsx', {fileName:nameExcel2, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
           Excel</button>
 
       </div>
@@ -397,25 +536,39 @@
 
     <div style="margin: 10px;">
 
-      <!-- <mat-form-field>
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
-          <mat-option value="All">All</mat-option>
-          <mat-option value="N">Main Drug</mat-option>
-          <mat-option value="Y">Prepack</mat-option>
-        </mat-select>
-      </mat-form-field> -->
-      <mat-form-field class="example-full-width" style="float: right;">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float:left" *ngIf="name=='N'">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter5($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <!-- <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter5($event)" #input>
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+      </mat-form-field> -->
 
 
 
 
       <table mat-table [dataSource]="dataSource5" #MatSort5="matSort" matSort class="mat-elevation-z8" matTableExporter
-        #exporter5="matTableExporter" matSortActive="positionID" matSortDirection="asc">
+        #exporter5="matTableExporter" matSortActive="amount" matSortDirection="desc">
 
 
 
@@ -454,8 +607,23 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.miniUnit}}
+
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.amount}}
+
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
             {{element.deviceName}}
 
@@ -463,13 +631,11 @@
         </ng-container>
 
 
-
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
       <div style="float: right;"><button mat-raised-button color="primary"
-          (click)="exporter5.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+          (click)="exporter5.exportTable('xlsx', {fileName:nameExcel2, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
           Excel</button>
 
       </div>

@@ -147,7 +147,7 @@ export class PatientListComponent implements OnInit {
     formData.append('hn', payment.patientID);
 
     let drugData: any = await this.http.post('medicineList', formData);
-    console.log(drugData);
+
     if (drugData.connect) {
       if (drugData.response.rowCount > 0) {
         this.dataDrug = drugData.response.result;

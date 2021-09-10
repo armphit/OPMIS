@@ -19,6 +19,8 @@ export interface JVElement {
   drugName: string;
   packageSpec: string;
   firmName: string;
+  amount: string;
+  miniUnit: string;
   deviceName: string;
 }
 
@@ -43,6 +45,8 @@ export class OtherMedComponent implements OnInit {
     'drugName',
     'packageSpec',
     'firmName',
+    'amount',
+    'miniUnit',
     'deviceName',
   ];
   selected = '';
@@ -53,7 +57,10 @@ export class OtherMedComponent implements OnInit {
   public dataSource5!: MatTableDataSource<JVElement>;
 
   public dataTable: any = null;
-
+  public campaignOne = new FormGroup({
+    start: new FormControl(new Date()),
+    end: new FormControl(new Date()),
+  });
   // @ViewChild(MatSort)
   // sort!: MatSort;
   // sort2!: MatSort;
@@ -75,9 +82,20 @@ export class OtherMedComponent implements OnInit {
 
   constructor(private http: HttpService) {
     this.getDataID();
+    const momentDate = new Date();
+    const endDate = moment(momentDate).format('YYYY-MM-DD');
+    const startDate = moment(momentDate).format('YYYY-MM-DD');
+    const end_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    this.startDate = startDate;
+    this.endDate = endDate;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.dataSource.filterPredicate = (data: any, filter: string) => {
+    //   return data.drugCode == filter;
+    // };
+  }
   public dataD = Array();
   public getName: any = null;
 
@@ -92,19 +110,27 @@ export class OtherMedComponent implements OnInit {
 
     this.getData();
   }
+  public startDate: any = null;
+  public endDate: any = null;
 
   public async getData() {
+    // this.nameExcel = null;
     let data = JSON.stringify(this.dataD);
+    let startDate = this.startDate + ' ' + '00:00:00';
+    let endDate = this.endDate + ' ' + '23:59:59';
     let formData = new FormData();
     formData.append('deviceID', data);
-    let getData: any = await this.http.post('listDrugDevice', formData);
+    formData.append('name', this.name);
+    formData.append('startDate', this.startDate);
+    formData.append('endDate', this.endDate);
+    let getData: any = await this.http.post('listDrugDeviceTEST', formData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
         if (this.name == 'JV') {
           this.dataSource = new MatTableDataSource(this.dataDrug);
-          // this.dataSource.filterPredicate = (data: any, filter: string) =>
-          //   data.drugCode.indexOf(filter) != -1;
+
           this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
         } else if (this.name == 'INJ') {
@@ -131,9 +157,17 @@ export class OtherMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
     this.dataDrug = null;
+
+    this.nameExcel2 =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
+  }
+  customFilterPredicate(): any {
+    throw new Error('Method not implemented.');
   }
   public nameExcel: any = 'เครื่องนับยาเม็ด (JV)';
+  public nameExcel2: any = null;
   public getTab(num: any) {
+    this.nameExcel = null;
     if (num == 0) {
       this.nameExcel = 'เครื่องนับยาเม็ด (JV)';
       this.name = 'JV';
@@ -180,6 +214,8 @@ export class OtherMedComponent implements OnInit {
       this.dataSource3.paginator.firstPage();
     }
     this.nameExcel = 'จัดมือ (M)';
+    this.nameExcel =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
   }
 
   public applyFilter4(event: Event) {
@@ -190,6 +226,8 @@ export class OtherMedComponent implements OnInit {
       this.dataSource4.paginator.firstPage();
     }
     this.nameExcel = 'ตู้เย็น (R)';
+    this.nameExcel =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
   }
 
   public applyFilter5(event: Event) {
@@ -201,29 +239,67 @@ export class OtherMedComponent implements OnInit {
   }
 
   public getDataR(event: any) {
+    this.nameExcel = null;
     if (event) {
       this.nameExcel = event;
-    } else {
-      this.nameExcel = 'ตู้เย็น (R)';
     }
     this.dataSource3.filter = event;
-
+    this.nameExcel =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
     if (this.dataSource3.paginator) {
       this.dataSource3.paginator.firstPage();
     }
   }
 
   public getDataM(event: any) {
+    this.nameExcel = null;
     if (event) {
       this.nameExcel = event;
-    } else {
-      this.nameExcel = 'จัดมือ (M)';
     }
+    this.nameExcel =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
     this.name = event;
     this.dataSource4.filter = event;
 
     if (this.dataSource4.paginator) {
       this.dataSource4.paginator.firstPage();
     }
+  }
+
+  public start_date: any = null;
+  public startChange(event: any) {
+    this.nameExcel2 = null;
+    // this.nameSEDispense = null;
+    const momentDate = new Date(event.value);
+    this.startDate = moment(momentDate).format('YYYY-MM-DD');
+    const start_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.start_date = 'SEDispense' + '(' + String(start_Date);
+  }
+
+  public async endChange(event: any) {
+    const momentDate = new Date(event.value);
+    const end_Date = moment(momentDate).format('DD/MM/YYYY');
+    // this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
+    this.endDate = moment(momentDate).format('YYYY-MM-DD');
+
+    // let formData = new FormData();
+    // formData.append('startDate', this.startDate);
+    // formData.append('endDate', this.endDate);
+    this.getData();
+    //   let getData: any = await this.http.post('SEDispense', formData);
+
+    //   if (getData.connect) {
+    //     if (getData.response.rowCount > 0) {
+    //       this.dataSEDispense = getData.response.result;
+    //       this.dataSource2 = new MatTableDataSource(this.dataSEDispense);
+    //       this.dataSource2.sort = this.SortT2;
+    //       this.dataSource2.paginator = this.paginator2;
+    //     } else {
+    //       this.dataSEDispense = null;
+    //     }
+    //   } else {
+    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    //   }
+    // }
   }
 }

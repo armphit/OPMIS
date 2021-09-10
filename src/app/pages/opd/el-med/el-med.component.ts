@@ -101,21 +101,21 @@ export class ElMedComponent implements OnInit {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-  @ViewChild('swiper') swiper!: ElementRef;
+  // @ViewChild('swiper') swiper!: ElementRef;
   // ngAfterViewInit() {
   //   this.dataSource.sort = this.sort;
   // }
-  constructor(private http: HttpService, private formBuilder: FormBuilder) {}
-
-  ngOnInit(): void {
+  constructor(private http: HttpService, private formBuilder: FormBuilder) {
     this.getData();
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.swiper.nativeElement.focus();
-    }, 1000);
-  }
+  ngOnInit(): void {}
+
+  // ngAfterViewInit() {
+  //   setTimeout(() => {
+  //     this.swiper.nativeElement.focus();
+  //   }, 1000);
+  // }
 
   public getData = async () => {
     let getData: any = await this.http.get('ELListStock');

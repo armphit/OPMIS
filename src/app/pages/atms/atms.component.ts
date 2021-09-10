@@ -75,11 +75,10 @@ export class AtmsComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
-  }
-
-  ngOnInit(): void {
     this.getData();
   }
+
+  ngOnInit(): void {}
 
   ngAfterViewInit() {
     this.swiper.nativeElement.focus();
@@ -89,7 +88,6 @@ export class AtmsComponent implements OnInit {
   isOpen = false;
   public getData = async () => {
     let getData: any = await this.http.get('dataDrug');
-    console.log(getData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -123,7 +121,6 @@ export class AtmsComponent implements OnInit {
   value2 = new Array();
 
   async showOptions(e: any, val: any): Promise<void> {
-    console.log(val);
     if (e.checked) {
       const { value: text } = await Swal.fire({
         input: 'text',
@@ -167,20 +164,17 @@ export class AtmsComponent implements OnInit {
   }
 
   public jsonDrug: any = null;
-  public test() {}
 
-  // public async send() {
-  //   console.log(this.jsonDrug);
-  // }
-  sss = 1;
+
   public async send() {
     const momentDate = new Date();
     this.datePayment = moment(momentDate).format('YYYY-MM-DD');
     let numRandom =
-      'TO' +
-      Math.floor(Math.random() * 1000000000) +
+      '99' +
+      Math.floor(Math.random() * 100000000) +
       '_' +
       Math.floor(Math.random() * 100);
+
     for (var i = 0; i < this.value.length; i++) {
       let num = i + 1;
       this.value[i].itemNo = num;

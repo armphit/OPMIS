@@ -2,19 +2,11 @@
 
   <div class="row">
     <div class="col-lg-9">
-      <!-- <mat-form-field class="example-form-field" style="float:left">
-        <mat-label>เลือกวันที่</mat-label>
-        <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
-          [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
-          <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start" (dateChange)="startChange($event)">
-          <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
-      </mat-form-field> -->
-      <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #3f51b5;">{{this.numOrder }}</span></h1> -->
+
+      <button type="button" class="btn btn-outline-secondary" style="margin-top: 5px;margin-left: 5px"
+        (click)="getData();input.value = ''"><i class="fas fa-sync-alt"></i>&nbsp; Refresh</button>
     </div>
-    <div class="col-lg-3" *ngIf="dataPharmacist">
+    <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter($event)" #input>
         <mat-placeholder>ค้นหา</mat-placeholder>

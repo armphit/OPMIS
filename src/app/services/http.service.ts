@@ -13,7 +13,7 @@ export class HttpService {
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
   public drugAppointPath: string =
-    'http://192.168.42.1/unit/ssr/pharm_rep/service/drugAppoint.asp';
+    'http://192.168.42.1/unit/ssr/pharm_rep/service/drugAppoint.asp?addDay=1';
 
   constructor(public router: Router, private http: HttpClient) {}
 
@@ -26,9 +26,11 @@ export class HttpService {
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
+          this.loading = false;
         })
         .catch((reason) => {
           resolve({ connect: false, response: reason });
+          this.loading = false;
         });
     });
   };
