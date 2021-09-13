@@ -65,7 +65,13 @@
           <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"
             (click)="clickDetail(element)">
             รายละเอียดยา</button>
+
+          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#drugAllergy"
+            (click)="clickDetail(element)" style="margin-left: 20px;">
+            รายการแพ้ยา</button>
         </td>
+
+
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -91,6 +97,59 @@
 
 
   <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+
+        <div class="modal-header">
+          <h4 class="modal-title">Detail</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+
+        <div class="modal-body">
+
+          <table class="table">
+
+            <thead>
+
+              <tr>
+                <th style="  padding-right: 50px;border-right: 0px;">#</th>
+                <th style="  padding-right: 50px;border-right: 0px">Code</th>
+                <th style="  padding-right: 50px;border-right: 0px">Name</th>
+                <th style="  padding-right: 50px;border-right: 0px">QTY</th>
+                <th style="  padding-right: 50px;border-right: 0px">Unit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of dataDrug; let x = index">
+                <td style="border-right: 0px">
+                  <div style="width: 10px">{{x+1}}</div>
+                </td>
+                <td style="border-right: 0px">{{i.orderitemcode}}</td>
+                <td style="border-right: 0px">{{i.orderitemname}}</td>
+                <td style="border-right: 0px">{{numberQ(i.orderqty)}}</td>
+                <td style="border-right: 0px">{{i.orderunitcode}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+        </div>
+
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="drugAllergy">
     <div class="modal-dialog">
       <div class="modal-content">
 
