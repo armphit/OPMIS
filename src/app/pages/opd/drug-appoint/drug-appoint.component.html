@@ -191,9 +191,96 @@
 
     </div>
 
-
-    <mat-tab label="เบิกยา">
-      <button>ADD</button>
-    </mat-tab>
-
   </mat-tab>
+  <mat-tab label="เบิกยา">
+    <div style="overflow: auto;margin: 10px;">
+
+      <div class="row">
+        <div class="col-lg-9">
+          <!-- <mat-form-field class="example-form-field" style="float:left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start" (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field> -->
+          <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #3f51b5;">{{this.numOrder }}</span></h1> -->
+        </div>
+        <div class="col-lg-3" *ngIf="dataDrug">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter3($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+
+
+      <div class="responsive-table">
+
+
+        <table mat-table matTableExporter [dataSource]="dataSource3" #MatSort3="matSort" matSort
+          #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="" matSortDirection="desc"
+          [hiddenColumns]="[]">
+
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> วันที่เบิกยา </th>
+            <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.date}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="med_code">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> รหัสสต๊อกยา </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.med_code}}
+
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="disp_qty">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> จำนวนยาเบิก </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.orderqty}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="disp_dept">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> รหัสแผนก </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.orderunitcode}}
+            </td>
+          </ng-container>
+
+
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+        </table>
+        <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
+            (click)="exporter3.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button>
+          <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+          <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
+          <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div> -->
+        </div>
+        <mat-paginator #MatPaginator3="matPaginator" style="display: flex;justify-content: center;" [length]="10"
+          [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
+        </mat-paginator>
+
+
+
+
+
+      </div>
+
+    </div>
+  </mat-tab>
+</mat-tab-group>

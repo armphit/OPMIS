@@ -43,6 +43,7 @@ export class DrugAppointComponent implements OnInit {
   public numOrder: any = null;
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public dataSource2!: MatTableDataSource<PeriodicElement2>;
+  public dataSource3: any = null;
   public displayedColumns: string[] = [
     'drugCode',
     'name',
@@ -56,6 +57,13 @@ export class DrugAppointComponent implements OnInit {
     'orderitemname',
     'orderqty',
     'orderunitcode',
+  ];
+
+  public displayedColumns3: string[] = [
+    'date',
+    'med_code',
+    'disp_qty',
+    'disp_dept',
   ];
   @Input() max: any;
   @ViewChild('MatSort') sort!: MatSort;
@@ -145,6 +153,11 @@ export class DrugAppointComponent implements OnInit {
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
 
+  public applyFilter3(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource2.filter = filterValue.trim().toLowerCase();
+  }
+
   // public async clickDetail(payment: any) {
   //   let formData = new FormData();
   //   formData.append('hn', payment.patientID);
@@ -161,6 +174,44 @@ export class DrugAppointComponent implements OnInit {
   //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
   //   }
   // }
+
+  public dataDrug3: any = null;
+  public getTakemedicine = async () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const start_Date2 = moment(tomorrow).format('DD/MM/YYYY');
+
+    this.nameExcel = 'Drug-Appoint' + '(' + start_Date2 + ')';
+    let getData: any = await this.http.drugAppoint_send();
+
+    if (getData.connect) {
+      // try {
+      //   this.dataDrug3 = getData.response.data;
+      //   this.dataSource = new MatTableDataSource(this.dataDrug);
+      //   this.dataSource.sort = this.sort;
+      //   this.dataSource.paginator = this.paginator;
+      // } catch (error) {
+      //   this.getDataTomorrow();
+      // }
+      if (getData.response.data) {
+        this.dataDrug3 = getData.response.data;
+        this.dataSource3 = new MatTableDataSource(this.dataDrug);
+        this.dataSource3.sort = this.sort;
+        this.dataSource3.paginator = this.paginator;
+        // for (let i = 0; i < getData.response.result.length; i++) {
+        //   this.numOrder =
+        //     Number(getData.response.result[i].amountOrders) +
+        //     Number(this.numOrder);
+        // }
+      } else {
+        this.getDataTomorrow();
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+
   public numberQ(orderqty: any) {
     return ~~orderqty;
   }
