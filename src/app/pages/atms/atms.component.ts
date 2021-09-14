@@ -76,6 +76,9 @@ export class AtmsComponent implements OnInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
+    // const today = new Date();
+    // const tomorrow = new Date(today.setDate(today.getDate() + 1));
+    // console.log(moment(tomorrow).format('YYYY-MM-DD'));
   }
 
   ngOnInit(): void {}
@@ -164,7 +167,6 @@ export class AtmsComponent implements OnInit {
   }
 
   public jsonDrug: any = null;
-
 
   public async send() {
     const momentDate = new Date();
@@ -274,4 +276,14 @@ export class AtmsComponent implements OnInit {
           this.selection.select(row)
         );
   }
+
+  // async test() {
+  //   fetch(`http://` + '192.168.185.160' + `:3000/ELMedStock`)
+  //     .then((e) => {
+  //       return e.json();
+  //     })
+  //     .then((e) => {
+  //       console.log(e);
+  //     });
+  // }
 }
