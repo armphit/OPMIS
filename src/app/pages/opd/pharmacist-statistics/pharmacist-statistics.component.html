@@ -1,4 +1,166 @@
 <mat-tab-group (selectedTabChange)="getTab($event.index)">
+
+
+
+
+
+
+
+
+
+  <mat-tab label="เวลาทั้งหมด">
+    <div style="overflow: auto;margin: 10px;">
+
+      <div class="row">
+        <div class="col-lg-2">
+
+          <button type="button" class="btn btn-outline-secondary" style="margin-top: 5px;margin-left: 5px"
+            (click)="getDataAll();input.value = ''"><i class="fas fa-sync-alt"></i>&nbsp; Refresh</button>
+
+
+
+        </div>
+        <div class="col-lg-3">
+
+          <h1 style="margin-top: 10px;">จำนวน Order ทั้งหมด : <span style="color: #3f51b5;">{{this.numOrder3 }}</span>
+          </h1>
+
+
+        </div>
+        <div class="col-lg-5">
+          <!-- <mat-form-field class="example-form-field" style="float:left">
+              <mat-label>เลือกวันที่</mat-label>
+              <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+                [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+                <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start" (dateChange)="startChange($event)">
+                <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            </mat-form-field> -->
+
+          <h1 style="margin-top: 10px;">จำนวน Item ทั้งหมด : <span style="color: #3fb570;">{{this.numItem3 }}</span>
+          </h1>
+
+        </div>
+        <!-- <div class="col-lg-2">
+          <mat-form-field>
+            <mat-select (ngModelChange)="getShiftwork($event)" [(ngModel)]="selected">
+              <mat-option value="m">
+                กะเช้า
+              </mat-option>
+              <mat-option value="a">
+                กะเย็น
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
+
+        <div class="col-lg-2">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter4($event)" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+
+
+      <div class="responsive-table" [hidden]="!dataPharmacist3">
+
+
+        <table mat-table matTableExporter [dataSource]="dataSource4" #MatSort4="matSort" matSort
+          #exporter4="matTableExporter" class="mat-elevation-z8" matSortActive="staffCode" matSortDirection="desc">
+
+
+          <ng-container matColumnDef="staffCode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> รหัส </th>
+            <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.staffCode}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="staffName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ชื่อ </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.staffName}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="numOrder">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> จำนวน Order </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.numOrder}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="numItem">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> จำนวน Item </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.numItem}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="avgTime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> เวลาเฉลี่ย </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.avgTime}}
+            </td>
+          </ng-container>
+
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <div style="float: right;" *ngIf="dataPharmacist3"><button mat-raised-button color="primary"
+            (click)="exporter4.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button>
+          <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+            <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
+            <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div> -->
+        </div>
+        <mat-paginator #MatPaginator4="matPaginator" style="display: flex;justify-content: center;" [length]="10"
+          [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
+        </mat-paginator>
+
+
+
+      </div>
+    </div>
+  </mat-tab>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <mat-tab label="ในเวลา">
     <div style="overflow: auto;margin: 10px;">
 
@@ -18,7 +180,7 @@
 
 
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-5">
           <!-- <mat-form-field class="example-form-field" style="float:left">
               <mat-label>เลือกวันที่</mat-label>
               <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
@@ -151,7 +313,7 @@
 
 
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-5">
           <!-- <mat-form-field class="example-form-field" style="float:left">
               <mat-label>เลือกวันที่</mat-label>
               <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
@@ -223,8 +385,8 @@
 
 
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns3;"></tr>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
         <div style="float: right;" *ngIf="dataPharmacist2"><button mat-raised-button color="primary"
             (click)="exporter1.exportTable('xlsx', {fileName:nameExcel3, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AllDrugComponent } from './all-drug/all-drug.component';
 import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { ElMedComponent } from './el-med/el-med.component';
 import { OpdComponent } from './opd.component';
@@ -36,6 +37,10 @@ const routes: Routes = [
       {
         path: 'drug-appoint',
         component: DrugAppointComponent,
+      },
+      {
+        path: 'drug',
+        component: AllDrugComponent,
       },
       {
         path: '',

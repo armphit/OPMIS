@@ -43,13 +43,20 @@ export class PharmacistStatisticsComponent implements OnInit {
     'numItem',
     'avgTime',
   ];
-  public displayedColumns3: string[] = [
-    'staffCode',
-    'staffName',
-    'numOrder',
-    'numItem',
-    'avgTime',
-  ];
+  // public displayedColumns3: string[] = [
+  //   'staffCode',
+  //   'staffName',
+  //   'numOrder',
+  //   'numItem',
+  //   'avgTime',
+  // ];
+  // public displayedColumns4: string[] = [
+  //   'staffCode',
+  //   'staffName',
+  //   'numOrder',
+  //   'numItem',
+  //   'avgTime',
+  // ];
   public displayedColumns2: string[] = [
     'patientName',
     'staffCode',
@@ -60,11 +67,13 @@ export class PharmacistStatisticsComponent implements OnInit {
   @Input() max: any;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
-  @ViewChild('MatSort2') sort3!: MatSort;
+  @ViewChild('MatSort3') sort3!: MatSort;
+  @ViewChild('MatSort4') sort4!: MatSort;
 
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('MatPaginator3') paginator3!: MatPaginator;
+  @ViewChild('MatPaginator4') paginator4!: MatPaginator;
 
   constructor(
     private http: HttpService,
@@ -72,7 +81,7 @@ export class PharmacistStatisticsComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
-    this.getData();
+    this.getDataAll();
   }
 
   ngOnInit(): void {}
@@ -163,10 +172,12 @@ export class PharmacistStatisticsComponent implements OnInit {
 
   public getTab(e: any) {
     if (e == 0) {
-      this.getData();
+      this.getDataAll();
     } else if (e == 1) {
+      this.getData();
+    } else if (e == 2) {
       this.getDataOut();
-    } else {
+    } else if (e == 3) {
       this.getDataOrder();
     }
   }
@@ -217,6 +228,57 @@ export class PharmacistStatisticsComponent implements OnInit {
     this.dataSource3.filter = filterValue.trim().toLowerCase();
     if (this.dataSource3.paginator) {
       this.dataSource3.paginator.firstPage();
+    }
+  }
+
+  public numOrder3: any = null;
+  public numItem3: any = null;
+  public dataPharmacist3: any = null;
+  public dataSource4: any = null;
+  public nameExcel4: any = null;
+
+  public getDataAll = async () => {
+    this.numOrder3 = null;
+    this.numItem3 = null;
+    this.dataPharmacist3 = null;
+    this.dataSource4 = null;
+    this.nameExcel4 = null;
+    const momentDate = new Date();
+
+    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+
+    this.nameExcel4 = 'Pharmacist' + '(' + start_Date2 + ')';
+    let getData: any = null;
+
+    getData = await this.http.get('reportPharAll');
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataPharmacist3 = getData.response.result;
+        this.dataSource4 = new MatTableDataSource(this.dataPharmacist3);
+        this.dataSource4.sort = this.sort4;
+        this.dataSource4.paginator = this.paginator4;
+
+        for (let i = 0; i < getData.response.result.length; i++) {
+          this.numOrder3 =
+            Number(getData.response.result[i].numOrder) +
+            Number(this.numOrder3);
+          this.numItem3 =
+            Number(getData.response.result[i].numItem) + Number(this.numItem3);
+        }
+      } else {
+        this.dataPharmacist3 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+
+  public applyFilter4(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource4.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource4.paginator) {
+      this.dataSource4.paginator.firstPage();
     }
   }
 }

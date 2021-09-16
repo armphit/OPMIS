@@ -30,7 +30,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
       <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
-        <mat-expansion-panel-header>
+        <mat-expansion-panel-header [routerLink]="['/opd/drug']">
           <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
         </mat-expansion-panel-header>
         <mat-nav-list dense>
@@ -40,7 +40,7 @@
           <a mat-list-item [routerLink]="['/opd/se-med']" [routerLinkActive]="['active']">
             <i class="fas fa-pills"></i>&nbsp;SE - Med
           </a>
-          <a mat-list-item [routerLink]="['/opd/other-med']" [routerLinkActive]="['active']" (cilck)="checkClick()">
+          <a mat-list-item [routerLink]="['/opd/other-med']" [routerLinkActive]="['active']">
             <i class="fas fa-tablets"></i>&nbsp;Other - Med
           </a>
           <a mat-list-item [routerLink]="['/opd/drug-appoint']" [routerLinkActive]="['active']">
