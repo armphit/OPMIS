@@ -27,8 +27,8 @@ export interface PeriodicElement {
 
 @Component({
   selector: 'app-atms',
-  templateUrl: './atms.component.html',
-  styleUrls: ['./atms.component.scss'],
+  templateUrl: './sent-drug.component.html',
+  styleUrls: ['./sent-drug.component.scss'],
 })
 export class AtmsComponent implements OnInit {
   public Date = new Date();

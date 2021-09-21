@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NavComponent } from './components/nav/nav.component';
 import { MianNavComponent } from './mian-nav/mian-nav.component';
 import { DrugDeviceComponent } from './pages/drug-device/drug-device.component';
-import { AtmsComponent } from './pages/atms/atms.component';
+import { AtmsComponent } from './pages/sent-drug/sent-drug.component';
 
 const routes: Routes = [
   {

@@ -18,7 +18,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MaterialModules } from './materialModule';
-import { AtmsComponent } from './pages/atms/atms.component';
+import { AtmsComponent } from './pages/sent-drug/sent-drug.component';
 import { IpdComponent } from './pages/ipd/ipd.component';
 import { OpdComponent } from './pages/opd/opd.component';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
