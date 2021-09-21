@@ -79,12 +79,23 @@ export class AtmsComponent implements OnInit {
     // const today = new Date();
     // const tomorrow = new Date(today.setDate(today.getDate() + 1));
     // console.log(moment(tomorrow).format('YYYY-MM-DD'));
+    // var arrayElements = [1, 2, 3, 4, 2];
+    // var arr = [];
+    // arrayElements.forEach((element, index) => {
+    //   if (element == 2) delete arrayElements[index];
+    // });
+    // for (let index = 0; index < arrayElements.length; index++) {
+    //   if (arrayElements[index] != undefined) {
+    //     arr.push(arrayElements[index]);
+    //   }
+    // }
+    // console.log(arr);
   }
 
   ngOnInit(): void {}
 
   ngAfterViewInit() {
-    this.swiper.nativeElement.focus();
+    // this.swiper.nativeElement.focus();
   }
 
   disableClick = false;
@@ -186,13 +197,44 @@ export class AtmsComponent implements OnInit {
       };
       this.value2.push(value);
     }
+    // this.jsonDrug = {
+    //   patient: {
+    //     patID: this.inputGroup.value.id,
+    //     patName: this.inputGroup.value.name,
+    //     gender: this.inputGroup.value.sex,
+    //     birthday: this.dateBirth,
+    //     age: this.inputGroup.value.age,
+    //     identity: '',
+    //     insuranceNo: '',
+    //     chargeType: '',
+    //   },
+    //   prescriptions: {
+    //     prescription: {
+    //       orderNo: numRandom,
+    //       ordertype: 'M',
+    //       pharmacy: 'OPD',
+    //       windowNo: '',
+    //       paymentIP: '',
+    //       paymentDT: this.datePayment,
+    //       outpNo: '3',
+    //       visitNo: '',
+    //       deptCode: '',
+    //       deptName: '',
+    //       doctCode: '',
+    //       doctName: '',
+    //       diagnosis: '',
+    //       drugs: this.value2,
+    //     },
+    //   },
+    // };
+
     this.jsonDrug = {
       patient: {
-        patID: this.inputGroup.value.id,
-        patName: this.inputGroup.value.name,
-        gender: this.inputGroup.value.sex,
-        birthday: this.dateBirth,
-        age: this.inputGroup.value.age,
+        patID: '0000',
+        patName: 'TEST',
+        gender: 'M',
+        birthday: '1900-12-12',
+        age: '100',
         identity: '',
         insuranceNo: '',
         chargeType: '',
@@ -259,6 +301,7 @@ export class AtmsComponent implements OnInit {
     //   this.value2 = [];
     // }
     this.value2 = [];
+    window.location.reload();
   }
 
   public sendFail() {}

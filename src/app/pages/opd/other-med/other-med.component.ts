@@ -40,7 +40,6 @@ export class OtherMedComponent implements OnInit {
     'ยาเศษ',
   ];
   public displayedColumns: string[] = [
-    'positionID',
     'drugCode',
     'drugName',
     'packageSpec',
@@ -48,6 +47,7 @@ export class OtherMedComponent implements OnInit {
     'amount',
     'miniUnit',
     'deviceName',
+    'positionID',
   ];
   selected = '';
   public dataSource!: MatTableDataSource<JVElement>;
@@ -55,6 +55,7 @@ export class OtherMedComponent implements OnInit {
   public dataSource3!: MatTableDataSource<JVElement>;
   public dataSource4!: MatTableDataSource<JVElement>;
   public dataSource5!: MatTableDataSource<JVElement>;
+  public dataSource6!: MatTableDataSource<JVElement>;
 
   public dataTable: any = null;
   public campaignOne = new FormGroup({
@@ -73,12 +74,14 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatSort3') sort3!: MatSort;
   @ViewChild('MatSort4') sort4!: MatSort;
   @ViewChild('MatSort5') sort5!: MatSort;
+  @ViewChild('MatSort6') sort6!: MatSort;
 
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('MatPaginator3') paginator3!: MatPaginator;
   @ViewChild('MatPaginator4') paginator4!: MatPaginator;
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
+  @ViewChild('MatPaginator6') paginator6!: MatPaginator;
 
   constructor(private http: HttpService) {
     this.getDataID();
@@ -149,6 +152,10 @@ export class OtherMedComponent implements OnInit {
           this.dataSource5 = new MatTableDataSource(this.dataDrug);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
+        } else if (this.name == 'CD') {
+          this.dataSource6 = new MatTableDataSource(this.dataDrug);
+          this.dataSource6.sort = this.sort6;
+          this.dataSource6.paginator = this.paginator6;
         }
       } else {
         this.dataDrug = null;
@@ -183,6 +190,9 @@ export class OtherMedComponent implements OnInit {
     } else if (num == 4) {
       this.nameExcel = 'ยาเศษ (N)';
       this.name = 'N';
+    } else if (num == 5) {
+      this.nameExcel = 'CD-Med_OPD';
+      this.name = 'CD';
     }
     this.dataD = [];
 
@@ -231,6 +241,14 @@ export class OtherMedComponent implements OnInit {
   }
 
   public applyFilter5(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource5.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource5.paginator) {
+      this.dataSource5.paginator.firstPage();
+    }
+  }
+
+  public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource5.filter = filterValue.trim().toLowerCase();
     if (this.dataSource5.paginator) {

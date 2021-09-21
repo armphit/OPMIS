@@ -67,7 +67,7 @@
 
 
 
-      <div class="responsive-table" [hidden]="!dataPharmacist3">
+      <div class="responsive-table" [hidden]="!dataPharmacist">
 
 
         <table mat-table matTableExporter [dataSource]="dataSource4" #MatSort4="matSort" matSort
@@ -113,8 +113,11 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <div style="float: right;" *ngIf="dataPharmacist3"><button mat-raised-button color="primary"
+        <div style="float: right;" *ngIf="dataPharmacist">
+          <!-- <button mat-raised-button color="primary"
             (click)="exporter4.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button> -->
+          <button mat-raised-button color="primary" (click)="exportToExcel()">Export
             Excel</button>
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
             <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
@@ -265,12 +268,13 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <div style="float: right;" *ngIf="dataPharmacist"><button mat-raised-button color="primary"
+        <div style="float: right;" *ngIf="dataPharmacist">
+          <!-- <button mat-raised-button color="primary"
             (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button> -->
+          <button mat-raised-button color="primary" (click)="exportToExcel()">Export
             Excel</button>
-          <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
-            <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
-            <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div> -->
+
         </div>
         <mat-paginator #MatPaginator="matPaginator" style="display: flex;justify-content: center;" [length]="10"
           [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
@@ -342,7 +346,7 @@
 
 
 
-      <div class="responsive-table" [hidden]="!dataPharmacist2">
+      <div class="responsive-table" [hidden]="!dataPharmacist">
 
 
         <table mat-table matTableExporter [dataSource]="dataSource3" #MatSort3="matSort" matSort
@@ -388,8 +392,11 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <div style="float: right;" *ngIf="dataPharmacist2"><button mat-raised-button color="primary"
+        <div style="float: right;" *ngIf="dataPharmacist">
+          <!-- <button mat-raised-button color="primary"
             (click)="exporter1.exportTable('xlsx', {fileName:nameExcel3, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button> -->
+          <button mat-raised-button color="primary" (click)="exportToExcel()">Export
             Excel</button>
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
             <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
@@ -493,8 +500,11 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
         </table>
-        <div style="float: right;" *ngIf="dataPharmacist"><button mat-raised-button color="primary"
+        <div style="float: right;" *ngIf="dataPharmacist">
+          <!-- <button mat-raised-button color="primary"
             (click)="exporter2.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel</button> -->
+          <button mat-raised-button color="primary" (click)="exportToExcel()">Export
             Excel</button>
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
             <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>

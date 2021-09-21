@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,6 +8,11 @@ import * as moment from 'moment';
 import { delay } from 'rxjs/operators';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+const EXCEL_TYPE =
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const EXCEL_EXTENSION = '.xlsx';
 
 export interface PeriodicElement {
   patientID: string;
@@ -48,7 +53,7 @@ export class PatientListComponent implements OnInit {
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   public dataDrug: any = null;
-
+  @ViewChild('swiper') swiper!: ElementRef;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -57,8 +62,12 @@ export class PatientListComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
   }
-
-  ngAfterViewInit() {}
+  ngAfterContentChecked() {}
+  ngAfterViewInit() {
+    setInterval(() => {
+      this.swiper.nativeElement.focus();
+    }, 0);
+  }
 
   ngOnInit(): void {
     // setInterval(() => {
@@ -70,15 +79,24 @@ export class PatientListComponent implements OnInit {
     const momentDate = new Date();
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
-    this.nameExcel = 'Pharmacist' + '(' + start_Date2 + ')';
+    this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
     let getData: any = await this.http.get('listPatient');
-
+    // console.log(getData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataPharmacist = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataPharmacist);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+        this.dataSource.filterPredicate = function (
+          data,
+          filter: string
+        ): boolean {
+          return (
+            data.patientName.toLowerCase().includes(filter) ||
+            data.patientID.toLowerCase().includes(filter)
+          );
+        };
         // for (let i = 0; i < getData.response.result.length; i++) {
         //   this.numOrder =
         //     Number(getData.response.result[i].amountOrders) +
@@ -167,5 +185,23 @@ export class PatientListComponent implements OnInit {
     var splitted = str.split('(', 1);
 
     return splitted[0];
+  }
+
+  public async clickAllergy(cid: any) {
+    console.log(cid);
+    let formData = new FormData();
+    formData.append('cid', cid);
+
+    let drugData: any = await this.http.post('AllergyList', formData);
+
+    // if (drugData.connect) {
+    //   if (drugData.response.rowCount > 0) {
+    //     this.dataDrug = drugData.response.result;
+    //   } else {
+    //     this.dataDrug = null;
+    //   }
+    // } else {
+    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    // }
   }
 }

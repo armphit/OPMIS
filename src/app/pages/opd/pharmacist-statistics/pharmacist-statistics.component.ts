@@ -7,6 +7,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+// const EXCEL_TYPE =
+//   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+// const EXCEL_EXTENSION = '.xlsx';
 
 export interface PeriodicElement {
   staffCode: string;
@@ -170,7 +175,9 @@ export class PharmacistStatisticsComponent implements OnInit {
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
 
+  public numTab: any = null;
   public getTab(e: any) {
+    this.numTab = e;
     if (e == 0) {
       this.getDataAll();
     } else if (e == 1) {
@@ -204,8 +211,8 @@ export class PharmacistStatisticsComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataPharmacist2 = getData.response.result;
-        this.dataSource3 = new MatTableDataSource(this.dataPharmacist2);
+        this.dataPharmacist = getData.response.result;
+        this.dataSource3 = new MatTableDataSource(this.dataPharmacist);
         this.dataSource3.sort = this.sort3;
         this.dataSource3.paginator = this.paginator3;
         for (let i = 0; i < getData.response.result.length; i++) {
@@ -254,8 +261,8 @@ export class PharmacistStatisticsComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataPharmacist3 = getData.response.result;
-        this.dataSource4 = new MatTableDataSource(this.dataPharmacist3);
+        this.dataPharmacist = getData.response.result;
+        this.dataSource4 = new MatTableDataSource(this.dataPharmacist);
         this.dataSource4.sort = this.sort4;
         this.dataSource4.paginator = this.paginator4;
 
@@ -280,5 +287,92 @@ export class PharmacistStatisticsComponent implements OnInit {
     if (this.dataSource4.paginator) {
       this.dataSource4.paginator.firstPage();
     }
+  }
+
+  // downloadExcel() {
+  //   let header = null;
+  //   if (this.numTab != 3) {
+  //     header = [
+  //       {
+  //         A: 'รหัส',
+  //         B: 'ชื่อ',
+  //         C: 'จำนวน Order',
+  //         D: 'จำนวน Item',
+  //         E: 'เวลาเฉลี่ย',
+  //       },
+  //     ];
+  //   } else {
+  //     header = [
+  //       {
+  //         A: 'patientName',
+  //         B: 'staffCode',
+  //         C: 'staffName',
+  //         D: 'createdDT',
+  //         E: 'completeDT',
+  //         F: 'waitTime',
+  //       },
+  //     ];
+  //   }
+
+  //   this.exportAsExcelFile(this.dataPharmacist, header, 'excel');
+  // }
+
+  // public exportAsExcelFile(
+  //   json: any[],
+  //   headerText: any[],
+  //   excelFileName: string
+  // ): void {
+  //   var worksheet = XLSX.utils.json_to_sheet(headerText, {
+  //     header: [],
+  //     skipHeader: true,
+  //   });
+
+  //   XLSX.utils.sheet_add_json(worksheet, json, {
+  //     skipHeader: true,
+  //     origin: 'A2',
+  //   });
+
+  //   const workbook: XLSX.WorkBook = {
+  //     Sheets: { data: worksheet },
+  //     SheetNames: ['data'],
+  //   };
+
+  //   const excelBuffer: any = XLSX.write(workbook, {
+  //     bookType: 'xlsx',
+  //     type: 'array',
+  //   });
+
+  //   this.saveAsExcelFile(excelBuffer, excelFileName);
+  // }
+
+  // private saveAsExcelFile(buffer: any, fileName: string): void {
+  //   const data: Blob = new Blob([buffer], {
+  //     type: EXCEL_TYPE,
+  //   });
+  //   FileSaver.saveAs(data, this.nameExcel4);
+  // }
+
+  exportToExcel() {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
+      this.dataPharmacist
+    );
+    const workbook: XLSX.WorkBook = {
+      Sheets: { Sheet1: worksheet },
+      SheetNames: ['Sheet1'],
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    const EXCEL_TYPE =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+
+    const data: Blob = new Blob([excelBuffer], { type: EXCEL_TYPE });
+    // const date = new Date();
+    // const fileName = this.nameExcel4;
+
+    FileSaver.saveAs(data, this.nameExcel4);
   }
 }

@@ -65,7 +65,7 @@ export class AllDrugComponent implements OnInit {
   public getData = async () => {
     this.nameExcel = 'All_Drug_OPD';
     let getData: any = await this.http.get('getAlldrug');
-    console.log(getData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
