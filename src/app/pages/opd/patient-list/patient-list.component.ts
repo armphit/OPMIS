@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -27,7 +35,7 @@ export interface PeriodicElement {
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.scss'],
 })
-export class PatientListComponent implements OnInit {
+export class PatientListComponent implements OnInit, AfterViewInit {
   public Date = new Date();
   public dataPharmacist: any = null;
   public campaignOne = new FormGroup({
@@ -48,6 +56,8 @@ export class PatientListComponent implements OnInit {
     'orderStatus',
     'Action',
   ];
+  public inputGroup: any = null;
+
   @Input() max: any;
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -62,18 +72,14 @@ export class PatientListComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
   }
-  ngAfterContentChecked() {}
+
   ngAfterViewInit() {
-    setInterval(() => {
+    setTimeout(() => {
       this.swiper.nativeElement.focus();
     }, 0);
   }
 
-  ngOnInit(): void {
-    // setInterval(() => {
-    //   this.getData();
-    // }, 5000);
-  }
+  ngOnInit(): void {}
 
   public getData = async () => {
     const momentDate = new Date();
@@ -81,7 +87,7 @@ export class PatientListComponent implements OnInit {
 
     this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
     let getData: any = await this.http.get('listPatient');
-    // console.log(getData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataPharmacist = getData.response.result;

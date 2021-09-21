@@ -17,7 +17,7 @@
             <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field> -->
-          <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #3f51b5;">{{this.numOrder }}</span></h1> -->
+          <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #053742;">{{this.numOrder }}</span></h1> -->
         </div>
         <div class="col-lg-3" *ngIf="dataDrug">
           <mat-form-field class="example-full-width" style="float: right;">
@@ -82,7 +82,8 @@
         </table>
         <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
             (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
-            Excel</button>
+            Excel (xlsx)</button>
+
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div> -->
@@ -115,7 +116,7 @@
             <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field> -->
-          <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #3f51b5;">{{this.numOrder }}</span></h1> -->
+          <!-- <h1 style="margin-top: 10px;">จำนวนออเดอร์ทั้งหมด : <span style="color: #053742;">{{this.numOrder }}</span></h1> -->
         </div>
         <div class="col-lg-3" *ngIf="dataDrug">
           <mat-form-field class="example-full-width" style="float: right;">
@@ -263,7 +264,10 @@
         </table>
         <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
             (click)="exporter3.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
-            Excel</button>
+            Excel (xlsx)</button>
+          <button mat-raised-button color="primary"
+            (click)="exporter.exportTable('xls', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            Excel (xls)</button>
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button></div> -->

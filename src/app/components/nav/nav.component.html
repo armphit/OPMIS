@@ -66,12 +66,14 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <mat-toolbar class="grad1">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
         <i class="fas fa-bars"></i>
       </button>
-      <span>Med Stock Robot</span>
+      <span>
+        <h1><strong style="font-size: 30px;">MED STOCK ROBOT</strong></h1>
+      </span>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

@@ -7,11 +7,13 @@
         (click)="getData();"><i class="fas fa-sync-alt"></i>&nbsp; Refresh</button>
     </div>
     <div class="col-lg-3">
+
       <mat-form-field class="example-full-width" style="float: right;">
         <input matInput (keyup)="applyFilter($event)" #swiper>
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field>
+
     </div>
   </div>
 
@@ -67,7 +69,7 @@
             รายละเอียดยา</button>
 
           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#drugAllergy"
-            (click)="clickAllergy(element)" style="margin-left: 20px;" *ngIf="!element.drugAllergy">
+            (click)="clickAllergy(element)" style="margin-left: 20px;" *ngIf="element.drugAllergy == 'Y'">
             รายการแพ้ยา</button>
         </td>
 

@@ -17,6 +17,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
@@ -53,7 +54,8 @@ export class AllDrugComponent implements OnInit {
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    public router: Router
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();

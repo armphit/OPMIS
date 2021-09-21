@@ -250,9 +250,9 @@ export class OtherMedComponent implements OnInit {
 
   public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource5.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource5.paginator) {
-      this.dataSource5.paginator.firstPage();
+    this.dataSource6.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource6.paginator) {
+      this.dataSource6.paginator.firstPage();
     }
   }
 
