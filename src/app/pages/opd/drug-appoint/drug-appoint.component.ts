@@ -60,7 +60,14 @@ export class DrugAppointComponent implements OnInit {
     'orderunitcode',
   ];
 
-  public displayedColumns3: string[] = ['date', 'code', 'qty', 'dept'];
+  public displayedColumns3: string[] = [
+    'date',
+    'code',
+    'drugCode',
+    'name',
+    'qty',
+    'dept',
+  ];
 
   @Input() max: any;
   @ViewChild('MatSort') sort!: MatSort;
@@ -187,6 +194,7 @@ export class DrugAppointComponent implements OnInit {
     formData.append('startDate', start_Date);
 
     let getData: any = await this.http.post('takeMedicine', formData);
+    console.log(getData);
     if (getData.connect) {
       if (getData.response.result) {
         this.dataDrug3 = getData.response.result;

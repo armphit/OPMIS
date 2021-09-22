@@ -124,43 +124,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // public startChange(event: any) {
-  //   this.nameExcel = null;
-  //   this.dataPharmacist = null;
-  //   const momentDate = new Date(event.value);
-  //   this.startDate = moment(momentDate).format('YYMMDD');
-
-  //   const start_Date = moment(momentDate).format('DD/MM/YYYY');
-  //   this.fileName = 'ap-med' + '(' + String(start_Date);
-  // }
-
-  // public async endChange(event: any) {
-  //   const momentDate = new Date(event.value);
-  //   this.endDate = moment(momentDate).format('YYMMDD');
-  //   const end_Date = moment(momentDate).format('DD/MM/YYYY');
-  //   this.nameExcel = this.fileName + '-' + String(end_Date) + ')';
-  //   this.startDate = this.startDate + '000000000';
-  //   this.endDate = this.endDate + '999999999';
-  //   let formData = new FormData();
-  //   formData.append('startDate', this.startDate);
-  //   formData.append('endDate', this.endDate);
-
-  //   let getData: any = await this.http.post('APDispense', formData);
-
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       this.dataPharmacist = getData.response.result;
-  //       this.dataSource = new MatTableDataSource(this.dataPharmacist);
-  //       this.dataSource.sort = this.sort;
-  //       this.dataSource.paginator = this.paginator;
-  //     } else {
-  //       this.dataPharmacist = null;
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // }
-
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -200,14 +163,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     let drugData: any = await this.http.post('AllergyList', formData);
 
-    // if (drugData.connect) {
-    //   if (drugData.response.rowCount > 0) {
-    //     this.dataDrug = drugData.response.result;
-    //   } else {
-    //     this.dataDrug = null;
-    //   }
-    // } else {
-    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    // }
+    if (drugData.connect) {
+      if (drugData.response.rowCount > 0) {
+        this.dataDrug = drugData.response.result;
+      } else {
+        this.dataDrug = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
 }

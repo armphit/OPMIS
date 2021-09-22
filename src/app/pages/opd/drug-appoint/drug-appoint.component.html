@@ -223,7 +223,7 @@
 
         <table mat-table matTableExporter [dataSource]="dataSource3" #MatSort3="matSort" matSort
           #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="" matSortDirection="desc"
-          [hiddenColumns]="[]">
+          [hiddenColumns]="[2,3]">
 
 
           <ng-container matColumnDef="date">
@@ -238,6 +238,22 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> MED_CODE </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
               {{element.code}}
+
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="drugCode">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Drug_CODE </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.drugCode}}
+
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> MED_Name </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.name}}
 
             </td>
           </ng-container>
@@ -266,7 +282,7 @@
             (click)="exporter3.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
             Excel (xlsx)</button>
           <button mat-raised-button color="primary"
-            (click)="exporter.exportTable('xls', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
+            (click)="exporter3.exportTable('xls', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
             Excel (xls)</button>
           <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>

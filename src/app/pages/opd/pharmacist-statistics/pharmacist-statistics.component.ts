@@ -41,6 +41,7 @@ export class PharmacistStatisticsComponent implements OnInit {
   public numItem: any = null;
   public dataSource: any = null;
   public dataSource2: any = null;
+  public avgTime = new Array();
   public displayedColumns: string[] = [
     'staffCode',
     'staffName',
@@ -96,14 +97,17 @@ export class PharmacistStatisticsComponent implements OnInit {
     this.numItem = null;
     this.dataPharmacist = null;
     this.dataSource = null;
+    this.nameExcel4 = null;
     const momentDate = new Date();
 
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
-    this.nameExcel = 'Pharmacist' + '(' + start_Date2 + ')';
+    this.nameExcel4 = 'Pharmacist_inTime' + '(' + start_Date2 + ')';
     let getData: any = null;
+    let getData2: any = null;
 
     getData = await this.http.get('reportPhar');
+    getData2 = await this.http.get('reportPharAVG');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -117,6 +121,14 @@ export class PharmacistStatisticsComponent implements OnInit {
           this.numItem =
             Number(getData.response.result[i].numItem) + Number(this.numItem);
         }
+        let avg = {
+          staffName: '',
+          staffCode: '',
+          numOrder: '',
+          numItem: 'Average',
+          avgTime: getData2.response.result[0].avgTime,
+        };
+        this.dataPharmacist.push(avg);
       } else {
         this.dataPharmacist = null;
       }
@@ -125,24 +137,19 @@ export class PharmacistStatisticsComponent implements OnInit {
     }
   };
 
-  // public getShiftwork(e: any) {
-  //   this.selected = e;
-  //   this.getData();
-  //   // this.selected
-  // }
-
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   public getDataOrder = async () => {
-    // this.nameExcel = null;
+    this.dataPharmacist = null;
+    this.nameExcel4 = null;
     const momentDate = new Date();
 
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
-    this.nameExcel = 'listOrderTime' + '(' + start_Date2 + ')';
+    this.nameExcel4 = 'listOrderTime' + '(' + start_Date2 + ')';
     let getData: any = await this.http.get('listOrderTime');
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -197,17 +204,19 @@ export class PharmacistStatisticsComponent implements OnInit {
   public getDataOut = async () => {
     this.numOrder2 = null;
     this.numItem2 = null;
-    this.dataPharmacist2 = null;
+    this.dataPharmacist = null;
     this.dataSource3 = null;
-    this.nameExcel3 = null;
+    this.nameExcel4 = null;
     const momentDate = new Date();
 
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
-    this.nameExcel3 = 'Pharmacist' + '(' + start_Date2 + ')';
+    this.nameExcel4 = 'Pharmacist_partTime' + '(' + start_Date2 + ')';
     let getData: any = null;
+    let getData2: any = null;
 
     getData = await this.http.get('reportPhar16');
+    getData2 = await this.http.get('reportPhar16AVG');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -222,8 +231,16 @@ export class PharmacistStatisticsComponent implements OnInit {
           this.numItem2 =
             Number(getData.response.result[i].numItem) + Number(this.numItem2);
         }
+        let avg = {
+          staffName: '',
+          staffCode: '',
+          numOrder: '',
+          numItem: 'Average',
+          avgTime: getData2.response.result[0].avgTime,
+        };
+        this.dataPharmacist.push(avg);
       } else {
-        this.dataPharmacist2 = null;
+        this.dataPharmacist = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -247,7 +264,7 @@ export class PharmacistStatisticsComponent implements OnInit {
   public getDataAll = async () => {
     this.numOrder3 = null;
     this.numItem3 = null;
-    this.dataPharmacist3 = null;
+    this.dataPharmacist = null;
     this.dataSource4 = null;
     this.nameExcel4 = null;
     const momentDate = new Date();
@@ -256,8 +273,9 @@ export class PharmacistStatisticsComponent implements OnInit {
 
     this.nameExcel4 = 'Pharmacist' + '(' + start_Date2 + ')';
     let getData: any = null;
-
+    let getData2: any = null;
     getData = await this.http.get('reportPharAll');
+    getData2 = await this.http.get('reportPharAllAVG');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -273,8 +291,16 @@ export class PharmacistStatisticsComponent implements OnInit {
           this.numItem3 =
             Number(getData.response.result[i].numItem) + Number(this.numItem3);
         }
+        let avg = {
+          staffName: '',
+          staffCode: '',
+          numOrder: '',
+          numItem: 'Average',
+          avgTime: getData2.response.result[0].avgTime,
+        };
+        this.dataPharmacist.push(avg);
       } else {
-        this.dataPharmacist3 = null;
+        this.dataPharmacist = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -353,6 +379,7 @@ export class PharmacistStatisticsComponent implements OnInit {
   // }
 
   exportToExcel() {
+    console.log(this.nameExcel4);
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(
       this.dataPharmacist
     );

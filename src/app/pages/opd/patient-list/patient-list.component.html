@@ -66,10 +66,10 @@
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
           <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"
             (click)="clickDetail(element)">
-            รายละเอียดยา</button>
+            รายการยา</button>
 
           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#drugAllergy"
-            (click)="clickAllergy(element)" style="margin-left: 20px;" *ngIf="element.drugAllergy == 'Y'">
+            (click)="clickAllergy(element.cid)" style="margin-left: 20px;" *ngIf="element.drugAllergy == 'Y'">
             รายการแพ้ยา</button>
         </td>
 
@@ -163,17 +163,15 @@
 
 
         <div class="modal-body">
-
-          <!-- <table class="table">
+          <table class="table">
 
             <thead>
 
               <tr>
-                <th style="  padding-right: 50px;border-right: 0px;">#</th>
+                <th style="  padding-right: 50px;border-right: 0px">#</th>
                 <th style="  padding-right: 50px;border-right: 0px">Code</th>
                 <th style="  padding-right: 50px;border-right: 0px">Name</th>
-                <th style="  padding-right: 50px;border-right: 0px">QTY</th>
-                <th style="  padding-right: 50px;border-right: 0px">Unit</th>
+
               </tr>
             </thead>
             <tbody>
@@ -181,13 +179,11 @@
                 <td style="border-right: 0px">
                   <div style="width: 10px">{{x+1}}</div>
                 </td>
-                <td style="border-right: 0px">{{i.orderitemcode}}</td>
-                <td style="border-right: 0px">{{i.orderitemname}}</td>
-                <td style="border-right: 0px">{{numberQ(i.orderqty)}}</td>
-                <td style="border-right: 0px">{{i.orderunitcode}}</td>
+                <td style="border-right: 0px">{{i.drugcode}}</td>
+                <td style="border-right: 0px">{{i.drugname}}</td>
               </tr>
             </tbody>
-          </table> -->
+          </table>
 
 
         </div>
