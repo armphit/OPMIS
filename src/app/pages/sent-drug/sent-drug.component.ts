@@ -188,7 +188,15 @@ export class AtmsComponent implements OnInit {
       '_' +
       Math.floor(Math.random() * 100);
 
+    let codeArr = new Array();
     for (var i = 0; i < this.value.length; i++) {
+      // let formData = new FormData();
+      // formData.append('code', this.value[i].code.trim());
+      // let getData: any = await this.http.post('checkJV', formData);
+      // if (getData.response.rowCount == 1) {
+      //   codeArr.push(getData.response.result);
+      // }
+      this.value[i].code;
       let num = i + 1;
       this.value[i].itemNo = num;
 
@@ -197,6 +205,7 @@ export class AtmsComponent implements OnInit {
       };
       this.value2.push(value);
     }
+    // console.log(codeArr);
     // this.jsonDrug = {
     //   patient: {
     //     patID: this.inputGroup.value.id,
@@ -319,14 +328,4 @@ export class AtmsComponent implements OnInit {
           this.selection.select(row)
         );
   }
-
-  // async test() {
-  //   fetch(`http://` + '192.168.185.160' + `:3000/ELMedStock`)
-  //     .then((e) => {
-  //       return e.json();
-  //     })
-  //     .then((e) => {
-  //       console.log(e);
-  //     });
-  // }
 }

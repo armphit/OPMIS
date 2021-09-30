@@ -1,5 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -15,6 +20,7 @@ export interface PeriodicElement {
   package: string;
   amount: string;
   forDate: string;
+  miniUnit: string;
 }
 
 export interface PeriodicElement2 {
@@ -42,9 +48,12 @@ export class DrugAppointComponent implements OnInit {
   public fileName: any = null;
   public nameExcel: any = null;
   public numOrder: any = null;
+  public inputGroup = new FormGroup({
+    pack: new FormControl(),
+  });
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public dataSource2!: MatTableDataSource<PeriodicElement2>;
-  public dataSource3!: MatTableDataSource<PeriodicElement2>;
+  public dataSource3!: MatTableDataSource<PeriodicElement>;
   public displayedColumns: string[] = [
     'drugCode',
     'name',
@@ -64,9 +73,12 @@ export class DrugAppointComponent implements OnInit {
     'date',
     'code',
     'drugCode',
-    'name',
-    'qty',
     'dept',
+    'qty',
+    'miniUnit',
+    'name',
+    'HISPackageRatio',
+    'Action',
   ];
 
   @Input() max: any;
@@ -161,28 +173,41 @@ export class DrugAppointComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
-
+  nrSelect = '';
   public applyFilter3(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource2.filter = filterValue.trim().toLowerCase();
+
+    this.dataSource3.filter = filterValue.trim().toLowerCase();
   }
 
-  // public async clickDetail(payment: any) {
-  //   let formData = new FormData();
-  //   formData.append('hn', payment.patientID);
+  public applyFilter4(event: Event) {}
 
-  //   let drugData: any = await this.http.post('medicineList', formData);
+  public async getUnit(med: any) {
+    if (med) {
+      const start_Date = moment(this.startDate).format('YYYY-MM-DD');
 
-  //   if (drugData.connect) {
-  //     if (drugData.response.rowCount > 0) {
-  //       this.dataDrug = drugData.response.result;
-  //     } else {
-  //       this.dataDrug = null;
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // }
+      let splitted = med.split(',');
+      let data = JSON.stringify(splitted);
+      let formData = new FormData();
+      formData.append('data', data);
+      formData.append('startDate', start_Date);
+      let getData: any = await this.http.post('getPackageDrug', formData);
+      if (getData.connect) {
+        if (getData.response.result) {
+          this.dataDrug3 = getData.response.result;
+          this.dataSource3 = new MatTableDataSource(this.dataDrug3);
+          this.dataSource3.sort = this.sort3;
+          this.dataSource3.paginator = this.paginator3;
+        } else {
+          this.dataDrug3 = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    } else {
+      this.getTakemedicine();
+    }
+  }
 
   public dataDrug3: any = null;
   public getTakemedicine = async () => {
@@ -194,7 +219,7 @@ export class DrugAppointComponent implements OnInit {
     formData.append('startDate', start_Date);
 
     let getData: any = await this.http.post('takeMedicine', formData);
-    console.log(getData);
+
     if (getData.connect) {
       if (getData.response.result) {
         this.dataDrug3 = getData.response.result;
@@ -228,5 +253,44 @@ export class DrugAppointComponent implements OnInit {
     const end_Date = moment(momentDate).format('DD/MM/YYYY');
     this.startDate = new Date(event.value);
     this.getTakemedicine();
+  }
+
+  public clickData(i: any) {
+    this.inputGroup = this.formBuilder.group({
+      pack: [i.HISPackageRatio, Validators.required],
+      code: [i.drugCode],
+    });
+  }
+
+  public async updateData() {
+    let formData = new FormData();
+    formData.append('pack', this.inputGroup.value.pack);
+    formData.append('drugCode', this.inputGroup.value.code);
+    formData.forEach((value, key) => {
+      console.log(key + '=' + value);
+    });
+    let getData: any = await this.http.post('updatePack104', formData);
+    let getData2: any = await this.http.post('updatePack101', formData);
+    let getData3: any = await this.http.post('updatePack102', formData);
+    let getData4: any = await this.http.post('updatePack102_mySQL', formData);
+    // let getDataArr = new Array();
+    // getDataArr.push(getData.response.rowCount);
+    // getDataArr.push(getData2.response.rowCount);
+    // getDataArr.push(getData3.response.rowCount);
+    // getDataArr.push(getData4.response.rowCount);
+    // console.log(getData4);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let win: any = window;
+        win.$('#myModal').modal('hide');
+        Swal.fire('แก้ไขข้อมูลเสร็จสิ้น', '', 'success');
+        this.getTakemedicine();
+      } else {
+        Swal.fire('แก้ไขข้อมูลไม่สำเร็จ', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
 }

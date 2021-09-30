@@ -119,6 +119,7 @@ export class OtherMedComponent implements OnInit {
   public async getData() {
     // this.nameExcel = null;
     let data = JSON.stringify(this.dataD);
+
     let startDate = this.startDate + ' ' + '00:00:00';
     let endDate = this.endDate + ' ' + '23:59:59';
     let formData = new FormData();

@@ -17,8 +17,8 @@
 }
 
 .mat-list-item.active {
-  color: #053742;
-  background-color: #7a84bb33;
+  color: whitesmoke !important;
+  background-color: #125166 !important;
 }
 
 .sidenav-container {
@@ -44,8 +44,8 @@
 
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover {
-  color: #053742 !important;
-  background-color: #7a84bb33 !important;
+  color: whitesmoke !important;
+  background-color: #125166 !important;
 }
 
 .mat-expansion-panel-body {
@@ -67,19 +67,19 @@
   /* Standard syntax (must be last) */
 }
 
-.div {
-  margin: 40px auto;
+// .div {
+//   margin: 40px auto;
 
-  font-size: 70px;
-  font-weight: bold;
-  color: #121212;
-  text-align: center;
-  letter-spacing: 5px;
-  text-shadow: -1px 1px 0 #41ba45,
-    1px 1px 0 #c63d2b,
-    1px -1px 0 #42afac,
-    -1px -1px 0 #c6c23f;
+//   font-size: 70px;
+//   font-weight: bold;
+//   color: black;
+//   text-align: center;
+//   letter-spacing: 5px;
+//   text-shadow: -2px 2px 0 #c63d2b,
+//     2px 2px 0 #41ba45,
+//     2px -2px 0 #0969A7,
+//     -2px -2px 0 #0969A7;
 
 
 
-}
+// }

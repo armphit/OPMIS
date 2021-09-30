@@ -16,6 +16,24 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+(pdfMake as any).fonts = {
+  THSarabunNew: {
+    normal: 'THSarabunNew.ttf',
+    bold: 'THSarabunNew-Bold.ttf',
+    italics: 'THSarabunNew-Italic.ttf',
+    bolditalics: 'THSarabunNew-BoldItalic.ttf',
+  },
+  Roboto: {
+    normal: 'Roboto-Regular.ttf',
+    bold: 'Roboto-Medium.ttf',
+    italics: 'Roboto-Italic.ttf',
+    bolditalics: 'Roboto-MediumItalic.ttf',
+  },
+};
 
 export interface PeriodicElement {
   drugCode: string;
@@ -87,13 +105,7 @@ export class SeMedComponent implements OnInit {
 
   @ViewChild('SortT1') SortT1!: MatSort;
   @ViewChild('SortT2') SortT2!: MatSort;
-  // @ViewChild(MatSort)
-  // sort!: MatSort;
-  // sort2!: MatSort;
 
-  // @ViewChild(MatPaginator, { static: false })
-  // paginator!: MatPaginator;
-  // paginator2!: MatPaginator;
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild('paginator2') paginator2!: MatPaginator;
   // @ViewChild('testq') testq!: ElementRef;
@@ -122,20 +134,13 @@ export class SeMedComponent implements OnInit {
   //   }, 1000);
   // }
 
-  ngOnInit(): void {
-    // this.dataSource.filterPredicate = (
-    //   data: PeriodicElement,
-    //   filter: string
-    // ) => {
-    //   return data.isPrepack == filter;
-    // };
-  }
+  ngOnInit(): void {}
 
   public getDataSEListStock = async () => {
     let getData: any = await this.http.get('SEListStock');
     const endDate = moment(new Date()).format('DD/MM/YYYY');
     this.nameStock = 'Stock' + '(' + endDate + ')';
-    // console.log(getData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
@@ -329,5 +334,36 @@ export class SeMedComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+  }
+
+  public printPDF(data: any) {
+    console.log(data.drugCode);
+    let a = '	EXFORGE(AMLO/VALSARTAN5/160MG)';
+    var docDefinition = {
+      pageSize: { width: 321, height: 227 },
+      pageMargins: [5, 30, 1, 1] as any,
+      header: {} as any,
+
+      content: [
+        data.Name,
+        'Spec : ' + data.Spec,
+        {
+          alignment: 'justify',
+          columns: [
+            {
+              text: 'Lot No. : AB224455 \nMfd. : 01/01/2020 \nExp. : 01/01/2022',
+            },
+            { qr: data.drugCode, fit: '80', margin: [0, 10, 0, 0] },
+          ],
+        },
+      ],
+
+      defaultStyle: {
+        font: 'THSarabunNew',
+        fontSize: 20,
+        bold: true,
+      },
+    };
+    pdfMake.createPdf(docDefinition).open();
   }
 }

@@ -197,22 +197,49 @@
     <div style="overflow: auto;margin: 10px;">
 
       <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-6">
           <form [formGroup]="campaignOne">
             <mat-form-field>
               <mat-label>Choose a date</mat-label>
-              <input matInput [matDatepicker]="picker" formControlName="picker" (dateChange)="startChange($event)">
+              <input matInput [matDatepicker]="picker" formControlName="picker"
+                (dateChange)="startChange($event);input.value = '';">
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
           </form>
         </div>
         <div class="col-lg-3">
-          <mat-form-field class="example-full-width" style="float: right;">
+          <!-- <mat-form-field class="example-full-width" style="float: right;">
             <input matInput (keyup)="applyFilter3($event)" #input>
             <mat-placeholder>ค้นหา</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field> -->
+          <mat-form-field class="example-full-width" style="float: right;">
+            <mat-label>Select Unit</mat-label>
+            <mat-select (selectionChange)="getUnit($event.value);input.value = ''">
+              <mat-option value="">
+                All
+              </mat-option>
+              <mat-option value='tab,เม็ด,TABLET,แผง,cap'>
+                ยาเม็ด
+              </mat-option>
+              <mat-option value="ขวด,bot,vial,amp,cc,unit,ยูนิต,mg,inj">
+                ยาน้ำ
+              </mat-option>
+              <mat-option value="bag,box,ed,g,gm,mdg,ml,กรัม,กล่อง,ซอง,แพค,หลอด">
+                ยาอื่นๆ
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right;">
+            <input matInput (keyup)="applyFilter3($event);" #input>
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+
         </div>
       </div>
 
@@ -222,8 +249,8 @@
 
 
         <table mat-table matTableExporter [dataSource]="dataSource3" #MatSort3="matSort" matSort
-          #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="" matSortDirection="desc"
-          [hiddenColumns]="[2,3]">
+          #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="qty" matSortDirection="desc"
+          [hiddenColumns]="[1,5,7,8]">
 
 
           <ng-container matColumnDef="date">
@@ -235,7 +262,7 @@
 
 
           <ng-container matColumnDef="code">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> MED_CODE </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> HIS_MED_CODE </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
               {{element.code}}
 
@@ -243,7 +270,7 @@
           </ng-container>
 
           <ng-container matColumnDef="drugCode">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Drug_CODE </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> MED_CODE </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
               {{element.drugCode}}
 
@@ -251,20 +278,24 @@
           </ng-container>
 
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> MED_Name </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> DISP_NAME </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-              {{element.name}}
+
 
             </td>
           </ng-container>
-
 
           <ng-container matColumnDef="qty">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> DISP_QTY </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.qty}}
             </td>
           </ng-container>
-
+          <ng-container matColumnDef="miniUnit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Unit </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.miniUnit}}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="dept">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> DISP_DEPT </th>
             <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -272,7 +303,20 @@
             </td>
           </ng-container>
 
+          <ng-container matColumnDef="HISPackageRatio">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> HISPackageRatio </th>
+            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+              {{element.HISPackageRatio}}
+            </td>
+          </ng-container>
 
+          <ng-container matColumnDef="Action">
+            <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Action </th>
+            <td mat-cell *matCellDef="let payment"> <button type="button" class="btn btn-warning"
+                style="margin-left: 20px;" data-toggle="modal" data-target="#myModal" data-backdrop="static"
+                data-keyboard="false" (click)="clickData(payment)">Edit</button>
+            </td>
+          </ng-container>
 
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
@@ -301,3 +345,25 @@
     </div>
   </mat-tab>
 </mat-tab-group>
+
+<div id="myModal" class="modal fade">
+  <div class="modal-dialog modal-confirm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Location</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      </div>
+      <form [formGroup]="inputGroup" (ngSubmit)="updateData()">
+        <div class="modal-body">
+
+          <input class="form-control" type="text" formControlName="pack">
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
