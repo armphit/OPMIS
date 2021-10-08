@@ -126,6 +126,8 @@ export class SeMedComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
     this.getDataSEListStock();
     this.getDataSEDispense();
+
+    //  console.log(moment(new Date()).format('MM/DD/YYYY HH:mm:ss'));
   }
 
   // ngAfterViewInit() {
@@ -337,7 +339,6 @@ export class SeMedComponent implements OnInit {
   }
 
   public printPDF(data: any) {
-    console.log(data.drugCode);
     let a = '	EXFORGE(AMLO/VALSARTAN5/160MG)';
     var docDefinition = {
       pageSize: { width: 321, height: 227 },

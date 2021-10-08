@@ -91,3 +91,8 @@ table {
 .mat-expansion-panel-body {
   padding: 0 0px 5px !important;
 }
+
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #125166;
+}

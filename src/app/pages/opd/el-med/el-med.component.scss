@@ -3,6 +3,11 @@ th {
   z-index: 1 !important;
 }
 
+::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
+  color: #053742;
+  font-weight: bold;
+}
 
 // .mat-column-Column {
 //   word-wrap: break-word !important;

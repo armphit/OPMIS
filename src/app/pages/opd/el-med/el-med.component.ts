@@ -88,25 +88,41 @@ export class ElMedComponent implements OnInit {
     'Name',
     'Spec',
     'Quantity',
-    'Minimum',
-    'Maximum',
-    'SupplierName',
+    // 'Minimum',
+    // 'Maximum',
+    // 'SupplierName',
     'ExpirationDate',
     'Lotnumber',
     'Action',
   ];
 
-  public dataSource!: MatTableDataSource<PeriodicElement>;
+  public displayedColumns2: string[] = [
+    'drugCode',
+    'drugName',
+    'packageSpec',
+    'firmName',
+    'amount',
+    'miniUnit',
+    'deviceName',
+    'positionID',
+  ];
 
-  @ViewChild(MatSort)
-  sort!: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  public dataSource: any = null;
+  public dataSource2: any = null;
+
+  @ViewChild('MatSort') sort!: MatSort;
+  @ViewChild('MatSort2') sort2!: MatSort;
+  @ViewChild('MatPaginator') paginator!: MatPaginator;
+  @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   // @ViewChild('swiper') swiper!: ElementRef;
   // ngAfterViewInit() {
   //   this.dataSource.sort = this.sort;
   // }
   constructor(private http: HttpService, private formBuilder: FormBuilder) {
+    this.startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    this.endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
     this.getData();
+    this.getDataID();
   }
 
   ngOnInit(): void {}
@@ -124,25 +140,9 @@ export class ElMedComponent implements OnInit {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
 
-        // for (let i = 0; i <= this.dataDrug.length; i++) {
-        //   if (i != 0 && i % 10 == 0) {
-        //     this.page_.push(i);
-        //   }
-        // }
-
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        // this.dataSource.filterPredicate = (
-        //   data: PeriodicElement,
-        //   filter: string
-        // ) => data.LED.indexOf(filter) != -1;
-        // this.dataDrug.subscribe((contacts: any[]) => {
-        //   this.dataSource = new MatTableDataSource(contacts);
-        //   this.dataSource.sort = this.sort;
-        // });
-        // const ELEMENT_DATA: PeriodicElement[] = this.dataDrug;
-        // this.dataSource = new MatTableDataSource(ELEMENT_DATA);
       } else {
         this.dataDrug = null;
       }
@@ -225,46 +225,6 @@ export class ElMedComponent implements OnInit {
       alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
     }
   };
-  // public onChangeLED = async (e: any) => {
-  //   this.dataLed = e;
-  // };
-  // public onChangeRow = async (e: any) => {
-  //   this.dataRow = e;
-  // };
-  // public onChangeColumn = async (e: any) => {
-  //   this.dataLed = e;
-  // };
-
-  public events: Array<any> = [];
-  // public dateChange(event: any) {
-  //   // this.events.push(`${event.value}`);
-  //   // let a = this.events;
-  //   console.log(event);
-  // }
-
-  // public change_date(ProductExpirationDate: any) {
-  //   if (ProductExpirationDate == null) {
-  //     return ProductExpirationDate;
-  //   } else {
-  //     ProductExpirationDate.substring(0, 10);
-
-  //     return ProductExpirationDate;
-  //   }
-  // }
-
-  public searchData = async () => {
-    let formData = new FormData();
-    formData.append('ProductId', this.upt_code);
-    formData.append('Quantity', this.inputGroup.value.quantity);
-    formData.append('LotNum', this.inputGroup.value.LotNum);
-    formData.append('ExpDate', this.inputGroup.value.LotNum);
-
-    // let getData: any = await this.http.post('updateELMed', formData);
-    // if (getData.connect) {
-    // } else {
-    //   alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-    // }
-  };
 
   public substringDate(i: any) {
     if (i) {
@@ -284,5 +244,95 @@ export class ElMedComponent implements OnInit {
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  public dataD = new Array();
+  public async getDataID() {
+    let nameData = new FormData();
+    nameData.append('name', 'H');
+    let getID: any = await this.http.post('listDevice', nameData);
+
+    for (let index = 0; index < getID.response.result.length; index++) {
+      this.dataD.push(getID.response.result[index].deviceID);
+    }
+
+    this.getDataEL();
+  }
+  public startDate: any = null;
+  public endDate: any = null;
+  public nameExcel2: any = null;
+  public dataDrug2: any = null;
+
+  public campaignOne = new FormGroup({
+    start: new FormControl(new Date()),
+    end: new FormControl(new Date()),
+  });
+
+  public async getDataEL() {
+    let data = JSON.stringify(this.dataD);
+
+    let formData = new FormData();
+    formData.append('deviceID', data);
+    formData.append('startDate', this.startDate);
+    formData.append('endDate', this.endDate);
+    let getData: any = await this.http.post('listDrugDeviceTEST', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataDrug2 = getData.response.result;
+        this.dataSource2 = new MatTableDataSource(this.dataDrug2);
+        this.dataSource2.sort = this.sort2;
+        this.dataSource2.paginator = this.paginator2;
+      } else {
+        this.dataDrug2 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+    this.dataDrug2 = null;
+
+    this.nameExcel2 =
+      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
+  }
+
+  public start_date: any = null;
+  public startChange(event: any) {
+    // this.nameExcel2 = null;
+    // this.dataDrug = null;
+    // // this.nameSEDispense = null;
+    const momentDate = new Date(event.value);
+    this.startDate = moment(momentDate).format('YYYY-MM-DD');
+  }
+
+  public async endChange(event: any) {
+    const momentDate = new Date(event.value);
+
+    this.endDate = moment(momentDate).format('YYYY-MM-DD');
+
+    if (this.endDate != '1970-01-01') {
+      this.getDataID();
+    }
+  }
+
+  // public numTab: any = null;
+  // public getTab(e: any) {
+  //   this.numTab = e;
+  //   if (e == 0) {
+  //     this.getData();
+  //   } else if (e == 1) {
+  //     this.startDate = moment(this.campaignOne.value.start).format(
+  //       'YYYY-MM-DD'
+  //     );
+  //     this.endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+  //     this.getDataID();
+  //   }
+  // }
+
+  public applyFilter2(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource2.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource2.paginator) {
+      this.dataSource2.paginator.firstPage();
+    }
   }
 }

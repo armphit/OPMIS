@@ -43,19 +43,20 @@ export class OtherMedComponent implements OnInit {
     'drugCode',
     'drugName',
     'packageSpec',
-    'firmName',
     'amount',
     'miniUnit',
+    'drugCount',
+    'drugSum',
     'deviceName',
     'positionID',
   ];
   selected = '';
-  public dataSource!: MatTableDataSource<JVElement>;
-  public dataSource2!: MatTableDataSource<JVElement>;
-  public dataSource3!: MatTableDataSource<JVElement>;
-  public dataSource4!: MatTableDataSource<JVElement>;
-  public dataSource5!: MatTableDataSource<JVElement>;
-  public dataSource6!: MatTableDataSource<JVElement>;
+  public dataSource: any = null;
+  public dataSource2: any = null;
+  public dataSource3: any = null;
+  public dataSource4: any = null;
+  public dataSource5: any = null;
+  public dataSource6: any = null;
 
   public dataTable: any = null;
   public campaignOne = new FormGroup({
@@ -92,6 +93,8 @@ export class OtherMedComponent implements OnInit {
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
     this.startDate = startDate;
     this.endDate = endDate;
+
+    this.getTest();
   }
 
   ngOnInit(): void {
@@ -101,6 +104,17 @@ export class OtherMedComponent implements OnInit {
   }
   public dataD = Array();
   public getName: any = null;
+
+  public async getTest() {
+    try {
+      let getID: any = await this.http.getpath(
+        'http://192.168.42.1/unit/ssr/pharm_rep/service/getINV_STOCK.asp?DEPT=OPD_T'
+      );
+      console.log(getID);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   public async getDataID() {
     let nameData = new FormData();

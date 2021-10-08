@@ -36,11 +36,7 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
+
 
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
@@ -64,13 +60,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -86,11 +75,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 
@@ -171,12 +180,6 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -199,13 +202,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -221,11 +217,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 
@@ -308,12 +324,6 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -336,13 +346,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -350,7 +353,6 @@
 
           </td>
         </ng-container>
-
         <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> amount </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -359,11 +361,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 
@@ -446,12 +468,6 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -474,13 +490,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -496,11 +505,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 
@@ -572,12 +601,6 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -600,13 +623,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -622,11 +638,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 
@@ -696,12 +732,6 @@
 
 
 
-        <ng-container matColumnDef="positionID">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="drugCode">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCode </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -724,13 +754,6 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="firmName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> firmName </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.firmName}}
-          </td>
-        </ng-container>
-
         <ng-container matColumnDef="miniUnit">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Unit </th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
@@ -746,11 +769,31 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName</th>
+        <ng-container matColumnDef="drugCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> drugCount</th>
           <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-            {{element.deviceName}}
+            {{element.drugCount}}
 
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugSum">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> Sum </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
+            {{element.drugSum}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> deviceName </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.deviceName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px;"> positionID </th>
+          <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.positionID}}
           </td>
         </ng-container>
 

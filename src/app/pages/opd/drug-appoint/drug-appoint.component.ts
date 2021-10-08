@@ -266,9 +266,9 @@ export class DrugAppointComponent implements OnInit {
     let formData = new FormData();
     formData.append('pack', this.inputGroup.value.pack);
     formData.append('drugCode', this.inputGroup.value.code);
-    formData.forEach((value, key) => {
-      console.log(key + '=' + value);
-    });
+    // formData.forEach((value, key) => {
+    //   console.log(key + '=' + value);
+    // });
     let getData: any = await this.http.post('updatePack104', formData);
     let getData2: any = await this.http.post('updatePack101', formData);
     let getData3: any = await this.http.post('updatePack102', formData);
