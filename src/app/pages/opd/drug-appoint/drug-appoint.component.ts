@@ -39,9 +39,7 @@ export class DrugAppointComponent implements OnInit {
   public Date = new Date();
   public dataDrug: any = null;
   public campaignOne = new FormGroup({
-    picker: new FormControl(
-      new Date(new Date().setDate(new Date().getDate() + 1))
-    ),
+    picker: new FormControl(new Date()),
   });
   public startDate: any = null;
   public endDate: any = null;
@@ -73,12 +71,13 @@ export class DrugAppointComponent implements OnInit {
     'date',
     'code',
     'drugCode',
+    'name',
     'dept',
     'qty',
-    'miniUnit',
-    'name',
+    'SALE_UNIT',
+    'DISP_NAME',
     'HISPackageRatio',
-    'Action',
+    // 'DFORM_NAME',
   ];
 
   @Input() max: any;
@@ -98,7 +97,9 @@ export class DrugAppointComponent implements OnInit {
     this.getDataTomorrow();
     const today = new Date();
     const tomorrow = new Date(today);
-    this.startDate = tomorrow.setDate(tomorrow.getDate() + 1);
+    this.startDate = today;
+    this.getDataUnit();
+    // this.startDate = tomorrow.setDate(tomorrow.getDate() + 1);
   }
 
   ngAfterViewInit() {}
@@ -183,15 +184,15 @@ export class DrugAppointComponent implements OnInit {
   public applyFilter4(event: Event) {}
 
   public async getUnit(med: any) {
-    if (med) {
+    // this.nameExcel = null;
+    if (med.DFORM_ID) {
       const start_Date = moment(this.startDate).format('YYYY-MM-DD');
-
-      let splitted = med.split(',');
-      let data = JSON.stringify(splitted);
+      this.nameExcel =
+        'เบิกยา' + '(' + med.DFORM_NAME + ')' + '(' + start_Date + ')';
       let formData = new FormData();
-      formData.append('data', data);
+      formData.append('data', med.DFORM_ID);
       formData.append('startDate', start_Date);
-      let getData: any = await this.http.post('getPackageDrug', formData);
+      let getData: any = await this.http.post('takeMedicine_getUnit', formData);
       if (getData.connect) {
         if (getData.response.result) {
           this.dataDrug3 = getData.response.result;
@@ -288,6 +289,23 @@ export class DrugAppointComponent implements OnInit {
         this.getTakemedicine();
       } else {
         Swal.fire('แก้ไขข้อมูลไม่สำเร็จ', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  public dataUnit: any = null;
+  public async getDataUnit() {
+    const start_Date = moment(this.startDate).format('YYYY-MM-DD');
+
+    let formData = new FormData();
+    formData.append('startDate', start_Date);
+    let getData: any = await this.http.post('getDFrom', formData);
+    if (getData.connect) {
+      if (getData.response.result) {
+        this.dataUnit = getData.response.result;
+      } else {
+        this.dataUnit = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
