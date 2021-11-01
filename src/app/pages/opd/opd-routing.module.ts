@@ -7,6 +7,7 @@ import { OpdComponent } from './opd.component';
 import { OtherMedComponent } from './other-med/other-med.component';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PharmacistStatisticsComponent } from './pharmacist-statistics/pharmacist-statistics.component';
+import { ReportPharComponent } from './report-phar/report-phar.component';
 import { SeMedComponent } from './se-med/se-med.component';
 
 const routes: Routes = [
@@ -41,6 +42,11 @@ const routes: Routes = [
       {
         path: 'drug',
         component: AllDrugComponent,
+      },
+
+      {
+        path: 'report-phar',
+        component: ReportPharComponent,
       },
       {
         path: '',

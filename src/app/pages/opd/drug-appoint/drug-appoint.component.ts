@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
@@ -39,9 +40,17 @@ export class DrugAppointComponent implements OnInit {
   public Date = new Date();
   public dataDrug: any = null;
   public campaignOne = new FormGroup({
-    picker: new FormControl(new Date()),
+    picker: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() + 1))
+    ),
+  });
+  public campaignTwo = new FormGroup({
+    picker1: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() + 1))
+    ),
   });
   public startDate: any = null;
+  public startDate2: any = null;
   public endDate: any = null;
   public fileName: any = null;
   public nameExcel: any = null;
@@ -73,10 +82,12 @@ export class DrugAppointComponent implements OnInit {
     'drugCode',
     'name',
     'dept',
+    'amount',
+    'HISPackageRatio',
     'qty',
     'SALE_UNIT',
     'DISP_NAME',
-    'HISPackageRatio',
+
     // 'DFORM_NAME',
   ];
 
@@ -93,50 +104,87 @@ export class DrugAppointComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>
   ) {
-    this.dateAdapter.setLocale('en-GB');
-    this.getDataTomorrow();
     const today = new Date();
     const tomorrow = new Date(today);
-    this.startDate = today;
-    this.getDataUnit();
-    // this.startDate = tomorrow.setDate(tomorrow.getDate() + 1);
+    this.dateAdapter.setLocale('en-GB');
+    this.startDate = new Date(new Date().setDate(new Date().getDate() + 1));
+    this.startDate2 = new Date(new Date().setDate(new Date().getDate() + 1));
+
+    // this.getDataTomorrow();
+    this.getDataAppiont();
+
+    // this.startDate = today;
+    // this.getDataUnit();
   }
 
   ngAfterViewInit() {}
 
   ngOnInit(): void {}
 
-  public getDataTomorrow = async () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const start_Date2 = moment(tomorrow).format('DD/MM/YYYY');
+  // public getDataTomorrow = async () => {
+  //   const today = new Date();
+  //   const tomorrow = new Date(today);
+  //   tomorrow.setDate(tomorrow.getDate() + 1);
+  //   const start_Date2 = moment(tomorrow).format('DD/MM/YYYY');
+
+  //   this.nameExcel = 'Drug-Appoint' + '(' + start_Date2 + ')';
+  //   let getData: any = await this.http.drugAppoint_send();
+
+  //   if (getData.connect) {
+  //     try {
+  //       this.dataDrug = getData.response.data;
+  //       this.dataSource = new MatTableDataSource(this.dataDrug);
+  //       this.dataSource.sort = this.sort;
+  //       this.dataSource.paginator = this.paginator;
+  //     } catch (error) {
+  //       this.getDataTomorrow();
+  //     }
+  //     // if (getData.response.data) {
+  //     //   this.dataDrug = getData.response.data;
+  //     //   this.dataSource = new MatTableDataSource(this.dataDrug);
+  //     //   this.dataSource.sort = this.sort;
+  //     //   this.dataSource.paginator = this.paginator;
+  //     //   // for (let i = 0; i < getData.response.result.length; i++) {
+  //     //   //   this.numOrder =
+  //     //   //     Number(getData.response.result[i].amountOrders) +
+  //     //   //     Number(this.numOrder);
+  //     //   // }
+  //     // } else {
+  //     //   this.getDataTomorrow();
+  //     // }
+  //   } else {
+  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //   }
+  // };
+
+  public getDataAppiont = async () => {
+    const start_Date = moment(this.startDate2).format('YYYY-MM-DD');
+    const start_Date2 = moment(this.startDate2).format('DD/MM/YYYY');
 
     this.nameExcel = 'Drug-Appoint' + '(' + start_Date2 + ')';
-    let getData: any = await this.http.drugAppoint_send();
+    let formData = new FormData();
+
+    formData.append('startDate', start_Date);
+
+    let getData: any = await this.http.post('getAppiont', formData);
 
     if (getData.connect) {
-      try {
-        this.dataDrug = getData.response.data;
-        this.dataSource = new MatTableDataSource(this.dataDrug);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      } catch (error) {
-        this.getDataTomorrow();
-      }
-      // if (getData.response.data) {
+      // try {
       //   this.dataDrug = getData.response.data;
       //   this.dataSource = new MatTableDataSource(this.dataDrug);
       //   this.dataSource.sort = this.sort;
       //   this.dataSource.paginator = this.paginator;
-      //   // for (let i = 0; i < getData.response.result.length; i++) {
-      //   //   this.numOrder =
-      //   //     Number(getData.response.result[i].amountOrders) +
-      //   //     Number(this.numOrder);
-      //   // }
-      // } else {
-      //   this.getDataTomorrow();
+      // } catch (error) {
+      //   this.getDataAppiont();
       // }
+      if (getData.response.result) {
+        this.dataDrug = getData.response.result;
+        this.dataSource = new MatTableDataSource(this.dataDrug);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this.dataDrug = null;
+      }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
@@ -185,14 +233,23 @@ export class DrugAppointComponent implements OnInit {
 
   public async getUnit(med: any) {
     // this.nameExcel = null;
-    if (med.DFORM_ID) {
+    if (med) {
       const start_Date = moment(this.startDate).format('YYYY-MM-DD');
-      this.nameExcel =
-        'เบิกยา' + '(' + med.DFORM_NAME + ')' + '(' + start_Date + ')';
+      let name = null;
+      if (med == 4) {
+        name = 'ยาเม็ด';
+      } else if (med == 3) {
+        name = 'ยาฉีด';
+      } else {
+        name = 'ยาอื่นๆ';
+      }
+
+      this.nameExcel = 'เบิกยา' + '(' + name + ')' + '(' + start_Date + ')';
       let formData = new FormData();
-      formData.append('data', med.DFORM_ID);
+      formData.append('data', med);
       formData.append('startDate', start_Date);
       let getData: any = await this.http.post('takeMedicine_getUnit', formData);
+
       if (getData.connect) {
         if (getData.response.result) {
           this.dataDrug3 = getData.response.result;
@@ -241,11 +298,14 @@ export class DrugAppointComponent implements OnInit {
 
   public getTab(e: any) {
     if (e == 0) {
-      this.getDataTomorrow();
+      this.getDataAppiont();
+      this.nrSelect = '';
     } else if (e == 1) {
       this.getDataCurrent();
+      this.nrSelect = '';
     } else if (e == 2) {
       this.getTakemedicine();
+      this.nrSelect = '';
     }
   }
 
@@ -254,46 +314,16 @@ export class DrugAppointComponent implements OnInit {
     const end_Date = moment(momentDate).format('DD/MM/YYYY');
     this.startDate = new Date(event.value);
     this.getTakemedicine();
+    this.nrSelect = '';
   }
 
-  public clickData(i: any) {
-    this.inputGroup = this.formBuilder.group({
-      pack: [i.HISPackageRatio, Validators.required],
-      code: [i.drugCode],
-    });
+  public async startChange2(event: any) {
+    const momentDate = new Date(event.value);
+    const end_Date = moment(momentDate).format('DD/MM/YYYY');
+    this.startDate2 = new Date(event.value);
+    this.getDataAppiont();
   }
 
-  public async updateData() {
-    let formData = new FormData();
-    formData.append('pack', this.inputGroup.value.pack);
-    formData.append('drugCode', this.inputGroup.value.code);
-    // formData.forEach((value, key) => {
-    //   console.log(key + '=' + value);
-    // });
-    let getData: any = await this.http.post('updatePack104', formData);
-    let getData2: any = await this.http.post('updatePack101', formData);
-    let getData3: any = await this.http.post('updatePack102', formData);
-    let getData4: any = await this.http.post('updatePack102_mySQL', formData);
-    // let getDataArr = new Array();
-    // getDataArr.push(getData.response.rowCount);
-    // getDataArr.push(getData2.response.rowCount);
-    // getDataArr.push(getData3.response.rowCount);
-    // getDataArr.push(getData4.response.rowCount);
-    // console.log(getData4);
-
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        let win: any = window;
-        win.$('#myModal').modal('hide');
-        Swal.fire('แก้ไขข้อมูลเสร็จสิ้น', '', 'success');
-        this.getTakemedicine();
-      } else {
-        Swal.fire('แก้ไขข้อมูลไม่สำเร็จ', '', 'error');
-      }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    }
-  }
   public dataUnit: any = null;
   public async getDataUnit() {
     const start_Date = moment(this.startDate).format('YYYY-MM-DD');

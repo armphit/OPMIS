@@ -118,6 +118,11 @@ export class SeMedComponent implements OnInit {
   public inputGroup = new FormGroup({
     location: new FormControl(),
   });
+
+  public inputGroup2 = new FormGroup({
+    lotno: new FormControl(),
+    expire: new FormControl(),
+  });
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -306,8 +311,9 @@ export class SeMedComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
-
+  public expression: any = null;
   async clickData(i: any) {
+    this.expression = 1;
     this.inputGroup = this.formBuilder.group({
       location: [i.drugLocation, Validators.required],
       code: [i.drugCode],
@@ -337,31 +343,55 @@ export class SeMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-
-  public printPDF(data: any) {
-    let a = '	EXFORGE(AMLO/VALSARTAN5/160MG)';
+  public detailDrug: any = null;
+  async clickDataDrug(i: any) {
+    this.detailDrug = i;
+    this.expression = 2;
+    this.inputGroup2 = this.formBuilder.group({
+      lotno: ['', Validators.required],
+      expire: [new Date(), Validators.required],
+    });
+  }
+  public printPDF() {
+    const start_Date = moment(new Date()).format('DD/MM/YYYY');
+    let date = new Date();
+    date.setFullYear(date.getFullYear() + 1);
+    const expire_Date = moment(date).format('DD/MM/YYYY');
+    let a = '';
+    if (this.inputGroup2.value.expire) {
+      a = moment(this.inputGroup2.value.expire).format('DD/MM/YYYY');
+    } else {
+      a = expire_Date;
+    }
     var docDefinition = {
-      pageSize: { width: 321, height: 227 },
-      pageMargins: [5, 30, 1, 1] as any,
+      pageSize: { width: 325, height: 350 },
+      pageMargins: [5, 50, 1, 1] as any,
       header: {} as any,
 
       content: [
-        data.Name,
-        'Spec : ' + data.Spec,
+        this.detailDrug.Name,
+        'Spec : ' + this.detailDrug.Spec,
         {
           alignment: 'justify',
           columns: [
             {
-              text: 'Lot No. : AB224455 \nMfd. : 01/01/2020 \nExp. : 01/01/2022',
+              text:
+                'Lot No. : ' +
+                this.inputGroup2.value.lotno +
+                '\nMfd. : ' +
+                start_Date +
+                ' \nExp. : ' +
+                a,
+              fontSize: 25,
             },
-            { qr: data.drugCode, fit: '80', margin: [0, 10, 0, 0] },
+            { qr: this.detailDrug.drugCode, fit: '80', margin: [0, 10, 0, 0] },
           ],
         },
       ],
 
       defaultStyle: {
         font: 'THSarabunNew',
-        fontSize: 20,
+        fontSize: 30,
         bold: true,
       },
     };

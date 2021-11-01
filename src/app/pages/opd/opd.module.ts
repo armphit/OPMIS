@@ -13,9 +13,19 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { OtherMedComponent } from './other-med/other-med.component';
 import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { AllDrugComponent } from './all-drug/all-drug.component';
+import { ReportPharComponent } from './report-phar/report-phar.component';
 
 @NgModule({
-  declarations: [ElMedComponent, SeMedComponent, PharmacistStatisticsComponent, PatientListComponent, OtherMedComponent, DrugAppointComponent, AllDrugComponent],
+  declarations: [
+    ElMedComponent,
+    SeMedComponent,
+    PharmacistStatisticsComponent,
+    PatientListComponent,
+    OtherMedComponent,
+    DrugAppointComponent,
+    AllDrugComponent,
+    ReportPharComponent,
+  ],
   imports: [
     CommonModule,
     OpdRoutingModule,

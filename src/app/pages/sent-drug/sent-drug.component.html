@@ -71,7 +71,7 @@
         </div>
         <div class="col-lg-3" *ngIf="dataDrug">
           <mat-form-field class="example-full-width" style="float: right;">
-            <input matInput (keyup)="applyFilter($event)" #input>
+            <input matInput (keyup)="applyFilter($event)" #input [(ngModel)]="selected">
             <mat-placeholder>ค้นหา</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>
@@ -138,8 +138,11 @@
 
       <mat-paginator [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
       </mat-paginator>
-      <button style="margin: 10px;" class="btn btn-primary" type="button" data-toggle="collapse"
-        data-target="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2" (click)="send()">
+      <button style="margin: 10px;" class="btn btn-primary" type="button" data-toggle="modal" data-target="#myModal"
+        *ngIf="value.length!==0" (click)="edit()">
+        Send
+      </button>
+      <button style="margin: 10px;" class="btn btn-primary" type="button" *ngIf="value.length===0" (click)="noDrug()">
         Send
       </button>
     </div>
@@ -149,5 +152,91 @@
 
 
 
+
+</div>
+
+<div class="modal" id="myModal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <form [formGroup]="inputGroup2" (ngSubmit)="send();">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h1 class="modal-title">Detail</h1>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="example-container">
+
+
+
+
+
+            <mat-form-field appearance="outline" style="padding-left: 10px;">
+              <mat-label>HN</mat-label>
+              <input matInput type="number" formControlName="hnS">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="padding-left: 10px;">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="nameS">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="padding-left: 10px;">
+              <mat-label>Age</mat-label>
+              <input matInput type="number" formControlName="ageS">
+            </mat-form-field>
+
+            <label style="padding-left: 10px;">Sex: </label>
+            <mat-radio-group formControlName="sexS">
+              <mat-radio-button style="padding-left: 10px;" value="M">Male</mat-radio-button>
+              <mat-radio-button style="padding-left: 10px;" value="F">Female</mat-radio-button>
+            </mat-radio-group>
+
+
+            <table class="table  table-bordered table-lg">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>drugCode</th>
+                  <th>drugName</th>
+                  <th>QTY</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of value; let x = index">
+                  <td scope="row" style="padding-top: 15px">{{ x + 1 }}</td>
+                  <td style="padding-top: 15px">
+                    {{ i.code }}
+                  </td>
+                  <td style="padding-top: 15px">
+                    {{ i.Name }}
+                  </td>
+                  <td style="padding-top: 15px">
+                    {{ i.Qty }}
+                  </td>
+                  <td style="padding-top: 15px">
+                    {{ i.unit }}
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
 
 </div>

@@ -3,12 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  apiPath:  'http://localhost/api/',
-  apiUrl: 'http://localhost/index.php/'
-
-
-
+  production: true,
+  apiUrl: 'http://192.168.185.160:88/api/index.php/',
+  baseHref: '/',
 };
 
 /*

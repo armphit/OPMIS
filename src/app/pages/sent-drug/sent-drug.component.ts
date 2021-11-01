@@ -7,7 +7,12 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -18,6 +23,14 @@ import Swal from 'sweetalert2';
 import * as JsonToXML from 'js2xmlparser';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { utf8Encode } from '@angular/compiler/src/util';
+// var iconv = require('iconv-lite');
+// const Buffer = require('Buffer');
+// import * as iconv from 'iconv-lite';
+
+// import * as Buffer from 'Buffer';
+// import * as iconv from 'iconv-lite';
+// var request = require('request');
 
 export interface PeriodicElement {
   Code: string;
@@ -83,20 +96,6 @@ export class AtmsComponent implements OnInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
-    // const today = new Date();
-    // const tomorrow = new Date(today.setDate(today.getDate() + 1));
-    // console.log(moment(tomorrow).format('YYYY-MM-DD'));
-    // var arrayElements = [1, 2, 3, 4, 2];
-    // var arr = [];
-    // arrayElements.forEach((element, index) => {
-    //   if (element == 2) delete arrayElements[index];
-    // });
-    // for (let index = 0; index < arrayElements.length; index++) {
-    //   if (arrayElements[index] != undefined) {
-    //     arr.push(arrayElements[index]);
-    //   }
-    // }
-    // console.log(arr);
   }
 
   ngOnInit(): void {}
@@ -107,9 +106,11 @@ export class AtmsComponent implements OnInit {
 
   disableClick = false;
   isOpen = false;
+
   public getData = async () => {
     let getData: any = await this.http.get('dataDrug');
-
+    // let getData2: any = await this.http.get('jvmExpire');
+    // console.log(getData2);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataDrug = getData.response.result;
@@ -155,7 +156,7 @@ export class AtmsComponent implements OnInit {
           icon: 'success',
           title: `จำนวนยา: ${text} ${val.unit}`,
           showConfirmButton: false,
-          timer: 1000,
+          timer: 850,
         });
       }
       val.alias = '';
@@ -164,6 +165,14 @@ export class AtmsComponent implements OnInit {
       val.note = '';
       val.Qty = `${text}`;
       val.itemNo = this.value2.length + 1;
+      let formData = new FormData();
+      formData.append('code', val.code.trim());
+      let listDrugLCA: any = await this.http.post('listDrugLCA', formData);
+      // console.log(listDrugLCA);
+      if (listDrugLCA.response.rowCount == 1) {
+        if (val.Qty >= listDrugLCA.response.result[0].packageRatio) {
+        }
+      }
       this.value.push(val);
     } else {
       let index = this.value.indexOf(val);
@@ -171,6 +180,7 @@ export class AtmsComponent implements OnInit {
         this.value.splice(index, 1);
       }
     }
+    // console.log(this.value);
   }
   public date_Birth(event: any) {
     const momentDate = new Date(event.value);
@@ -183,6 +193,7 @@ export class AtmsComponent implements OnInit {
   }
 
   public jsonDrug: any = null;
+  selected = '';
 
   public async send() {
     const momentDate = new Date();
@@ -199,9 +210,9 @@ export class AtmsComponent implements OnInit {
     let getAge = new Date().getFullYear() - 2020;
     let codeArr = new Array();
     let numDontKnow = Math.floor(Math.random() * 10000);
-    let date = new Date();
-    date.setFullYear(date.getFullYear() + 1);
-    let dateC = moment(date).format('DD/MM/YYYY');
+
+    // var utf8String = iconv.encode('Sample input string', 'win1251');
+
     let j = 0;
     for (var i = 0; i < this.value.length; i++) {
       let formData = new FormData();
@@ -209,10 +220,31 @@ export class AtmsComponent implements OnInit {
       let getData: any = await this.http.post('checkJV', formData);
 
       if (getData.response.rowCount == 1) {
+        formData.append('code', this.value[i].code.trim());
+        let getData2: any = await this.http.post('jvmExpire', formData);
+
+        let dateC = null;
+        let date = new Date();
+        date.setFullYear(date.getFullYear() + 1);
+        // let dateC = moment(date).format('DD/MM/YYYY');
+        if (getData2.response.result[0].ExpiredDate) {
+          dateC = moment(getData2.response.result[0].ExpiredDate).format(
+            'DD/MM/YYYY'
+          );
+        } else {
+          dateC = moment(date).format('DD/MM/YYYY');
+        }
+
         j++;
-        // this.value[i].Qty = this.value[i].Qty % 30;
+        // if (this.value[i].Qty > 400) {
+        //   let n = null;
+        //   n = this.value[i].Qty / 400;
+        // }
+        //
         let data =
-          'TEST|0000' +
+          this.inputGroup2.value.nameS +
+          '|' +
+          this.inputGroup2.value.hnS +
           j +
           '|' +
           numJV +
@@ -240,7 +272,9 @@ export class AtmsComponent implements OnInit {
           dateB +
           '|' +
           dateC +
-          '|0000||';
+          '|' +
+          this.inputGroup2.value.hnS +
+          '||';
 
         codeArr.push(data);
       }
@@ -253,51 +287,20 @@ export class AtmsComponent implements OnInit {
       };
       this.value2.push(value);
     }
-
+    // console.log(this.value2);
     let DataJV = null;
 
     if (codeArr.join('\r\n') != '') {
       DataJV = codeArr.join('\r\n');
     }
 
-    // this.jsonDrug = {
-    //   patient: {
-    //     patID: this.inputGroup.value.id,
-    //     patName: this.inputGroup.value.name,
-    //     gender: this.inputGroup.value.sex,
-    //     birthday: this.dateBirth,
-    //     age: this.inputGroup.value.age,
-    //     identity: '',
-    //     insuranceNo: '',
-    //     chargeType: '',
-    //   },
-    //   prescriptions: {
-    //     prescription: {
-    //       orderNo: numRandom,
-    //       ordertype: 'M',
-    //       pharmacy: 'OPD',
-    //       windowNo: '',
-    //       paymentIP: '',
-    //       paymentDT: this.datePayment,
-    //       outpNo: '3',
-    //       visitNo: '',
-    //       deptCode: '',
-    //       deptName: '',
-    //       doctCode: '',
-    //       doctName: '',
-    //       diagnosis: '',
-    //       drugs: this.value2,
-    //     },
-    //   },
-    // };
-
     this.jsonDrug = {
       patient: {
-        patID: '0000',
-        patName: 'TEST',
-        gender: 'M',
+        patID: this.inputGroup2.value.hnS,
+        patName: this.inputGroup2.value.nameS,
+        gender: this.inputGroup2.value.sexS,
         birthday: '2020-01-01',
-        age: '1',
+        age: this.inputGroup2.value.ageS,
         identity: '',
         insuranceNo: '',
         chargeType: '',
@@ -336,6 +339,8 @@ export class AtmsComponent implements OnInit {
       if (getDataJV.connect == true && getDataDIH.connect == true) {
         if (getDataJV.response == 1 && getDataDIH.response == 1) {
           Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+          let win: any = window;
+          win.$('#myModal').modal('hide');
         } else if (getDataJV.response == 0 && getDataDIH.response == 0) {
           Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
         }
@@ -346,6 +351,8 @@ export class AtmsComponent implements OnInit {
       if (getDataDIH.connect == true) {
         if (getDataDIH.response == 1) {
           Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+          let win: any = window;
+          win.$('#myModal').modal('hide');
         } else {
           Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
         }
@@ -368,7 +375,30 @@ export class AtmsComponent implements OnInit {
     this.value2 = [];
     this.value = [];
     this.datePayment = null;
+
     this.getData();
+    this.selected = '';
+
     // window.location.reload();
+  }
+
+  public inputGroup2 = new FormGroup({
+    hnS: new FormControl(),
+    nameS: new FormControl(),
+    sexS: new FormControl(),
+    ageS: new FormControl(),
+  });
+
+  edit() {
+    this.inputGroup2 = this.formBuilder.group({
+      hnS: ['0000', Validators.required],
+      nameS: ['TEST', Validators.required],
+      sexS: ['M', Validators.required],
+      ageS: ['1', Validators.required],
+    });
+  }
+
+  noDrug() {
+    Swal.fire('ไม่มีข้อมูลยา', '', 'error');
   }
 }

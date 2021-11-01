@@ -95,14 +95,19 @@
           <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Action </th>
           <td mat-cell *matCellDef="let payment">
             <button type="button" class="btn btn-warning" matTooltip='Edit' style="margin-left: 20px;"
-              data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"
+              data-toggle="modal" data-target="#edit" data-backdrop="static" data-keyboard="false"
               (click)="clickData(payment)"><i class="fas fa-edit"></i></button>
 
             <button type="button" class="btn btn-primary" matTooltip='Print' style="margin-left: 20px;"
-              (click)="printPDF(payment);"><i class="fas fa-print"></i></button>
+              data-toggle="modal" data-target="#edit" data-backdrop="static" data-keyboard="false"
+              (click)="clickDataDrug(payment);"><i class="fas fa-print"></i></button>
+
             <!-- <i class="fas fa-edit" style="margin-left: 20px;cursor: pointer" data-toggle="modal" data-target="#myModal"
               data-backdrop="static" data-keyboard="false" (click)="clickData(payment)"></i> -->
           </td>
+
+          <!-- Modal -->
+
 
         </ng-container>
         <!--
@@ -234,16 +239,14 @@
   </mat-tab>
 
 </mat-tab-group>
-
-
-<div id="myModal" class="modal fade">
+<div id="edit" class="modal fade">
   <div class="modal-dialog modal-confirm">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Location</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       </div>
-      <form [formGroup]="inputGroup" (ngSubmit)="updateData()">
+      <form [formGroup]="inputGroup" (ngSubmit)="updateData()" *ngIf="expression===1">
         <div class="modal-body">
 
           <input class="form-control" type="text" formControlName="location">
@@ -254,5 +257,32 @@
 
         </div>
       </form>
+      <form [formGroup]="inputGroup2" (ngSubmit)="printPDF()" *ngIf="expression===2">
+        <div class="modal-body">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">LotNo.</span>
+            </div>
+            <input type="text" class="form-control" formControlName="lotno">
+          </div>
+          <br>
+          <div class="input-group">
+
+            <mat-form-field>
+              <mat-label>Expire Date</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="expire">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+        </div>
+      </form>
     </div>
   </div>
+</div>
