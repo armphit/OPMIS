@@ -4,6 +4,7 @@ import {
   ElementRef,
   OnInit,
   QueryList,
+  Renderer2,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -33,10 +34,10 @@ import { utf8Encode } from '@angular/compiler/src/util';
 // var request = require('request');
 
 export interface PeriodicElement {
-  Code: string;
+  code: string;
   Name: string;
-  Spec: string;
-  Unit: string;
+  spec: string;
+  unit: string;
   firmName: string;
 }
 
@@ -78,7 +79,7 @@ export class AtmsComponent implements OnInit {
 
   public drugList: any = null;
 
-  selection = new SelectionModel<PeriodicElement>(true, []);
+  selection: any = new SelectionModel<PeriodicElement>(true, []);
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -86,27 +87,33 @@ export class AtmsComponent implements OnInit {
   public jsonArr = new Array();
   @ViewChildren('checkboxes')
   checkboxes!: QueryList<ElementRef>;
-  globalcheckbox: boolean = false;
-  @ViewChild('swiper') swiper!: ElementRef;
+
+  @ViewChild('name') nameField!: ElementRef;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private renderer: Renderer2
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
   }
 
-  ngOnInit(): void {}
-
-  ngAfterViewInit() {
-    // this.swiper.nativeElement.focus();
+  ngOnInit(): void {
+    // setTimeout(() => {
+    //   this.dataSource.paginator = this.paginator;
+    // }, 1000);
   }
+
+  ngAfterViewInit() {}
 
   disableClick = false;
   isOpen = false;
 
+  editName(): void {
+    this.nameField.nativeElement.focus();
+  }
   public getData = async () => {
     let getData: any = await this.http.get('dataDrug');
     // let getData2: any = await this.http.get('jvmExpire');
@@ -132,6 +139,7 @@ export class AtmsComponent implements OnInit {
 
   value = new Array();
   value2 = new Array();
+  numArr: number = 0;
 
   async showOptions(e: any, val: any): Promise<void> {
     if (e.checked) {
@@ -164,15 +172,9 @@ export class AtmsComponent implements OnInit {
       val.type = '';
       val.note = '';
       val.Qty = `${text}`;
-      val.itemNo = this.value2.length + 1;
-      let formData = new FormData();
-      formData.append('code', val.code.trim());
-      let listDrugLCA: any = await this.http.post('listDrugLCA', formData);
-      // console.log(listDrugLCA);
-      if (listDrugLCA.response.rowCount == 1) {
-        if (val.Qty >= listDrugLCA.response.result[0].packageRatio) {
-        }
-      }
+
+      // val.itemNo = this.value.length + 1;
+
       this.value.push(val);
     } else {
       let index = this.value.indexOf(val);
@@ -180,8 +182,8 @@ export class AtmsComponent implements OnInit {
         this.value.splice(index, 1);
       }
     }
-    // console.log(this.value);
   }
+
   public date_Birth(event: any) {
     const momentDate = new Date(event.value);
     this.dateBirth = moment(momentDate).format('YYYY-MM-DD');
@@ -209,86 +211,261 @@ export class AtmsComponent implements OnInit {
     let numJV = '6400' + Math.floor(Math.random() * 1000000);
     let getAge = new Date().getFullYear() - 2020;
     let codeArr = new Array();
+    let codeArrPush = new Array();
     let numDontKnow = Math.floor(Math.random() * 10000);
 
     // var utf8String = iconv.encode('Sample input string', 'win1251');
 
     let j = 0;
-    for (var i = 0; i < this.value.length; i++) {
+    let p = 0;
+    for (let i = 0; i < this.value.length; i++) {
       let formData = new FormData();
       formData.append('code', this.value[i].code.trim());
-      let getData: any = await this.http.post('checkJV', formData);
 
-      if (getData.response.rowCount == 1) {
-        formData.append('code', this.value[i].code.trim());
-        let getData2: any = await this.http.post('jvmExpire', formData);
+      let listDrugSE: any = await this.http.post(
+        'SEListStockPrepack',
+        formData
+      );
 
-        let dateC = null;
-        let date = new Date();
-        date.setFullYear(date.getFullYear() + 1);
-        // let dateC = moment(date).format('DD/MM/YYYY');
-        if (getData2.response.result[0].ExpiredDate) {
-          dateC = moment(getData2.response.result[0].ExpiredDate).format(
-            'DD/MM/YYYY'
-          );
-        } else {
-          dateC = moment(date).format('DD/MM/YYYY');
+      if (listDrugSE.response.rowCount > 0) {
+        for (let xx = 0; xx < listDrugSE.response.rowCount; xx++) {
+          var se: any = {};
+          if (
+            this.value[i].Qty >= listDrugSE.response.result[xx].HisPackageRatio
+          ) {
+            se.code = listDrugSE.response.result[xx].drugCode;
+            se.Name = this.value[i].Name;
+            se.alias = this.value[i].alias;
+            se.firmName = this.value[i].firmName;
+            se.method = this.value[i].method;
+            se.note = this.value[i].note;
+            se.spec = this.value[i].spec;
+            se.type = this.value[i].type;
+            se.unit = this.value[i].unit;
+            se.Qty =
+              Math.floor(
+                this.value[i].Qty /
+                  listDrugSE.response.result[xx].HisPackageRatio
+              ) * listDrugSE.response.result[xx].HisPackageRatio;
+            this.value[i].Qty =
+              this.value[i].Qty %
+              listDrugSE.response.result[xx].HisPackageRatio;
+            // console.log(this.numArr);
+            codeArrPush.push(se);
+          }
+        }
+      }
+
+      let listDrugLCA: any = await this.http.post('listDrugLCA', formData);
+
+      if (listDrugLCA.response.rowCount == 1) {
+        if (
+          Math.floor(
+            this.value[i].Qty / listDrugLCA.response.result[0].packageRatio
+          ) *
+            listDrugLCA.response.result[0].packageRatio >
+          0
+        ) {
+          var lca: any = {};
+          lca.code = listDrugLCA.response.result[0].drugCode;
+          lca.Qty =
+            Math.floor(
+              this.value[i].Qty / listDrugLCA.response.result[0].packageRatio
+            ) * listDrugLCA.response.result[0].packageRatio;
+          // this.numArr = this.numArr + 1;
+          // a.itemNo = this.this.valueue.length + 1;
+          lca.Name = this.value[i].Name;
+          lca.alias = this.value[i].alias;
+          lca.firmName = this.value[i].firmName;
+          lca.method = this.value[i].method;
+          lca.note = this.value[i].note;
+          lca.spec = this.value[i].spec;
+          lca.type = this.value[i].type;
+          lca.unit = this.value[i].unit;
+          // console.log(this.numArr);
+          codeArrPush.push(lca);
+          this.value[i].Qty =
+            this.value[i].Qty % listDrugLCA.response.result[0].packageRatio;
+          // if (
+          //   this.value[i].Qty % listDrugLCA.response.result[0].packageRatio >
+          //   0
+          // ) {
+          //   this.value[i].Qty =
+          //     this.value[i].Qty % listDrugLCA.response.result[0].packageRatio;
+          // }
+        }
+      }
+
+      if (this.value[i].Qty > 0) {
+        let getData: any = await this.http.post('checkJV', formData);
+
+        if (getData.response.rowCount == 1) {
+          let getData2: any = await this.http.post('jvmExpire', formData);
+
+          let dateC = null;
+          let date = new Date();
+          date.setFullYear(date.getFullYear() + 1);
+          // let dateC = moment(date).format('DD/MM/YYYY');
+          if (getData2.response.result[0].ExpiredDate) {
+            dateC = moment(getData2.response.result[0].ExpiredDate).format(
+              'DD/MM/YYYY'
+            );
+          } else {
+            dateC = moment(date).format('DD/MM/YYYY');
+          }
+
+          j++;
+
+          let data =
+            this.inputGroup2.value.nameS +
+            '|' +
+            this.inputGroup2.value.hnS +
+            j +
+            '|' +
+            numJV +
+            '|1/1/2020 0:00:00|OPD|||' +
+            getAge +
+            '||' +
+            numDontKnow +
+            '|I|' +
+            this.value[i].Qty +
+            '|' +
+            this.value[i].code +
+            '|' +
+            this.value[i].Name +
+            '|' +
+            dateA +
+            '|' +
+            dateA +
+            '|' +
+            '00:0' +
+            j +
+            '|||โรงพยาบาลมหาราชนครราชสีมา|||' +
+            numJV +
+            this.value[i].code +
+            '|||' +
+            dateB +
+            '|' +
+            dateC +
+            '|' +
+            this.inputGroup2.value.hnS +
+            '||';
+
+          codeArr.push(data);
+
+          //ยาเกิน 400
+          //   let jvdata = null;
+          //   if (this.value[i].Qty > 400) {
+          //     jvdata = this.value[i].Qty % 400;
+
+          //     // this.value[i].Qty = this.value[i].Qty % 400;
+          //     let n = null;
+          //     let s = 400;
+          //     n = this.value[i].Qty;
+          //     while (n > 400) {
+          //       p++;
+          //       n = n - 400;
+          //       let dataOver =
+          //         this.inputGroup2.value.nameS +
+          //         '|' +
+          //         this.inputGroup2.value.hnS +
+          //         p +
+          //         '|' +
+          //         numJV +
+          //         '|1/1/2020 0:00:00|OPD|||' +
+          //         getAge +
+          //         '||' +
+          //         numDontKnow +
+          //         '|I|' +
+          //         s +
+          //         '|' +
+          //         this.value[i].code +
+          //         '|' +
+          //         this.value[i].Name +
+          //         '|' +
+          //         dateA +
+          //         '|' +
+          //         dateA +
+          //         '|' +
+          //         '00:0' +
+          //         j +
+          //         '|||โรงพยาบาลมหาราชนครราชสีมา|||' +
+          //         numJV +
+          //         this.value[i].code +
+          //         '|||' +
+          //         dateB +
+          //         '|' +
+          //         dateC +
+          //         '|' +
+          //         this.inputGroup2.value.hnS +
+          //         '||';
+
+          //       codeArrOver.push(dataOver);
+          //     }
+          //   }
+
+          //   if (jvdata) {
+          //     jvdata = jvdata;
+          //   } else {
+          //     jvdata = this.value[i].Qty;
+          //   }
+          //   j++;
+          //   let data =
+          //     this.inputGroup2.value.nameS +
+          //     '|' +
+          //     this.inputGroup2.value.hnS +
+          //     j +
+          //     '|' +
+          //     numJV +
+          //     '|1/1/2020 0:00:00|OPD|||' +
+          //     getAge +
+          //     '||' +
+          //     numDontKnow +
+          //     '|I|' +
+          //     jvdata +
+          //     '|' +
+          //     this.value[i].code +
+          //     '|' +
+          //     this.value[i].Name +
+          //     '|' +
+          //     dateA +
+          //     '|' +
+          //     dateA +
+          //     '|' +
+          //     '00:0' +
+          //     j +
+          //     '|||โรงพยาบาลมหาราชนครราชสีมา|||' +
+          //     numJV +
+          //     this.value[i].code +
+          //     '|||' +
+          //     dateB +
+          //     '|' +
+          //     dateC +
+          //     '|' +
+          //     this.inputGroup2.value.hnS +
+          //     '||';
+
+          //   codeArr.push(data);
+          // }
         }
 
-        j++;
-        // if (this.value[i].Qty > 400) {
-        //   let n = null;
-        //   n = this.value[i].Qty / 400;
-        // }
-        //
-        let data =
-          this.inputGroup2.value.nameS +
-          '|' +
-          this.inputGroup2.value.hnS +
-          j +
-          '|' +
-          numJV +
-          '|1/1/2020 0:00:00|OPD|||' +
-          getAge +
-          '||' +
-          numDontKnow +
-          '|I|' +
-          this.value[i].Qty +
-          '|' +
-          this.value[i].code +
-          '|' +
-          this.value[i].Name +
-          '|' +
-          dateA +
-          '|' +
-          dateA +
-          '|' +
-          '00:0' +
-          j +
-          '|||โรงพยาบาลมหาราชนครราชสีมา|||' +
-          numJV +
-          this.value[i].code +
-          '|||' +
-          dateB +
-          '|' +
-          dateC +
-          '|' +
-          this.inputGroup2.value.hnS +
-          '||';
-
-        codeArr.push(data);
+        // let num = i + 1;
+        // this.value[i].itemNo = num;
+        codeArrPush.push(this.value[i]);
       }
-      this.value[i].code;
-      let num = i + 1;
-      this.value[i].itemNo = num;
+    }
 
+    for (let index = 0; index < codeArrPush.length; index++) {
+      codeArrPush[index].itemNo = index + 1;
       let value = {
-        drug: this.value[i],
+        drug: codeArrPush[index],
       };
       this.value2.push(value);
     }
-    // console.log(this.value2);
-    let DataJV = null;
+
+    let DataJV: any = null;
+    // let DataJV2: any = null;
+    // let DataFinal: any = [];
 
     if (codeArr.join('\r\n') != '') {
       DataJV = codeArr.join('\r\n');
@@ -324,54 +501,47 @@ export class AtmsComponent implements OnInit {
         },
       },
     };
-    let xmlDrug = JsonToXML.parse('outpOrderDispense', this.jsonDrug);
-    let getDataJV: any = null;
-    let getDataDIH: any = null;
-    if (DataJV) {
-      let dataJv = { data: DataJV };
 
-      getDataJV = await this.http.postNodejs('sendJVMOPD', dataJv);
-    }
-    let dataXml = { data: xmlDrug };
-    getDataDIH = await this.http.postNodejs('sendDIHOPD', dataXml);
+    // let xmlDrug = JsonToXML.parse('outpOrderDispense', this.jsonDrug);
+    // let getDataJV: any = null;
+    // let getDataDIH: any = null;
+    // if (DataJV) {
+    //   let dataJv = { data: DataJV };
 
-    if (getDataJV) {
-      if (getDataJV.connect == true && getDataDIH.connect == true) {
-        if (getDataJV.response == 1 && getDataDIH.response == 1) {
-          Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
-          let win: any = window;
-          win.$('#myModal').modal('hide');
-        } else if (getDataJV.response == 0 && getDataDIH.response == 0) {
-          Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
-      }
-    } else {
-      if (getDataDIH.connect == true) {
-        if (getDataDIH.response == 1) {
-          Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
-          let win: any = window;
-          win.$('#myModal').modal('hide');
-        } else {
-          Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
-      }
-    }
+    //   getDataJV = await this.http.postNodejs('sendJVMOPD', dataJv);
+    // }
+    // let dataXml = { data: xmlDrug };
+    // getDataDIH = await this.http.postNodejs('sendDIHOPD', dataXml);
 
-    let selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = xmlDrug;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
-    document.execCommand('copy');
-    document.body.removeChild(selBox);
+    // if (getDataJV) {
+    //   if (getDataJV.connect == true && getDataDIH.connect == true) {
+    //     if (getDataJV.response == 1 && getDataDIH.response == 1) {
+    //       Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+    //       let win: any = window;
+    //       win.$('#myModal').modal('hide');
+    //     } else if (getDataJV.response == 0 && getDataDIH.response == 0) {
+    //       Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
+    //     }
+    //   } else {
+    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
+    //   }
+    // } else {
+    //   if (getDataDIH.connect == true) {
+    //     if (getDataDIH.response == 1) {
+    //       Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+    //       let win: any = window;
+    //       win.$('#myModal').modal('hide');
+    //     } else {
+    //       Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
+    //     }
+    //   } else {
+    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
+    //   }
+    // }
+
+    let win: any = window;
+    win.$('#myModal').modal('hide');
+
     this.value2 = [];
     this.value = [];
     this.datePayment = null;
@@ -392,7 +562,7 @@ export class AtmsComponent implements OnInit {
   edit() {
     this.inputGroup2 = this.formBuilder.group({
       hnS: ['0000', Validators.required],
-      nameS: ['TEST', Validators.required],
+      nameS: ['', Validators.required],
       sexS: ['M', Validators.required],
       ageS: ['1', Validators.required],
     });
@@ -400,5 +570,11 @@ export class AtmsComponent implements OnInit {
 
   noDrug() {
     Swal.fire('ไม่มีข้อมูลยา', '', 'error');
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 }
