@@ -87,7 +87,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
     let getData: any = await this.http.get('listPatient');
-
+    console.log(getData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataPharmacist = getData.response.result;

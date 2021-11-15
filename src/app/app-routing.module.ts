@@ -9,6 +9,7 @@ const routes: Routes = [
   {
     path: '',
     component: NavComponent,
+
     children: [
       {
         path: 'drug-device',
@@ -20,7 +21,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'pages/drug-device',
+        redirectTo: 'opd',
         pathMatch: 'full',
       },
 

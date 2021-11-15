@@ -140,7 +140,7 @@
       <mat-paginator [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
       </mat-paginator>
       <button style="margin: 10px;" class="btn btn-primary" type="button" data-toggle="modal" data-target="#myModal"
-        *ngIf="value.length!==0" (click)="edit();editName()">
+        *ngIf="value.length!==0" (click)="edit()">
         Send
       </button>
       <button style="margin: 10px;" class="btn btn-primary" type="button" *ngIf="value.length===0" (click)="noDrug()">
@@ -171,9 +171,6 @@
         <div class="modal-body">
           <div class="example-container">
 
-            <mat-form-field>
-              <input matInput placeholder="First Name" #firstname>
-            </mat-form-field>
 
 
 

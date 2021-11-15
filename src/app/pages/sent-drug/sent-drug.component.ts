@@ -111,9 +111,6 @@ export class AtmsComponent implements OnInit {
   disableClick = false;
   isOpen = false;
 
-  editName(): void {
-    this.nameField.nativeElement.focus();
-  }
   public getData = async () => {
     let getData: any = await this.http.get('dataDrug');
     // let getData2: any = await this.http.get('jvmExpire');
@@ -230,8 +227,10 @@ export class AtmsComponent implements OnInit {
       if (listDrugSE.response.rowCount > 0) {
         for (let xx = 0; xx < listDrugSE.response.rowCount; xx++) {
           var se: any = {};
+
           if (
-            this.value[i].Qty >= listDrugSE.response.result[xx].HisPackageRatio
+            this.value[i].Qty >=
+            Number(listDrugSE.response.result[xx].HisPackageRatio)
           ) {
             se.code = listDrugSE.response.result[xx].drugCode;
             se.Name = this.value[i].Name;
@@ -462,7 +461,7 @@ export class AtmsComponent implements OnInit {
       };
       this.value2.push(value);
     }
-
+    // console.log(codeArrPush);
     let DataJV: any = null;
     // let DataJV2: any = null;
     // let DataFinal: any = [];
@@ -470,7 +469,7 @@ export class AtmsComponent implements OnInit {
     if (codeArr.join('\r\n') != '') {
       DataJV = codeArr.join('\r\n');
     }
-
+    // console.log(DataJV);
     this.jsonDrug = {
       patient: {
         patID: this.inputGroup2.value.hnS,
@@ -502,42 +501,43 @@ export class AtmsComponent implements OnInit {
       },
     };
 
-    // let xmlDrug = JsonToXML.parse('outpOrderDispense', this.jsonDrug);
-    // let getDataJV: any = null;
-    // let getDataDIH: any = null;
-    // if (DataJV) {
-    //   let dataJv = { data: DataJV };
+    let xmlDrug = JsonToXML.parse('outpOrderDispense', this.jsonDrug);
 
-    //   getDataJV = await this.http.postNodejs('sendJVMOPD', dataJv);
-    // }
-    // let dataXml = { data: xmlDrug };
-    // getDataDIH = await this.http.postNodejs('sendDIHOPD', dataXml);
+    let getDataJV: any = null;
+    let getDataDIH: any = null;
+    if (DataJV) {
+      let dataJv = { data: DataJV };
 
-    // if (getDataJV) {
-    //   if (getDataJV.connect == true && getDataDIH.connect == true) {
-    //     if (getDataJV.response == 1 && getDataDIH.response == 1) {
-    //       Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
-    //       let win: any = window;
-    //       win.$('#myModal').modal('hide');
-    //     } else if (getDataJV.response == 0 && getDataDIH.response == 0) {
-    //       Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
-    //     }
-    //   } else {
-    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
-    //   }
-    // } else {
-    //   if (getDataDIH.connect == true) {
-    //     if (getDataDIH.response == 1) {
-    //       Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
-    //       let win: any = window;
-    //       win.$('#myModal').modal('hide');
-    //     } else {
-    //       Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
-    //     }
-    //   } else {
-    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
-    //   }
-    // }
+      getDataJV = await this.http.postNodejs('sendJVMOPD', dataJv);
+    }
+    let dataXml = { data: xmlDrug };
+    getDataDIH = await this.http.postNodejs('sendDIHOPD', dataXml);
+
+    if (getDataJV) {
+      if (getDataJV.connect == true && getDataDIH.connect == true) {
+        if (getDataJV.response == 1 && getDataDIH.response == 1) {
+          Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+          let win: any = window;
+          win.$('#myModal').modal('hide');
+        } else if (getDataJV.response == 0 && getDataDIH.response == 0) {
+          Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
+      }
+    } else {
+      if (getDataDIH.connect == true) {
+        if (getDataDIH.response == 1) {
+          Swal.fire('ส่งข้อมูลเสร็จสิ้น', '', 'success');
+          let win: any = window;
+          win.$('#myModal').modal('hide');
+        } else {
+          Swal.fire('ส่งข้อมูลไม่สำเร็จ', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้', '', 'error');
+      }
+    }
 
     let win: any = window;
     win.$('#myModal').modal('hide');

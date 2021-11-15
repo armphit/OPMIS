@@ -50,7 +50,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/opd/el-med',
+        redirectTo: '/opd/drug',
         pathMatch: 'full',
       },
     ],

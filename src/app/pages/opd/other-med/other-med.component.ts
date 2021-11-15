@@ -94,7 +94,7 @@ export class OtherMedComponent implements OnInit {
     this.startDate = startDate;
     this.endDate = endDate;
 
-    this.getTest();
+    // this.getTest();
   }
 
   ngOnInit(): void {
@@ -105,16 +105,16 @@ export class OtherMedComponent implements OnInit {
   public dataD = Array();
   public getName: any = null;
 
-  public async getTest() {
-    try {
-      let getID: any = await this.http.getpath(
-        'http://192.168.42.1/unit/ssr/pharm_rep/service/getINV_STOCK.asp?DEPT=OPD_T'
-      );
-      console.log(getID);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // public async getTest() {
+  //   try {
+  //     let getID: any = await this.http.getpath(
+  //       'http://192.168.42.1/unit/ssr/pharm_rep/service/getINV_STOCK.asp?DEPT=OPD_T'
+  //     );
+  //     console.log(getID);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   public async getDataID() {
     let nameData = new FormData();
