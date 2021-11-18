@@ -49,7 +49,7 @@ export class TemperatureMonitorComponent implements OnInit {
   public dataDrug: any = null;
   public async getData() {
     let formData = new FormData();
-    formData.append('date', 'aaa');
+    formData.append('date', '2021-11-17');
 
     let drugData: any = await this.http.post('tempMonitor', formData);
     let arrAVGT = [];
