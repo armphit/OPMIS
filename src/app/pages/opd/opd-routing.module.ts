@@ -9,6 +9,7 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { PharmacistStatisticsComponent } from './pharmacist-statistics/pharmacist-statistics.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
 import { SeMedComponent } from './se-med/se-med.component';
+import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,10 @@ const routes: Routes = [
       {
         path: 'report-phar',
         component: ReportPharComponent,
+      },
+      {
+        path: 'temperature-monitor',
+        component: TemperatureMonitorComponent,
       },
       {
         path: '',

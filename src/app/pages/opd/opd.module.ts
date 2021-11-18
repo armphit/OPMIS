@@ -14,6 +14,8 @@ import { OtherMedComponent } from './other-med/other-med.component';
 import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { AllDrugComponent } from './all-drug/all-drug.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
+import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -25,12 +27,14 @@ import { ReportPharComponent } from './report-phar/report-phar.component';
     DrugAppointComponent,
     AllDrugComponent,
     ReportPharComponent,
+    TemperatureMonitorComponent,
   ],
   imports: [
     CommonModule,
     OpdRoutingModule,
     MaterialModules,
     MatTableExporterModule,
+    NgApexchartsModule,
   ],
   providers: [],
 })

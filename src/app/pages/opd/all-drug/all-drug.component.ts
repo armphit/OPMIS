@@ -86,4 +86,10 @@ export class AllDrugComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+  async ttt() {
+    let getData: any = await this.http.getpath(
+      'http://192.168.185.160:88/api_sensor/dht.php?humidity=45&temperature=98'
+    );
+    console.log(getData);
+  }
 }
