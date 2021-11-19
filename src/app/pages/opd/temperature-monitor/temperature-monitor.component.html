@@ -1,5 +1,97 @@
-<div id="chart">
+<!-- <div id="chart">
   <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-    [dataLabels]="chartOptions.dataLabels" [grid]="chartOptions.grid" [stroke]="chartOptions.stroke"
-    [title]="chartOptions.title"></apx-chart>
-</div>
+    [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels"
+    [legend]="chartOptions.legend" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
+    [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
+</div> -->
+<mat-grid-list cols="2" rowHeight="1:1">
+  <mat-grid-tile>
+    <mat-card>
+      <div id="chart">
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+          [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels"
+          [legend]="chartOptions.legend" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
+          [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
+
+
+
+        <mat-grid-list cols="2" rowHeight="2:1">
+          <mat-grid-tile> <i class="fas fa-thermometer-half fa-5x"></i>
+            <span style="font-size: 50px;">
+              <strong style="padding-left: 20px;padding-top: 100px;">{{Ctemperature}} ํ</strong>
+            </span></mat-grid-tile>
+          <mat-grid-tile>
+            <span class="iconify" data-icon="carbon:humidity" style="font-size: 85px;"></span>
+            <span style="font-size: 50px;">
+              <strong>{{Chumidity}}%</strong>
+            </span>
+          </mat-grid-tile>
+        </mat-grid-list>
+
+
+      </div>
+    </mat-card>
+
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <mat-card>
+      <div id="chart">
+        <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+          [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels"
+          [legend]="chartOptions.legend" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
+          [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
+
+
+
+        <mat-grid-list cols="2" rowHeight="2:1">
+          <mat-grid-tile> <i class="fas fa-thermometer-half fa-5x"></i>
+            <span style="font-size: 50px;">
+              <strong style="padding-left: 20px;padding-top: 100px;">{{Ctemperature}} ํ</strong>
+            </span></mat-grid-tile>
+          <mat-grid-tile>
+            <span class="iconify" data-icon="carbon:humidity" style="font-size: 85px;"></span>
+            <span style="font-size: 50px;">
+              <strong>{{Chumidity}}%</strong>
+            </span>
+          </mat-grid-tile>
+        </mat-grid-list>
+
+
+      </div>
+    </mat-card>
+
+  </mat-grid-tile>
+
+
+
+</mat-grid-list>
+
+<!-- <div class="card" style="width: 35rem;">
+
+
+
+
+</div> -->
+
+
+
+
+
+<!-- <div class="card-body">
+
+
+  </div> -->
+<!-- <div class="card" style="width: 18rem;">
+  <div id="chart">
+    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
+      [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels"
+      [legend]="chartOptions.legend" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
+      [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.
+    </p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div> -->
