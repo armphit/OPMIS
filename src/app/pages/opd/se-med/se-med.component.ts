@@ -365,7 +365,7 @@ export class SeMedComponent implements OnInit {
     }
     var docDefinition = {
       pageSize: { width: 325, height: 350 },
-      pageMargins: [5, 50, 1, 1] as any,
+      pageMargins: [5, 100, 1, 1] as any,
       header: {} as any,
 
       content: [
@@ -382,16 +382,17 @@ export class SeMedComponent implements OnInit {
                 start_Date +
                 ' \nExp. : ' +
                 a,
-              fontSize: 25,
+              fontSize: 15,
+              margin: [0, 5, 0, 0],
             },
-            { qr: this.detailDrug.drugCode, fit: '80', margin: [0, 10, 0, 0] },
+            { qr: this.detailDrug.drugCode, fit: '80', margin: [0, 0, 0, 0] },
           ],
         },
       ],
 
       defaultStyle: {
         font: 'THSarabunNew',
-        fontSize: 30,
+        fontSize: 20,
         bold: true,
       },
     };

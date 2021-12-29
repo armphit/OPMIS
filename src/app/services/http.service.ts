@@ -12,7 +12,7 @@ export class HttpService {
   public apiPath: string = 'http://localhost/api/';
   public loading: boolean = false;
   public rootPath: string = 'http://192.168.185.160:88/api/index.php/';
-
+  public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =

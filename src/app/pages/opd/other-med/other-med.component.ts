@@ -201,6 +201,7 @@ export class OtherMedComponent implements OnInit {
       this.nameExcel = 'ตู้เย็น (R)';
     } else if (num == 3) {
       this.nameExcel = 'จัดมือ (M)';
+
       this.name = 'M';
     } else if (num == 4) {
       this.nameExcel = 'ยาเศษ (N)';
@@ -291,7 +292,6 @@ export class OtherMedComponent implements OnInit {
     }
     this.nameExcel =
       this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
-    this.name = event;
     this.dataSource4.filter = event;
 
     if (this.dataSource4.paginator) {

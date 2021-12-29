@@ -16,6 +16,7 @@ import { AllDrugComponent } from './all-drug/all-drug.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
 import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     MaterialModules,
     MatTableExporterModule,
     NgApexchartsModule,
+    ImageCropperModule,
   ],
   providers: [],
 })

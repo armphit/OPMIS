@@ -443,6 +443,26 @@
             </mat-select>
           </mat-form-field>
         </div>
+        <!-- <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
+              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
+                (dateChange)="startChange($event)">
+              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-5">
+          <mat-form-field *ngIf="getName">
+            <mat-label>SELECT TYPE</mat-label>
+            <mat-select [(ngModel)]="selected" (selectionChange)="getDataM($event.value);input4.value = ''">
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div> -->
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right;">
             <input matInput (keyup)="applyFilter4($event)" #input4>

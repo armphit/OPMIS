@@ -25,7 +25,6 @@ const EXCEL_EXTENSION = '.xlsx';
 export interface PeriodicElement {
   patientID: string;
   patientName: string;
-  staffName: string;
   createdDT: string;
   orderStatus: string;
 }
@@ -51,7 +50,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = [
     'patientID',
     'patientName',
-    'staffName',
     'createdDT',
     'orderStatus',
     'Action',
@@ -86,23 +84,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
     this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
-    let getData: any = await this.http.get('listPatient');
-    console.log(getData);
+    let getData: any = await this.http.get('listDataPatien3');
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataPharmacist = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataPharmacist);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        this.dataSource.filterPredicate = function (
-          data,
-          filter: string
-        ): boolean {
-          return (
-            data.patientName.toLowerCase().includes(filter) ||
-            data.patientID.toLowerCase().includes(filter)
-          );
-        };
+        // this.dataSource.filterPredicate = function (
+        //   data,
+        //   filter: string
+        // ): boolean {
+        //   return (
+        //     data.patientName.toLowerCase().includes(filter) ||
+        //     data.patientID.toLowerCase().includes(filter)
+        //   );
+        // };
         // for (let i = 0; i < getData.response.result.length; i++) {
         //   this.numOrder =
         //     Number(getData.response.result[i].amountOrders) +
@@ -131,7 +129,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   public async clickDetail(payment: any) {
     let formData = new FormData();
-    formData.append('hn', payment.patientID);
+    formData.append('hn', payment.hn.trim());
 
     let drugData: any = await this.http.post('medicineList', formData);
 
@@ -157,7 +155,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   public async clickAllergy(cid: any) {
-    console.log(cid);
     let formData = new FormData();
     formData.append('cid', cid);
 

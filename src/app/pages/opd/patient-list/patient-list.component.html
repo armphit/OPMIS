@@ -28,7 +28,7 @@
 
       <ng-container matColumnDef="patientID">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> HN </th>
-        <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;"> {{element.patientID}}
+        <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;"> {{element.hn}}
         </td>
       </ng-container>
 
@@ -36,28 +36,23 @@
       <ng-container matColumnDef="patientName">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-          {{fixName(element.patientName)}}
+          {{fixName(element.patientname)}}
 
         </td>
       </ng-container>
 
 
-      <ng-container matColumnDef="staffName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Staff </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.staffName}}
-        </td>
-      </ng-container>
 
       <ng-container matColumnDef="createdDT">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Created </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.createdDT}}
+        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.readdatetime}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="orderStatus">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
         <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-          {{chageStatus(element.orderStatus)}}
+          {{chageStatus(element.sendMachine)}}
         </td>
       </ng-container>
 
@@ -70,7 +65,7 @@
             รายการยา</button>
 
           <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#drugAllergy"
-            (click)="clickAllergy(element.cid)" style="margin-left: 20px;" *ngIf="element.drugAllergy == 'Y'">
+            (click)="clickAllergy(element.cid)" style="margin-left: 20px;" *ngIf="element.drugAllerg == 'Y'">
             รายการแพ้ยา</button>
         </td>
 

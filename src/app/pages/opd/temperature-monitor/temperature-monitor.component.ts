@@ -13,6 +13,7 @@ import * as moment from 'moment';
 
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+import { FormControl, FormGroup } from '@angular/forms';
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
@@ -31,7 +32,9 @@ export class TemperatureMonitorComponent implements OnInit {
   @ViewChild('chart') chart!: ChartComponent;
   public chartOptions!: Partial<ChartOptions> | any;
   public chartOptions2!: Partial<ChartOptions> | any;
-
+  public campaignOne = new FormGroup({
+    picker: new FormControl(new Date()),
+  });
   constructor(private http: HttpService) {
     this.chartOptions = {
       series: [],
@@ -60,8 +63,10 @@ export class TemperatureMonitorComponent implements OnInit {
   public Chumidity: any = null;
   public Ctemperature: any = null;
   public async getData() {
+    this.startDate = this.campaignOne.value.picker;
+    const end_Date = moment(this.startDate).format('YYYY-MM-DD');
     let formData = new FormData();
-    formData.append('date', '2021-11-19');
+    formData.append('date', end_Date);
 
     let drugData: any = await this.http.post('tempMonitor', formData);
     let currentTemp: any = await this.http.post('currentTemp', formData);
@@ -77,7 +82,7 @@ export class TemperatureMonitorComponent implements OnInit {
           arrAVGT.push(this.dataDrug[index].AVGT);
           arrTIME.push(this.dataDrug[index].HOUR + '.00');
           arrHIGH.push(26);
-          arrLOW.push(10);
+          arrLOW.push(20);
         }
       } else {
         this.dataDrug = null;
@@ -126,7 +131,7 @@ export class TemperatureMonitorComponent implements OnInit {
         },
       ],
       chart: {
-        width: 500,
+        width: '100%',
         height: 350,
         type: 'line',
         dropShadow: {
@@ -149,7 +154,7 @@ export class TemperatureMonitorComponent implements OnInit {
         curve: 'straight',
       },
       title: {
-        text: this.dataDrug[0].NAME,
+        text: this.dataDrug ? this.dataDrug[0].NAME : '',
         align: 'left',
       },
       grid: {
@@ -235,5 +240,10 @@ export class TemperatureMonitorComponent implements OnInit {
     //     size: [0, 7, 0],
     //   },
     // };
+  }
+  startDate: any = null;
+  public async startChange() {
+    this.startDate = new Date(this.campaignOne.value.picker);
+    this.getData();
   }
 }
