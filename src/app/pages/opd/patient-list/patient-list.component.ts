@@ -22,13 +22,6 @@ const EXCEL_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';
 
-export interface PeriodicElement {
-  patientID: string;
-  patientName: string;
-  createdDT: string;
-  orderStatus: string;
-}
-
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
@@ -46,20 +39,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public fileName: any = null;
   public nameExcel: any = null;
   public numOrder: any = null;
-  public dataSource!: MatTableDataSource<PeriodicElement>;
+  public dataSource: any = null;
   public displayedColumns: string[] = [
-    'patientID',
-    'patientName',
-    'createdDT',
-    'orderStatus',
+    'hn',
+    'patientname',
+    'readdatetime',
+    'sendMachine',
     'Action',
   ];
+
   public inputGroup: any = null;
 
   @Input() max: any;
-  @ViewChild(MatSort)
-  sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('MatSort') sort!: MatSort;
+  @ViewChild('MatPaginator') paginator!: MatPaginator;
   public dataDrug: any = null;
   @ViewChild('swiper') swiper!: ElementRef;
   constructor(
@@ -79,6 +72,42 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
 
+  // public getData = async () => {
+  //   const momentDate = new Date();
+  //   const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+
+  //   this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
+  //   let getData: any = await this.http.get('listDataPatien3');
+
+  //   if (getData.connect) {
+  //     if (getData.response.rowCount > 0) {
+  //       this.dataPharmacist = getData.response.result;
+  //       this.dataSource = new MatTableDataSource(this.dataPharmacist);
+  //       this.dataSource.sort = this.sort;
+  //       console.log(this.dataSource.sort);
+  //       this.dataSource.paginator = this.paginator;
+  //       // this.dataSource.filterPredicate = function (
+  //       //   data,
+  //       //   filter: string
+  //       // ): boolean {
+  //       //   return (
+  //       //     data.patientName.toLowerCase().includes(filter) ||
+  //       //     data.patientID.toLowerCase().includes(filter)
+  //       //   );
+  //       // };
+  //       // for (let i = 0; i < getData.response.result.length; i++) {
+  //       //   this.numOrder =
+  //       //     Number(getData.response.result[i].amountOrders) +
+  //       //     Number(this.numOrder);
+  //       // }
+  //     } else {
+  //       this.dataPharmacist = null;
+  //     }
+  //   } else {
+  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //   }
+  // };
+
   public getData = async () => {
     const momentDate = new Date();
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
@@ -89,23 +118,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.dataPharmacist = getData.response.result;
+
         this.dataSource = new MatTableDataSource(this.dataPharmacist);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        // this.dataSource.filterPredicate = function (
-        //   data,
-        //   filter: string
-        // ): boolean {
-        //   return (
-        //     data.patientName.toLowerCase().includes(filter) ||
-        //     data.patientID.toLowerCase().includes(filter)
-        //   );
-        // };
-        // for (let i = 0; i < getData.response.result.length; i++) {
-        //   this.numOrder =
-        //     Number(getData.response.result[i].amountOrders) +
-        //     Number(this.numOrder);
-        // }
       } else {
         this.dataPharmacist = null;
       }

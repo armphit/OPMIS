@@ -17,6 +17,7 @@ import { ReportPharComponent } from './report-phar/report-phar.component';
 import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,6 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     NgApexchartsModule,
     ImageCropperModule,
   ],
-  providers: [],
+  providers: [NgxImageCompressService],
 })
 export class OpdModule {}

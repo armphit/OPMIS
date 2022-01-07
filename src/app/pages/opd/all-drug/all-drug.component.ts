@@ -1,33 +1,22 @@
-import {
-  Component,
-  Input,
-  LOCALE_ID,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation,
-} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  DateAdapter,
-  MatDateFormats,
-  MAT_DATE_FORMATS,
-  MAT_DATE_LOCALE,
-  MAT_NATIVE_DATE_FORMATS,
-} from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
-import { base64ToFile } from 'ngx-image-cropper';
-import {
-  Dimensions,
-  ImageCroppedEvent,
-  ImageTransform,
-} from 'ngx-image-cropper/lib/interfaces';
+
+import { ImageTransform } from 'ngx-image-cropper/lib/interfaces';
 
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+
+import {
+  DataUrl,
+  DOC_ORIENTATION,
+  NgxImageCompressService,
+  UploadResponse,
+} from 'ngx-image-compress';
 
 @Component({
   selector: 'app-all-drug',
@@ -63,13 +52,12 @@ export class AllDrugComponent implements OnInit {
     private http: HttpService,
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>,
-    public router: Router
+    public router: Router,
+    private imageCompress: NgxImageCompressService
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
   }
-
-  ngAfterViewInit() {}
 
   ngOnInit(): void {}
   public getData = async () => {
@@ -122,13 +110,14 @@ export class AllDrugComponent implements OnInit {
     this.imageSrc = null;
     this.drug_code = null;
     this.img_name = null;
-    this.showCropper = false;
-    this.croppedImage = '';
-    this.imageChangedEvent = '';
+    // this.showCropper = false;
+    // this.croppedImage = '';
+    // this.imageChangedEvent = '';
   }
 
   public drug_code: any = null;
   public edit = async (code: any) => {
+    this.imgResultAfterCompress = '';
     this.drug_code = code;
     let formData = new FormData();
     formData.append('code', this.drug_code);
@@ -147,17 +136,14 @@ export class AllDrugComponent implements OnInit {
   };
 
   public sendImage = async () => {
-    if (this.croppedImage) {
-      // this.upload_img_name = this.drug_code + '.' + this.upload_img_name;
+    if (this.fileToReturn) {
       let file: File = this.fileToReturn;
-
-      // formData.append('uploadFile', file, file.name);
       let formData = new FormData();
       formData.append('code', this.drug_code);
       formData.append('upload', file, file.name);
-      formData.append('img_name', this.upload_img_name);
+      // formData.append('upload', this.upload_img);
+      // formData.append('img_name', this.upload_img_name);
       let getData: any = await this.http.post('addImgDrug', formData);
-      console.log(getData);
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           let win: any = window;
@@ -168,9 +154,9 @@ export class AllDrugComponent implements OnInit {
           this.imageSrc = null;
           this.drug_code = null;
           this.img_name = null;
-          this.showCropper = false;
-          this.croppedImage = '';
-          this.imageChangedEvent = '';
+          // this.showCropper = false;
+          // this.croppedImage = '';
+          // this.imageChangedEvent = '';
           this.getData();
         } else {
           Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
@@ -192,16 +178,49 @@ export class AllDrugComponent implements OnInit {
   containWithinAspectRatio = false;
   transform: ImageTransform = {};
 
-  fileChangeEvent(event: any): void {
-    if (event.target.files) {
-      if (event.target.files[0].type.includes('image')) {
-        this.imageSrc = null;
-        this.imageChangedEvent = event;
-        this.img_name = event.target.files[0].name;
-      } else {
-        Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
-      }
-    }
+  // fileChangeEvent(event: any): void {
+  //   if (event.target.files) {
+  //     if (event.target.files[0].type.includes('image')) {
+  //       // this.imageChangedEvent = event;
+  //       this.upload_img = event.target.files[0];
+  //       this.img_name = event.target.files[0].name;
+  //       let reader = new FileReader();
+  //       reader.readAsDataURL(event.target.files[0]);
+  //       reader.onload = (event: any) => {
+  //         this.imageSrc = event.target.result;
+  //       };
+  //     } else {
+  //       Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
+  //     }
+  //   }
+  // }
+
+  imgResultBeforeCompress: DataUrl = '';
+  imgResultAfterCompress: DataUrl = '';
+  imgResultAfterResize: DataUrl = '';
+  imgResultUpload: DataUrl = '';
+  imgResultMultiple: UploadResponse[] = [];
+
+  compressFile() {
+    this.imageSrc = null;
+    this.imageCompress.uploadFile().then(({ image, orientation }) => {
+      this.imgResultBeforeCompress = image;
+      // console.warn('Size in bytes was:', this.imageCompress.byteCount(image));
+
+      this.imageCompress
+        .compressFile(image, orientation, 50, 50)
+        .then((result) => {
+          // console.log(result);
+          this.imgResultAfterCompress = result;
+          // console.warn(
+          //   'Size in bytes is now:',
+          //   this.imageCompress.byteCount(result)
+          // );
+
+          this.fileToReturn = this.base64ToFile(result, 'test');
+          return this.fileToReturn;
+        });
+    });
   }
 
   // imageCropped(event: ImageCroppedEvent) {
@@ -209,9 +228,9 @@ export class AllDrugComponent implements OnInit {
   //   console.log(event, base64ToFile(event.base64!));
   // }
 
-  imageLoaded() {
-    this.showCropper = true;
-  }
+  // imageLoaded() {
+  //   this.showCropper = true;
+  // }
 
   // cropperReady(sourceImageDimensions: Dimensions) {
   //   console.log('Cropper ready', sourceImageDimensions);
@@ -236,12 +255,17 @@ export class AllDrugComponent implements OnInit {
   }
 
   fileToReturn: any = null;
-  imageCropped(event: ImageCroppedEvent) {
-    this.croppedImage = event.base64;
-    this.fileToReturn = this.base64ToFile(
-      event.base64,
-      this.imageChangedEvent.target.files[0].name
-    );
-    return this.fileToReturn;
-  }
+  // imageCropped(event: ImageCroppedEvent) {
+  //   if (event) {
+  //     this.croppedImage = event.base64;
+  //     console.log(this.croppedImage);
+  //     this.fileToReturn = this.base64ToFile(
+  //       event.base64,
+  //       this.imageChangedEvent.target.files[0].name
+  //     );
+  //     return this.fileToReturn;
+  //   } else {
+  //     this.fileToReturn = null;
+  //   }
+  // }
 }
