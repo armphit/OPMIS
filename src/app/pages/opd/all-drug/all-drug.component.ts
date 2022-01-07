@@ -105,11 +105,13 @@ export class AllDrugComponent implements OnInit {
     }
   }
   public closeImg() {
-    this.upload_img = null;
-    this.upload_img_name = null;
+    // this.upload_img = null;
+    // this.upload_img_name = null;
     this.imageSrc = null;
     this.drug_code = null;
-    this.img_name = null;
+    // this.img_name = null;
+    this.fileToReturn = null;
+    this.imgResultAfterCompress = '';
     // this.showCropper = false;
     // this.croppedImage = '';
     // this.imageChangedEvent = '';
@@ -154,6 +156,8 @@ export class AllDrugComponent implements OnInit {
           this.imageSrc = null;
           this.drug_code = null;
           this.img_name = null;
+          this.fileToReturn = null;
+          this.imgResultAfterCompress = '';
           // this.showCropper = false;
           // this.croppedImage = '';
           // this.imageChangedEvent = '';
