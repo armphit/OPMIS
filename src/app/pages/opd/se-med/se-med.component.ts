@@ -87,11 +87,13 @@ export class SeMedComponent implements OnInit {
   ];
 
   public displayedColumns2: string[] = ['Code', 'Name', 'Spec', 'totalQty'];
+  public displayedColumns3: string[] = ['Code', 'Name', 'Spec'];
 
   public dataSource!: MatTableDataSource<PeriodicElement>;
   public dataSource2!: MatTableDataSource<PeriodicElement2>;
-
+  public dataSource3: any = null;
   public dataSEDispense: any;
+  public dataNOSEDispense: any;
   public Date = new Date();
   public test = null;
   public campaignOne = new FormGroup({
@@ -105,9 +107,11 @@ export class SeMedComponent implements OnInit {
 
   @ViewChild('SortT1') SortT1!: MatSort;
   @ViewChild('SortT2') SortT2!: MatSort;
+  @ViewChild('SortT3') SortT3!: MatSort;
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild('paginator2') paginator2!: MatPaginator;
+  @ViewChild('paginator3') paginator3!: MatPaginator;
   // @ViewChild('testq') testq!: ElementRef;
   typeFilter = new FormControl('');
   filterValues = {
@@ -129,8 +133,15 @@ export class SeMedComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
+    const momentDate = new Date();
+    const endDate = moment(momentDate).format('YYYY-MM-DD');
+    const startDate = moment(momentDate).format('YYYY-MM-DD');
+
+    this.startDate = startDate;
+    this.endDate = endDate;
     this.getDataSEListStock();
     this.getDataSEDispense();
+    this.getDataSENODispense();
 
     //  console.log(moment(new Date()).format('MM/DD/YYYY HH:mm:ss'));
   }
@@ -203,15 +214,13 @@ export class SeMedComponent implements OnInit {
   }
 
   public getDataSEDispense = async () => {
-    const momentDate = new Date();
-    const endDate = moment(momentDate).format('YYYY-MM-DD');
-    const startDate = moment(momentDate).format('YYYY-MM-DD');
-    const end_Date2 = moment(momentDate).format('DD/MM/YYYY');
-    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
-    this.startDate = startDate;
-    this.endDate = endDate;
     this.nameSEDispense =
-      'SEDispense' + '(' + String(start_Date2) + '-' + String(end_Date2) + ')';
+      'SEDispense' +
+      '(' +
+      String(this.startDate) +
+      '-' +
+      String(this.endDate) +
+      ')';
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
@@ -226,6 +235,36 @@ export class SeMedComponent implements OnInit {
         this.dataSource2.paginator = this.paginator2;
       } else {
         this.dataSEDispense = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+  nameNOSEDispense: any = null;
+  public getDataSENODispense = async () => {
+    const momentDate = new Date();
+
+    this.nameNOSEDispense =
+      'SENODispense' +
+      '(' +
+      String(this.startDate) +
+      '-' +
+      String(this.endDate) +
+      ')';
+    let formData = new FormData();
+    formData.append('startDate', this.startDate);
+    formData.append('endDate', this.endDate);
+    let getData: any = await this.http.post('SENODispense', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataNOSEDispense = getData.response.result;
+
+        this.dataSource3 = new MatTableDataSource(this.dataNOSEDispense);
+        this.dataSource3.sort = this.SortT3;
+        this.dataSource3.paginator = this.paginator3;
+      } else {
+        this.dataNOSEDispense = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -264,6 +303,39 @@ export class SeMedComponent implements OnInit {
       }
     }
   };
+
+  public PrepackNODispense = async (e: any) => {
+    if (e == 'All') {
+      this.getDataSENODispense();
+    } else {
+      const endDate = moment(new Date()).format('DD/MM/YYYY');
+      if (e == 'Y') {
+        this.nameNOSEDispense = 'Dispense Prepack' + '(' + endDate + ')';
+      } else if (e == 'N') {
+        this.nameNOSEDispense = 'Dispense Main Drug' + '(' + endDate + ')';
+      }
+
+      let formData = new FormData();
+      formData.append('prepack', e);
+      formData.append('startDate', this.startDate);
+      formData.append('endDate', this.endDate);
+      let getData: any = await this.http.post('SENODispense', formData);
+
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataNOSEDispense = getData.response.result;
+
+          this.dataSource3 = new MatTableDataSource(this.dataNOSEDispense);
+          this.dataSource3.sort = this.SortT3;
+          this.dataSource3.paginator = this.paginator3;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  };
   public start_date: any = null;
   public startChange(event: any) {
     this.nameSEDispense = null;
@@ -277,25 +349,28 @@ export class SeMedComponent implements OnInit {
     const momentDate = new Date(event.value);
     const end_Date = moment(momentDate).format('DD/MM/YYYY');
     this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
+    this.nameNOSEDispense = this.start_date + '-' + String(end_Date) + ')';
     this.endDate = moment(momentDate).format('YYYY-MM-DD');
-    let formData = new FormData();
-    formData.append('startDate', this.startDate);
-    formData.append('endDate', this.endDate);
+    this.getDataSEDispense();
+    this.getDataSENODispense();
+    // let formData = new FormData();
+    // formData.append('startDate', this.startDate);
+    // formData.append('endDate', this.endDate);
 
-    let getData: any = await this.http.post('SEDispense', formData);
+    // let getData: any = await this.http.post('SEDispense', formData);
 
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataSEDispense = getData.response.result;
-        this.dataSource2 = new MatTableDataSource(this.dataSEDispense);
-        this.dataSource2.sort = this.SortT2;
-        this.dataSource2.paginator = this.paginator2;
-      } else {
-        this.dataSEDispense = null;
-      }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    }
+    // if (getData.connect) {
+    //   if (getData.response.rowCount > 0) {
+    //     this.dataSEDispense = getData.response.result;
+    //     this.dataSource2 = new MatTableDataSource(this.dataSEDispense);
+    //     this.dataSource2.sort = this.SortT2;
+    //     this.dataSource2.paginator = this.paginator2;
+    //   } else {
+    //     this.dataSEDispense = null;
+    //   }
+    // } else {
+    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    // }
   }
 
   public applyFilter2(event: Event) {
