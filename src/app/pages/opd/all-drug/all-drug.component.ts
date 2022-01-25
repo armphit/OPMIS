@@ -41,6 +41,7 @@ export class AllDrugComponent implements OnInit {
     'miniUnit',
     'deviceName',
     'positionID',
+    'img',
     'action',
   ];
 

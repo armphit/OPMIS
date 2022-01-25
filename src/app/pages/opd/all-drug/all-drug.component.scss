@@ -128,3 +128,11 @@ span a:after {
 span a:hover {
   transform: translateZ(-25px) rotateX(-90deg);
 }
+
+table {
+  width: 100%;
+}
+
+.mat-table {
+  overflow-x: scroll;
+}
