@@ -1,0 +1,108 @@
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+table {
+  width: 100%;
+  height: 100%;
+}
+
+.text{
+  position: absolute;
+  bottom: 10px;
+  font-size: 20px;
+  // color: #3f51b5;
+  font-weight:bold;
+}
+
+.t-num{
+  font-size: 14px;
+  font-weight:bold;
+}
+
+.have{  
+  color: #000000;
+}
+
+.no{  
+  color: #808080;
+}
+
+.t-blue{
+  color: #007bff;
+}
+
+.bt-col{
+  background-color:#3f51b5;
+}
+
+.white{
+  background-color: #ffffff;
+}
+
+.sel-drug{
+  width: 100%;
+  height: 100%;
+  background-color: #db1616;
+}
+
+.display{
+  height: 100vh;
+}
+
+::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
+  color: #3f51b5;
+  font-weight: bold;
+}
+
+
+th.mat-header-cell {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #f8f9fa;
+  color: #000000;
+}
+
+:host ::ng-deep .mat-sort-header-container {
+  display: flex;
+  justify-content: center;
+}
+
+.w-inv{
+  width: 100px;
+}
+
+
+mat-icon {
+  font-size: 1.2em;
+}
+
+
+
+
+// .b-top {
+//   border-top: 1px solid lightgrey;
+// }
+
+// .b-left {
+//   border-left: 1px solid lightgrey;
+// }
+// .b-right {
+//   border-right: 1px solid lightgrey;
+// }
+
+// // mat-icon {
+// //   font-size: 1.2em;
+// // }
+
+

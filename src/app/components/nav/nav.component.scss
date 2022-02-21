@@ -18,7 +18,7 @@
 
 .mat-list-item.active {
   color: whitesmoke !important;
-  background-color: #125166 !important;
+  background-color: #3f51b5 !important;
 }
 
 .sidenav-container {
@@ -26,7 +26,6 @@
 }
 
 .sidenav {
-
   // background: rgb(243, 243, 243);
   box-shadow: 1px 0px 4px 0 rgba(0, 0, 0, 0.3);
 }
@@ -39,31 +38,28 @@
   top: 0;
   z-index: 10;
   height: 80px;
-
 }
 
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover {
   color: whitesmoke !important;
-  background-color: #125166 !important;
+  background-color: #3f51b5 !important;
 }
 
 .mat-expansion-panel-body {
   padding: 0 0px 16px;
 }
 
-
 .grad1 {
-
-  background: #053742;
+  background: #3f51b5;
   /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(left, #053742, #39A2DB);
+  background: -webkit-linear-gradient(left, #3f51b5, #39a2db);
   /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(right, #053742, #39A2DB);
+  background: -o-linear-gradient(right, #3f51b5, #39a2db);
   /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(right, #053742, #39A2DB);
+  background: -moz-linear-gradient(right, #3f51b5, #39a2db);
   /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to right, #053742, #39A2DB);
+  background: linear-gradient(to right, #3f51b5, #39a2db);
   /* Standard syntax (must be last) */
 }
 
@@ -79,7 +75,5 @@
 //     2px 2px 0 #41ba45,
 //     2px -2px 0 #0969A7,
 //     -2px -2px 0 #0969A7;
-
-
 
 // }

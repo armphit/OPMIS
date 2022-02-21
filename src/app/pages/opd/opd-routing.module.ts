@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AllDrugComponent } from './all-drug/all-drug.component';
 import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { ElMedComponent } from './el-med/el-med.component';
+import { OPDStockComponent } from './opd-stock/opd-stock.component';
 import { OpdComponent } from './opd.component';
 import { OtherMedComponent } from './other-med/other-med.component';
 import { PatientListComponent } from './patient-list/patient-list.component';
@@ -52,6 +53,10 @@ const routes: Routes = [
       {
         path: 'temperature-monitor',
         component: TemperatureMonitorComponent,
+      },
+      {
+        path: 'opd-stock',
+        component: OPDStockComponent,
       },
       {
         path: '',

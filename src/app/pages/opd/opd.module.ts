@@ -18,6 +18,7 @@ import { TemperatureMonitorComponent } from './temperature-monitor/temperature-m
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { OPDStockComponent } from './opd-stock/opd-stock.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
     AllDrugComponent,
     ReportPharComponent,
     TemperatureMonitorComponent,
+    OPDStockComponent,
   ],
   imports: [
     CommonModule,
