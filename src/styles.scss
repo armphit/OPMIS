@@ -1,10 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
-
 html,
 body {
   height: 100%;
-
 }
 
 body {
@@ -15,13 +13,10 @@ body {
   font-family: "Sarabun", serif;
 }
 
-
-
 @font-face {
   font-family: SpaceQuest;
   src: url("./assets/OmegleRegular-owopB.ttf") format("truetype");
 }
-
 
 .material-icons {
   font-family: "Material Icons" !important;
@@ -44,8 +39,6 @@ body {
   background: rgba(0, 0, 0, 0.3);
 }
 
-
-
 tr:hover {
   background-color: #e7e4e4;
 }
@@ -63,19 +56,15 @@ mat-paginator {
   justify-content: center !important;
 }
 
-
 th {
-  border-right: 1px solid #E0E0E0;
+  border-right: 1px solid #e0e0e0;
   background-color: #e7e4e488;
   padding-left: 50px;
-
 }
 
 td {
-  border-right: 1px solid #E0E0E0;
+  border-right: 1px solid #e0e0e0;
 }
-
-
 
 .mat-sort-header-content {
   text-align: center;
@@ -94,5 +83,5 @@ table {
 
 .mat-tab-group.mat-primary .mat-ink-bar,
 .mat-tab-nav-bar.mat-primary .mat-ink-bar {
-  background-color: #125166;
+  background-color: #3f51b5;
 }
