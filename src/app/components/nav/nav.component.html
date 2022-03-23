@@ -10,13 +10,10 @@
       <!-- <a mat-list-item [routerLink]="['/drug-device']" [routerLinkActive]="['active']"><i class="fas fa-tablets"></i>
         &nbsp; <strong>Drug Stock</strong>
 
-      </a>
-      <a mat-list-item [routerLink]="['/atms']" [routerLinkActive]="['active']"><i
-          class="fas fa-capsules"></i>&nbsp;<strong>ATMS</strong>
-
       </a> -->
-      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
-        <mat-expansion-panel-header>
+
+      <mat-expansion-panel [class.mat-elevation-z0]="true" dense *ngIf="dataUser=='ipd'||dataUser=='admin'">
+        <mat-expansion-panel-header >
 
           <strong><i class="fas fa-syringe"></i> &nbsp; IPD</strong>
         </mat-expansion-panel-header>
@@ -27,7 +24,7 @@
 
         </mat-nav-list>
       </mat-expansion-panel>
-      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
+      <mat-expansion-panel [class.mat-elevation-z0]="true" dense *ngIf="dataUser=='opd'||dataUser=='admin'">
         <mat-expansion-panel-header [routerLink]="['/opd/drug']">
           <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
         </mat-expansion-panel-header>
@@ -68,7 +65,9 @@
           </a> -->
         </mat-nav-list>
       </mat-expansion-panel>
+      <a mat-list-item [routerLink]="['/manage-system']" [routerLinkActive]="['active']"><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
 
+    </a>
       <!-- <a mat-list-item [routerLink]="['/tsd']" [routerLinkActive]="['active']"><i
           class="fas fa-ambulance"></i>&nbsp;<strong>Test Send Drug</strong>
 
@@ -77,18 +76,26 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+      <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
         <i class="fas fa-bars"></i>
       </button>
       <span>
 
-        <h1 class="div"><strong style="font-size: 30px">MED
-            STOCK
-            ROBOT</strong>
-        </h1>
+
 
       </span>
+      <button type="button" style="text-align: right;" class="btn btn-warning" (click)="signOut()">Sign out</button> -->
+
+        <h1 class="div"><strong style="font-size: 30px">MED
+          STOCK
+          ROBOT</strong>
+      </h1>
+
+      <span style="flex: 1 1 auto;"></span>
+      <div >
+        <button type="button"  class="btn btn-danger" (click)="signOut()"><i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out</button>
+      </div>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>
