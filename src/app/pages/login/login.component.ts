@@ -14,7 +14,11 @@ export class LoginComponent implements OnInit {
   });
   constructor(private http: HttpService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (sessionStorage.getItem('userLogin') != null) {
+      this.http.navRouter('/');
+    }
+  }
 
   public submitInput() {
     let data = {

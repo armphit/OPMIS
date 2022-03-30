@@ -15,6 +15,9 @@ export class HttpService {
   public rootPath: string = 'http://192.168.185.160:88/api/index.php/';
   public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
+  public syncPath: string = 'http://192.168.185.160:4000/';
+  public testPath: string = 'http://localhost:4000/';
+
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
@@ -133,23 +136,40 @@ export class HttpService {
     });
   };
 
-  // public loginNodejs = async (path: string, data: any) => {
-  //   this.loading = true;
-  //   return new Promise((resolve) => {
-  //     this.http
-  //       .post(this.nodePath + path, data)
-  //       .toPromise()
-  //       .then((value) => {
-  //         resolve({ connect: true, response: value });
-  //         this.loading = false;
-  //       })
-  //       .catch((reason) => {
-  //         resolve({ connect: false, response: reason });
-  //         this.loading = false;
-  //       });
-  //   });
-  // };
+  public serchDrug = async () => {
+    this.loading = true;
+    return new Promise((resolve) => {
+      this.http
+        .get('http://192.168.185.160:2000/drugs/*')
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+  };
 
+  public syncNodejs = async (path: string, data: any) => {
+    this.loading = true;
+    return new Promise((resolve) => {
+      this.http
+        // .post(this.testPath + path, data)
+        .post(this.syncPath + path, data)
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+  };
   public alertLog = (type: 'error' | 'success', title: string) => {
     const Toast = Swal.mixin({
       toast: true,

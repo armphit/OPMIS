@@ -4,11 +4,11 @@ import { NavComponent } from './components/nav/nav.component';
 import { AuthGuard } from './guard/auth.guard';
 import { IpdGuard } from './guard/ipd.guard';
 import { OpdGuard } from './guard/opd.guard';
-import { MianNavComponent } from './mian-nav/mian-nav.component';
-import { DrugDeviceComponent } from './pages/drug-device/drug-device.component';
+
 import { LoginComponent } from './pages/login/login.component';
 import { ManageSystemComponent } from './pages/manage-system/manage-system.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
+import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 
 const routes: Routes = [
   {
@@ -16,10 +16,10 @@ const routes: Routes = [
     component: NavComponent,
     canActivate: [AuthGuard],
     children: [
-      // {
-      //   path: 'drug-device',
-      //   component: DrugDeviceComponent,
-      // },
+      {
+        path: 'search-drug',
+        component: SearchDrugComponent,
+      },
       {
         path: 'manage-system',
         component: ManageSystemComponent,

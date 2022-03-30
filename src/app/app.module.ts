@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,8 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { DrugDeviceComponent } from './pages/drug-device/drug-device.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NavModule } from './components/nav/nav.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,23 +19,24 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MaterialModules } from './materialModule';
 import { IpdComponent } from './pages/ipd/ipd.component';
 import { OpdComponent } from './pages/opd/opd.component';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ngxLoadingAnimationTypes, NgxLoadingModule } from 'ngx-loading';
 import { LoginComponent } from './pages/login/login.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { ManageSystemComponent } from './pages/manage-system/manage-system.component';
+import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MianNavComponent,
-    DrugDeviceComponent,
+
     IpdComponent,
     OpdComponent,
     LoginComponent,
     NotfoundComponent,
     ManageSystemComponent,
+    SearchDrugComponent,
   ],
   imports: [
     BrowserModule,
