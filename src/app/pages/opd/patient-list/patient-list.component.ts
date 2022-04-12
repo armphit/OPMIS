@@ -113,7 +113,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
 
     this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
-    let getData: any = await this.http.get('listDataPatien3');
+    let getData: any = await this.http.get('getPatientSync');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {

@@ -1,0 +1,40 @@
+<div class="login-form">
+  <form [formGroup]="inputGroup" (ngSubmit)="inputGroup.valid ? submitInput() :''">
+    <div class="avatar">
+      <img src="https://www.tutorialrepublic.com/examples/images/avatar.png" alt="Avatar" />
+    </div>
+    <h2 class="text-center">Member Login</h2>
+    <div class="social-btn text-center">
+
+      <button type="button" class="btn btn-danger btn-block btn-lg"><i
+          class="fab fa-google-plus-g fa-lg"></i> Sign in
+        with
+        <b>Google+</b></button>
+      <button type="button" class="btn btn-primary btn-block btn-lg"><i class="fab fa-facebook fa-lg"></i> Sign in with
+        <b>Facebook</b></button>
+      <button type="button" class="btn btn-info btn-block btn-lg"><i class="fab fa-twitter fa-lg"></i> Sign in with
+        <b>Twitter</b></button>
+
+    </div>
+    <div class="or-seperator"><i>or</i></div>
+    <div class="form-group">
+
+      <mat-form-field class="example-full-width" style="width: 100%;">
+        <mat-label>User</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <mat-form-field class="example-full-width" style="width: 100%;">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" required>
+      </mat-form-field>
+
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary btn-lg btn-block login-btn">Sign in</button>
+    </div>
+    <p class="text-center small"><a href="#">Forgot Password?</a></p>
+  </form>
+  <p class="text-center small">Don't have an account? <a href="#" style="color: black;">Sign up here!</a></p>
+</div>

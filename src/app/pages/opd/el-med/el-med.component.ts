@@ -109,7 +109,8 @@ export class ElMedComponent implements OnInit {
 
   public dataSource: any = null;
   public dataSource2: any = null;
-
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
+    .role;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;

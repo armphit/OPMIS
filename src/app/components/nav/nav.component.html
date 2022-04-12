@@ -1,67 +1,134 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-
-    <div class="text-center" style="margin: 10px;">
-      <img src="assets/ดาวน์โหลด.jfif" class="w3-round" style="text-align: center" width="180px" height="180px" />
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
+    <div class="text-center" style="margin: 10px">
+      <img
+        src="assets/ดาวน์โหลด.jfif"
+        class="w3-round"
+        style="text-align: center"
+        width="180px"
+        height="180px"
+      />
     </div>
 
     <mat-nav-list>
       <!-- <a mat-list-item [routerLink]="['/drug-device']" [routerLinkActive]="['active']"><i class="fas fa-tablets"></i>
         &nbsp; <strong>Drug Stock</strong>
 
-      </a>
-      <a mat-list-item [routerLink]="['/atms']" [routerLinkActive]="['active']"><i
-          class="fas fa-capsules"></i>&nbsp;<strong>ATMS</strong>
-
       </a> -->
-      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
-        <mat-expansion-panel-header>
 
+      <a
+        *ngIf="dataUser == 'admin'"
+        mat-list-item
+        [routerLink]="['/manage-system']"
+        [routerLinkActive]="['active']"
+        ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
+      </a>
+      <a
+        *ngIf="dataUser == 'admin'"
+        mat-list-item
+        [routerLink]="['/search-drug']"
+        [routerLinkActive]="['active']"
+        ><i class="fas fa-search-plus"></i>&nbsp;<strong>Search Drug</strong>
+      </a>
+
+      <mat-expansion-panel
+        style="margin-top: 4px"
+        [class.mat-elevation-z0]="true"
+        dense
+        *ngIf="dataUser == 'ipd' || dataUser == 'admin'"
+      >
+        <mat-expansion-panel-header>
           <strong><i class="fas fa-syringe"></i> &nbsp; IPD</strong>
         </mat-expansion-panel-header>
         <mat-nav-list dense>
-          <a mat-list-item [routerLink]="['/ipd/ap-med']" [routerLinkActive]="['active']">
+          <a
+            mat-list-item
+            [routerLink]="['/ipd/ap-med']"
+            [routerLinkActive]="['active']"
+          >
             <i class="fas fa-capsules"></i>&nbsp;AP - Med
           </a>
-
         </mat-nav-list>
       </mat-expansion-panel>
-      <mat-expansion-panel [class.mat-elevation-z0]="true" dense>
+      <mat-expansion-panel
+        [class.mat-elevation-z0]="true"
+        dense
+        *ngIf="dataUser == 'opd' || dataUser == 'admin'"
+      >
         <mat-expansion-panel-header [routerLink]="['/opd/drug']">
           <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
         </mat-expansion-panel-header>
         <mat-nav-list dense>
-          <a mat-list-item [routerLink]="['/opd/el-med']" [routerLinkActive]="['active']">
+          <a
+            mat-list-item
+            [routerLink]="['/opd/el-med']"
+            [routerLinkActive]="['active']"
+          >
             <i class="fas fa-capsules"></i>&nbsp;EL - Med
           </a>
-          <a mat-list-item [routerLink]="['/opd/se-med']" [routerLinkActive]="['active']">
+          <a
+            mat-list-item
+            [routerLink]="['/opd/se-med']"
+            [routerLinkActive]="['active']"
+          >
             <i class="fas fa-pills"></i>&nbsp;SE - Med
           </a>
-          <a mat-list-item [routerLink]="['/opd/other-med']" [routerLinkActive]="['active']">
+          <a
+            mat-list-item
+            [routerLink]="['/opd/other-med']"
+            [routerLinkActive]="['active']"
+          >
             <i class="fas fa-tablets"></i>&nbsp;Other - Med
           </a>
-          <a mat-list-item [routerLink]="['/opd/opd-stock']" [routerLinkActive]="['active']">
+          <!-- <a
+            mat-list-item
+            [routerLink]="['/opd/opd-stock']"
+            [routerLinkActive]="['active']"
+          >
             <i class="fas fa-clinic-medical"></i>&nbsp;Opd - Stock
-          </a>
-          <a mat-list-item [routerLink]="['/opd/patient-list']" [routerLinkActive]="['active']">
-            <i class="fas fa-user-injured"></i>&nbsp;Patient - List
-          </a>
-          <a mat-list-item [routerLink]="['/opd/drug-appoint']" [routerLinkActive]="['active']">
-            <i class="fas fa-notes-medical"></i>&nbsp;Drug - Appoint
-          </a>
-          <a mat-list-item [routerLink]="['/opd/temperature-monitor']" [routerLinkActive]="['active']">
-            <i class="fas fa-temperature-low"></i>&nbsp;Temperature - Monitor
+          </a> -->
+          <a
+            mat-list-item
+            [routerLink]="['/opd/report-phar']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-user-nurse"></i>&nbsp;Report &nbsp;Phar
           </a>
 
+          <a
+            mat-list-item
+            [routerLink]="['/opd/patient-list']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-user-injured"></i>&nbsp;Patient - List
+          </a>
+          <a
+            mat-list-item
+            [routerLink]="['/opd/drug-appoint']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-notes-medical"></i>&nbsp;Drug - Appoint
+          </a>
+          <a
+            mat-list-item
+            [routerLink]="['/opd/temperature-monitor']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-temperature-low"></i>&nbsp;Temperature - Monitor
+          </a>
 
           <!-- <a mat-list-item [routerLink]="['/opd/pharmacist-statistics']" [routerLinkActive]="['active']">
             <i class="fas fa-user-nurse"></i>&nbsp;Pharmacist &nbsp;Statistics
           </a>
 
-          <a mat-list-item [routerLink]="['/opd/report-phar']" [routerLinkActive]="['active']">
-            <i class="fas fa-user-nurse"></i>&nbsp;Report &nbsp;Phar
-          </a> -->
+
 
           <!-- <a mat-list-item routerLink="#">
             <mat-icon>visibility</mat-icon>Profile Visibility
@@ -77,18 +144,27 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+      <!-- <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
         <i class="fas fa-bars"></i>
       </button>
       <span>
 
-        <h1 class="div"><strong style="font-size: 30px">MED
-            STOCK
-            ROBOT</strong>
-        </h1>
+
 
       </span>
+      <button type="button" style="text-align: right;" class="btn btn-warning" (click)="signOut()">Sign out</button> -->
+
+      <h1 class="div">
+        <strong style="font-size: 30px">MED STOCK ROBOT</strong>
+      </h1>
+
+      <span style="flex: 1 1 auto"></span>
+      <div>
+        <button type="button" class="btn btn-danger" (click)="signOut()">
+          <i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out
+        </button>
+      </div>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

@@ -65,11 +65,11 @@ const routes: Routes = [
       },
     ],
   },
-  {
-    path: '',
-    redirectTo: '/opd',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: '',
+  //   pathMatch: 'full',
+  //   redirectTo: '/opd',
+  // },
 ];
 
 @NgModule({

@@ -73,7 +73,8 @@ export const GRI_DATE_FORMATS: MatDateFormats = {
 })
 export class SeMedComponent implements OnInit {
   public dataDrug: any = null;
-
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
+    .role;
   public displayedColumns: string[] = [
     'drugCode',
     'Name',
@@ -132,16 +133,22 @@ export class SeMedComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>
   ) {
-    this.dateAdapter.setLocale('en-GB');
     const momentDate = new Date();
     const endDate = moment(momentDate).format('YYYY-MM-DD');
     const startDate = moment(momentDate).format('YYYY-MM-DD');
 
     this.startDate = startDate;
     this.endDate = endDate;
-    this.getDataSEListStock();
-    this.getDataSEDispense();
-    this.getDataSENODispense();
+    this.dateAdapter.setLocale('en-GB');
+    setTimeout(async () => {
+      await this.getDataSEListStock();
+      await this.getDataSEDispense();
+      await this.getDataSENODispense();
+    }, 0);
+
+    // this.getDataSEListStock();
+    // this.getDataSEDispense();
+    // this.getDataSENODispense();
 
     //  console.log(moment(new Date()).format('MM/DD/YYYY HH:mm:ss'));
   }
@@ -472,5 +479,50 @@ export class SeMedComponent implements OnInit {
       },
     };
     pdfMake.createPdf(docDefinition).open();
+  }
+
+  public changeActive(data: any) {
+    Swal.fire({
+      title: 'Change Status?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let st = '';
+        if (data.active == 'Y') {
+          st = 'N';
+        } else {
+          st = 'Y';
+        }
+
+        let formData = new FormData();
+        formData.append('active', st);
+        formData.append('drugCode', data.drugCode);
+        // formData.forEach((value, key) => {
+        //   console.log(key + '=' + value);
+        // });
+        let getData: any = await this.http.post('updateActive', formData);
+
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            await this.getDataSEListStock();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your work has been saved',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire('error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
   }
 }
