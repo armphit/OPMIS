@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -36,10 +36,16 @@ export class SearchDrugComponent implements OnInit {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('input') input!: ElementRef;
   constructor(private http: HttpService, private formBuilder: FormBuilder) {
     this.test();
   }
   submitted = false;
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.input.nativeElement.focus();
+    }, 1000);
+  }
   ngOnInit(): void {
     this.valData = this.formBuilder.group({
       code: ['', [Validators.required]],
@@ -74,18 +80,56 @@ export class SearchDrugComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  public funcAction(val: any) {
+  public funcAction = async (val: any) => {
+    const formData = new FormData();
+    formData.append('drugCode', val.orderitemcode.trim());
+    let getData: any = await this.http.post('listDrugAll101', formData);
+
     this.valData = this.formBuilder.group({
-      code: [val.orderitemcode, Validators.required],
-      name: [val.genericname, Validators.required],
-      unit: [val.dosageunitcode, Validators.required],
-      form: [val.dosegeform, Validators.required],
-      capacity: ['', Validators.required],
-      capacity_unit: ['', Validators.required],
-      pack: ['', Validators.required],
-      firmname: ['', Validators.required],
+      code: [
+        getData.response.result[0]
+          ? getData.response.result[0].orderitemcode
+          : val.orderitemcode,
+        Validators.required,
+      ],
+      name: [
+        getData.response.result[0]
+          ? getData.response.result[0].orderitemTHname
+          : val.genericname,
+        Validators.required,
+      ],
+      unit: [
+        getData.response.result[0]
+          ? getData.response.result[0].dosageunitcode
+          : val.dosageunitcode,
+        Validators.required,
+      ],
+      form: [
+        getData.response.result[0]
+          ? getData.response.result[0].orderunitcode
+          : val.dosegeform,
+        Validators.required,
+      ],
+      capacity: [
+        getData.response.result[0] ? getData.response.result[0].capacity : '',
+        Validators.required,
+      ],
+      capacity_unit: [
+        getData.response.result[0]
+          ? getData.response.result[0].capacity_unit
+          : '',
+        Validators.required,
+      ],
+      pack: [
+        getData.response.result[0] ? getData.response.result[0].pack : '',
+        Validators.required,
+      ],
+      firmname: [
+        getData.response.result[0] ? getData.response.result[0].firmname : '',
+        Validators.required,
+      ],
     });
-  }
+  };
 
   public submitInput = async () => {
     this.submitted = true;
@@ -101,6 +145,7 @@ export class SearchDrugComponent implements OnInit {
       formData.append(value[0], value[1].trim());
     });
     let getData: any = await this.http.post('list101', formData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let drug = {
@@ -136,6 +181,7 @@ export class SearchDrugComponent implements OnInit {
         let drugDict = { drug: drug };
 
         let getDataSoap: any = await this.http.syncNodejs('soapDIH', drugDict);
+
         if (getDataSoap.connect) {
           if (getDataSoap.response.status == 'success') {
             Swal.fire('Success', '', 'success');

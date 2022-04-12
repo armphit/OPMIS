@@ -13,12 +13,12 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { OtherMedComponent } from './other-med/other-med.component';
 import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { AllDrugComponent } from './all-drug/all-drug.component';
-import { ReportPharComponent } from './report-phar/report-phar.component';
 import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { OPDStockComponent } from './opd-stock/opd-stock.component';
+import { ReportPharComponent } from './report-phar/report-phar.component';
 
 @NgModule({
   declarations: [
@@ -29,9 +29,9 @@ import { OPDStockComponent } from './opd-stock/opd-stock.component';
     OtherMedComponent,
     DrugAppointComponent,
     AllDrugComponent,
-    ReportPharComponent,
     TemperatureMonitorComponent,
     OPDStockComponent,
+    ReportPharComponent,
   ],
   imports: [
     CommonModule,

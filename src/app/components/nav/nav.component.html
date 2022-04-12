@@ -23,7 +23,23 @@
 
       </a> -->
 
+      <a
+        *ngIf="dataUser == 'admin'"
+        mat-list-item
+        [routerLink]="['/manage-system']"
+        [routerLinkActive]="['active']"
+        ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
+      </a>
+      <a
+        *ngIf="dataUser == 'admin'"
+        mat-list-item
+        [routerLink]="['/search-drug']"
+        [routerLinkActive]="['active']"
+        ><i class="fas fa-search-plus"></i>&nbsp;<strong>Search Drug</strong>
+      </a>
+
       <mat-expansion-panel
+        style="margin-top: 4px"
         [class.mat-elevation-z0]="true"
         dense
         *ngIf="dataUser == 'ipd' || dataUser == 'admin'"
@@ -71,13 +87,21 @@
           >
             <i class="fas fa-tablets"></i>&nbsp;Other - Med
           </a>
-          <a
+          <!-- <a
             mat-list-item
             [routerLink]="['/opd/opd-stock']"
             [routerLinkActive]="['active']"
           >
             <i class="fas fa-clinic-medical"></i>&nbsp;Opd - Stock
+          </a> -->
+          <a
+            mat-list-item
+            [routerLink]="['/opd/report-phar']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-user-nurse"></i>&nbsp;Report &nbsp;Phar
           </a>
+
           <a
             mat-list-item
             [routerLink]="['/opd/patient-list']"
@@ -104,27 +128,14 @@
             <i class="fas fa-user-nurse"></i>&nbsp;Pharmacist &nbsp;Statistics
           </a>
 
-          <a mat-list-item [routerLink]="['/opd/report-phar']" [routerLinkActive]="['active']">
-            <i class="fas fa-user-nurse"></i>&nbsp;Report &nbsp;Phar
-          </a> -->
+
 
           <!-- <a mat-list-item routerLink="#">
             <mat-icon>visibility</mat-icon>Profile Visibility
           </a> -->
         </mat-nav-list>
       </mat-expansion-panel>
-      <a
-        mat-list-item
-        [routerLink]="['/search-drug']"
-        [routerLinkActive]="['active']"
-        ><i class="fas fa-search-plus"></i>&nbsp;<strong>Search Drug</strong>
-      </a>
-      <a
-        mat-list-item
-        [routerLink]="['/manage-system']"
-        [routerLinkActive]="['active']"
-        ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
-      </a>
+
       <!-- <a mat-list-item [routerLink]="['/tsd']" [routerLinkActive]="['active']"><i
           class="fas fa-ambulance"></i>&nbsp;<strong>Test Send Drug</strong>
 

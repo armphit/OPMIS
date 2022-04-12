@@ -33,7 +33,19 @@ export class LoginComponent implements OnInit {
           sessionStorage.setItem('userLogin', JSON.stringify(login.response));
 
           this.http.alertLog('success', 'Login Success.');
-          this.http.navRouter('/');
+          if (
+            JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+            'opd'
+          ) {
+            this.http.navRouter('/opd');
+          } else if (
+            JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+            'ipd'
+          ) {
+            this.http.navRouter('/ipd');
+          } else {
+            this.http.navRouter('/');
+          }
         } else {
           this.http.alertLog('error', 'Login failure.');
         }

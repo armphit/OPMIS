@@ -44,7 +44,8 @@ export class AllDrugComponent implements OnInit {
     'img',
     'action',
   ];
-
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
+    .role;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
