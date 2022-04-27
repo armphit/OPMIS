@@ -91,8 +91,10 @@ export class ElMedComponent implements OnInit {
     // 'Minimum',
     // 'Maximum',
     // 'SupplierName',
-    'ExpirationDate',
-    'Lotnumber',
+    'Spec',
+    'LOT_NO',
+    'EXP_Date',
+    'amount',
     'Action',
   ];
 
@@ -136,10 +138,41 @@ export class ElMedComponent implements OnInit {
 
   public getData = async () => {
     let getData: any = await this.http.get('ELListStock');
+    let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+
+    const result = Array.from(
+      new Set(
+        getDrugOnHand.response.result.map((s: { drugCode: any }) => s.drugCode)
+      )
+    ).map((lab) => {
+      return {
+        drugCode: lab,
+        LOT_NO: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+        EXP_Date: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+        qty: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { amount: any }) => edition.amount),
+      };
+    });
+
+    var finalVal = getData.response.result.map(function (emp: {
+      drugCode: any;
+    }) {
+      return {
+        ...emp,
+        ...(result.find(
+          (item: { drugCode: any }) => item.drugCode === emp.drugCode
+        ) ?? { LOT_NO: null, EXP_Date: null, qty: null }),
+      };
+    });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
+        this.dataDrug = finalVal;
 
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;

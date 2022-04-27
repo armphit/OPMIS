@@ -78,12 +78,15 @@ export class SeMedComponent implements OnInit {
   public displayedColumns: string[] = [
     'drugCode',
     'Name',
-    'Spec',
     'Quantity',
     'Maximum',
     'percenStock',
     // 'totalQty',
     'drugLocation',
+    'EXP_Date',
+    'LOT_NO',
+    'amount',
+    'active',
     'Action',
   ];
 
@@ -163,12 +166,44 @@ export class SeMedComponent implements OnInit {
 
   public getDataSEListStock = async () => {
     let getData: any = await this.http.get('SEListStock');
+    let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+
+    const result = Array.from(
+      new Set(
+        getDrugOnHand.response.result.map((s: { drugCode: any }) => s.drugCode)
+      )
+    ).map((lab) => {
+      return {
+        drugCode: lab,
+        LOT_NO: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+        EXP_Date: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+        amount: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { amount: any }) => edition.amount),
+      };
+    });
+
+    var finalVal = getData.response.result.map(function (emp: {
+      drugCode: any;
+    }) {
+      return {
+        ...emp,
+        ...(result.find(
+          (item: { drugCode: any }) => item.drugCode === emp.drugCode
+        ) ?? { LOT_NO: null, EXP_Date: null, amount: null }),
+      };
+    });
+
     const endDate = moment(new Date()).format('DD/MM/YYYY');
     this.nameStock = 'Stock' + '(' + endDate + ')';
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
+        this.dataDrug = finalVal;
 
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.SortT1;
@@ -196,6 +231,30 @@ export class SeMedComponent implements OnInit {
       formData.append('prepack', e);
       let getData: any = await this.http.post('SEPrepack', formData);
       // console.log(getData);
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.SortT1;
+          this.dataSource.paginator = this.paginator;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  };
+
+  public getDataActive = async (e: any) => {
+    if (e == 'All') {
+      this.getDataSEListStock();
+    } else {
+      let formData = new FormData();
+      formData.append('data', e);
+      let getData: any = await this.http.post('SEActive', formData);
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.dataDrug = getData.response.result;

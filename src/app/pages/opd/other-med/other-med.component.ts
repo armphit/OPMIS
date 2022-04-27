@@ -1,28 +1,12 @@
-import { ChangeDetectorRef } from '@angular/core';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import {
-  DateAdapter,
-  MatDateFormats,
-  MAT_NATIVE_DATE_FORMATS,
-} from '@angular/material/core';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
-
-export interface JVElement {
-  positionID: string;
-  drugCode: string;
-  drugName: string;
-  packageSpec: string;
-  firmName: string;
-  amount: string;
-  miniUnit: string;
-  deviceName: string;
-}
 
 @Component({
   selector: 'app-other-med',
@@ -43,10 +27,14 @@ export class OtherMedComponent implements OnInit {
     'drugCode',
     'drugName',
     'packageSpec',
-    'amount',
+    // 'LOT_NO',
+    // 'amount',
     'miniUnit',
-    'drugCount',
-    'drugSum',
+    // 'drugCount',
+    // 'drugSum',
+    'LOT_NO',
+    'EXP_Date',
+    'qty',
     'deviceName',
     'positionID',
   ];
@@ -57,6 +45,9 @@ export class OtherMedComponent implements OnInit {
   public dataSource4: any = null;
   public dataSource5: any = null;
   public dataSource6: any = null;
+  public dataSource7: any = null;
+  public dataSource8: any = null;
+  public dataSource9: any = null;
 
   public dataTable: any = null;
   public campaignOne = new FormGroup({
@@ -76,6 +67,9 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatSort4') sort4!: MatSort;
   @ViewChild('MatSort5') sort5!: MatSort;
   @ViewChild('MatSort6') sort6!: MatSort;
+  @ViewChild('MatSort7') sort7!: MatSort;
+  @ViewChild('MatSort8') sort8!: MatSort;
+  @ViewChild('MatSort9') sort9!: MatSort;
 
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
@@ -83,6 +77,9 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatPaginator4') paginator4!: MatPaginator;
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
   @ViewChild('MatPaginator6') paginator6!: MatPaginator;
+  @ViewChild('MatPaginator7') paginator7!: MatPaginator;
+  @ViewChild('MatPaginator8') paginator8!: MatPaginator;
+  @ViewChild('MatPaginator9') paginator9!: MatPaginator;
 
   constructor(private http: HttpService) {
     this.getDataID();
@@ -142,10 +139,41 @@ export class OtherMedComponent implements OnInit {
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
     let getData: any = await this.http.post('listDrugDeviceTEST', formData);
+    let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+
+    const result = Array.from(
+      new Set(
+        getDrugOnHand.response.result.map((s: { drugCode: any }) => s.drugCode)
+      )
+    ).map((lab) => {
+      return {
+        drugCode: lab,
+        LOT_NO: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+        EXP_Date: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+        qty: getDrugOnHand.response.result
+          .filter((s: { drugCode: any }) => s.drugCode === lab)
+          .map((edition: { amount: any }) => edition.amount),
+      };
+    });
+
+    var finalVal = getData.response.result.map(function (emp: {
+      drugCode: any;
+    }) {
+      return {
+        ...emp,
+        ...(result.find(
+          (item: { drugCode: any }) => item.drugCode === emp.drugCode
+        ) ?? { LOT_NO: null, EXP_Date: null, qty: null }),
+      };
+    });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
+        this.dataDrug = finalVal;
         if (this.name == 'JV') {
           this.dataSource = new MatTableDataSource(this.dataDrug);
 
@@ -171,6 +199,18 @@ export class OtherMedComponent implements OnInit {
           this.dataSource6 = new MatTableDataSource(this.dataDrug);
           this.dataSource6.sort = this.sort6;
           this.dataSource6.paginator = this.paginator6;
+        } else if (this.name == 'EL11M') {
+          this.dataSource7 = new MatTableDataSource(this.dataDrug);
+          this.dataSource7.sort = this.sort7;
+          this.dataSource7.paginator = this.paginator7;
+        } else if (this.name == 'EL14M') {
+          this.dataSource8 = new MatTableDataSource(this.dataDrug);
+          this.dataSource8.sort = this.sort8;
+          this.dataSource8.paginator = this.paginator8;
+        } else if (this.name == 'EL15M') {
+          this.dataSource9 = new MatTableDataSource(this.dataDrug);
+          this.dataSource9.sort = this.sort9;
+          this.dataSource9.paginator = this.paginator9;
         }
       } else {
         this.dataDrug = null;
@@ -209,6 +249,15 @@ export class OtherMedComponent implements OnInit {
     } else if (num == 5) {
       this.nameExcel = 'CD-Med_OPD';
       this.name = 'CD';
+    } else if (num == 6) {
+      this.nameExcel = 'EL11M';
+      this.name = 'EL11M';
+    } else if (num == 7) {
+      this.nameExcel = 'EL14M';
+      this.name = 'EL14M';
+    } else if (num == 8) {
+      this.nameExcel = 'EL15M';
+      this.name = 'EL15M';
     }
     this.dataD = [];
 
@@ -269,6 +318,29 @@ export class OtherMedComponent implements OnInit {
     this.dataSource6.filter = filterValue.trim().toLowerCase();
     if (this.dataSource6.paginator) {
       this.dataSource6.paginator.firstPage();
+    }
+  }
+
+  public applyFilter7(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource7.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource7.paginator) {
+      this.dataSource7.paginator.firstPage();
+    }
+  }
+  public applyFilter8(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource8.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource8.paginator) {
+      this.dataSource8.paginator.firstPage();
+    }
+  }
+
+  public applyFilter9(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource9.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource9.paginator) {
+      this.dataSource9.paginator.firstPage();
     }
   }
 

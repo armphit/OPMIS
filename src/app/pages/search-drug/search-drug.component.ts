@@ -10,6 +10,8 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 
@@ -20,10 +22,12 @@ import Swal from 'sweetalert2';
 })
 export class SearchDrugComponent implements OnInit {
   public dataDrug: any = null;
-
+  public dataPrepack: any = null;
+  public dataSelect: any = null;
   public fileName: any = null;
   public nameExcel: any = null;
   public dataSource: any = null;
+  public dataSource2: any = null;
   public displayedColumns: string[] = [
     'orderitemcode',
     'genericname',
@@ -32,20 +36,34 @@ export class SearchDrugComponent implements OnInit {
     'dosegeform',
     'action',
   ];
+  public displayedColumns2: string[] = [
+    'drugCode',
+    'drugName',
+    'deviceCode',
+    'positionID',
+
+    'action',
+  ];
   public valData!: FormGroup;
-  @ViewChild(MatSort)
-  sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  myControl: FormControl = new FormControl();
+  filteredOptions!: Observable<any>;
+  @ViewChild('MatSort') sort!: MatSort;
+  @ViewChild('MatSort2') sort2!: MatSort;
+  @ViewChild('MatPaginator') paginator!: MatPaginator;
+  @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('input') input!: ElementRef;
   constructor(private http: HttpService, private formBuilder: FormBuilder) {
-    this.test();
+    this.listDrugHomc();
+    this.listDrugPrePack();
   }
   submitted = false;
   ngAfterViewInit() {
     setTimeout(() => {
       this.input.nativeElement.focus();
-    }, 1000);
+    }, 500);
   }
+
+  options: any = null;
   ngOnInit(): void {
     this.valData = this.formBuilder.group({
       code: ['', [Validators.required]],
@@ -57,10 +75,28 @@ export class SearchDrugComponent implements OnInit {
       pack: ['', [Validators.required]],
       firmname: ['', [Validators.required]],
     });
+    setTimeout(() => {
+      this.filteredOptions = this.myControl.valueChanges.pipe(
+        startWith(''),
+        map((value) => this._filter(value))
+      );
+    }, 500);
   }
-  public async test() {
-    let getData: any = await this.http.serchDrug();
 
+  private _filter(value: string): string[] {
+    return this.dataSelect
+      .map((x: { orderitemcode: any }) => x.orderitemcode)
+      .filter((option: string) =>
+        option
+          ? option.trim().toLowerCase().includes(value.toLowerCase())
+          : null
+      );
+  }
+
+  public async listDrugHomc() {
+    let getData: any = await this.http.serchDrug();
+    let getData2: any = await this.http.get('getDrugAll101');
+    this.dataSelect = getData2.response.result;
     if (getData.connect) {
       if (getData.response.data.length > 0) {
         this.dataDrug = getData.response.data;
@@ -80,9 +116,13 @@ export class SearchDrugComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  public selectedOption: any = null;
   public funcAction = async (val: any) => {
     const formData = new FormData();
-    formData.append('drugCode', val.orderitemcode.trim());
+    formData.append(
+      'drugCode',
+      val.orderitemcode ? val.orderitemcode.trim() : val.drugCode
+    );
     let getData: any = await this.http.post('listDrugAll101', formData);
 
     this.valData = this.formBuilder.group({
@@ -184,9 +224,22 @@ export class SearchDrugComponent implements OnInit {
 
         if (getDataSoap.connect) {
           if (getDataSoap.response.status == 'success') {
-            Swal.fire('Success', '', 'success');
-            let win: any = window;
-            win.$('#myModal').modal('hide');
+            let updatePack: any = await this.http.post(
+              'updatePack102_mySQL',
+              formData
+            );
+
+            if (updatePack.connect) {
+              if (updatePack.response.rowCount > 0) {
+                Swal.fire('Success', '', 'success');
+                let win: any = window;
+                win.$('#myModal').modal('hide');
+              } else {
+                Swal.fire('Error', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           } else {
             Swal.fire('Error', '', 'error');
           }
@@ -207,5 +260,33 @@ export class SearchDrugComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.valData.reset();
+  }
+
+  public async listDrugPrePack() {
+    let getData: any = await this.http.get('listDrugPrePack');
+
+    if (getData.connect) {
+      if (getData.response.result.length > 0) {
+        this.dataPrepack = getData.response.result;
+        this.dataSource2 = new MatTableDataSource(this.dataPrepack);
+        this.dataSource2.sort = this.sort2;
+        this.dataSource2.paginator = this.paginator2;
+      } else {
+        this.dataPrepack = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  public applyFilter2(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource2.filter = filterValue.trim().toLowerCase();
+  }
+
+  public getPosts(val: any) {
+    let data = {
+      drugCode: val,
+    };
+    this.funcAction(data);
   }
 }

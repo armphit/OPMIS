@@ -1,7 +1,7 @@
 <div style="overflow: auto; margin: 10px">
   <div class="row">
     <div class="col-lg-9"></div>
-    <div class="col-lg-3" *ngIf="dataDrug">
+    <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput (keyup)="applyFilter($event)" #input />
         <mat-placeholder>ค้นหา</mat-placeholder>
@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <div class="responsive-table" [hidden]="!dataDrug">
+  <div class="responsive-table">
     <table
       mat-table
       matTableExporter
@@ -76,6 +76,47 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="LOT_NO">
+        <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+          LOT_NO
+        </th>
+        <td mat-cell *matCellDef="let data">
+          <span
+            Style="padding-left:10px;padding-top:17px"
+            *ngFor="let item of data.LOT_NO"
+            >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="EXP_Date">
+        <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+          EXP_Date
+        </th>
+        <td mat-cell *matCellDef="let data">
+          <span
+            Style="padding-left:10px;padding-top:17px"
+            *ngFor="let item of data.EXP_Date"
+            >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+            <hr *ngIf="data.EXP_Date.length - 1"
+          /></span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="qty">
+        <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+          amount
+        </th>
+        <td mat-cell *matCellDef="let data">
+          <span
+            Style="padding-left:10px;padding-top:17px"
+            *ngFor="let item of data.qty"
+            >{{ item }}<br *ngIf="data.qty.length - 1" />
+            <hr *ngIf="data.qty.length - 1"
+          /></span>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="img">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>image</th>
         <td
@@ -83,9 +124,6 @@
           *matCellDef="let element"
           style="text-align: center; width: 150px"
         >
-          <!-- <img *ngIf="element.pathImage" [src]="path+element.pathImage" width="130" height="115"
-            style="padding: 5px;" data-toggle="modal" data-target="#myModal"
-            (click)="getImg(path+element.pathImage)"> -->
           <img
             *ngIf="!element.pathImage"
             src="https://www.cstservices.com/wp-content/uploads/2019/09/image-not-available.png"
@@ -121,10 +159,13 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    <!-- <div style="float: right;" *ngIf="dataDrug">
-      <button mat-raised-button color="primary"
-        (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
-    </div> -->
+
+    <div style="float: right">
+      <button mat-raised-button color="primary" (click)="exportAsExcelFile()">
+        Export Excel
+      </button>
+    </div>
+
     <mat-paginator
       style="display: flex; justify-content: center"
       [length]="5"
@@ -136,11 +177,9 @@
   </div>
 </div>
 
-<!-- The Modal -->
 <div class="modal fade" id="myModal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Edit Image</h4>
         <button type="button" class="close" data-dismiss="modal">
@@ -148,13 +187,8 @@
         </button>
       </div>
 
-      <!-- Modal body -->
       <div class="modal-body">
         <div class="col-md-10">
-          <!-- <input type="file" class="custom-file-input" id="customFile" #fileInput (change)="fileChangeEvent($event)"
-            required accept="image/*" />
-          <label class="custom-file-label text-left" for="customFile">{{ img_name }}</label> -->
-          <!-- <button class="button button--pan"><span>Upload</span></button> -->
           <span><a href="#" (click)="compressFile()"></a></span>
         </div>
         <img
@@ -171,45 +205,7 @@
           height="500"
           width="400"
         />
-        <!--
-        <br>
-        <div *ngIf="imageSrc&&!imageChangedEvent">
-          <img [src]="imageSrc" height="500" width="400" />
-        </div> -->
 
-        <!-- <mat-grid-list cols="2" *ngIf="imageChangedEvent&& !imageSrc">
-          <mat-grid-tile>
-            <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="false"
-              [containWithinAspectRatio]="containWithinAspectRatio" [aspectRatio]="4 / 3" [resizeToWidth]="256"
-              [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false" [canvasRotation]="canvasRotation"
-              [transform]="transform" [alignImage]="'left'" [style.display]="showCropper ? null : 'none'" format="png"
-              (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"></image-cropper>
-          </mat-grid-tile>
-          <mat-grid-tile><img *ngIf="croppedImage" [src]="croppedImage" [style.border]="croppedImage" />
-          </mat-grid-tile>
-        </mat-grid-list> -->
-
-        <!-- <div class="row">
-          <div class="col">
-            <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
-              [containWithinAspectRatio]="containWithinAspectRatio" [aspectRatio]="4 / 3" [resizeToWidth]="256"
-              [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false" [canvasRotation]="canvasRotation"
-              [transform]="transform" [alignImage]="'left'" [style.display]="showCropper ? null : 'none'" format="png"
-              (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady($event)"
-              (loadImageFailed)="loadImageFailed()"></image-cropper>
-          </div>
-          <div class="col">
-            <img *ngIf="croppedImage" [src]="croppedImage" [style.border]="croppedImage" />
-          </div>
-        </div>
-
-
-
-
-
-
-      </div>
-      <!-- Modal footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="sendImage()">
             Submit
@@ -226,10 +222,164 @@
       </div>
     </div>
   </div>
-
-  <!-- <div id="myModalImg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <span class="close" data-dismiss="modal">&times;</span>
-  <img [src]="imageSrc" class="img-responsive" height="500px" style="text-align: center;">
-
-</div> -->
 </div>
+
+<!-- <table
+  mat-table
+  [dataSource]="dataSource"
+  class="mat-elevation-z8"
+  multiTemplateDataRows
+  matSort
+>
+  <ng-container matColumnDef="drugCode">
+    <th mat-header-cell *matHeaderCellDef>drugCode</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('drugCode', i)"
+      [style.display]="getRowSpan('drugCode', i) ? '' : 'none'"
+    >
+      {{ data.drugCode }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="drugName">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('drugName', i)"
+      [style.display]="getRowSpan('drugName', i) ? '' : 'none'"
+    >
+      {{ data.drugName }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="miniUnit">
+    <th mat-header-cell *matHeaderCellDef>miniUnit</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('miniUnit', i)"
+      [style.display]="getRowSpan('miniUnit', i) ? '' : 'none'"
+    >
+      {{ data.miniUnit }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="deviceName">
+    <th mat-header-cell *matHeaderCellDef>deviceName</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('deviceName', i)"
+      [style.display]="getRowSpan('deviceName', i) ? '' : 'none'"
+    >
+      {{ data.deviceName }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="positionID">
+    <th mat-header-cell *matHeaderCellDef>positionID</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('positionID', i)"
+      [style.display]="getRowSpan('positionID', i) ? '' : 'none'"
+    >
+      {{ data.positionID }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="LOT_NO">
+    <th mat-header-cell *matHeaderCellDef>LOT_NO</th>
+    <td mat-cell *matCellDef="let data">{{ data.LOT_NO }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="EXP_Date">
+    <th mat-header-cell *matHeaderCellDef>EXP_Date</th>
+    <td mat-cell *matCellDef="let data">{{ data.EXP_Date }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="qty">
+    <th mat-header-cell *matHeaderCellDef>qty</th>
+    <td mat-cell *matCellDef="let data">{{ data.qty }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="img">
+    <th mat-header-cell *matHeaderCellDef>img</th>
+    <td
+      mat-cell
+      *matCellDef="let data; let i = dataIndex"
+      [attr.rowspan]="getRowSpan('img', i)"
+      [style.display]="getRowSpan('img', i) ? '' : 'none'"
+    >
+      {{ data.pathImage }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+    <td
+      mat-cell
+      *matCellDef="let element"
+      style="padding-left: 20px; padding-right: 20px; width: 150px"
+    >
+      <button
+        *ngIf="dataUser == 'admin'"
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-backdrop="static"
+        data-keyboard="false"
+        data-target="#myModal"
+        (click)="edit(element.drugCode)"
+      >
+        <i class="fas fa-upload"></i>&nbsp; Upload
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table> -->
+
+<table class="table table-bordered" id="excel-table" hidden>
+  <thead class="thead-dark">
+    <tr>
+      <th>drugCode</th>
+      <th>drugName</th>
+      <th>miniUnit</th>
+      <th>deviceName</th>
+      <th>positionID</th>
+      <th>LOT_NO</th>
+      <th>EXP_Date</th>
+      <th>qty</th>
+    </tr>
+  </thead>
+  <ng-container *ngFor="let data of this.dataA">
+    <tr>
+      <td [attr.rowspan]="data.LOT_NO.length + 1">
+        {{ data.drugCode }}
+      </td>
+      <td [attr.rowspan]="data.LOT_NO.length + 1">
+        {{ data.drugName }}
+      </td>
+      <td [attr.rowspan]="data.LOT_NO.length + 1">
+        {{ data.miniUnit }}
+      </td>
+      <td [attr.rowspan]="data.LOT_NO.length + 1">
+        {{ data.deviceName }}
+      </td>
+
+      <td [attr.rowspan]="data.LOT_NO.length + 1">
+        {{ data.positionID }}
+      </td>
+    </tr>
+    <tr *ngFor="let LOT_NO of data.LOT_NO; let x = index">
+      <td>{{ LOT_NO }}</td>
+      <td>{{ data.EXP_Date[x] }}</td>
+      <td>{{ data.qty[x] }}</td>
+    </tr>
+  </ng-container>
+</table>

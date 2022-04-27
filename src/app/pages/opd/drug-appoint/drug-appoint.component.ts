@@ -59,7 +59,7 @@ export class DrugAppointComponent implements OnInit {
     pack: new FormControl(),
   });
   public dataSource!: MatTableDataSource<PeriodicElement>;
-  public dataSource2!: MatTableDataSource<PeriodicElement2>;
+  // public dataSource2!: MatTableDataSource<PeriodicElement2>;
   public dataSource3!: MatTableDataSource<PeriodicElement>;
   public displayedColumns: string[] = [
     'drugCode',
@@ -69,12 +69,12 @@ export class DrugAppointComponent implements OnInit {
     'forDate',
   ];
 
-  public displayedColumns2: string[] = [
-    'orderitemcode',
-    'orderitemname',
-    'orderqty',
-    'orderunitcode',
-  ];
+  // public displayedColumns2: string[] = [
+  //   'orderitemcode',
+  //   'orderitemname',
+  //   'orderqty',
+  //   'orderunitcode',
+  // ];
 
   public displayedColumns3: string[] = [
     'date',
@@ -93,10 +93,10 @@ export class DrugAppointComponent implements OnInit {
 
   @Input() max: any;
   @ViewChild('MatSort') sort!: MatSort;
-  @ViewChild('MatSort2') sort2!: MatSort;
+  // @ViewChild('MatSort2') sort2!: MatSort;
   @ViewChild('MatSort3') sort3!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
-  @ViewChild('MatPaginator2') paginator2!: MatPaginator;
+  // @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('MatPaginator3') paginator3!: MatPaginator;
 
   constructor(
@@ -190,38 +190,38 @@ export class DrugAppointComponent implements OnInit {
     }
   };
   public dataDrug2: any = null;
-  public getDataCurrent = async () => {
-    const today = new Date();
-    // const tomorrow = new Date(today);
-    // tomorrow.setDate(tomorrow.getDate() + 1);
-    const start_Date2 = moment(today).format('DD/MM/YYYY');
+  // public getDataCurrent = async () => {
+  //   const today = new Date();
+  //   // const tomorrow = new Date(today);
+  //   // tomorrow.setDate(tomorrow.getDate() + 1);
+  //   const start_Date2 = moment(today).format('DD/MM/YYYY');
 
-    this.nameExcel = 'Drug-Today' + '(' + start_Date2 + ')';
-    let getData: any = await this.http.get('listAllDispense');
+  //   this.nameExcel = 'Drug-Today' + '(' + start_Date2 + ')';
+  //   let getData: any = await this.http.get('listAllDispense');
 
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataDrug2 = getData.response.result;
-        this.dataSource2 = new MatTableDataSource(this.dataDrug2);
-        this.dataSource2.sort = this.sort2;
-        this.dataSource2.paginator = this.paginator2;
-      } else {
-        this.dataDrug2 = null;
-      }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    }
-  };
+  //   if (getData.connect) {
+  //     if (getData.response.rowCount > 0) {
+  //       this.dataDrug2 = getData.response.result;
+  //       this.dataSource2 = new MatTableDataSource(this.dataDrug2);
+  //       this.dataSource2.sort = this.sort2;
+  //       this.dataSource2.paginator = this.paginator2;
+  //     } else {
+  //       this.dataDrug2 = null;
+  //     }
+  //   } else {
+  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //   }
+  // };
 
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  public applyFilter2(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource2.filter = filterValue.trim().toLowerCase();
-  }
+  // public applyFilter2(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource2.filter = filterValue.trim().toLowerCase();
+  // }
   nrSelect = '';
   public applyFilter3(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -301,9 +301,6 @@ export class DrugAppointComponent implements OnInit {
       this.getDataAppiont();
       this.nrSelect = '';
     } else if (e == 1) {
-      this.getDataCurrent();
-      this.nrSelect = '';
-    } else if (e == 2) {
       this.getTakemedicine();
       this.nrSelect = '';
     }

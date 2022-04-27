@@ -13,14 +13,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
-import { delay } from 'rxjs/operators';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
-const EXCEL_TYPE =
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const EXCEL_EXTENSION = '.xlsx';
+
 
 @Component({
   selector: 'app-patient-list',
@@ -45,7 +40,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     'patientname',
     'readdatetime',
     'sendMachine',
-    'Action',
+    'status',
+
   ];
 
   public inputGroup: any = null;
@@ -62,6 +58,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
+
   }
 
   ngAfterViewInit() {
@@ -114,10 +111,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
     let getData: any = await this.http.get('getPatientSync');
+    let getData2: any = await this.http.get('get_moph_patient');
+    var employees3 = getData.response.result.map(function (emp: { hn: any; }) {
+        return ({
+          ...emp,
+          ...(getData2.response.result.find((item: { hn: any; }) => item.hn === emp.hn) ?? {cid:null})
+        });
+      })
+
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.dataPharmacist = getData.response.result;
+        this.dataPharmacist = employees3;
 
         this.dataSource = new MatTableDataSource(this.dataPharmacist);
         this.dataSource.sort = this.sort;

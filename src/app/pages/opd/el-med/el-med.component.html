@@ -33,6 +33,7 @@
             LED
           </th>
           <td
+            [attr.colspan]=""
             mat-cell
             *matCellDef="let element"
             style="padding-left: 20px; padding-right: 20px"
@@ -120,7 +121,7 @@
             mat-sort-header
             style="padding-left: 10px"
           >
-            Quantity
+            Quantity DIH
           </th>
           <td
             mat-cell
@@ -131,42 +132,41 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="ExpirationDate">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            ExpirationDate
+        <ng-container matColumnDef="LOT_NO">
+          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+            LOT_NO
           </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ substringDate(element.ExpirationDate) }}
+          <td mat-cell *matCellDef="let data">
+            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
+              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              <hr *ngIf="data.qty.length - 1" />
+            </span>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="Lotnumber">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Lotnumber
+        <ng-container matColumnDef="EXP_Date">
+          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+            EXP_Date
           </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Lotnumber }}
+          <td mat-cell *matCellDef="let data">
+            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
+              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              <hr *ngIf="data.EXP_Date.length - 1"
+            /></span>
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+            amount
+          </th>
+          <td mat-cell *matCellDef="let data">
+            <span Style="padding-left:10px" *ngFor="let item of data.qty"
+              >{{ item }}<br *ngIf="data.qty.length - 1" />
+              <hr *ngIf="data.qty.length - 1"
+            /></span>
+          </td>
+        </ng-container>
         <ng-container matColumnDef="Action">
           <th mat-header-cell *matHeaderCellDef style="text-align: center">
             Action
@@ -194,7 +194,7 @@
         ></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <div style="float: right">
+      <!-- <div style="float: right">
         <button
           mat-raised-button
           color="primary"
@@ -208,7 +208,7 @@
         >
           Export Excel
         </button>
-      </div>
+      </div> -->
       <mat-paginator
         #MatPaginator="matPaginator"
         [length]="10"
