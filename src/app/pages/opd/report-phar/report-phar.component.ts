@@ -36,9 +36,27 @@ export class ReportPharComponent implements OnInit {
     'order',
   ];
 
-  @ViewChild(MatSort)
-  sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  public displayedColumns2: string[] = [
+    'staff',
+    'staffName',
+    'device',
+    'item',
+    'ord',
+  ];
+
+  public displayedColumns3: string[] = [
+    'dispenser_id',
+    'dispenser_name',
+    'item',
+    'order',
+  ];
+
+  @ViewChild('MatSort') sort!: MatSort;
+  @ViewChild('MatSort2') sort2!: MatSort;
+  @ViewChild('MatSort3') sort3!: MatSort;
+  @ViewChild('MatPaginator') paginator!: MatPaginator;
+  @ViewChild('MatPaginator2') paginator2!: MatPaginator;
+  @ViewChild('MatPaginator3') paginator3!: MatPaginator;
 
   constructor(
     private http: HttpService,
@@ -53,54 +71,78 @@ export class ReportPharComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
+  public nameExcel = '';
   public getData = async () => {
     this.dataDrug = null;
     const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
     let getData: any = null;
     let formData = new FormData();
+
     formData.append('time1', this.starttime + ':00');
     formData.append('time2', this.endtime + ':00');
     formData.append('date1', start);
     formData.append('date2', end);
     if (this.numTab == 0) {
-      getData = await this.http.post('checkerPhar', formData);
-    } else {
-      getData = await this.http.post('dispenserPhar', formData);
-    }
-
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
-        this.dataSource = new MatTableDataSource(this.dataDrug);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+      getData = await this.http.post('onusPhar', formData);
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.nameExcel = `ภาระงานผู้ช่วยเภสัชประจำตู้ ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+        } else {
+          this.dataDrug = null;
+        }
       } else {
-        this.dataDrug = null;
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    } else if (this.numTab == 1) {
+      getData = await this.http.post('checkerPhar', formData);
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort2;
+          this.dataSource.paginator = this.paginator2;
+          this.nameExcel = `ภาระงานเภสัชจ่ายยา ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    } else if (this.numTab == 2) {
+      getData = await this.http.post('dispenserPhar', formData);
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort3;
+          this.dataSource.paginator = this.paginator3;
+          this.nameExcel = `ภาระงานเภสัชตรวจยา ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
     }
   };
 
-  public getData2 = async () => {
-    const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
-    const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
-
-    let getData = await this.http.getpath(
-      `http://192.168.185.160:3000/reportq/dispenser/${start}/${end}`
-    );
-
-    // console.log(getData);
-  };
   public applyFilter(event: Event) {
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   public applyFilter2(event: Event) {
-    // const filterValue = (event.target as HTMLInputElement).value;
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  public applyFilter3(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   valuechange() {

@@ -1,5 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -11,13 +16,12 @@ import { ImageTransform } from 'ngx-image-cropper/lib/interfaces';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
-import * as FileSaver from 'file-saver';
 import {
   DataUrl,
-  DOC_ORIENTATION,
   NgxImageCompressService,
   UploadResponse,
 } from 'ngx-image-compress';
+import * as moment from 'moment';
 
 export interface PeriodicElement {
   drugCode: string;
@@ -47,12 +51,12 @@ export class AllDrugComponent implements OnInit {
   public Date = new Date();
   public dataDrug: any = null;
   public campaignOne = new FormGroup({
-    start: new FormControl(new Date()),
-    end: new FormControl(new Date()),
+    start: new FormControl(),
+    end: new FormControl(),
   });
   public startDate: any = null;
   public endDate: any = null;
-  public fileName: any = null;
+
   public nameExcel: any = null;
   public dataSource: any = null;
 
@@ -473,8 +477,75 @@ export class AllDrugComponent implements OnInit {
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    this.fileName = 'ExcelSheet.xlsx';
+
     /* save to file */
-    XLSX.writeFile(wb, this.fileName);
+    XLSX.writeFile(wb, this.nameExcel + '.xlsx');
+  }
+
+  async valuechange() {
+    let getData: any = await this.http.get('getAlldrug');
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+        const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+        this.nameExcel = `All_Drug_OPD_With_EXP (${start} - ${end})`;
+        let formData = new FormData();
+
+        formData.append('date1', start);
+        formData.append('date2', end);
+        let getDrugOnHand: any = await this.http.post(
+          'DrugOnHandWithDate',
+          formData
+        );
+        const result = Array.from(
+          new Set(
+            getDrugOnHand.response.result.map(
+              (s: { drugCode: any }) => s.drugCode
+            )
+          )
+        ).map((lab) => {
+          return {
+            drugCode: lab,
+            LOT_NO: getDrugOnHand.response.result
+              .filter((s: { drugCode: any }) => s.drugCode === lab)
+              .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+            EXP_Date: getDrugOnHand.response.result
+              .filter((s: { drugCode: any }) => s.drugCode === lab)
+              .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+            qty: getDrugOnHand.response.result
+              .filter((s: { drugCode: any }) => s.drugCode === lab)
+              .map((edition: { amount: any }) => edition.amount),
+          };
+        });
+
+        this.dataA = result.map(function (emp: { drugCode: any }) {
+          return {
+            ...emp,
+            ...(getData.response.result.find(
+              (item: { drugCode: any }) => item.drugCode === emp.drugCode
+            ) ?? {}),
+          };
+        });
+
+        this.dataDrug = this.dataA;
+        this.dataSource = new MatTableDataSource(this.dataDrug);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this.dataDrug = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+  clearValue() {
+    this.campaignOne = this.formBuilder.group({
+      start: [''],
+      end: [''],
+    });
+
+    this.getData();
   }
 }

@@ -58,6 +58,8 @@
         </mat-nav-list>
       </mat-expansion-panel>
       <mat-expansion-panel
+        [disabled]="true"
+        [expanded]="true"
         [class.mat-elevation-z0]="true"
         dense
         *ngIf="dataUser == 'opd' || dataUser == 'admin'"

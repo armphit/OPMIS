@@ -1,6 +1,43 @@
 <div style="overflow: auto; margin: 10px">
   <div class="row">
-    <div class="col-lg-9"></div>
+    <div class="col-lg-9">
+      <mat-form-field class="example-form-field">
+        <mat-label>Enter EXP Date</mat-label>
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker"
+        >
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="start"
+          />
+          <input matEndDate placeholder="End date" formControlName="end" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="campaignOnePicker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+      </mat-form-field>
+
+      <button
+        (click)="valuechange()"
+        mat-icon-button
+        color="primary"
+        aria-label="Example icon button with a menu icon"
+      >
+        <mat-icon>check_circle</mat-icon>
+      </button>
+      <button
+        (click)="clearValue()"
+        mat-icon-button
+        color="accent"
+        aria-label="Example icon button with a menu icon"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
     <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput (keyup)="applyFilter($event)" #input />

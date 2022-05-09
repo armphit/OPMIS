@@ -1,4 +1,158 @@
 <mat-tab-group (selectedTabChange)="getTab($event.index)">
+  <mat-tab label="ภาระงานผู้ช่วยเภสัชประจำตู้">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-8">
+          <mat-form-field class="example-form-field" [style.width.px]="200">
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker"
+            >
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="start"
+              />
+              <input matEndDate placeholder="End date" formControlName="end" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+          &nbsp;
+          <mat-form-field [style.width.px]="70">
+            <mat-label>Start time</mat-label>
+            <input type="time" matInput [(ngModel)]="starttime" />
+          </mat-form-field>
+          -
+          <mat-form-field [style.width.px]="70">
+            <mat-label>End time</mat-label>
+            <input type="time" matInput [(ngModel)]="endtime" />
+          </mat-form-field>
+          &nbsp;
+          <button
+            (click)="valuechange()"
+            mat-icon-button
+            color="primary"
+            aria-label="Example icon button with a menu icon"
+          >
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button
+            (click)="clearValue()"
+            mat-icon-button
+            color="accent"
+            aria-label="Example icon button with a menu icon"
+          >
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+        <div class="col-sm-4">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter3($event)" #input />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <table
+      mat-table
+      matTableExporter
+      [dataSource]="dataSource"
+      #MatSort="matSort"
+      matSort
+      #exporter="matTableExporter"
+      class="mat-elevation-z8"
+      matSortActive="checker_id"
+      matSortDirection="desc"
+      [hidden]="!dataDrug"
+    >
+      <ng-container matColumnDef="staff">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>staff_id</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.staff }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="staffName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>staff_name</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.staffName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="device">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>device</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.device }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.item }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ord">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.ord }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+    </table>
+    <div style="float: right" *ngIf="dataDrug">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="
+          exporter.exportTable('xlsx', {
+            fileName: 'ภาระงานเภสัชตรวจยา',
+            sheet: 'sheet_name',
+            Props: { Author: 'Talha' }
+          })
+        "
+      >
+        Excel
+      </button>
+    </div>
+
+    <mat-paginator
+      style="display: flex; justify-content: center"
+      [length]="10"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 50, 100]"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </mat-tab>
   <mat-tab label="ภาระงานเภสัชตรวจยา">
     <div class="container-fluid">
       <div class="row">
@@ -63,11 +217,13 @@
       mat-table
       matTableExporter
       [dataSource]="dataSource"
+      #MatSort2="matSort"
       matSort
-      #exporter="matTableExporter"
+      #exporter2="matTableExporter"
       class="mat-elevation-z8"
       matSortActive="checker_id"
       matSortDirection="desc"
+      [hidden]="!dataDrug"
     >
       <ng-container matColumnDef="checker_id">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>checker_id</th>
@@ -121,8 +277,8 @@
         mat-raised-button
         color="primary"
         (click)="
-          exporter.exportTable('xlsx', {
-            fileName: 'ภาระงานเภสัชตรวจยา',
+          exporter2.exportTable('xlsx', {
+            fileName: 'ภาระงานผู้ช่วยเภสัชประจำตู้',
             sheet: 'sheet_name',
             Props: { Author: 'Talha' }
           })
@@ -133,6 +289,7 @@
     </div>
 
     <mat-paginator
+      #MatPaginator2="matPaginator"
       style="display: flex; justify-content: center"
       [length]="10"
       [pageSize]="10"
@@ -205,14 +362,16 @@
       mat-table
       matTableExporter
       [dataSource]="dataSource"
+      #MatSort3="matSort"
       matSort
-      #exporter="matTableExporter"
+      #exporter3="matTableExporter"
       class="mat-elevation-z8"
       matSortActive="checker_id"
       matSortDirection="desc"
+      [hidden]="!dataDrug"
     >
-      <ng-container matColumnDef="checker_id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>checker_id</th>
+      <ng-container matColumnDef="dispenser_id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>dispenser_id</th>
         <td
           mat-cell
           *matCellDef="let element"
@@ -222,8 +381,10 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="checker_name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>checker_name</th>
+      <ng-container matColumnDef="dispenser_name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          dispenser_name
+        </th>
         <td
           mat-cell
           *matCellDef="let element"
@@ -255,15 +416,15 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
     </table>
     <div style="float: right" *ngIf="dataDrug">
       <button
         mat-raised-button
         color="primary"
         (click)="
-          exporter.exportTable('xlsx', {
+          exporter3.exportTable('xlsx', {
             fileName: 'ภาระงานเภสัชจ่ายยา',
             sheet: 'sheet_name',
             Props: { Author: 'Talha' }
@@ -275,6 +436,7 @@
     </div>
 
     <mat-paginator
+      #MatPaginator3="matPaginator"
       style="display: flex; justify-content: center"
       [length]="10"
       [pageSize]="10"
