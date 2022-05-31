@@ -44,111 +44,9 @@
         #exporter="matTableExporter"
         matSortActive="totalQty"
         matSortDirection="desc"
+        [hiddenColumns]="[6, 7, 8, 9, 10]"
         multiTemplateDataRows
       >
-        <!-- <ng-container matColumnDef="drugCode">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('drugCode', i)"
-            [style.display]="getRowSpan('drugCode', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Name">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('Name', i)"
-            [style.display]="getRowSpan('Name', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Spec">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('Spec', i)"
-            [style.display]="getRowSpan('Spec', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Quantity">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('Quantity', i)"
-            [style.display]="getRowSpan('Quantity', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Maximum">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('Maximum', i)"
-            [style.display]="getRowSpan('Maximum', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="percenStock">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('percenStock', i)"
-            [style.display]="getRowSpan('percenStock', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="drugLocation">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('drugLocation', i)"
-            [style.display]="getRowSpan('drugLocation', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="active">
-          <th mat-header-cell *matHeaderCellDef>drugCode</th>
-          <td
-            mat-cell
-            *matCellDef="let data; let i = dataIndex"
-            [attr.rowspan]="getRowSpan('active', i)"
-            [style.display]="getRowSpan('active', i) ? '' : 'none'"
-          >
-            {{ data.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef>LOT_NO</th>
-          <td mat-cell *matCellDef="let data">{{ data.LOT_NO }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef>EXP_Date</th>
-          <td mat-cell *matCellDef="let data">{{ data.EXP_Date }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef>amount</th>
-          <td mat-cell *matCellDef="let data">{{ data.amount }}</td>
-        </ng-container> -->
-
         <ng-container matColumnDef="drugCode">
           <th
             mat-header-cell
@@ -261,7 +159,7 @@
             mat-sort-header
             style="padding-left: 10px"
           >
-            Quantity
+            Quantity<br />(Box)
           </th>
           <td
             mat-cell
@@ -401,7 +299,7 @@
         ></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <!-- <div style="float: right">
+      <div style="float: right">
         <button
           mat-raised-button
           color="primary"
@@ -415,8 +313,7 @@
         >
           Export Excel
         </button>
-
-      </div> -->
+      </div>
       <mat-paginator
         #paginator="matPaginator"
         [length]="10"
@@ -651,7 +548,7 @@
         </div>
         <div class="col-lg-3" style="float: right; text-align: right">
           <mat-form-field class="example-full-width" *ngIf="dataSEDispense">
-            <input matInput (keyup)="applyFilter2($event)" #input />
+            <input matInput (keyup)="applyFilter3($event)" #input />
             <mat-placeholder>ค้นหา</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>

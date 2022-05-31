@@ -16,7 +16,6 @@ import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 
-
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
@@ -41,7 +40,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     'readdatetime',
     'sendMachine',
     'status',
-
   ];
 
   public inputGroup: any = null;
@@ -58,7 +56,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
-
   }
 
   ngAfterViewInit() {
@@ -69,56 +66,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {}
 
-  // public getData = async () => {
-  //   const momentDate = new Date();
-  //   const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
-
-  //   this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
-  //   let getData: any = await this.http.get('listDataPatien3');
-
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       this.dataPharmacist = getData.response.result;
-  //       this.dataSource = new MatTableDataSource(this.dataPharmacist);
-  //       this.dataSource.sort = this.sort;
-  //       console.log(this.dataSource.sort);
-  //       this.dataSource.paginator = this.paginator;
-  //       // this.dataSource.filterPredicate = function (
-  //       //   data,
-  //       //   filter: string
-  //       // ): boolean {
-  //       //   return (
-  //       //     data.patientName.toLowerCase().includes(filter) ||
-  //       //     data.patientID.toLowerCase().includes(filter)
-  //       //   );
-  //       // };
-  //       // for (let i = 0; i < getData.response.result.length; i++) {
-  //       //   this.numOrder =
-  //       //     Number(getData.response.result[i].amountOrders) +
-  //       //     Number(this.numOrder);
-  //       // }
-  //     } else {
-  //       this.dataPharmacist = null;
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // };
-
   public getData = async () => {
-    const momentDate = new Date();
-    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+    const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    this.nameExcel = 'Patient' + '(' + start + ' - ' + end + ')';
 
-    this.nameExcel = 'Patient' + '(' + start_Date2 + ')';
-    let getData: any = await this.http.get('getPatientSync');
+    let formData = new FormData();
+
+    formData.append('start', start);
+    formData.append('end', end);
+    let getData: any = await this.http.post('getPatientSync', formData);
     let getData2: any = await this.http.get('get_moph_patient');
-    var employees3 = getData.response.result.map(function (emp: { hn: any; }) {
-        return ({
-          ...emp,
-          ...(getData2.response.result.find((item: { hn: any; }) => item.hn === emp.hn) ?? {cid:null})
-        });
-      })
-
+    var employees3 = getData.response.result.map(function (emp: { hn: any }) {
+      return {
+        ...emp,
+        ...(getData2.response.result.find(
+          (item: { hn: any }) => item.hn === emp.hn
+        ) ?? { cid: null }),
+      };
+    });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {

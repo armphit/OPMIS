@@ -571,24 +571,6 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="firmName">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              style="padding-left: 10px"
-            >
-              firmName
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              {{ element.firmName }}
-            </td>
-          </ng-container>
-
           <ng-container matColumnDef="miniUnit">
             <th
               mat-header-cell
@@ -606,21 +588,21 @@
               {{ element.miniUnit }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="dispense">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              amount
+              dispense
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.amount }}
+              {{ element.dispense }}
             </td>
           </ng-container>
 
@@ -654,7 +636,7 @@
             color="primary"
             (click)="
               exporter2.exportTable('xlsx', {
-                fileName: 'nameExcel2',
+                fileName: nameExcel2,
                 sheet: 'sheet_name',
                 Props: { Author: 'Talha' }
               })

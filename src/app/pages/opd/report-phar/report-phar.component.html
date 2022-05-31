@@ -134,7 +134,7 @@
         color="primary"
         (click)="
           exporter.exportTable('xlsx', {
-            fileName: 'ภาระงานเภสัชตรวจยา',
+            fileName: nameExcel,
             sheet: 'sheet_name',
             Props: { Author: 'Talha' }
           })
@@ -278,7 +278,7 @@
         color="primary"
         (click)="
           exporter2.exportTable('xlsx', {
-            fileName: 'ภาระงานผู้ช่วยเภสัชประจำตู้',
+            fileName: nameExcel,
             sheet: 'sheet_name',
             Props: { Author: 'Talha' }
           })
@@ -425,7 +425,7 @@
         color="primary"
         (click)="
           exporter3.exportTable('xlsx', {
-            fileName: 'ภาระงานเภสัชจ่ายยา',
+            fileName: nameExcel,
             sheet: 'sheet_name',
             Props: { Author: 'Talha' }
           })

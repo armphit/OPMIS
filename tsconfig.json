@@ -18,8 +18,10 @@
     "module": "es2020",
     "lib": [
       "es2018",
+      "es2019",
       "dom"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true,
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

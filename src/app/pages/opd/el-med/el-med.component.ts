@@ -102,8 +102,7 @@ export class ElMedComponent implements OnInit {
     'drugCode',
     'drugName',
     'packageSpec',
-    'firmName',
-    'amount',
+    'dispense',
     'miniUnit',
     'deviceName',
     'positionID',
@@ -325,8 +324,7 @@ export class ElMedComponent implements OnInit {
     }
     this.dataDrug2 = null;
 
-    this.nameExcel2 =
-      this.nameExcel + '(' + this.startDate + '_' + this.endDate + ')';
+    this.nameExcel2 = 'ELMed (' + this.startDate + ' - ' + this.endDate + ')';
   }
 
   public start_date: any = null;
@@ -347,20 +345,6 @@ export class ElMedComponent implements OnInit {
       this.getDataID();
     }
   }
-
-  // public numTab: any = null;
-  // public getTab(e: any) {
-  //   this.numTab = e;
-  //   if (e == 0) {
-  //     this.getData();
-  //   } else if (e == 1) {
-  //     this.startDate = moment(this.campaignOne.value.start).format(
-  //       'YYYY-MM-DD'
-  //     );
-  //     this.endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
-  //     this.getDataID();
-  //   }
-  // }
 
   public applyFilter2(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

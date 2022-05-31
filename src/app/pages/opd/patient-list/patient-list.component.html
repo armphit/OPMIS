@@ -1,6 +1,6 @@
 <div style="overflow: auto; margin: 10px">
   <div class="row">
-    <div class="col-lg-9">
+    <div class="col-lg-2">
       <button
         type="button"
         class="btn btn-outline-secondary"
@@ -9,6 +9,31 @@
       >
         <i class="fas fa-sync-alt"></i>&nbsp; Refresh
       </button>
+    </div>
+    <div class="col-lg-7">
+      <mat-form-field class="example-form-field" [style.width.px]="200">
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker"
+        >
+          <input
+            matStartDate
+            placeholder="Start date"
+            formControlName="start"
+          />
+          <input
+            matEndDate
+            placeholder="End date"
+            formControlName="end"
+            (dateChange)="getData()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="campaignOnePicker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+      </mat-form-field>
     </div>
     <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right">

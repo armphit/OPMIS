@@ -174,7 +174,7 @@ export class SeMedComponent implements OnInit {
       )
     ).map((lab) => {
       return {
-        drugCode: lab,
+        codeMap: lab,
         LOT_NO: getDrugOnHand.response.result
           .filter((s: { drugCode: any }) => s.drugCode === lab)
           .map((edition: { LOT_NO: any }) => edition.LOT_NO),
@@ -188,18 +188,18 @@ export class SeMedComponent implements OnInit {
     });
 
     var finalVal = getData.response.result.map(function (emp: {
-      drugCode: any;
+      codeMap: any;
     }) {
       return {
         ...emp,
         ...(result.find(
-          (item: { drugCode: any }) => item.drugCode === emp.drugCode
-        ) ?? { LOT_NO: null, EXP_Date: null, amount: null }),
+          (item: { codeMap: any }) => item.codeMap === emp.codeMap
+        ) ?? { LOT_NO: [], EXP_Date: [], amount: [] }),
       };
     });
 
     const endDate = moment(new Date()).format('DD/MM/YYYY');
-    this.nameStock = 'Stock' + '(' + endDate + ')';
+    this.nameStock = 'SE-Med Stock' + '(' + endDate + ')';
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -230,10 +230,42 @@ export class SeMedComponent implements OnInit {
       let formData = new FormData();
       formData.append('prepack', e);
       let getData: any = await this.http.post('SEPrepack', formData);
-      // console.log(getData);
+      let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+      const result = Array.from(
+        new Set(
+          getDrugOnHand.response.result.map(
+            (s: { drugCode: any }) => s.drugCode
+          )
+        )
+      ).map((lab) => {
+        return {
+          codeMap: lab,
+          LOT_NO: getDrugOnHand.response.result
+            .filter((s: { drugCode: any }) => s.drugCode === lab)
+            .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+          EXP_Date: getDrugOnHand.response.result
+            .filter((s: { drugCode: any }) => s.drugCode === lab)
+            .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+          amount: getDrugOnHand.response.result
+            .filter((s: { drugCode: any }) => s.drugCode === lab)
+            .map((edition: { amount: any }) => edition.amount),
+        };
+      });
+
+      var finalVal = getData.response.result.map(function (emp: {
+        codeMap: any;
+      }) {
+        return {
+          ...emp,
+          ...(result.find(
+            (item: { codeMap: any }) => item.codeMap === emp.codeMap
+          ) ?? { LOT_NO: [], EXP_Date: [], amount: [] }),
+        };
+      });
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
-          this.dataDrug = getData.response.result;
+          this.dataDrug = finalVal;
 
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.SortT1;
@@ -442,8 +474,15 @@ export class SeMedComponent implements OnInit {
   public applyFilter2(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource2.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if (this.dataSource2.paginator) {
+      this.dataSource2.paginator.firstPage();
+    }
+  }
+  public applyFilter3(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource3.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource3.paginator) {
+      this.dataSource3.paginator.firstPage();
     }
   }
   applyFilterType(filterValue: string) {

@@ -30,13 +30,14 @@ export class OtherMedComponent implements OnInit {
     // 'LOT_NO',
     // 'amount',
     'miniUnit',
-    // 'drugCount',
-    // 'drugSum',
+
     'LOT_NO',
     'EXP_Date',
     'qty',
     'deviceName',
     'positionID',
+    'freq',
+    'dispense',
   ];
   selected = '';
   public dataSource: any = null;
