@@ -141,6 +141,14 @@ export class AllDrugComponent implements OnInit {
           };
         });
 
+        this.dataA.forEach((element: any) => {
+          if (element.EXP_Date.length > 1) {
+            element.EXP_Date.sort((a: any, b: any) =>
+              a < b ? 1 : a > b ? -1 : 0
+            );
+          }
+        });
+
         this.dataDrug = this.dataA;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;

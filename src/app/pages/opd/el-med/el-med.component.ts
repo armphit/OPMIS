@@ -84,9 +84,9 @@ export class ElMedComponent implements OnInit {
     'LED',
     'Row',
     'Column',
-    // 'Code',
+    'Code',
     'Name',
-    'Spec',
+
     'Quantity',
     // 'Minimum',
     // 'Maximum',
@@ -182,6 +182,8 @@ export class ElMedComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+    this.nameExcel2 =
+      'ELMed Stock (' + this.startDate + ' - ' + this.endDate + ')';
   };
 
   public id_valid: any = null;
@@ -323,8 +325,6 @@ export class ElMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
     this.dataDrug2 = null;
-
-    this.nameExcel2 = 'ELMed (' + this.startDate + ' - ' + this.endDate + ')';
   }
 
   public start_date: any = null;

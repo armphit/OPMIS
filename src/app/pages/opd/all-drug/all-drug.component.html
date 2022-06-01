@@ -289,7 +289,7 @@
       <th>qty</th>
     </tr>
   </thead>
-  <ng-container *ngFor="let data of this.dataA">
+  <ng-container *ngFor="let data of dataA">
     <ng-container *ngFor="let LOT_NO of data.LOT_NO; let i = index">
       <tr>
         <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
