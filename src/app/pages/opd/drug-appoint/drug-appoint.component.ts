@@ -110,52 +110,12 @@ export class DrugAppointComponent implements OnInit {
     this.startDate = new Date(new Date().setDate(new Date().getDate() + 1));
     this.startDate2 = new Date(new Date().setDate(new Date().getDate() + 1));
 
-    // this.getDataTomorrow();
     this.getDataAppiont();
-
-    // this.startDate = today;
-    // this.getDataUnit();
   }
 
   ngAfterViewInit() {}
 
   ngOnInit(): void {}
-
-  // public getDataTomorrow = async () => {
-  //   const today = new Date();
-  //   const tomorrow = new Date(today);
-  //   tomorrow.setDate(tomorrow.getDate() + 1);
-  //   const start_Date2 = moment(tomorrow).format('DD/MM/YYYY');
-
-  //   this.nameExcel = 'Drug-Appoint' + '(' + start_Date2 + ')';
-  //   let getData: any = await this.http.drugAppoint_send();
-
-  //   if (getData.connect) {
-  //     try {
-  //       this.dataDrug = getData.response.data;
-  //       this.dataSource = new MatTableDataSource(this.dataDrug);
-  //       this.dataSource.sort = this.sort;
-  //       this.dataSource.paginator = this.paginator;
-  //     } catch (error) {
-  //       this.getDataTomorrow();
-  //     }
-  //     // if (getData.response.data) {
-  //     //   this.dataDrug = getData.response.data;
-  //     //   this.dataSource = new MatTableDataSource(this.dataDrug);
-  //     //   this.dataSource.sort = this.sort;
-  //     //   this.dataSource.paginator = this.paginator;
-  //     //   // for (let i = 0; i < getData.response.result.length; i++) {
-  //     //   //   this.numOrder =
-  //     //   //     Number(getData.response.result[i].amountOrders) +
-  //     //   //     Number(this.numOrder);
-  //     //   // }
-  //     // } else {
-  //     //   this.getDataTomorrow();
-  //     // }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // };
 
   public getDataAppiont = async () => {
     const start_Date = moment(this.startDate2).format('YYYY-MM-DD');
@@ -169,14 +129,6 @@ export class DrugAppointComponent implements OnInit {
     let getData: any = await this.http.post('getAppiont', formData);
 
     if (getData.connect) {
-      // try {
-      //   this.dataDrug = getData.response.data;
-      //   this.dataSource = new MatTableDataSource(this.dataDrug);
-      //   this.dataSource.sort = this.sort;
-      //   this.dataSource.paginator = this.paginator;
-      // } catch (error) {
-      //   this.getDataAppiont();
-      // }
       if (getData.response.result) {
         this.dataDrug = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataDrug);
@@ -248,11 +200,36 @@ export class DrugAppointComponent implements OnInit {
       let formData = new FormData();
       formData.append('data', med);
       formData.append('startDate', start_Date);
+      formData.append('depCode', 'W8');
       let getData: any = await this.http.post('takeMedicine_getUnit', formData);
+      let getData2: any = await this.http.post('listINV', formData);
 
       if (getData.connect) {
         if (getData.response.result) {
-          this.dataDrug3 = getData.response.result;
+          let newPetList = getData2.response.result.map((val: any) => ({
+            drugCode: val.drugCode,
+            INVamount: val.amount,
+          }));
+          this.dataDrug3 = getData.response.result
+            .map(function (emp: { drugCode: any }) {
+              return {
+                ...emp,
+                ...(newPetList.find(
+                  (item: { drugCode: any }) => item.drugCode === emp.drugCode
+                ) ?? { INVamount: 0 }),
+              };
+            })
+            .map((data: any) => ({
+              ...data,
+              Mqty: data.HISPackageRatio
+                ? data.INVamount
+                  ? Math.ceil(
+                      (data.amount - data.INVamount) / data.HISPackageRatio
+                    ) * data.HISPackageRatio
+                  : Math.ceil(data.amount / data.HISPackageRatio) *
+                    data.HISPackageRatio
+                : data.amount,
+            }));
           this.dataSource3 = new MatTableDataSource(this.dataDrug3);
           this.dataSource3.sort = this.sort3;
           this.dataSource3.paginator = this.paginator3;
@@ -275,12 +252,37 @@ export class DrugAppointComponent implements OnInit {
     this.nameExcel = 'เบิกยา' + '(' + start_Date2 + ')';
     let formData = new FormData();
     formData.append('startDate', start_Date);
-
+    formData.append('depCode', 'W8');
     let getData: any = await this.http.post('takeMedicine', formData);
+    let getData2: any = await this.http.post('listINV', formData);
 
     if (getData.connect) {
       if (getData.response.result) {
-        this.dataDrug3 = getData.response.result;
+        let newPetList = getData2.response.result.map((val: any) => ({
+          drugCode: val.drugCode,
+          INVamount: val.amount,
+        }));
+        this.dataDrug3 = getData.response.result
+          .map(function (emp: { drugCode: any }) {
+            return {
+              ...emp,
+              ...(newPetList.find(
+                (item: { drugCode: any }) => item.drugCode === emp.drugCode
+              ) ?? { INVamount: 0 }),
+            };
+          })
+          .map((data: any) => ({
+            ...data,
+            Mqty: data.HISPackageRatio
+              ? data.INVamount
+                ? Math.ceil(
+                    (data.amount - data.INVamount) / data.HISPackageRatio
+                  ) * data.HISPackageRatio
+                : Math.ceil(data.amount / data.HISPackageRatio) *
+                  data.HISPackageRatio
+              : data.amount,
+          }));
+
         this.dataSource3 = new MatTableDataSource(this.dataDrug3);
         this.dataSource3.sort = this.sort3;
         this.dataSource3.paginator = this.paginator3;

@@ -268,7 +268,7 @@
           matSort
           #exporter3="matTableExporter"
           class="mat-elevation-z8"
-          matSortActive="qty"
+          matSortActive="Mqty"
           matSortDirection="desc"
           [hiddenColumns]="[1, 3, 5, 6, 8]"
         >
@@ -333,18 +333,20 @@
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.amount }}
+              {{ element.amount - element.INVamount }}
             </td>
           </ng-container>
 
           <ng-container matColumnDef="qty">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>DISP_QTY</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="Mqty">
+              DISP_QTY
+            </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.qty }}
+              {{ element.Mqty < 0 ? 0 : element.Mqty }}
             </td>
           </ng-container>
           <ng-container matColumnDef="SALE_UNIT">

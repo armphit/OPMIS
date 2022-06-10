@@ -60,7 +60,7 @@ export class SearchDrugComponent implements OnInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.input.nativeElement.focus();
-    }, 500);
+    }, 1000);
   }
 
   options: any = null;

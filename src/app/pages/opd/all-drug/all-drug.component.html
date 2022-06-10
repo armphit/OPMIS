@@ -176,13 +176,20 @@
           *matCellDef="let element"
           style="text-align: center; width: 150px"
         >
-          <img
+          <!-- <img
             *ngIf="!element.pathImage"
             src="https://www.cstservices.com/wp-content/uploads/2019/09/image-not-available.png"
             width="130"
             height="115"
             style="padding: 5px; cursor: none"
           />
+          <img
+            *ngIf="element.pathImage"
+            [src]="imageSrc + element.pathImage"
+            width="130"
+            height="115"
+            style="padding: 5px"
+          /> -->
         </td>
       </ng-container>
 
@@ -240,10 +247,21 @@
       </div>
 
       <div class="modal-body">
-        <div class="col-md-10">
-          <span><a href="#" (click)="compressFile()"></a></span>
+        <div class="col-md-10" style="padding-bottom: 10px">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="uploadMultipleFiles()"
+          >
+            <i class="fas fa-upload"></i> &nbsp; Click to upload file
+          </button>
         </div>
         <img
+          *ngFor="let result of imgResultMultiple"
+          [src]="result.image"
+          alt=""
+        />
+        <!-- <img
           *ngIf="imageSrc && !imgResultAfterCompress"
           [src]="imageSrc"
           alt=""
@@ -256,7 +274,7 @@
           alt=""
           height="500"
           width="400"
-        />
+        /> -->
 
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" (click)="sendImage()">
@@ -275,6 +293,18 @@
     </div>
   </div>
 </div>
+
+<ng-template
+  #itemTemplate
+  let-index="index"
+  let-type="type"
+  let-data="data"
+  let-currIndex="currIndex"
+>
+  <span class="item-text">
+    {{ data?.title }}
+  </span>
+</ng-template>
 
 <table class="table table-bordered" id="excel-table" hidden>
   <thead class="thead-dark">

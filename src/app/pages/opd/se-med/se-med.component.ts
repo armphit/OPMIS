@@ -513,7 +513,7 @@ export class SeMedComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let win: any = window;
-        win.$('#myModal').modal('hide');
+        win.$('#edit').modal('hide');
         Swal.fire('แก้ไขข้อมูลเสร็จสิ้น', '', 'success');
         this.getDataSEListStock();
       } else {
