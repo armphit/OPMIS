@@ -11,7 +11,6 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.1.2",
-    "@angular/cdk": "^12.1.2",
     "@angular/common": "~12.1.2",
     "@angular/compiler": "~12.1.2",
     "@angular/core": "~12.1.2",
@@ -30,6 +29,7 @@
     "mat-table-exporter": "^10.2.3",
     "moment": "^2.29.1",
     "ng-apexcharts": "^1.5.12",
+    "ng-gallery": "^7.0.0",
     "ngx-image-compress": "^13.1.5",
     "ngx-image-cropper": "^5.0.1",
     "ngx-loading": "^8.0.0",

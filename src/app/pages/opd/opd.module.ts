@@ -19,6 +19,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { OPDStockComponent } from './opd-stock/opd-stock.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
+import { GalleryModule } from 'ng-gallery';
+import { LightboxModule } from 'ng-gallery/lightbox';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import { ReportPharComponent } from './report-phar/report-phar.component';
   imports: [
     CommonModule,
     OpdRoutingModule,
-    MaterialModules,
+    // MaterialModules,
     MatTableExporterModule,
     NgApexchartsModule,
     ImageCropperModule,
