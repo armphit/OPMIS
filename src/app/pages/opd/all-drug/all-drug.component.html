@@ -1,4 +1,12 @@
 <div style="overflow: auto; margin: 10px">
+  <!-- <button
+    mat-raised-button
+    color="accent"
+    (click)="lightbox.open(0, 'lightbox', { panelClass: 'fullscreen' })"
+  >
+    Open Lightbox in fullscreen mode
+  </button> -->
+
   <div class="row">
     <div class="col-lg-9">
       <mat-form-field class="example-form-field">
@@ -176,20 +184,14 @@
           *matCellDef="let element"
           style="text-align: center; width: 150px"
         >
-          <!-- <img
-            *ngIf="!element.pathImage"
-            src="https://www.cstservices.com/wp-content/uploads/2019/09/image-not-available.png"
-            width="130"
-            height="115"
-            style="padding: 5px; cursor: none"
-          />
           <img
             *ngIf="element.pathImage"
-            [src]="imageSrc + element.pathImage"
+            [src]="'http://192.168.185.160:88/api' + element.pathImage"
             width="130"
             height="115"
             style="padding: 5px"
-          /> -->
+            (click)="test(element); lightbox.open(0)"
+          />
         </td>
       </ng-container>
 

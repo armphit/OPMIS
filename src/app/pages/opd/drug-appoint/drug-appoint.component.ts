@@ -82,7 +82,6 @@ export class DrugAppointComponent implements OnInit {
     'drugCode',
     'name',
     'dept',
-    'amount',
     'HISPackageRatio',
     'qty',
     'SALE_UNIT',
@@ -142,38 +141,12 @@ export class DrugAppointComponent implements OnInit {
     }
   };
   public dataDrug2: any = null;
-  // public getDataCurrent = async () => {
-  //   const today = new Date();
-  //   // const tomorrow = new Date(today);
-  //   // tomorrow.setDate(tomorrow.getDate() + 1);
-  //   const start_Date2 = moment(today).format('DD/MM/YYYY');
-
-  //   this.nameExcel = 'Drug-Today' + '(' + start_Date2 + ')';
-  //   let getData: any = await this.http.get('listAllDispense');
-
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       this.dataDrug2 = getData.response.result;
-  //       this.dataSource2 = new MatTableDataSource(this.dataDrug2);
-  //       this.dataSource2.sort = this.sort2;
-  //       this.dataSource2.paginator = this.paginator2;
-  //     } else {
-  //       this.dataDrug2 = null;
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // };
 
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  // public applyFilter2(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource2.filter = filterValue.trim().toLowerCase();
-  // }
   nrSelect = '';
   public applyFilter3(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -183,77 +156,43 @@ export class DrugAppointComponent implements OnInit {
 
   public applyFilter4(event: Event) {}
 
+  public changMed: any = null;
   public async getUnit(med: any) {
-    // this.nameExcel = null;
-    if (med) {
-      const start_Date = moment(this.startDate).format('YYYY-MM-DD');
-      let name = null;
-      if (med == 4) {
-        name = 'ยาเม็ด';
-      } else if (med == 3) {
-        name = 'ยาฉีด';
-      } else {
-        name = 'ยาอื่นๆ';
-      }
-
-      this.nameExcel = 'เบิกยา' + '(' + name + ')' + '(' + start_Date + ')';
-      let formData = new FormData();
-      formData.append('data', med);
-      formData.append('startDate', start_Date);
-      formData.append('depCode', 'W8');
-      let getData: any = await this.http.post('takeMedicine_getUnit', formData);
-      let getData2: any = await this.http.post('listINV', formData);
-
-      if (getData.connect) {
-        if (getData.response.result) {
-          let newPetList = getData2.response.result.map((val: any) => ({
-            drugCode: val.drugCode,
-            INVamount: val.amount,
-          }));
-          this.dataDrug3 = getData.response.result
-            .map(function (emp: { drugCode: any }) {
-              return {
-                ...emp,
-                ...(newPetList.find(
-                  (item: { drugCode: any }) => item.drugCode === emp.drugCode
-                ) ?? { INVamount: 0 }),
-              };
-            })
-            .map((data: any) => ({
-              ...data,
-              Mqty: data.HISPackageRatio
-                ? data.INVamount
-                  ? Math.ceil(
-                      (data.amount - data.INVamount) / data.HISPackageRatio
-                    ) * data.HISPackageRatio
-                  : Math.ceil(data.amount / data.HISPackageRatio) *
-                    data.HISPackageRatio
-                : data.amount,
-            }));
-          this.dataSource3 = new MatTableDataSource(this.dataDrug3);
-          this.dataSource3.sort = this.sort3;
-          this.dataSource3.paginator = this.paginator3;
-        } else {
-          this.dataDrug3 = null;
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-      }
-    } else {
-      this.getTakemedicine();
-    }
+    this.changMed = med;
+    this.getTakemedicine();
   }
 
   public dataDrug3: any = null;
+  public checkedMap: any = null;
   public getTakemedicine = async () => {
     const start_Date = moment(this.startDate).format('YYYY-MM-DD');
-    const start_Date2 = moment(this.startDate).format('DD/MM/YYYY');
+    // const start_Date2 = moment(this.startDate).format('DD/MM/YYYY');
+    let name = null;
+    if (this.changMed == 4) {
+      name = 'ยาเม็ด';
+    } else if (this.changMed == 3) {
+      name = 'ยาฉีด';
+    } else if (this.changMed == 5) {
+      name = 'ยาอื่นๆ';
+      this.changMed = "NOT IN ('3','4')";
+    } else if (this.changMed == 6) {
+      name = 'ยาอื่นๆ';
+      this.changMed = 'IS NULL';
+    } else {
+      name = '';
+      this.changMed = "NOT IN ('')";
+    }
 
-    this.nameExcel = 'เบิกยา' + '(' + start_Date2 + ')';
+    this.nameExcel = 'เบิกยา' + '(' + name + ')' + '(' + start_Date + ')';
     let formData = new FormData();
+    formData.append('data', this.changMed);
     formData.append('startDate', start_Date);
     formData.append('depCode', 'W8');
-    let getData: any = await this.http.post('takeMedicine', formData);
+
+    // let formData = new FormData();
+    // formData.append('startDate', start_Date);
+    // formData.append('depCode', 'W8');
+    let getData: any = await this.http.post('takeMedicine_getUnit', formData);
     let getData2: any = await this.http.post('listINV', formData);
 
     if (getData.connect) {
@@ -339,5 +278,8 @@ export class DrugAppointComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+  }
+  changDrugMap() {
+    this.getTakemedicine();
   }
 }

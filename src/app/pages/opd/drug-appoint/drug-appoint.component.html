@@ -233,6 +233,7 @@
             </mat-form-field>
           </form>
         </div>
+
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
             <mat-label>Select Unit</mat-label>
@@ -244,12 +245,14 @@
               <mat-option value="4"> ยาเม็ด </mat-option>
               <mat-option value="3"> ยาฉีด </mat-option>
               <mat-option value="5"> อื่นๆ </mat-option>
+              <mat-option value="6"> ยาที่ยังไม่ได้ Map </mat-option>
               <!-- <mat-option *ngFor="let i of dataUnit" [value]='i'>
                 {{i.DFORM_NAME}}
               </mat-option>-->
             </mat-select>
           </mat-form-field>
         </div>
+
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter3($event)" #input />
@@ -270,7 +273,7 @@
           class="mat-elevation-z8"
           matSortActive="Mqty"
           matSortDirection="desc"
-          [hiddenColumns]="[1, 3, 5, 6, 8]"
+          [hiddenColumns]="[1, 3, 4, 5, 7]"
         >
           <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>DISP_DATE</th>
@@ -325,16 +328,6 @@
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             ></td>
-          </ng-container>
-          <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Amount</th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              {{ element.amount - element.INVamount }}
-            </td>
           </ng-container>
 
           <ng-container matColumnDef="qty">

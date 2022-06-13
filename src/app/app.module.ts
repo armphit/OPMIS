@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { HttpClientModule } from '@angular/common/http';
 import { NavModule } from './components/nav/nav.module';
-import { NgxPaginationModule } from 'ngx-pagination';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MaterialModules } from './materialModule';
@@ -50,7 +50,7 @@ import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
     MatListModule,
     HttpClientModule,
     NavModule,
-    NgxPaginationModule,
+
     ReactiveFormsModule,
     MatGridListModule,
     MaterialModules,

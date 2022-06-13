@@ -80,23 +80,7 @@ export class ElMedComponent implements OnInit {
   public dataRow: any = null;
   public dataColumn: any = null;
   public show_date: any = null;
-  public displayedColumns: string[] = [
-    'LED',
-    'Row',
-    'Column',
-    'Code',
-    'Name',
-
-    'Quantity',
-    // 'Minimum',
-    // 'Maximum',
-    // 'SupplierName',
-    'Spec',
-    'LOT_NO',
-    'EXP_Date',
-    'amount',
-    'Action',
-  ];
+  public displayedColumns: string[] = [];
 
   public displayedColumns2: string[] = [
     'drugCode',
@@ -138,6 +122,37 @@ export class ElMedComponent implements OnInit {
   public getData = async () => {
     let getData: any = await this.http.get('ELListStock');
     let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+    if (this.dataUser == 'admin') {
+      this.displayedColumns = [
+        'LED',
+        'Row',
+        'Column',
+        'Code',
+        'Name',
+
+        'Quantity',
+        'Spec',
+        'LOT_NO',
+        'EXP_Date',
+        'amount',
+        'Action',
+      ];
+    } else {
+      this.displayedColumns = [
+        'LED',
+        'Row',
+        'Column',
+        'Code',
+        'Name',
+
+        // 'Quantity',
+        'Spec',
+        'LOT_NO',
+        'EXP_Date',
+        'amount',
+        'Action',
+      ];
+    }
 
     const result = Array.from(
       new Set(

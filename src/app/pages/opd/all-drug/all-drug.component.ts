@@ -20,14 +20,13 @@ import {
   UploadResponse,
 } from 'ngx-image-compress';
 import * as moment from 'moment';
-// import {
-//   Gallery,
-//   GalleryItem,
-//   ImageItem,
-//   ImageSize,
-//   ThumbnailsPosition,
-// } from 'ng-gallery';
-
+import {
+  Gallery,
+  GalleryItem,
+  ImageItem,
+  ThumbnailsPosition,
+} from 'ng-gallery';
+import { Lightbox } from 'ng-gallery/lightbox';
 export interface PeriodicElement {
   drugCode: string;
   drugName: string;
@@ -39,25 +38,6 @@ export interface PeriodicElement {
   img: string;
   action: string;
 }
-
-const data = [
-  {
-    srcUrl: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-    previewUrl: 'https://preview.ibb.co/jrsA6R/img12.jpg',
-  },
-  {
-    srcUrl: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-    previewUrl: 'https://preview.ibb.co/kPE1D6/clouds.jpg',
-  },
-  {
-    srcUrl: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-    previewUrl: 'https://preview.ibb.co/mwsA6R/img7.jpg',
-  },
-  {
-    srcUrl: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-    previewUrl: 'https://preview.ibb.co/kZGsLm/img8.jpg',
-  },
-];
 
 @Component({
   selector: 'app-all-drug',
@@ -82,9 +62,8 @@ export class AllDrugComponent implements OnInit {
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
     .role;
 
-  // items!: GalleryItem[];
+  items!: GalleryItem[];
 
-  public imageData = data;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -94,30 +73,15 @@ export class AllDrugComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>,
     public router: Router,
-    private imageCompress: NgxImageCompressService
-  ) // public gallery: Gallery
-  {
+    private imageCompress: NgxImageCompressService,
+    public gallery: Gallery,
+    public lightbox: Lightbox
+  ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
   }
 
-  ngOnInit(): void {
-    /** Basic Gallery Example */
-    // Creat gallery items
-    // this.items = this.imageData.map(
-    //   (item) => new ImageItem({ src: item.srcUrl, thumb: item.previewUrl })
-    // );
-    // /** Lightbox Example */
-    // // Get a lightbox gallery ref
-    // const lightboxRef = this.gallery.ref('lightbox');
-    // // Add custom gallery config to the lightbox (optional)
-    // lightboxRef.setConfig({
-    //   imageSize: ImageSize.Cover,
-    //   thumbPosition: ThumbnailsPosition.Top,
-    // });
-    // // Load items into the lightbox gallery ref
-    // lightboxRef.load(this.items);
-  }
+  ngOnInit(): void {}
 
   dataA: any = null;
   public rowspan: any = null;
@@ -188,7 +152,7 @@ export class AllDrugComponent implements OnInit {
             ) ?? { LOT_NO: [''], EXP_Date: [''], qty: [''] }),
             ...(getPathImg.response.result.find(
               (item: { drugCode: any }) => item.drugCode === emp.drugCode
-            ) ?? { pathImg: null }),
+            ) ?? { pathImg: '' }),
           };
         });
 
@@ -199,7 +163,6 @@ export class AllDrugComponent implements OnInit {
             );
           }
         });
-        this.imageSrc = this.http.imgPath;
 
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
@@ -219,14 +182,12 @@ export class AllDrugComponent implements OnInit {
   public upload_img: any = null;
   public upload_img_name: any = null;
   public img_name: any = null;
-  imageSrc: any = null;
 
   public closeImg() {
-    // this.imageSrc = null;
     this.drug_code = null;
     this.arrFile = [];
     this.imgResultMultiple = [];
-    // this.fileToReturn = null;
+
     this.imgResultAfterCompress = '';
   }
 
@@ -243,7 +204,7 @@ export class AllDrugComponent implements OnInit {
 
       this.arrFile.forEach((item: any) => formData.append('upload[]', item));
       let getData: any = await this.http.post('addImgDrug', formData);
-      // console.log(getData);
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           let win: any = window;
@@ -251,7 +212,7 @@ export class AllDrugComponent implements OnInit {
           Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
           this.upload_img = null;
           this.upload_img_name = null;
-          this.imageSrc = null;
+
           this.drug_code = null;
           this.img_name = null;
           this.arrFile = [];
@@ -314,11 +275,9 @@ export class AllDrugComponent implements OnInit {
     let element = document.getElementById('excel-table');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
-    /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    /* save to file */
     XLSX.writeFile(wb, this.nameExcel + '.xlsx');
   }
 
@@ -327,6 +286,7 @@ export class AllDrugComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
+        let getPathImg: any = await this.http.get('getPathImg');
         const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
         const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
         this.nameExcel = `All_Drug_OPD_With_EXP (${start} - ${end})`;
@@ -359,16 +319,18 @@ export class AllDrugComponent implements OnInit {
           };
         });
 
-        this.dataA = result.map(function (emp: { drugCode: any }) {
+        this.dataDrug = result.map(function (emp: { drugCode: any }) {
           return {
             ...emp,
             ...(getData.response.result.find(
               (item: { drugCode: any }) => item.drugCode === emp.drugCode
             ) ?? {}),
+            ...(getPathImg.response.result.find(
+              (item: { drugCode: any }) => item.drugCode === emp.drugCode
+            ) ?? { pathImg: '' }),
           };
         });
 
-        this.dataDrug = this.dataA;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -378,6 +340,38 @@ export class AllDrugComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+  }
+  public imageData: any = null;
+
+  async test(val: any) {
+    let formData = new FormData();
+
+    formData.append('drugCode', val.drugCode);
+    let getDrug: any = await this.http.post('drugImg', formData);
+
+    this.imageData = getDrug.response.result;
+
+    this.items = this.imageData.map(
+      (item: any) =>
+        new ImageItem({
+          src: this.http.imgPath + item.pathImage,
+          thumb: this.http.imgPath + item.pathImage,
+        })
+    );
+
+    /** Lightbox Example */
+
+    // Get a lightbox gallery ref
+    const lightboxRef = this.gallery.ref('lightbox');
+
+    // Add custom gallery config to the lightbox (optional)
+    lightboxRef.setConfig({
+      // imageSize: ImageSize.Cover,
+      thumbPosition: ThumbnailsPosition.Top,
+    });
+
+    // Load items into the lightbox gallery ref
+    lightboxRef.load(this.items);
   }
 
   clearValue() {

@@ -15,7 +15,6 @@ import { DrugAppointComponent } from './drug-appoint/drug-appoint.component';
 import { AllDrugComponent } from './all-drug/all-drug.component';
 import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { OPDStockComponent } from './opd-stock/opd-stock.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
@@ -38,10 +37,11 @@ import { LightboxModule } from 'ng-gallery/lightbox';
   imports: [
     CommonModule,
     OpdRoutingModule,
-    // MaterialModules,
+    MaterialModules,
     MatTableExporterModule,
     NgApexchartsModule,
-    ImageCropperModule,
+    GalleryModule,
+    LightboxModule,
   ],
   providers: [NgxImageCompressService],
 })
