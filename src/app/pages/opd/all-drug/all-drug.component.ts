@@ -27,17 +27,7 @@ import {
   ThumbnailsPosition,
 } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-export interface PeriodicElement {
-  drugCode: string;
-  drugName: string;
-  deviceName: string;
-  positionID: string;
-  LOT_NO: string[];
-  EXP_Date: string[];
-  qty: string[];
-  img: string;
-  action: string;
-}
+import { forEach } from 'lodash';
 
 @Component({
   selector: 'app-all-drug',
@@ -202,7 +192,9 @@ export class AllDrugComponent implements OnInit {
       let formData = new FormData();
       formData.append('code', this.drug_code);
 
-      this.arrFile.forEach((item: any) => formData.append('upload[]', item));
+      this.arrFile.forEach((item: any) => {
+        formData.append('upload[]', item);
+      });
       let getData: any = await this.http.post('addImgDrug', formData);
 
       if (getData.connect) {
@@ -235,7 +227,8 @@ export class AllDrugComponent implements OnInit {
   imgResultBeforeCompress: DataUrl = '';
   imgResultAfterCompress: DataUrl = '';
   imgResultMultiple: UploadResponse[] = [];
-
+  test: UploadResponse[] = [];
+  imgResultAfterResize: any = '';
   public arrFile: any = [];
   public async uploadMultipleFiles() {
     const multipleOrientedFiles =
@@ -243,10 +236,20 @@ export class AllDrugComponent implements OnInit {
 
     this.imgResultMultiple = multipleOrientedFiles;
 
-    this.imgResultMultiple.forEach((element, index) => {
+    let imgResize = [];
+    for (let index = 0; index < this.imgResultMultiple.length; index++) {
+      imgResize[index] = await this.imageCompress.compressFile(
+        this.imgResultMultiple[index].image,
+        this.imgResultMultiple[index].orientation,
+        50,
+        50
+      );
+    }
+
+    imgResize.forEach((element: any, index: any) => {
       this.arrFile.push(
         this.base64ToFile(
-          element.image,
+          element,
           this.drug_code +
             '_' +
             moment(new Date()).format('DDMMYYYYHHmmss') +
@@ -343,7 +346,7 @@ export class AllDrugComponent implements OnInit {
   }
   public imageData: any = null;
 
-  async test(val: any) {
+  async getArrImg(val: any) {
     let formData = new FormData();
 
     formData.append('drugCode', val.drugCode);
@@ -381,5 +384,43 @@ export class AllDrugComponent implements OnInit {
     });
 
     this.getData();
+  }
+
+  deleteImg(val: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append('code', val);
+
+        let getData: any = await this.http.post('deleteImg', formData);
+
+        if (getData.connect) {
+          if (getData.response.result) {
+            this.campaignOne = this.formBuilder.group({
+              start: [''],
+              end: [''],
+            });
+
+            let win: any = window;
+            win.$('#myModal').modal('hide');
+            this.getData();
+            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+          } else {
+            console.log(getData);
+            Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
   }
 }

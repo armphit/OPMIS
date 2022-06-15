@@ -11,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
+import { stringify } from 'querystring';
 import { delay } from 'rxjs/operators';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
@@ -188,12 +189,11 @@ export class DrugAppointComponent implements OnInit {
     formData.append('data', this.changMed);
     formData.append('startDate', start_Date);
     formData.append('depCode', 'W8');
+    formData.append('deviceID', JSON.stringify(['6Z04JU6D4ZPMX45B70QC9HH978']));
 
-    // let formData = new FormData();
-    // formData.append('startDate', start_Date);
-    // formData.append('depCode', 'W8');
     let getData: any = await this.http.post('takeMedicine_getUnit', formData);
     let getData2: any = await this.http.post('listINV', formData);
+    let listDrugDevice: any = await this.http.post('listDrugDevice', formData);
 
     if (getData.connect) {
       if (getData.response.result) {
@@ -220,7 +220,21 @@ export class DrugAppointComponent implements OnInit {
                 : Math.ceil(data.amount / data.HISPackageRatio) *
                   data.HISPackageRatio
               : data.amount,
-          }));
+          }))
+          .filter((val: any) => {
+            return val.Mqty > 0;
+          });
+
+        let dataInj = listDrugDevice.response.result;
+
+        if (this.changMed == 3) {
+          this.dataDrug3 = this.dataDrug3.filter((o1: any) =>
+            dataInj.some(
+              (o2: any) =>
+                o1.drugCode.toLowerCase() === o2.drugCode.toLowerCase()
+            )
+          );
+        }
 
         this.dataSource3 = new MatTableDataSource(this.dataDrug3);
         this.dataSource3.sort = this.sort3;

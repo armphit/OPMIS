@@ -189,8 +189,15 @@
             [src]="'http://192.168.185.160:88/api' + element.pathImage"
             width="130"
             height="115"
-            style="padding: 5px"
-            (click)="test(element); lightbox.open(0)"
+            style="padding: 5px; cursor: pointer"
+            (click)="getArrImg(element); lightbox.open(0)"
+          />
+          <img
+            *ngIf="!element.pathImage"
+            src="http://pizzamana.com/manager/data/file/notfound.png"
+            width="130"
+            height="115"
+            style="padding: 5px; cursor: none"
           />
         </td>
       </ng-container>
@@ -202,17 +209,27 @@
           *matCellDef="let element"
           style="padding-left: 20px; padding-right: 20px; width: 150px"
         >
+          <div style="padding-bottom: 10px">
+            <button
+              *ngIf="dataUser == 'admin'"
+              mat-raised-button
+              color="primary"
+              data-toggle="modal"
+              data-backdrop="static"
+              data-keyboard="false"
+              data-target="#myModal"
+              (click)="edit(element.drugCode); input.value = ''"
+            >
+              <i class="fas fa-upload"></i>&nbsp; Upload
+            </button>
+          </div>
           <button
-            *ngIf="dataUser == 'admin'"
-            type="button"
-            class="btn btn-primary"
-            data-toggle="modal"
-            data-backdrop="static"
-            data-keyboard="false"
-            data-target="#myModal"
-            (click)="edit(element.drugCode)"
+            mat-raised-button
+            color="warn"
+            *ngIf="element.pathImage"
+            (click)="deleteImg(element.drugCode)"
           >
-            <i class="fas fa-upload"></i>&nbsp; Upload
+            <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
           </button>
         </td>
       </ng-container>
@@ -236,114 +253,112 @@
     >
     </mat-paginator>
   </div>
-</div>
 
-<div class="modal fade" id="myModal">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Edit Image</h4>
-        <button type="button" class="close" data-dismiss="modal">
-          &times;
-        </button>
-      </div>
-
-      <div class="modal-body">
-        <div class="col-md-10" style="padding-bottom: 10px">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="uploadMultipleFiles()"
-          >
-            <i class="fas fa-upload"></i> &nbsp; Click to upload file
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Image</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
           </button>
         </div>
-        <img
-          *ngFor="let result of imgResultMultiple"
-          [src]="result.image"
-          alt=""
-        />
-        <!-- <img
-          *ngIf="imageSrc && !imgResultAfterCompress"
-          [src]="imageSrc"
-          alt=""
-          height="500"
-          width="400"
-        />
-        <img
-          *ngIf="imgResultAfterCompress && !imageSrc"
-          [src]="imgResultAfterCompress"
-          alt=""
-          height="500"
-          width="400"
-        /> -->
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="sendImage()">
-            Submit
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-dismiss="modal"
-            (click)="closeImg()"
-          >
-            Close
-          </button>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-3" style="padding-bottom: 10px">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="uploadMultipleFiles()"
+              >
+                <i class="fas fa-upload"></i> &nbsp; Click to upload file
+              </button>
+            </div>
+            <div class="col-sm-2" style="padding-bottom: 10px"></div>
+          </div>
+          <img
+            *ngIf="imgResultAfterResize"
+            [src]="imgResultAfterResize"
+            width="250"
+            height="250"
+            alt=""
+          />
+          <img
+            *ngFor="let result of imgResultMultiple"
+            [src]="result.image"
+            width="250"
+            height="250"
+            alt=""
+          />
+
+          <div class="modal-footer">
+            <button class="btn btn-primary" (click)="sendImage()">
+              Submit
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+              (click)="closeImg()"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<ng-template
-  #itemTemplate
-  let-index="index"
-  let-type="type"
-  let-data="data"
-  let-currIndex="currIndex"
->
-  <span class="item-text">
-    {{ data?.title }}
-  </span>
-</ng-template>
+  <ng-template
+    #itemTemplate
+    let-index="index"
+    let-type="type"
+    let-data="data"
+    let-currIndex="currIndex"
+  >
+    <span class="item-text">
+      {{ data?.title }}
+    </span>
+  </ng-template>
 
-<table class="table table-bordered" id="excel-table" hidden>
-  <thead class="thead-dark">
-    <tr>
-      <th>drugCode</th>
-      <th>drugName</th>
-      <th>miniUnit</th>
-      <th>deviceName</th>
-      <th>positionID</th>
-      <th>LOT_NO</th>
-      <th>EXP_Date</th>
-      <th>qty</th>
-    </tr>
-  </thead>
-  <ng-container *ngFor="let data of dataA">
-    <ng-container *ngFor="let LOT_NO of data.LOT_NO; let i = index">
+  <table class="table table-bordered" id="excel-table" hidden>
+    <thead class="thead-dark">
       <tr>
-        <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-          {{ data.drugCode }}
-        </td>
-        <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-          {{ data.drugName }}
-        </td>
-        <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-          {{ data.miniUnit }}
-        </td>
-        <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-          {{ data.deviceName }}
-        </td>
-
-        <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-          {{ data.positionID }}
-        </td>
-        <td>{{ LOT_NO }}</td>
-        <td>{{ data.EXP_Date[i] }}</td>
-        <td>{{ data.qty[i] }}</td>
+        <th>drugCode</th>
+        <th>drugName</th>
+        <th>miniUnit</th>
+        <th>deviceName</th>
+        <th>positionID</th>
+        <th>LOT_NO</th>
+        <th>EXP_Date</th>
+        <th>qty</th>
       </tr>
+    </thead>
+    <ng-container *ngFor="let data of dataA">
+      <ng-container *ngFor="let LOT_NO of data.LOT_NO; let i = index">
+        <tr>
+          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
+            {{ data.drugCode }}
+          </td>
+          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
+            {{ data.drugName }}
+          </td>
+          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
+            {{ data.miniUnit }}
+          </td>
+          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
+            {{ data.deviceName }}
+          </td>
+
+          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
+            {{ data.positionID }}
+          </td>
+          <td>{{ LOT_NO }}</td>
+          <td>{{ data.EXP_Date[i] }}</td>
+          <td>{{ data.qty[i] }}</td>
+        </tr>
+      </ng-container>
     </ng-container>
-  </ng-container>
-</table>
+  </table>
+</div>
