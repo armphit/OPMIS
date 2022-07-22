@@ -27,7 +27,6 @@ import {
   ThumbnailsPosition,
 } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { forEach } from 'lodash';
 
 @Component({
   selector: 'app-all-drug',
@@ -423,4 +422,66 @@ export class AllDrugComponent implements OnInit {
       }
     });
   }
+  imgMultipleDrugCode: UploadResponse[] = [];
+  public async uploadDrugCode() {
+    const multipleOrientedFiles =
+      await this.imageCompress.uploadMultipleFiles();
+
+    this.imgMultipleDrugCode = multipleOrientedFiles;
+
+    let imgResize = [];
+    for (let index of this.imgMultipleDrugCode) {
+      imgResize.push({
+        img: await this.imageCompress.compressFile(
+          index.image,
+          index.orientation,
+          50,
+          50
+        ),
+        name: index.fileName.substring(0, index.fileName.indexOf('.jpg')),
+      });
+    }
+    let arrFile: any = [];
+
+    imgResize.forEach((element: any, index: any) => {
+      arrFile.push({
+        img: this.base64ToFile(
+          element.img,
+          element.name +
+            '_' +
+            moment(new Date()).format('DDMMYYYYHHmmss') +
+            '_' +
+            (index + 1)
+        ),
+        code: element.name,
+      });
+    });
+    this.sendImageWithdrugCode(arrFile);
+  }
+  public sendImageWithdrugCode = async (arrFile: any) => {
+    if (arrFile) {
+      let formData = new FormData();
+
+      arrFile.forEach((item: any) => {
+        formData.append('upload[]', item.img);
+        formData.append('code[]', item.code);
+      });
+      let getData: any = await this.http.post('addImgWithDrugCode', formData);
+
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
+          this.imgMultipleDrugCode = [];
+          this.getData();
+        } else {
+          console.log(getData);
+          Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
+        }
+      } else {
+        alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+      }
+    } else {
+      Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
+    }
+  };
 }

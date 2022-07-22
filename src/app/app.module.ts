@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MianNavComponent } from './mian-nav/mian-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,8 +28,6 @@ import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 @NgModule({
   declarations: [
     AppComponent,
-    MianNavComponent,
-
     IpdComponent,
     OpdComponent,
     LoginComponent,

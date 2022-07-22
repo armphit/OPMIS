@@ -132,86 +132,6 @@
     </div>
   </mat-tab>
 
-  <!-- <mat-tab label="ยาวันนี้">
-    <div style="overflow: auto;margin: 10px;">
-
-      <div class="row">
-        <div class="col-lg-9">
-
-        </div>
-        <div class="col-lg-3" *ngIf="dataDrug">
-          <mat-form-field class="example-full-width" style="float: right;">
-            <input matInput (keyup)="applyFilter2($event)" #input>
-            <mat-placeholder>ค้นหา</mat-placeholder>
-            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-          </mat-form-field>
-        </div>
-      </div>
-
-
-
-      <div class="responsive-table">
-
-
-        <table mat-table matTableExporter [dataSource]="dataSource2" #MatSort2="matSort" matSort
-          #exporter2="matTableExporter" class="mat-elevation-z8" matSortActive="orderqty" matSortDirection="desc"
-          [hiddenColumns]="[]">
-
-
-          <ng-container matColumnDef="orderitemcode">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
-            <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;">
-              {{element.orderitemcode}}
-            </td>
-          </ng-container>
-
-
-          <ng-container matColumnDef="orderitemname">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-              {{element.orderitemname}}
-
-            </td>
-          </ng-container>
-
-
-          <ng-container matColumnDef="orderqty">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Amount </th>
-            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.orderqty}}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="orderunitcode">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Package </th>
-            <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;">
-              {{element.orderunitcode}}
-            </td>
-          </ng-container>
-
-
-
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
-        </table>
-        <div style="float: right;" *ngIf="dataDrug"><button mat-raised-button color="primary"
-            (click)="exporter2.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Export
-            Excel</button>
-
-        </div>
-        <mat-paginator #MatPaginator2="matPaginator" style="display: flex;justify-content: center;" [length]="10"
-          [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
-        </mat-paginator>
-
-
-
-
-
-      </div>
-
-    </div>
-
-  </mat-tab> -->
   <mat-tab label="เบิกยา">
     <div style="overflow: auto; margin: 10px">
       <div class="row">
@@ -246,9 +166,6 @@
               <mat-option value="3"> ยาฉีด </mat-option>
               <mat-option value="5"> อื่นๆ </mat-option>
               <mat-option value="6"> ยาที่ยังไม่ได้ Map </mat-option>
-              <!-- <mat-option *ngFor="let i of dataUnit" [value]='i'>
-                {{i.DFORM_NAME}}
-              </mat-option>-->
             </mat-select>
           </mat-form-field>
         </div>

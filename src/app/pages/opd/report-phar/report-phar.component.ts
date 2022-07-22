@@ -21,8 +21,12 @@ import Swal from 'sweetalert2';
 })
 export class ReportPharComponent implements OnInit {
   public campaignOne = new FormGroup({
-    start: new FormControl(new Date()),
-    end: new FormControl(new Date()),
+    start: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() - 1))
+    ),
+    end: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() - 1))
+    ),
   });
   public starttime = '08:00';
 
@@ -32,24 +36,29 @@ export class ReportPharComponent implements OnInit {
   public displayedColumns: string[] = [
     'checker_id',
     'checker_name',
-    'item',
+
     'order',
+    'item',
   ];
 
   public displayedColumns2: string[] = [
     'staff',
     'staffName',
     'device',
-    'item',
+
     'ord',
+    'item',
   ];
 
   public displayedColumns3: string[] = [
     'dispenser_id',
     'dispenser_name',
-    'item',
+
     'order',
+    'item',
   ];
+
+  select = 'W8';
 
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
@@ -83,7 +92,8 @@ export class ReportPharComponent implements OnInit {
     formData.append('time2', this.endtime + ':00');
     formData.append('date1', start);
     formData.append('date2', end);
-    if (this.numTab == 0) {
+    formData.append('site', this.select);
+    if (this.numTab == 2) {
       getData = await this.http.post('onusPhar', formData);
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
@@ -98,7 +108,7 @@ export class ReportPharComponent implements OnInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-    } else if (this.numTab == 1) {
+    } else if (this.numTab == 0) {
       getData = await this.http.post('checkerPhar', formData);
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
@@ -113,8 +123,9 @@ export class ReportPharComponent implements OnInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-    } else if (this.numTab == 2) {
+    } else if (this.numTab == 1) {
       getData = await this.http.post('dispenserPhar', formData);
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.dataDrug = getData.response.result;
@@ -162,6 +173,11 @@ export class ReportPharComponent implements OnInit {
   numTab = 0;
   public getTab(num: any) {
     this.numTab = num;
+
+    this.getData();
+  }
+
+  changeFloor() {
     this.getData();
   }
 }

@@ -233,19 +233,25 @@ export class SearchDrugComponent implements OnInit {
               Swal.fire('Success', '', 'success');
               let win: any = window;
               win.$('#myModal').modal('hide');
+              this.submitted = false;
+              this.valData.reset();
             } else {
+              console.log('1:' + updatePack);
               Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
             }
           } else {
+            console.log('2:' + getDataSoap);
             Swal.fire('Error : DataSoap', '', 'error');
           }
         } else {
+          console.log('22:' + getDataSoap);
           Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
       } else {
         Swal.fire('Error:DataSoap', '', 'error');
       }
     } else {
+      console.log('3:' + getData);
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };

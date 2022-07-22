@@ -75,21 +75,7 @@ export class SeMedComponent implements OnInit {
   public dataDrug: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
     .role;
-  public displayedColumns: string[] = [
-    'drugCode',
-    'Name',
-    'Quantity',
-    'Maximum',
-    'percenStock',
-    // 'totalQty',
-    'drugLocation',
-    'LOT_NO',
-    'EXP_Date',
-
-    'amount',
-    'active',
-    'Action',
-  ];
+  public displayedColumns: string[] = [];
 
   public displayedColumns2: string[] = ['Code', 'Name', 'Spec', 'totalQty'];
   public displayedColumns3: string[] = ['Code', 'Name', 'Spec'];
@@ -168,6 +154,37 @@ export class SeMedComponent implements OnInit {
   public getDataSEListStock = async () => {
     let getData: any = await this.http.get('SEListStock');
     let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+    if (this.dataUser == 'admin') {
+      this.displayedColumns = [
+        'drugCode',
+        'Name',
+        'Quantity',
+        'Maximum',
+        'percenStock',
+        // 'totalQty',
+        'drugLocation',
+        'LOT_NO',
+        'EXP_Date',
+
+        'amount',
+        'active',
+        'Action',
+      ];
+    } else {
+      this.displayedColumns = [
+        'drugCode',
+        'Name',
+        'Quantity',
+        'Maximum',
+        'percenStock',
+        // 'totalQty',
+        'drugLocation',
+        'LOT_NO',
+        'EXP_Date',
+
+        'amount',
+      ];
+    }
 
     const result = Array.from(
       new Set(

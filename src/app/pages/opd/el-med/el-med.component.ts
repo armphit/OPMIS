@@ -150,7 +150,6 @@ export class ElMedComponent implements OnInit {
         'LOT_NO',
         'EXP_Date',
         'amount',
-        'Action',
       ];
     }
 
@@ -326,6 +325,7 @@ export class ElMedComponent implements OnInit {
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
     let getData: any = await this.http.post('listDrugDeviceTEST', formData);
+    console.log(getData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {

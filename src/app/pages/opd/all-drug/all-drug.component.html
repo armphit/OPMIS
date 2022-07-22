@@ -1,4 +1,4 @@
-<div style="overflow: auto; margin: 10px">
+<div class="container-fluid" style="overflow: auto">
   <!-- <button
     mat-raised-button
     color="accent"
@@ -8,7 +8,7 @@
   </button> -->
 
   <div class="row">
-    <div class="col-lg-9">
+    <div class="col-lg-4">
       <mat-form-field class="example-form-field">
         <mat-label>Enter EXP Date</mat-label>
         <mat-date-range-input
@@ -44,6 +44,16 @@
         aria-label="Example icon button with a menu icon"
       >
         <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div class="col-lg-5" style="padding-top: 7px">
+      <button
+        *ngIf="dataUser == 'admin'"
+        mat-raised-button
+        color="primary"
+        (click)="uploadDrugCode(); input.value = ''"
+      >
+        <i class="fas fa-upload"></i>&nbsp; Upload Image with Drug Code
       </button>
     </div>
     <div class="col-lg-3">
@@ -226,8 +236,8 @@
           <button
             mat-raised-button
             color="warn"
-            *ngIf="element.pathImage"
-            (click)="deleteImg(element.drugCode)"
+            *ngIf="element.pathImage && dataUser == 'admin'"
+            (click)="deleteImg(element.drugCode); input.value = ''"
           >
             <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
           </button>

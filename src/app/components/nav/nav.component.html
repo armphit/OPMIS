@@ -24,7 +24,8 @@
       </a> -->
 
       <a
-        *ngIf="dataUser == 'admin'"
+        *ngIf="dataUser != 'ipd'"
+        style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/manage-system']"
         [routerLinkActive]="['active']"
@@ -32,6 +33,7 @@
       </a>
       <a
         *ngIf="dataUser == 'admin'"
+        style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/search-drug']"
         [routerLinkActive]="['active']"
@@ -39,7 +41,6 @@
       </a>
 
       <mat-expansion-panel
-        style="margin-top: 4px"
         [class.mat-elevation-z0]="true"
         dense
         *ngIf="dataUser == 'ipd' || dataUser == 'admin'"
@@ -58,8 +59,7 @@
         </mat-nav-list>
       </mat-expansion-panel>
       <mat-expansion-panel
-        [disabled]="true"
-        [expanded]="true"
+        [expanded]="dataUser == 'opd' ? true : false"
         [class.mat-elevation-z0]="true"
         dense
         *ngIf="dataUser == 'opd' || dataUser == 'admin'"
@@ -160,12 +160,11 @@
         <strong style="font-size: 30px">MED STOCK ROBOT</strong>
       </h1>
 
-      <span style="flex: 1 1 auto"></span>
-      <div>
+      <span style="flex: 1 1 auto; text-align: right">
         <button type="button" class="btn btn-danger" (click)="signOut()">
           <i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out
-        </button>
-      </div>
+        </button></span
+      >
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

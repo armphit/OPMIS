@@ -90,10 +90,11 @@
           >
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-        <div class="box-part text-center">
+      <div
+        class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
+        *ngIf="dataUser == 'admin'"
+      >
+        <div class="box-part text-center" [ngStyle]="test">
           <i class="fas fa-tasks fa-5x"></i>
 
           <div class="title">
@@ -105,44 +106,6 @@
           >
         </div>
       </div>
-      <!-- <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-        <div class="box-part text-center">
-          <i class="fas fa-hospital-user fa-5x"></i>
-          <div class="title">
-            <h4></h4>
-          </div>
-
-          <a href="http://192.168.185.160/dashboard/#/opdqueue" target="_blank"
-            >ระบบเวลาคิวผู้ป่วย</a
-          >
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-        <div class="box-part text-center">
-          <i class="fas fa-hand-holding-medical fa-5x"></i>
-
-          <div class="title">
-            <h4></h4>
-          </div>
-
-          <a href="http://192.168.185.160/OnHand" target="_blank"
-            >ระบบ On Hand</a
-          >
-        </div>
-      </div>
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-        <div class="box-part text-center">
-          <i class="fas fa-tasks fa-5x"></i>
-
-          <div class="title">
-            <h4></h4>
-          </div>
-
-          <a href="http://192.168.185.102:8790/DIH_PMPFSite/" target="_blank"
-            >ระบบจัดการ DIH</a
-          >
-        </div>
-      </div> -->
     </div>
   </div>
 </div>

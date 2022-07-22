@@ -74,8 +74,6 @@ td {
   padding-left: 20px !important;
 }
 
-
-
 .mat-expansion-panel-body {
   padding: 0 0px 5px !important;
 }
@@ -85,5 +83,19 @@ td {
   background-color: #3f51b5;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+// @media only screen and (max-width: 100px) {
+//   .row {
+//     overflow: scroll;
+//   }
+//   table {
+//     width: 50%;
+//   }
+// }

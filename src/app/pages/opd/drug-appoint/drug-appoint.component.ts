@@ -201,8 +201,19 @@ export class DrugAppointComponent implements OnInit {
           drugCode: val.drugCode,
           INVamount: val.amount,
         }));
+        this.dataDrug3 = getData.response.result.map(function (emp: {
+          drugCode: any;
+        }) {
+          return {
+            ...emp,
+            ...(newPetList.find(
+              (item: { drugCode: any }) => item.drugCode === emp.drugCode
+            ) ?? { INVamount: 0 }),
+          };
+        });
+
         this.dataDrug3 = getData.response.result
-          .map(function (emp: { drugCode: any }) {
+          .map((emp: { drugCode: any }) => {
             return {
               ...emp,
               ...(newPetList.find(
@@ -210,17 +221,19 @@ export class DrugAppointComponent implements OnInit {
               ) ?? { INVamount: 0 }),
             };
           })
-          .map((data: any) => ({
-            ...data,
-            Mqty: data.HISPackageRatio
-              ? data.INVamount
-                ? Math.ceil(
-                    (data.amount - data.INVamount) / data.HISPackageRatio
-                  ) * data.HISPackageRatio
-                : Math.ceil(data.amount / data.HISPackageRatio) *
-                  data.HISPackageRatio
-              : data.amount,
-          }))
+          .map((data: any) => {
+            return {
+              ...data,
+              Mqty: data.HISPackageRatio
+                ? data.INVamount
+                  ? Math.ceil(
+                      (data.amount - data.INVamount) / data.HISPackageRatio
+                    ) * data.HISPackageRatio
+                  : Math.ceil(data.amount / data.HISPackageRatio) *
+                    data.HISPackageRatio
+                : data.amount,
+            };
+          })
           .filter((val: any) => {
             return val.Mqty > 0;
           });

@@ -85,7 +85,9 @@ export class HttpService {
     // let delayres = await this.delay(500);
     return new Promise((resolve) => {
       this.http
-        .get(this.nodePath, formdata)
+        .get(
+          'http://192.168.185.160:3000/reportq/checker_other/2022-07-18/2022-07-18/08:00/16:00/W9'
+        )
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

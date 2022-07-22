@@ -16,13 +16,7 @@ import Swal from 'sweetalert2';
 export class OtherMedComponent implements OnInit {
   public name: string = 'JV';
   public dataDrug: any = null;
-  public tab = [
-    'เครื่องนับยาเม็ด',
-    'ตู้ยาฉีด',
-    'ตู้เย็น',
-    'ตู้จัดมือ',
-    'ยาเศษ',
-  ];
+
   public displayedColumns: string[] = [
     'drugCode',
     'drugName',
@@ -49,7 +43,7 @@ export class OtherMedComponent implements OnInit {
   public dataSource7: any = null;
   public dataSource8: any = null;
   public dataSource9: any = null;
-
+  public dataSource10: any = null;
   public dataTable: any = null;
   public campaignOne = new FormGroup({
     start: new FormControl(new Date()),
@@ -71,7 +65,7 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatSort7') sort7!: MatSort;
   @ViewChild('MatSort8') sort8!: MatSort;
   @ViewChild('MatSort9') sort9!: MatSort;
-
+  @ViewChild('MatSort10') sort10!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('MatPaginator3') paginator3!: MatPaginator;
@@ -81,7 +75,7 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatPaginator7') paginator7!: MatPaginator;
   @ViewChild('MatPaginator8') paginator8!: MatPaginator;
   @ViewChild('MatPaginator9') paginator9!: MatPaginator;
-
+  @ViewChild('MatPaginator10') paginator10!: MatPaginator;
   constructor(private http: HttpService) {
     this.getDataID();
     const momentDate = new Date();
@@ -212,6 +206,10 @@ export class OtherMedComponent implements OnInit {
           this.dataSource9 = new MatTableDataSource(this.dataDrug);
           this.dataSource9.sort = this.sort9;
           this.dataSource9.paginator = this.paginator9;
+        } else if (this.name == 'ตู้ฉร') {
+          this.dataSource10 = new MatTableDataSource(this.dataDrug);
+          this.dataSource10.sort = this.sort10;
+          this.dataSource10.paginator = this.paginator10;
         }
       } else {
         this.dataDrug = null;
@@ -259,6 +257,9 @@ export class OtherMedComponent implements OnInit {
     } else if (num == 8) {
       this.nameExcel = 'EL15M';
       this.name = 'EL15M';
+    } else if (num == 9) {
+      this.nameExcel = 'ตู้ฉร';
+      this.name = 'ตู้ฉร';
     }
     this.dataD = [];
 
@@ -342,6 +343,13 @@ export class OtherMedComponent implements OnInit {
     this.dataSource9.filter = filterValue.trim().toLowerCase();
     if (this.dataSource9.paginator) {
       this.dataSource9.paginator.firstPage();
+    }
+  }
+  public applyFilter10(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource10.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource10.paginator) {
+      this.dataSource10.paginator.firstPage();
     }
   }
 

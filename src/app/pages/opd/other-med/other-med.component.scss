@@ -8,7 +8,6 @@ table {
   width: 100%;
 }
 
-
 .mat-column-EXP_Date {
   word-wrap: break-word !important;
   white-space: unset !important;
@@ -25,8 +24,7 @@ table {
   hyphens: auto;
 }
 
-
-.mat-column-LOT_NO	 {
+.mat-column-LOT_NO {
   word-wrap: break-word !important;
   white-space: unset !important;
   flex: 0 0 28% !important;
@@ -47,3 +45,7 @@ table {
   text-overflow: ellipsis;
   max-width: 200px;
 }
+// ::ng-deep.mat-grid-tile-content {
+//   justify-content: flex-start !important ;
+//   align-items: flex-start !important;
+// }
