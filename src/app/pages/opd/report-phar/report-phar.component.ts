@@ -162,8 +162,14 @@ export class ReportPharComponent implements OnInit {
 
   clearValue() {
     this.campaignOne = this.formBuilder.group({
-      start: [new Date(), Validators.required],
-      end: [new Date(), Validators.required],
+      start: [
+        new Date(new Date().setDate(new Date().getDate() - 1)),
+        Validators.required,
+      ],
+      end: [
+        new Date(new Date().setDate(new Date().getDate() - 1)),
+        Validators.required,
+      ],
     });
     this.starttime = '08:00';
     this.endtime = '16:00';

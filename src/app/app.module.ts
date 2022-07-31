@@ -24,6 +24,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { ManageSystemComponent } from './pages/manage-system/manage-system.component';
 import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
+import { CheckInComponent } from './pages/check-in/check-in.component';
+import { MatTableExporterModule } from 'mat-table-exporter';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,7 @@ import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
     NotfoundComponent,
     ManageSystemComponent,
     SearchDrugComponent,
+    CheckInComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,7 @@ import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
     MatListModule,
     HttpClientModule,
     NavModule,
-
+    MatTableExporterModule,
     ReactiveFormsModule,
     MatGridListModule,
     MaterialModules,

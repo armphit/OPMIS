@@ -40,6 +40,15 @@
         ><i class="fas fa-search-plus"></i>&nbsp;<strong>Search Drug</strong>
       </a>
 
+      <a
+        *ngIf="dataUser == 'admin'"
+        style="margin-bottom: 4px"
+        mat-list-item
+        [routerLink]="['/check-in']"
+        [routerLinkActive]="['active']"
+        ><i class="far fa-calendar-check"></i>&nbsp;<strong>Check In</strong>
+      </a>
+
       <mat-expansion-panel
         [class.mat-elevation-z0]="true"
         dense

@@ -4,6 +4,7 @@ import { NavComponent } from './components/nav/nav.component';
 import { AuthGuard } from './guard/auth.guard';
 import { IpdGuard } from './guard/ipd.guard';
 import { OpdGuard } from './guard/opd.guard';
+import { CheckInComponent } from './pages/check-in/check-in.component';
 
 import { LoginComponent } from './pages/login/login.component';
 import { ManageSystemComponent } from './pages/manage-system/manage-system.component';
@@ -23,6 +24,10 @@ const routes: Routes = [
       {
         path: 'manage-system',
         component: ManageSystemComponent,
+      },
+      {
+        path: 'check-in',
+        component: CheckInComponent,
       },
       {
         path: '',
