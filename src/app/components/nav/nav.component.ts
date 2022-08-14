@@ -30,4 +30,22 @@ export class NavComponent {
     sessionStorage.removeItem('userLogin');
     this.http.navRouter('/login');
   }
+
+  panelIpd: boolean = false;
+  panelOpd: boolean = false;
+
+  togglePanel() {
+    this.panelIpd = false;
+    this.panelOpd = false;
+  }
+
+  togglePanel2() {
+    this.panelIpd = true;
+    this.panelOpd = false;
+  }
+
+  togglePanel3() {
+    this.panelIpd = false;
+    this.panelOpd = true;
+  }
 }

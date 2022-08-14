@@ -29,6 +29,7 @@
         mat-list-item
         [routerLink]="['/manage-system']"
         [routerLinkActive]="['active']"
+        (click)="togglePanel()"
         ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
       </a>
       <a
@@ -37,24 +38,25 @@
         mat-list-item
         [routerLink]="['/search-drug']"
         [routerLinkActive]="['active']"
+        (click)="togglePanel()"
         ><i class="fas fa-search-plus"></i>&nbsp;<strong>Search Drug</strong>
       </a>
 
       <a
-        *ngIf="dataUser == 'admin'"
         style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/check-in']"
         [routerLinkActive]="['active']"
-        ><i class="far fa-calendar-check"></i>&nbsp;<strong>Check In</strong>
+        (click)="togglePanel()"
+        ><i class="far fa-calendar-check"></i>&nbsp;<strong>Door Report</strong>
       </a>
 
       <mat-expansion-panel
-        [class.mat-elevation-z0]="true"
+        [expanded]="panelIpd"
         dense
         *ngIf="dataUser == 'ipd' || dataUser == 'admin'"
       >
-        <mat-expansion-panel-header>
+        <mat-expansion-panel-header (click)="togglePanel2()">
           <strong><i class="fas fa-syringe"></i> &nbsp; IPD</strong>
         </mat-expansion-panel-header>
         <mat-nav-list dense>
@@ -66,14 +68,26 @@
             <i class="fas fa-capsules"></i>&nbsp;AP - Med
           </a>
         </mat-nav-list>
+
+        <mat-nav-list dense>
+          <a
+            mat-list-item
+            [routerLink]="['/ipd/med-manage']"
+            [routerLinkActive]="['active']"
+          >
+            <i class="fas fa-tasks"></i>&nbsp;Med - Manage
+          </a>
+        </mat-nav-list>
       </mat-expansion-panel>
       <mat-expansion-panel
-        [expanded]="dataUser == 'opd' ? true : false"
-        [class.mat-elevation-z0]="true"
+        [expanded]="panelOpd"
         dense
         *ngIf="dataUser == 'opd' || dataUser == 'admin'"
       >
-        <mat-expansion-panel-header [routerLink]="['/opd/drug']">
+        <mat-expansion-panel-header
+          (click)="togglePanel3()"
+          [routerLink]="['/opd/drug']"
+        >
           <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
         </mat-expansion-panel-header>
         <mat-nav-list dense>
@@ -98,13 +112,13 @@
           >
             <i class="fas fa-tablets"></i>&nbsp;Other - Med
           </a>
-          <!-- <a
+          <a
             mat-list-item
-            [routerLink]="['/opd/opd-stock']"
+            [routerLink]="['/opd/report-dispense']"
             [routerLinkActive]="['active']"
           >
-            <i class="fas fa-clinic-medical"></i>&nbsp;Opd - Stock
-          </a> -->
+            <i class="fas fa-clinic-medical"></i>&nbsp;Report &nbsp;Dispense
+          </a>
           <a
             mat-list-item
             [routerLink]="['/opd/report-phar']"

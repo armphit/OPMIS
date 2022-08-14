@@ -116,7 +116,7 @@ export class ReportPharComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort2;
           this.dataSource.paginator = this.paginator2;
-          this.nameExcel = `ภาระงานเภสัชจ่ายยา ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+          this.nameExcel = `ภาระงานเภสัชตรวจยา(${this.select}) ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
         } else {
           this.dataDrug = null;
         }
@@ -132,7 +132,7 @@ export class ReportPharComponent implements OnInit {
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort3;
           this.dataSource.paginator = this.paginator3;
-          this.nameExcel = `ภาระงานเภสัชตรวจยา ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+          this.nameExcel = `ภาระงานเภสัชจ่ายยา(${this.select}) ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
         } else {
           this.dataDrug = null;
         }

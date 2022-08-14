@@ -1,3 +1,4 @@
+import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AllDrugComponent } from './all-drug/all-drug.component';
@@ -57,6 +58,10 @@ const routes: Routes = [
       {
         path: 'opd-stock',
         component: OPDStockComponent,
+      },
+      {
+        path: 'report-dispense',
+        component: ReportDispenseComponent,
       },
       {
         path: '',

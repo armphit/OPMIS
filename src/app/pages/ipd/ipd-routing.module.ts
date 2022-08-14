@@ -1,3 +1,4 @@
+import { DrugManageComponent } from './drug-manage/drug-manage.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ApMedComponent } from './ap-med/ap-med.component';
@@ -11,6 +12,10 @@ const routes: Routes = [
       {
         path: 'ap-med',
         component: ApMedComponent,
+      },
+      {
+        path: 'med-manage',
+        component: DrugManageComponent,
       },
       {
         path: '',

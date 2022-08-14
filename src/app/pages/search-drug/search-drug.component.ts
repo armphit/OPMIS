@@ -123,7 +123,7 @@ export class SearchDrugComponent implements OnInit {
       'drugCode',
       val.orderitemcode ? val.orderitemcode.trim() : val.drugCode
     );
-    let getData: any = await this.http.post('listDrugAll101', formData);
+    let getData: any = await this.http.post('getDrugAllIPD', formData);
 
     this.valData = this.formBuilder.group({
       code: [

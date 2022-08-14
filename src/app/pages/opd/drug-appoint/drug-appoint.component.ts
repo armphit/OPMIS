@@ -227,9 +227,10 @@ export class DrugAppointComponent implements OnInit {
               Mqty: data.HISPackageRatio
                 ? data.INVamount
                   ? Math.ceil(
-                      (data.amount - data.INVamount) / data.HISPackageRatio
+                      ((data.amount * 30) / 100 - data.INVamount) /
+                        data.HISPackageRatio
                     ) * data.HISPackageRatio
-                  : Math.ceil(data.amount / data.HISPackageRatio) *
+                  : Math.ceil((data.amount * 30) / 100 / data.HISPackageRatio) *
                     data.HISPackageRatio
                 : data.amount,
             };

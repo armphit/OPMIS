@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -76,13 +77,16 @@ export class OtherMedComponent implements OnInit {
   @ViewChild('MatPaginator8') paginator8!: MatPaginator;
   @ViewChild('MatPaginator9') paginator9!: MatPaginator;
   @ViewChild('MatPaginator10') paginator10!: MatPaginator;
-  constructor(private http: HttpService) {
+  constructor(
+    private http: HttpService,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.dateAdapter.setLocale('th-TH');
     this.getDataID();
     const momentDate = new Date();
     const endDate = moment(momentDate).format('YYYY-MM-DD');
     const startDate = moment(momentDate).format('YYYY-MM-DD');
-    const end_Date2 = moment(momentDate).format('DD/MM/YYYY');
-    const start_Date2 = moment(momentDate).format('DD/MM/YYYY');
+
     this.startDate = startDate;
     this.endDate = endDate;
 
@@ -380,40 +384,20 @@ export class OtherMedComponent implements OnInit {
     }
   }
 
-  public start_date: any = null;
   public startChange(event: any) {
     this.nameExcel2 = null;
-    // this.nameSEDispense = null;
+
     const momentDate = new Date(event.value);
     this.startDate = moment(momentDate).format('YYYY-MM-DD');
-    const start_Date = moment(momentDate).format('DD/MM/YYYY');
-    this.start_date = 'SEDispense' + '(' + String(start_Date);
   }
 
-  public async endChange(event: any) {
-    const momentDate = new Date(event.value);
-    const end_Date = moment(momentDate).format('DD/MM/YYYY');
-    // this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
-    this.endDate = moment(momentDate).format('YYYY-MM-DD');
+  public endChange(event: any) {
+    if (event.value) {
+      const momentDate = new Date(event.value);
 
-    // let formData = new FormData();
-    // formData.append('startDate', this.startDate);
-    // formData.append('endDate', this.endDate);
-    this.getData();
-    //   let getData: any = await this.http.post('SEDispense', formData);
+      this.endDate = moment(momentDate).format('YYYY-MM-DD');
 
-    //   if (getData.connect) {
-    //     if (getData.response.rowCount > 0) {
-    //       this.dataSEDispense = getData.response.result;
-    //       this.dataSource2 = new MatTableDataSource(this.dataSEDispense);
-    //       this.dataSource2.sort = this.SortT2;
-    //       this.dataSource2.paginator = this.paginator2;
-    //     } else {
-    //       this.dataSEDispense = null;
-    //     }
-    //   } else {
-    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    //   }
-    // }
+      this.getData();
+    }
   }
 }

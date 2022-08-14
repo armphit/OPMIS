@@ -5,9 +5,10 @@ import { ApMedComponent } from './ap-med/ap-med.component';
 import { MaterialModules } from 'src/app/materialModule';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { DrugManageComponent } from './drug-manage/drug-manage.component';
 
 @NgModule({
-  declarations: [ApMedComponent],
+  declarations: [ApMedComponent, DrugManageComponent],
   imports: [
     CommonModule,
     IpdRoutingModule,

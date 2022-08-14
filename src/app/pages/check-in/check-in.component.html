@@ -1,137 +1,355 @@
-<div class="container-fluid" style="overflow: auto">
-  <div class="row">
-    <div class="col-lg-8">
-      <form [formGroup]="campaignOne">
-        <mat-form-field>
-          <mat-label>Choose a date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="picker"
-            formControlName="picker"
-            (dateChange)="
-              startChange($event); inputT.value = ''; inputD.value = ''
+<mat-tab-group (selectedTabChange)="getTab($event.index)">
+  <mat-tab label="รายงานเวลาเข้าประตู">
+    <div class="container-fluid" style="overflow: auto">
+      <div class="row">
+        <div class="col-lg-7">
+          <form [formGroup]="campaignOne">
+            <mat-form-field class="example-form-field" [style.width.px]="200">
+              <mat-date-range-input
+                [formGroup]="campaignOne"
+                [rangePicker]="campaignOnePicker"
+              >
+                <input
+                  matStartDate
+                  placeholder="Start date"
+                  formControlName="start"
+                />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  formControlName="end"
+                  (dateChange)="startChange($event); inputT.value = ''"
+                />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="campaignOnePicker"
+              ></mat-datepicker-toggle>
+              <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            </mat-form-field>
+          </form>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field>
+            <mat-label>Select Device</mat-label>
+            <mat-select
+              [(ngModel)]="typeDevice"
+              (ngModelChange)="doSomething(); inputT.value = ''"
+            >
+              <mat-option value="">ALL</mat-option>
+              <mat-option value="MHR-OPD1">MHR-OPD1</mat-option>
+              <mat-option value="MHR-IPD6">MHR-IPD6</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter($event)" #inputT />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="responsive-table">
+        <table
+          mat-table
+          matTableExporter
+          [dataSource]="dataSource"
+          matSort
+          #MatSort="matSort"
+          #exporter="matTableExporter"
+          class="mat-elevation-z8"
+          matSortActive="datetime"
+          matSortDirection="desc"
+        >
+          <ng-container matColumnDef="USERID">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>USERID</th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.USERID }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="DEPTNAME">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>DEPTNAME</th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.DEPTNAME }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="deviceName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="datetime">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Datetimestamp
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.datetime }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <div style="float: right" *ngIf="dataDrug">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
             "
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-      </form>
+          >
+            Excel
+          </button>
+        </div>
+        <mat-paginator
+          #MatPaginator="matPaginator"
+          style="display: flex; justify-content: center"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
     </div>
-    <div class="col-lg-2">
-      <mat-form-field>
-        <mat-label>Select Device</mat-label>
-        <mat-select (selectionChange)="doSomething($event)" #inputD>
-          <mat-option value="">ALL</mat-option>
-          <mat-option value="MHR-OPD1">MHR-OPD1</mat-option>
-          <mat-option value="MHR-IPD6">MHR-IPD6</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="col-lg-2">
-      <mat-form-field class="example-full-width" style="float: right">
-        <input matInput (keyup)="applyFilter($event)" #inputT />
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
-    </div>
-  </div>
+  </mat-tab>
+  <mat-tab label="รายงานความถี่การเข้างานแต่ละช่วงเวลา">
+    <div class="container-fluid" style="overflow: auto">
+      <div class="row">
+        <div class="col-lg-7">
+          <mat-form-field class="example-form-field" [style.width.px]="200">
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker"
+            >
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="End date"
+                formControlName="end"
+                (dateChange)="startChange2($event); inputT2.value = ''"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field>
+            <mat-label>Select Device</mat-label>
+            <mat-select
+              [(ngModel)]="typeDevice"
+              (ngModelChange)="doSomething2(); inputT2.value = ''"
+            >
+              <mat-option value="">ALL</mat-option>
+              <mat-option value="MHR-OPD1">MHR-OPD1</mat-option>
+              <mat-option value="MHR-IPD6">MHR-IPD6</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter2($event)" #inputT2 />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
-  <div class="responsive-table">
-    <table
-      mat-table
-      matTableExporter
-      [dataSource]="dataSource"
-      matSort
-      #MatSort="matSort"
-      #exporter="matTableExporter"
-      class="mat-elevation-z8"
-      matSortActive="datetime"
-      matSortDirection="desc"
-    >
-      <ng-container matColumnDef="USERID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>USERID</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
+      <div class="responsive-table">
+        <table
+          mat-table
+          matTableExporter
+          [dataSource]="dataSource2"
+          matSort
+          #MatSort2="matSort"
+          #exporter2="matTableExporter"
+          class="mat-elevation-z8"
+          matSortActive="datetime"
+          matSortDirection="desc"
+          [hiddenColumns]="[2]"
         >
-          {{ element.USERID }}
-        </td>
-      </ng-container>
+          <ng-container matColumnDef="index">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ this.paginator2.pageIndex * this.paginator2.pageSize + i + 1 }}
+            </td>
+          </ng-container>
 
-      <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
+          <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="deviceName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="time1">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Before 07.30
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="time2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              07.30 - 07.45
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time2 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="time3">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              07.45 - 08.00
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time3 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="time4">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              08.00 - 08.15
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time4 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="time5">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              08.15 - 08.30
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time5 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="time6">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              After 08.30
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time6 }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+        </table>
+        <div style="float: right" *ngIf="dataDrug">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter2.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
+            "
+          >
+            Excel
+          </button>
+        </div>
+        <mat-paginator
+          #MatPaginator2="matPaginator"
+          style="display: flex; justify-content: center"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
         >
-          {{ element.Name }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="DEPTNAME">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>DEPTNAME</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.DEPTNAME }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="deviceName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>deviceName</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.deviceName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="datetime">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Datetimestamp</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.datetime }}
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-    <div style="float: right" *ngIf="dataDrug">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="
-          exporter.exportTable('xlsx', {
-            fileName: nameExcel,
-            sheet: 'sheet_name',
-            Props: { Author: 'Talha' }
-          })
-        "
-      >
-        Excel
-      </button>
-    </div>
-    <mat-paginator
-      #MatPaginator="matPaginator"
-      style="display: flex; justify-content: center"
-      [length]="10"
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 50, 100]"
-      showFirstLastButtons
-    >
-    </mat-paginator>
-  </div>
-</div>
+        </mat-paginator>
+      </div></div
+  ></mat-tab>
+</mat-tab-group>

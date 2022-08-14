@@ -20,6 +20,7 @@ import { OPDStockComponent } from './opd-stock/opd-stock.component';
 import { ReportPharComponent } from './report-phar/report-phar.component';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
+import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { LightboxModule } from 'ng-gallery/lightbox';
     TemperatureMonitorComponent,
     OPDStockComponent,
     ReportPharComponent,
+    ReportDispenseComponent,
   ],
   imports: [
     CommonModule,
