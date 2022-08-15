@@ -52,7 +52,14 @@
 .mat-drawer-inner-container::-webkit-scrollbar {
   display: none;
 }
-
+.text-nav {
+  font-size: 30px;
+}
+@media only screen and (max-width: 600px) {
+  .text-nav {
+    font-size: 24px;
+  }
+}
 // span.mat-expansion-indicator {
 //   pointer-events: visiblefill !important;
 // }
