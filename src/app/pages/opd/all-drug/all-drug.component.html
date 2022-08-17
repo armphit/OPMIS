@@ -58,6 +58,7 @@
   </div>
 
   <div class="responsive-table">
+    <section class="example-container mat-elevation-z8" tabindex="0">
     <table
       mat-table
       matTableExporter
@@ -68,7 +69,7 @@
       matSortActive="drugCode"
       matSortDirection="asc"
     >
-      <ng-container matColumnDef="drugCode">
+      <ng-container matColumnDef="drugCode" sticky>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
         <td
           mat-cell
@@ -239,21 +240,22 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-
-    <div style="float: right">
+  </section>
+    <div >
       <button mat-raised-button color="primary" (click)="exportAsExcelFile()">
         Export Excel
       </button>
-    </div>
+
 
     <mat-paginator
-      style="display: flex; justify-content: center"
+    style="float: right"
       [length]="5"
       [pageSize]="5"
       [pageSizeOptions]="[5, 50, 100]"
       showFirstLastButtons
     >
     </mat-paginator>
+  </div>
   </div>
 
   <div class="modal fade" id="myModal">

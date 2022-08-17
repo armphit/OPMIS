@@ -57,7 +57,13 @@
 }
 @media only screen and (max-width: 600px) {
   .text-nav {
-    font-size: 24px;
+    font-size: 20px;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+  .text-nav {
+    font-size: 10px;
   }
 }
 // span.mat-expansion-indicator {

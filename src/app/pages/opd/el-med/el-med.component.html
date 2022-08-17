@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab label="List Stock">
-    <div style="overflow: auto; margin: 10px">
+    <div class="container">
       <div class="row">
         <div class="col-lg-9"></div>
         <div class="col-lg-3" *ngIf="dataDrug">
@@ -11,7 +11,7 @@
           </mat-form-field>
         </div>
       </div>
-
+      <section class="example-container mat-elevation-z8" tabindex="0">
       <table
         mat-table
         [dataSource]="dataSource"
@@ -78,7 +78,7 @@
             {{ element.Column }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="Code">
+        <ng-container matColumnDef="Code" sticky>
           <th
             mat-header-cell
             *matHeaderCellDef
@@ -155,7 +155,7 @@
           </th>
           <td mat-cell *matCellDef="let data">
             <span
-              Style="padding-left:10px;padding-top:17px"
+              Style="padding:15px"
               *ngFor="let item of data.LOT_NO"
               >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
             </span>
@@ -167,7 +167,7 @@
             EXP_Date
           </th>
           <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
+            <span  Style="padding:15px" *ngFor="let item of data.EXP_Date"
               >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
             </span>
           </td>
@@ -212,7 +212,8 @@
         ></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
-      <div style="float: right">
+    </section>
+      <div>
         <button
           *ngIf="dataUser == 'admin'"
           mat-raised-button
@@ -227,8 +228,9 @@
         >
           Export Excel
         </button>
-      </div>
+
       <mat-paginator
+      style="float: right"
         #MatPaginator="matPaginator"
         [length]="10"
         [pageSize]="10"
@@ -236,7 +238,7 @@
         showFirstLastButtons
       >
       </mat-paginator>
-
+    </div>
       <!-- <table mat-table [dataSource]="dataSource" #MatSort="matSort" class="mat-elevation-z8" matTableExporter
         #exporter="matTableExporter" [hiddenColumns]="[11]">
 

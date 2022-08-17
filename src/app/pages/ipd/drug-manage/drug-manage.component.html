@@ -9,7 +9,8 @@
     </div>
   </div>
 
-  <div class="responsive-table">
+  <div class="responsive-table" [hidden] = '!dataDrug'>
+    <section class="example-container mat-elevation-z8" tabindex="0">
     <table
       mat-table
       matTableExporter
@@ -21,7 +22,7 @@
       matSortActive="code"
       matSortDirection="asc"
     >
-      <ng-container matColumnDef="code">
+      <ng-container matColumnDef="code" sticky>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>code</th>
         <td
           mat-cell
@@ -108,9 +109,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+  </section>
     <mat-paginator
       #MatPaginator="matPaginator"
-      style="display: flex; justify-content: center"
+
       [length]="10"
       [pageSize]="10"
       [pageSizeOptions]="[10, 50, 100]"

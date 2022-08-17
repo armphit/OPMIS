@@ -43,7 +43,7 @@ export class DrugManageComponent implements OnInit {
     let getData: any = await this.http.get('dataDrug');
 
     if (getData.connect) {
-      if (getData.response.result) {
+      if (getData.response.result.length) {
         this.dataDrug = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;

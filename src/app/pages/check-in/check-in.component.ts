@@ -68,8 +68,11 @@ export class CheckInComponent implements OnInit {
     let getData: any = await this.http.post('doorReport', formData);
 
     if (getData.connect) {
-      if (getData.response.result) {
+      if (getData.response.result.length) {
+
         this.dataDrug = getData.response.result;
+
+
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -109,7 +112,7 @@ export class CheckInComponent implements OnInit {
     let getData: any = await this.http.post('doorFreq', formData);
 
     if (getData.connect) {
-      if (getData.response.result) {
+      if (getData.response.result.length) {
         this.dataDrug = getData.response.result;
         this.dataSource2 = new MatTableDataSource(this.dataDrug);
         this.dataSource2.sort = this.sort2;
