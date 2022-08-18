@@ -129,7 +129,7 @@ export class DrugAppointComponent implements OnInit {
     let getData: any = await this.http.post('getAppiont', formData);
 
     if (getData.connect) {
-      if (getData.response.result) {
+      if (getData.response.result.length) {
         this.dataDrug = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;

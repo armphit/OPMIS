@@ -45,19 +45,10 @@
   display: block !important;
 }
 
-
 .example-container {
   max-width: 100%;
   overflow: auto;
-  // height: 400px;
-  // width: 550px;
 }
-
-table {
-  width: 100%;
-}
-
-
 
 .mat-table-sticky-border-elem-right {
   border-left: 1px solid #e0e0e0;
@@ -73,19 +64,14 @@ table {
 //   }
 // }
 @media only screen and (max-width: 600px) {
+  .example-container {
+    // max-width: 100%;
+    // overflow: auto;
+    height: 400px;
+    // width: 550px;
+  }
 
-    .example-container {
-      // max-width: 100%;
-      // overflow: auto;
-      height: 400px;
-      // width: 550px;
-    }
-
-
-    .input-search{
-      width: 90%;
-    }
-
-
+  .input-search {
+    width: 90%;
+  }
 }
-

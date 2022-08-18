@@ -60,7 +60,7 @@ export class ReportDispenseComponent implements OnInit {
     let getData: any = await this.http.post('getDispenseDaterange', formData);
 
     if (getData.connect) {
-      if (getData.response.result) {
+      if (getData.response.result.length) {
         this.dataDrug = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;

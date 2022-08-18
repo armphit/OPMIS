@@ -52,8 +52,6 @@ mat-form-field {
   background: rgba(255, 255, 255, 0) !important;
 }
 
-
-
 th {
   border-right: 1px solid #e0e0e0;
   background-color: #e7e4e488;
@@ -88,11 +86,38 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-// @media only screen and (max-width: 100px) {
-//   .row {
-//     overflow: scroll;
-//   }
-//   table {
-//     width: 50%;
-//   }
-// }
+
+.mat-paginator-range-label {
+  margin: 0 0 0 0 !important;
+}
+
+.example-container {
+  max-width: 100%;
+  overflow: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .example-container {
+    height: 400px;
+  }
+}
+
+.mat-table-sticky-border-elem-right {
+  border-left: 1px solid #e0e0e0;
+}
+
+.mat-table-sticky-border-elem-left {
+  border-right: 1px solid #e0e0e0;
+}
+
+.mat-column-EXP_Date {
+  white-space: nowrap;
+}
+
+.mat-column-LOT_NO {
+  white-space: nowrap;
+}
+
+table {
+  width: 100% !important;
+}

@@ -595,6 +595,8 @@ export class SeMedComponent implements OnInit {
       },
     };
     pdfMake.createPdf(docDefinition).open();
+    let win: any = window;
+    win.$('#edit').modal('hide');
   }
 
   public changeActive(data: any) {

@@ -4,41 +4,6 @@
   font-weight: bold;
 }
 
-table {
-  width: 100%;
-}
-
-.mat-column-EXP_Date {
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 28% !important;
-  width: 9% !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-
-  word-break: break-word;
-
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-}
-
-.mat-column-LOT_NO {
-  word-wrap: break-word !important;
-  white-space: unset !important;
-  flex: 0 0 28% !important;
-  width: 13% !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-
-  word-break: break-word;
-
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-}
 .truncate {
   white-space: nowrap;
   overflow: hidden;

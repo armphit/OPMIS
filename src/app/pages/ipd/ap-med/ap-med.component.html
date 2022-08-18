@@ -1,84 +1,157 @@
-<div class="container pt-2">
-
+<div class="container-fluid pt-2">
   <div class="row">
     <div class="col-lg-9">
-      <mat-form-field class="example-form-field" style="float:left">
+      <mat-form-field class="example-form-field" style="float: left">
         <mat-label>เลือกวันที่</mat-label>
-        <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
-          [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
-          <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start" (dateChange)="startChange($event)">
-          <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker"
+          [comparisonStart]="campaignOne.value.start"
+          [comparisonEnd]="campaignOne.value.end"
+        >
+          <input
+            matStartDate
+            placeholder="วันที่เริ่มต้น"
+            formControlName="start"
+            (dateChange)="startChange($event)"
+          />
+          <input
+            matEndDate
+            placeholder="วันที่สิ้นสุด"
+            formControlName="end"
+            (dateChange)="endChange($event)"
+          />
         </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="campaignOnePicker"
+        ></mat-datepicker-toggle>
         <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
       </mat-form-field>
     </div>
     <div class="col-lg-3" *ngIf="dataDrug">
-      <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter($event)" #input>
+      <mat-form-field class="example-full-width" style="float: right">
+        <input matInput (keyup)="applyFilter($event)" #input />
         <mat-placeholder>ค้นหา</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field>
     </div>
   </div>
 
-
-
   <div class="responsive-table" [hidden]="!dataDrug">
     <section class="example-container mat-elevation-z8" tabindex="0">
+      <table
+        mat-table
+        matTableExporter
+        [dataSource]="dataSource"
+        matSort
+        #exporter="matTableExporter"
+        class="mat-elevation-z8"
+        matSortActive="totalQty"
+        matSortDirection="desc"
+      >
+        <ng-container matColumnDef="drugCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.drugCode }}
+          </td>
+        </ng-container>
 
-    <table mat-table matTableExporter [dataSource]="dataSource" matSort #exporter="matTableExporter"
-      class="mat-elevation-z8" matSortActive="totalQty" matSortDirection="desc">
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.drugName }}
+          </td>
+        </ng-container>
 
+        <ng-container matColumnDef="tblt_maker">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Maker</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.tblt_maker }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="drugCode">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
-        <td mat-cell *matCellDef=" let element" style="padding-left: 20px;padding-right: 20px;"> {{element.drugCode}}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="tblt_spec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Spec</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.tblt_spec }}
+          </td>
+        </ng-container>
 
+        <ng-container matColumnDef="totalQty">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Qty</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.totalQty }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="drugName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.drugName}}
-        </td>
-      </ng-container>
-
-
-      <ng-container matColumnDef="tblt_maker">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Maker </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.tblt_maker}}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tblt_spec">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Spec </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.tblt_spec}}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="totalQty">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Qty
-        </th>
-        <td mat-cell *matCellDef="let element" style="padding-left: 20px;padding-right: 20px;"> {{element.totalQty}}
-        </td>
-      </ng-container>
-
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-  </section>
-    <div><button mat-raised-button color="primary"
-        (click)="exporter.exportTable('xlsx', {fileName:nameExcel, sheet: 'sheet_name', Props: {Author: 'Talha'}})">Excel</button>
-      <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
-      <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
-      <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button>
-    <mat-paginator [length]="10" [pageSize]="10" style="float: right"
-      [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
-    </mat-paginator>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
+    <div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="
+          exporter.exportTable('xlsx', {
+            fileName: nameExcel,
+            sheet: 'sheet_name',
+            Props: { Author: 'Talha' }
+          })
+        "
+      >
+        Excel
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="exporter.exportTable('csv')"
+      >
+        Csv
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="exporter.exportTable('json')"
+      >
+        Json
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="exporter.exportTable('txt')"
+      >
+        Txt
+      </button>
+      <mat-paginator
+        [length]="10"
+        [pageSize]="10"
+        style="float: right"
+        [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
   </div>
-
-  </div>
-
 </div>

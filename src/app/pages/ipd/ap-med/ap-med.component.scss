@@ -20,36 +20,5 @@ mat-accordion {
   flex-grow: 1;
 }
 
-.example-container {
-  max-width: 100%;
-  overflow: auto;
-  // height: 400px;
-  // width: 550px;
-}
-
-@media only screen and (max-width: 600px) {
-
-  .example-container {
-    // max-width: 100%;
-    // overflow: auto;
-    height: 400px;
-    // width: 550px;
-  }
-
-
-  // .input-search{
-  //   width: 90%;
-  // }
-
-
-}
-
-.mat-table-sticky-border-elem-right {
-  border-left: 1px solid #e0e0e0;
-}
-
-.mat-table-sticky-border-elem-left {
-  border-right: 1px solid #e0e0e0;
-}
 
 

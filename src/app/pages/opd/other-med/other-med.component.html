@@ -1,6 +1,6 @@
 <mat-tab-group (selectedTabChange)="getTab($event.index)">
   <mat-tab label="เครื่องนับยาเม็ด">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field class="example-form-field" style="float: left">
@@ -40,194 +40,198 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource"
-        #MatSort="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          #MatSort="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -241,21 +245,22 @@
         >
           Export Excel
         </button>
-      </div>
 
-      <mat-paginator
-        #MatPaginator="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
     </div>
   </mat-tab>
 
   <mat-tab label="ตู้ยาฉีด">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -314,116 +319,119 @@
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field> -->
 
-      <table
-        mat-table
-        [dataSource]="dataSource2"
-        #MatSort2="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter2="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource2"
+          #MatSort2="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter2="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th
             mat-header-cell
             *matHeaderCellDef
@@ -477,86 +485,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -570,35 +579,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter2.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator2="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter2.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator2="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="ตู้เย็น">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-4">
           <mat-form-field
@@ -664,115 +675,118 @@
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field> -->
 
-      <table
-        mat-table
-        [dataSource]="dataSource3"
-        #MatSort3="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter3="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource3"
+          #MatSort3="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter3="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -799,86 +813,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -892,35 +907,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter3.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator3="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter3.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator3="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="ตู้จัดมือ">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-4">
           <mat-form-field
@@ -1008,115 +1025,118 @@
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field> -->
 
-      <table
-        mat-table
-        [dataSource]="dataSource4"
-        #MatSort4="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter4="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource4"
+          #MatSort4="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter4="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -1143,86 +1163,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -1236,35 +1257,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter4.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator4="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter4.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator4="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="ยาเศษ">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -1313,115 +1336,118 @@
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field> -->
 
-      <table
-        mat-table
-        [dataSource]="dataSource5"
-        #MatSort5="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter5="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource5"
+          #MatSort5="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter5="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -1448,86 +1474,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -1541,35 +1568,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter5.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator5="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter5.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator5="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="ตู้ยาควบคุม">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -1613,115 +1642,118 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource6"
-        #MatSort6="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter6="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource6"
+          #MatSort6="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter6="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -1748,86 +1780,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -1841,35 +1874,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter6.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator6="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter6.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator6="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="EL11M">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -1913,116 +1948,119 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource7"
-        #MatSort7="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter7="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource7"
+          #MatSort7="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter7="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <span Style="padding-left:10px" *ngFor="let item of element.LOT_NO"
-              >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span Style="padding:15px" *ngFor="let item of element.LOT_NO"
+                >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <!-- <ng-container matColumnDef="amount">
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -2049,84 +2087,85 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -2140,35 +2179,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter7.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+-->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator7="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter7.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div>-->
-      <mat-paginator
-        #MatPaginator7="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="EL14M">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -2212,115 +2253,118 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource8"
-        #MatSort8="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter8="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource8"
+          #MatSort8="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter8="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <span Style="padding-left:10px" *ngFor="let item of element.LOT_NO"
-              >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span Style="padding:15px" *ngFor="let item of element.LOT_NO"
+                >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <ng-container matColumnDef="amount">
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
             amount
           </th>
@@ -2347,86 +2391,87 @@
           </td>
         </ng-container> -->
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -2440,35 +2485,37 @@
         >
           Export Excel
         </button>
+
+        <!-- <div style="float: right">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter8.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+           </button>
+ -->
+        <mat-paginator
+          style="float: right"
+          #MatPaginator8="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter8.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-        </button>
-      </div> -->
-      <mat-paginator
-        #MatPaginator8="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="EL15M">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -2512,195 +2559,199 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource9"
-        #MatSort9="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter9="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource9"
+          #MatSort9="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter9="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <span Style="padding-left:10px" *ngFor="let item of element.LOT_NO"
-              >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span Style="padding:15px" *ngFor="let item of element.LOT_NO"
+                >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -2714,20 +2765,21 @@
         >
           Export Excel
         </button>
-      </div>
 
-      <mat-paginator
-        #MatPaginator9="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator9="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
     </div>
   </mat-tab>
   <mat-tab label="ตู้ฉร">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field
@@ -2771,195 +2823,199 @@
         </div>
       </div>
 
-      <table
-        mat-table
-        [dataSource]="dataSource10"
-        #MatSort10="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter10="matTableExporter"
-        matSortActive="drugCode"
-        matSortDirection="asc"
-        [hiddenColumns]="[4, 5, 6, 9, 10]"
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCode
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource10"
+          #MatSort10="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter10="matTableExporter"
+          matSortActive="drugCode"
+          matSortDirection="asc"
+          [hiddenColumns]="[4, 5, 6, 9, 10]"
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugCode
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="drugName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="drugName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              drugName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="packageSpec">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>packageSpec</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.packageSpec }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="packageSpec">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              packageSpec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.packageSpec }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="miniUnit">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Unit
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.miniUnit }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <span Style="padding-left:10px" *ngFor="let item of element.LOT_NO"
-              >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="miniUnit">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Unit
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.miniUnit }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span Style="padding:15px" *ngFor="let item of element.LOT_NO"
+                >{{ item }}<br *ngIf="element.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="qty">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            Amount Stock
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              Amount Stock
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="deviceName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            deviceName
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.deviceName }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="deviceName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              deviceName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.deviceName }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="positionID">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            positionID
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.positionID }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="positionID">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              positionID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.positionID }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="freq">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            freq
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.freq }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="freq">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              freq
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.freq }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dispense">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            dispense
-          </th>
+          <ng-container matColumnDef="dispense">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              dispense
+            </th>
 
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.dispense }}
-          </td>
-        </ng-container>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.dispense }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -2973,16 +3029,17 @@
         >
           Export Excel
         </button>
-      </div>
 
-      <mat-paginator
-        #MatPaginator10="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator10="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
     </div>
   </mat-tab>
 </mat-tab-group>

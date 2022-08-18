@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab label="MainDrug">
-    <div class="container">
+    <div class="container-fluid">
       <mat-form-field class="example-full-width">
         <input matInput (keyup)="applyFilter($event)" #input />
         <mat-placeholder>ค้นหา</mat-placeholder>
@@ -113,7 +113,7 @@
     </div>
   </mat-tab>
   <mat-tab label="PrePack">
-    <div class="container pt-2">
+    <div class="container-fluid pt-2">
       <mat-grid-list cols="2" rowHeight="5em">
         <mat-grid-tile>
           <button
@@ -129,14 +129,16 @@
             เพิ่มยา PrePack &nbsp;<i class="fas fa-plus"></i></button
         ></mat-grid-tile>
         <mat-grid-tile>
-          <mat-form-field class="example-full-width input-search" style="float: right">
+          <mat-form-field
+            class="example-full-width input-search"
+            style="float: right"
+          >
             <input matInput (keyup)="applyFilter2($event)" #input2 />
             <mat-placeholder>ค้นหา</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field></mat-grid-tile
         >
       </mat-grid-list>
-
 
       <div class="responsive-table" [hidden]="!dataDrug">
         <section class="example-container mat-elevation-z8" tabindex="0">

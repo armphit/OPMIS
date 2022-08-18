@@ -1,6 +1,6 @@
 <div class="container-fluid" style="overflow: auto">
   <div class="row">
-    <div class="col-lg-4">
+    <div class="col-lg-5">
       <mat-form-field class="example-form-field">
         <mat-label>Enter EXP Date</mat-label>
         <mat-date-range-input
@@ -38,7 +38,7 @@
         <mat-icon>clear</mat-icon>
       </button>
     </div>
-    <div class="col-lg-5" style="padding-top: 7px">
+    <div class="col-lg-4" style="padding-top: 7px">
       <button
         *ngIf="dataUser == 'admin'"
         mat-raised-button
@@ -59,203 +59,202 @@
 
   <div class="responsive-table">
     <section class="example-container mat-elevation-z8" tabindex="0">
-    <table
-      mat-table
-      matTableExporter
-      [dataSource]="dataSource"
-      matSort
-      #exporter="matTableExporter"
-      class="mat-elevation-z8"
-      matSortActive="drugCode"
-      matSortDirection="asc"
-    >
-      <ng-container matColumnDef="drugCode" sticky>
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.drugCode }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="drugName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.drugName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="miniUnit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Unit</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.miniUnit }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="deviceName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Device Name</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.deviceName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="positionID">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Position</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.positionID }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="LOT_NO">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 20px"
-        >
-          LOT_NO
-        </th>
-        <td mat-cell *matCellDef="let data">
-          <span
-            Style="padding-left:10px;padding-top:17px"
-            *ngFor="let item of data.LOT_NO"
-            >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-          </span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="EXP_Date">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 20px"
-        >
-          EXP_Date
-        </th>
-        <td mat-cell *matCellDef="let data">
-          <span
-            Style="padding-left:10px;padding-top:17px"
-            *ngFor="let item of data.EXP_Date"
-            >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            <hr *ngIf="data.EXP_Date.length - 1"
-          /></span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="qty">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 20px"
-        >
-          amount
-        </th>
-        <td mat-cell *matCellDef="let data">
-          <span
-            Style="padding-left:10px;padding-top:17px"
-            *ngFor="let item of data.qty"
-            >{{ item }}<br *ngIf="data.qty.length - 1" />
-            <hr *ngIf="data.qty.length - 1"
-          /></span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="img">
-        <th mat-header-cell *matHeaderCellDef>image</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="text-align: center; width: 150px"
-        >
-          <img
-            *ngIf="element.pathImage"
-            [src]="'http://192.168.185.160:88/api' + element.pathImage"
-            width="130"
-            height="115"
-            style="padding: 5px; cursor: pointer"
-            (click)="getArrImg(element); lightbox.open(0)"
-          />
-          <img
-            *ngIf="!element.pathImage"
-            src="http://pizzamana.com/manager/data/file/notfound.png"
-            width="130"
-            height="115"
-            style="padding: 5px; cursor: none"
-          />
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef>Action</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px; width: 150px"
-        >
-          <div style="padding-bottom: 10px">
-            <button
-              *ngIf="dataUser == 'admin'"
-              mat-raised-button
-              color="primary"
-              data-toggle="modal"
-              data-backdrop="static"
-              data-keyboard="false"
-              data-target="#myModal"
-              (click)="edit(element.drugCode); input.value = ''"
-            >
-              <i class="fas fa-upload"></i>&nbsp; Upload
-            </button>
-          </div>
-          <button
-            mat-raised-button
-            color="warn"
-            *ngIf="element.pathImage && dataUser == 'admin'"
-            (click)="deleteImg(element.drugCode); input.value = ''"
+      <table
+        mat-table
+        matTableExporter
+        [dataSource]="dataSource"
+        matSort
+        #exporter="matTableExporter"
+        class="mat-elevation-z8"
+        matSortActive="drugCode"
+        matSortDirection="asc"
+      >
+        <ng-container matColumnDef="drugCode" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
           >
-            <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
-          </button>
-        </td>
-      </ng-container>
+            {{ element.drugCode }}
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </section>
-    <div >
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.drugName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Unit</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.miniUnit }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Device Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.deviceName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Position</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.positionID }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="LOT_NO">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="padding-left: 20px"
+          >
+            LOT_NO
+          </th>
+          <td mat-cell *matCellDef="let data">
+            <span
+              Style="padding-left:10px;padding-top:17px"
+              *ngFor="let item of data.LOT_NO"
+              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="EXP_Date">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="padding-left: 20px"
+          >
+            EXP_Date
+          </th>
+          <td mat-cell *matCellDef="let data">
+            <span
+              Style="padding-left:10px;padding-top:17px"
+              *ngFor="let item of data.EXP_Date"
+              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              <hr *ngIf="data.EXP_Date.length - 1"
+            /></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="qty">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header
+            style="padding-left: 20px"
+          >
+            amount
+          </th>
+          <td mat-cell *matCellDef="let data">
+            <span
+              Style="padding-left:10px;padding-top:17px"
+              *ngFor="let item of data.qty"
+              >{{ item }}<br *ngIf="data.qty.length - 1" />
+              <hr *ngIf="data.qty.length - 1"
+            /></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="img">
+          <th mat-header-cell *matHeaderCellDef>image</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="text-align: center; width: 150px"
+          >
+            <img
+              *ngIf="element.pathImage"
+              [src]="'http://192.168.185.160:88/api' + element.pathImage"
+              width="130"
+              height="115"
+              style="padding: 5px; cursor: pointer"
+              (click)="getArrImg(element); lightbox.open(0)"
+            />
+            <img
+              *ngIf="!element.pathImage"
+              src="http://pizzamana.com/manager/data/file/notfound.png"
+              width="130"
+              height="115"
+              style="padding: 5px; cursor: none"
+            />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px; width: 150px"
+          >
+            <div style="padding-bottom: 10px">
+              <button
+                *ngIf="dataUser == 'admin'"
+                mat-raised-button
+                color="primary"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-keyboard="false"
+                data-target="#myModal"
+                (click)="edit(element.drugCode); input.value = ''"
+              >
+                <i class="fas fa-upload"></i>&nbsp; Upload
+              </button>
+            </div>
+            <button
+              mat-raised-button
+              color="warn"
+              *ngIf="element.pathImage && dataUser == 'admin'"
+              (click)="deleteImg(element.drugCode); input.value = ''"
+            >
+              <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
+    <div>
       <button mat-raised-button color="primary" (click)="exportAsExcelFile()">
         Export Excel
       </button>
 
-
-    <mat-paginator
-    style="float: right"
-      [length]="5"
-      [pageSize]="5"
-      [pageSizeOptions]="[5, 50, 100]"
-      showFirstLastButtons
-    >
-    </mat-paginator>
-  </div>
+      <mat-paginator
+        style="float: right"
+        [length]="5"
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 50, 100]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
   </div>
 
   <div class="modal fade" id="myModal">

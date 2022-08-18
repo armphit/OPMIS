@@ -1,6 +1,6 @@
 <mat-tab-group>
   <mat-tab label="List Stock">
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9"></div>
         <div class="col-lg-3" *ngIf="dataDrug">
@@ -12,207 +12,205 @@
         </div>
       </div>
       <section class="example-container mat-elevation-z8" tabindex="0">
-      <table
-        mat-table
-        [dataSource]="dataSource"
-        #MatSort="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter="matTableExporter"
-        matSortActive="LED"
-        matSortDirection="asc"
-        [hiddenColumns]="[7, 8, 9, 10]"
-      >
-        <ng-container matColumnDef="LED">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            LED
-          </th>
-          <td
-            [attr.colspan]=""
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.LED }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Row">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Row
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Row }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Column">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Column
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Column }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Code" sticky>
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Code
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Name">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Name }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Quantity">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Quantity DIH
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Quantity }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Spec">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Spec
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Spec }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span
-              Style="padding:15px"
-              *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span  Style="padding:15px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span
-              Style="padding-left:10px;padding-top:17px"
-              *ngFor="let item of data.qty"
-              >{{ item }}<br *ngIf="data.qty.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="Action">
-          <th mat-header-cell *matHeaderCellDef style="text-align: center">
-            Action
-          </th>
-          <td mat-cell *matCellDef="let payment">
-            <button
-              *ngIf="dataUser == 'admin'"
-              type="button"
-              class="btn btn-warning"
-              data-toggle="modal"
-              data-target="#myModal"
-              data-backdrop="static"
-              data-keyboard="false"
-              (click)="clickUpdate(payment)"
-              style="margin-left: 20px"
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          #MatSort="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter="matTableExporter"
+          matSortActive="LED"
+          matSortDirection="asc"
+          [hiddenColumns]="[7, 8, 9, 10]"
+        >
+          <ng-container matColumnDef="LED">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
             >
-              Update
-            </button>
-          </td>
-        </ng-container>
+              LED
+            </th>
+            <td
+              [attr.colspan]=""
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.LED }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </section>
+          <ng-container matColumnDef="Row">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Row
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Row }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Column">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Column
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Column }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Code" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Code
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Name }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Quantity">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Quantity DIH
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Quantity }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Spec">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Spec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Spec }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              amount
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span
+                Style="padding-left:10px;padding-top:17px"
+                *ngFor="let item of data.qty"
+                >{{ item }}<br *ngIf="data.qty.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Action">
+            <th mat-header-cell *matHeaderCellDef style="text-align: center">
+              Action
+            </th>
+            <td mat-cell *matCellDef="let payment">
+              <button
+                *ngIf="dataUser == 'admin'"
+                type="button"
+                class="btn btn-warning"
+                data-toggle="modal"
+                data-target="#myModal"
+                data-backdrop="static"
+                data-keyboard="false"
+                (click)="clickUpdate(payment)"
+                style="margin-left: 20px"
+              >
+                Update
+              </button>
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
       <div>
         <button
           *ngIf="dataUser == 'admin'"
@@ -229,16 +227,16 @@
           Export Excel
         </button>
 
-      <mat-paginator
-      style="float: right"
-        #MatPaginator="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
-    </div>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
       <!-- <table mat-table [dataSource]="dataSource" #MatSort="matSort" class="mat-elevation-z8" matTableExporter
         #exporter="matTableExporter" [hiddenColumns]="[11]">
 
@@ -317,163 +315,10 @@
       <mat-paginator [length]="10" [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons>
       </mat-paginator> -->
     </div>
-
-    <div class="modal fade" id="myModal">
-      <div class="modal-dialog">
-        <form
-          [formGroup]="inputGroup"
-          (ngSubmit)="updateData()"
-          class="needs-validation"
-        >
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Edit Data</h4>
-              <button type="button" class="close" data-dismiss="modal">
-                &times;
-              </button>
-            </div>
-
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>LED:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.LED }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Row:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Row }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Column:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Column }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Code:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Code }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Name:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Name }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Spec:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Spec }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Minimum:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Minimum }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2">
-                  <label for="text"><strong>Maximum:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.Maximum }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-3.5" style="padding-left: 15px">
-                  <label for="text"><strong>Supplier Name:</strong></label>
-                </div>
-                <div class="col">
-                  <p>{{ inputGroup.value.SupplierName }}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2" style="padding-top: 10px">
-                  <label for="text"><strong>Quantity:</strong></label>
-                </div>
-                <div class="col">
-                  <input
-                    type="number"
-                    min="0"
-                    oninput="validity.valid||(value='');"
-                    class="form-control"
-                    formControlName="quantity"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-4" style="padding-top: 20px">
-                  <label for="text"
-                    ><strong>ProductExpirationDate:</strong></label
-                  >
-                </div>
-                <div class="col">
-                  <mat-form-field>
-                    <input
-                      matInput
-                      [matDatepicker]="picker"
-                      formControlName="ProductExpirationDate"
-                    />
-                    <mat-datepicker-toggle
-                      matSuffix
-                      [for]="picker"
-                    ></mat-datepicker-toggle>
-                    <mat-datepicker
-                      [startAt]="show_date"
-                      #picker
-                    ></mat-datepicker>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-2" style="padding-top: 10px">
-                  <label for="text"><strong>Lotnumber:</strong></label>
-                </div>
-                <div class="col">
-                  <input
-                    type="text"
-                    class="form-control"
-                    formControlName="Lotnumber"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Submit</button>
-              <button type="button" class="btn btn-danger" data-dismiss="modal">
-                Close
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
   </mat-tab>
 
   <mat-tab label="Dispense">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-9">
           <mat-form-field class="example-form-field" style="float: left">
@@ -513,7 +358,11 @@
         </div>
       </div>
 
-      <div [hidden]="dataDrug2">
+      <section
+        [hidden]="dataDrug2"
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+      >
         <table
           mat-table
           [dataSource]="dataSource2"
@@ -651,22 +500,24 @@
           ></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
         </table>
-        <div style="float: right">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="
-              exporter2.exportTable('xlsx', {
-                fileName: nameExcel2,
-                sheet: 'sheet_name',
-                Props: { Author: 'Talha' }
-              })
-            "
-          >
-            Export Excel
-          </button>
-        </div>
+      </section>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter2.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+
         <mat-paginator
+          style="float: right"
           #MatPaginator2="matPaginator"
           [length]="10"
           [pageSize]="10"
@@ -678,3 +529,150 @@
     </div>
   </mat-tab>
 </mat-tab-group>
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <form
+      [formGroup]="inputGroup"
+      (ngSubmit)="updateData()"
+      class="needs-validation"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Data</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>LED:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.LED }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Row:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Row }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Column:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Column }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Code:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Code }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Name:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Name }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Spec:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Spec }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Minimum:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Minimum }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="text"><strong>Maximum:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.Maximum }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-3.5" style="padding-left: 15px">
+              <label for="text"><strong>Supplier Name:</strong></label>
+            </div>
+            <div class="col">
+              <p>{{ inputGroup.value.SupplierName }}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2" style="padding-top: 10px">
+              <label for="text"><strong>Quantity:</strong></label>
+            </div>
+            <div class="col">
+              <input
+                type="number"
+                min="0"
+                oninput="validity.valid||(value='');"
+                class="form-control"
+                formControlName="quantity"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-4" style="padding-top: 20px">
+              <label for="text"><strong>ProductExpirationDate:</strong></label>
+            </div>
+            <div class="col">
+              <mat-form-field>
+                <input
+                  matInput
+                  [matDatepicker]="picker"
+                  formControlName="ProductExpirationDate"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker [startAt]="show_date" #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2" style="padding-top: 10px">
+              <label for="text"><strong>Lotnumber:</strong></label>
+            </div>
+            <div class="col">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="Lotnumber"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -36,7 +36,11 @@
     </div>
   </div>
 
-  <div class="responsive-table">
+  <section
+    class="example-container mat-elevation-z8"
+    tabindex="0"
+    [hidden]="!dataDrug"
+  >
     <table
       mat-table
       matTableExporter
@@ -103,7 +107,7 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="drugCode">
+      <ng-container matColumnDef="drugCode" sticky>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>drugCode</th>
         <td
           mat-cell
@@ -150,22 +154,24 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    <div style="float: right" *ngIf="dataDrug">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="
-          exporter.exportTable('xlsx', {
-            fileName: nameExcel,
-            sheet: 'sheet_name',
-            Props: { Author: 'Talha' }
-          })
-        "
-      >
-        Excel
-      </button>
-    </div>
+  </section>
+  <div>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="
+        exporter.exportTable('xlsx', {
+          fileName: nameExcel,
+          sheet: 'sheet_name',
+          Props: { Author: 'Talha' }
+        })
+      "
+    >
+      Excel
+    </button>
+
     <mat-paginator
+      style="float: right"
       #MatPaginator="matPaginator"
       style="display: flex; justify-content: center"
       [length]="10"

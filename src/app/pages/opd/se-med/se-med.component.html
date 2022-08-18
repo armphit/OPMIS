@@ -1,123 +1,133 @@
 <mat-tab-group>
   <mat-tab label="List Stock">
-    <div style="margin: 10px" [hidden]="dataDrug == null">
-      <mat-form-field>
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select
-          #type
-          (selectionChange)="
-            getDataPrepack($event.value); input.value = ''; active.value = ''
-          "
-        >
-          <mat-option value="All">All</mat-option>
-          <mat-option value="N">Main Drug</mat-option>
-          <mat-option value="Y">Prepack</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field style="padding-left: 50px">
-        <mat-label>SELECT ACTIVE</mat-label>
-        <mat-select
-          #active
-          (selectionChange)="
-            getDataActive($event.value); input.value = ''; type.value = ''
-          "
-        >
-          <mat-option value="All">All</mat-option>
-          <mat-option value="N">Active</mat-option>
-          <mat-option value="Y">Not Active</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field class="example-full-width" style="float: right">
-        <input matInput (keyup)="applyFilter($event)" #input />
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
-
-      <table
-        mat-table
-        [dataSource]="dataSource"
-        #SortT1="matSort"
-        matSort
-        class="mat-elevation-z8"
-        matTableExporter
-        #exporter="matTableExporter"
-        matSortActive="Code"
-        matSortDirection="asc"
-        [hiddenColumns]="[6, 7, 8, 9, 10]"
-        multiTemplateDataRows
-      >
-        <ng-container matColumnDef="drugCode">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Code
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCode }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Name">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            <div
-              fxFlexLayout="row"
-              class="truncate"
-              matTooltip="{{ element.Name }}"
+    <div class="container-fluid" [hidden]="dataDrug == null">
+      <div class="row">
+        <div class="col-sm">
+          <mat-form-field>
+            <mat-label>SELECT TYPE</mat-label>
+            <mat-select
+              #type
+              (selectionChange)="
+                getDataPrepack($event.value);
+                input.value = '';
+                active.value = ''
+              "
             >
-              {{ element.Name }}
-            </div>
-          </td>
-        </ng-container>
+              <mat-option value="All">All</mat-option>
+              <mat-option value="N">Main Drug</mat-option>
+              <mat-option value="Y">Prepack</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm">
+          <mat-form-field>
+            <mat-label>SELECT ACTIVE</mat-label>
+            <mat-select
+              #active
+              (selectionChange)="
+                getDataActive($event.value); input.value = ''; type.value = ''
+              "
+            >
+              <mat-option value="All">All</mat-option>
+              <mat-option value="N">Active</mat-option>
+              <mat-option value="Y">Not Active</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter($event)" #input />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
-        <ng-container matColumnDef="Spec">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Spec
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Spec }}
-          </td>
-        </ng-container>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          #SortT1="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter="matTableExporter"
+          matSortActive="Code"
+          matSortDirection="asc"
+          [hiddenColumns]="[6, 7, 8, 9, 10]"
+          multiTemplateDataRows
+        >
+          <ng-container matColumnDef="drugCode" sticky>
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Code
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugCode }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="LOT_NO">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            LOT_NO
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.LOT_NO"
-              >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
-            </span>
-          </td>
-        </ng-container>
-        <!-- <mat-cell *matCellDef="let element">
+          <ng-container matColumnDef="Name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              <div
+                fxFlexLayout="row"
+                class="truncate"
+                matTooltip="{{ element.Name }}"
+              >
+                {{ element.Name }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Spec">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Spec
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Spec }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="LOT_NO">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              LOT_NO
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.LOT_NO"
+                >{{ item }}<br *ngIf="data.LOT_NO.length - 1" />
+              </span>
+            </td>
+          </ng-container>
+          <!-- <mat-cell *matCellDef="let element">
           <div>
             <ng-container *ngFor="let item of element.LOT_NO">
               <div>
@@ -127,176 +137,183 @@
           </div>
         </mat-cell> -->
 
-        <ng-container matColumnDef="EXP_Date">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            EXP_Date
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.EXP_Date"
-              >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="EXP_Date">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              EXP_Date
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.EXP_Date"
+                >{{ item }}<br *ngIf="data.EXP_Date.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let data">
-            <span Style="padding-left:10px" *ngFor="let item of data.amount"
-              >{{ item }}<br *ngIf="data.amount.length - 1" />
-            </span>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px">
+              amount
+            </th>
+            <td mat-cell *matCellDef="let data">
+              <span Style="padding:15px" *ngFor="let item of data.amount"
+                >{{ item }}<br *ngIf="data.amount.length - 1" />
+              </span>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="Quantity">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Quantity<br />(Box)
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Quantity }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Maximum">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Maximum
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.Maximum }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="percenStock">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            Stock <br />( % )
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.percenStock }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugLocation">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Location
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugLocation }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="active">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            active
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            <button
-              *ngIf="dataUser == 'admin'"
-              type="button"
-              class="{{
-                element.active == 'N'
-                  ? 'btn btn-success'
-                  : element.active == 'Y'
-                  ? 'btn btn-danger'
-                  : 'btn btn-warning'
-              }}"
-              style="margin-left: 20px"
-              (click)="changeActive(element)"
+          <ng-container matColumnDef="Quantity">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
             >
-              <i *ngIf="element.active == 'Y'" class="fas fa-window-close"></i>
-              <i *ngIf="element.active == 'N'" class="fas fa-check-square"></i>
-              <i
-                *ngIf="element.active == null"
-                class="fas fa-question-circle"
-              ></i>
-            </button>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Action">
-          <th mat-header-cell *matHeaderCellDef style="text-align: center">
-            Action
-          </th>
-          <td mat-cell *matCellDef="let payment">
-            <button
-              *ngIf="dataUser == 'admin'"
-              type="button"
-              class="btn btn-info"
-              matTooltip="Edit"
-              style="margin-left: 20px"
-              data-toggle="modal"
-              data-target="#edit"
-              data-backdrop="static"
-              data-keyboard="false"
-              (click)="clickData(payment)"
+              Quantity<br />(Box)
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
             >
-              <i class="fas fa-edit"></i>
-            </button>
+              {{ element.Quantity }}
+            </td>
+          </ng-container>
 
-            <button
-              *ngIf="dataUser == 'admin'"
-              type="button"
-              class="btn btn-primary"
-              matTooltip="Print"
-              style="margin-left: 20px"
-              data-toggle="modal"
-              data-target="#edit"
-              data-backdrop="static"
-              data-keyboard="false"
-              (click)="clickDataDrug(payment)"
+          <ng-container matColumnDef="Maximum">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
             >
-              <i class="fas fa-print"></i>
-            </button>
-          </td>
-        </ng-container>
+              Maximum
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.Maximum }}
+            </td>
+          </ng-container>
 
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumns; sticky: true"
-        ></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-      <div style="float: right">
+          <ng-container matColumnDef="percenStock">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              Stock <br />( % )
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.percenStock }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="drugLocation">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Location
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugLocation }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="active">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              active
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              <button
+                *ngIf="dataUser == 'admin'"
+                type="button"
+                class="{{
+                  element.active == 'N'
+                    ? 'btn btn-success'
+                    : element.active == 'Y'
+                    ? 'btn btn-danger'
+                    : 'btn btn-warning'
+                }}"
+                style="margin-left: 20px"
+                (click)="changeActive(element)"
+              >
+                <i
+                  *ngIf="element.active == 'Y'"
+                  class="fas fa-window-close"
+                ></i>
+                <i
+                  *ngIf="element.active == 'N'"
+                  class="fas fa-check-square"
+                ></i>
+                <i
+                  *ngIf="element.active == null"
+                  class="fas fa-question-circle"
+                ></i>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Action">
+            <th mat-header-cell *matHeaderCellDef style="text-align: center">
+              Action
+            </th>
+            <td mat-cell *matCellDef="let payment">
+              <button
+                *ngIf="dataUser == 'admin'"
+                type="button"
+                class="btn btn-info"
+                matTooltip="Edit"
+                style="margin-left: 20px"
+                data-toggle="modal"
+                data-target="#edit"
+                data-backdrop="static"
+                data-keyboard="false"
+                (click)="clickData(payment)"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+
+              <button
+                *ngIf="dataUser == 'admin'"
+                type="button"
+                class="btn btn-primary"
+                matTooltip="Print"
+                style="margin-left: 20px"
+                data-toggle="modal"
+                data-target="#edit"
+                data-backdrop="static"
+                data-keyboard="false"
+                (click)="clickDataDrug(payment)"
+              >
+                <i class="fas fa-print"></i>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
         <button
           mat-raised-button
           color="primary"
@@ -310,22 +327,24 @@
         >
           Export Excel
         </button>
+
+        <mat-paginator
+          style="float: right"
+          #paginator="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
       </div>
-      <mat-paginator
-        #paginator="matPaginator"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
     </div>
   </mat-tab>
 
   <mat-tab label="Dispense">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
@@ -354,7 +373,7 @@
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <mat-form-field>
             <mat-label>SELECT TYPE</mat-label>
             <mat-select
@@ -368,7 +387,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-lg-3" style="float: right; text-align: right">
+        <div class="col-lg-4" style="float: right; text-align: right">
           <mat-form-field class="example-full-width" *ngIf="dataSEDispense">
             <input matInput (keyup)="applyFilter2($event)" #input />
             <mat-placeholder>ค้นหา</mat-placeholder>
@@ -376,7 +395,11 @@
           </mat-form-field>
         </div>
       </div>
-      <div [hidden]="!dataSEDispense">
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSEDispense"
+      >
         <table
           mat-table
           [dataSource]="dataSource2"
@@ -388,7 +411,7 @@
           matSortActive="totalQty"
           matSortDirection="desc"
         >
-          <ng-container matColumnDef="Code">
+          <ng-container matColumnDef="Code" sticky>
             <th
               mat-header-cell
               *matHeaderCellDef
@@ -466,25 +489,27 @@
           ></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
         </table>
-        <div style="float: right">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="
-              exporter1.exportTable('xlsx', {
-                fileName: nameSEDispense,
-                sheet: 'sheet_name',
-                Props: { Author: 'Talha' }
-              })
-            "
-          >
-            Export Excel
-          </button>
-          <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+      </section>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter1.exportTable('xlsx', {
+              fileName: nameSEDispense,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button> -->
-        </div>
+
         <mat-paginator
+          style="float: right"
           MatPaginator
           #paginator2="matPaginator"
           [length]="10"
@@ -498,9 +523,9 @@
   </mat-tab>
 
   <mat-tab label="NO Dispense">
-    <div style="margin: 10px">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
@@ -529,7 +554,7 @@
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <mat-form-field>
             <mat-label>SELECT TYPE</mat-label>
             <mat-select
@@ -543,7 +568,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-lg-3" style="float: right; text-align: right">
+        <div class="col-lg-4" style="float: right; text-align: right">
           <mat-form-field class="example-full-width" *ngIf="dataSEDispense">
             <input matInput (keyup)="applyFilter3($event)" #input />
             <mat-placeholder>ค้นหา</mat-placeholder>
@@ -551,7 +576,11 @@
           </mat-form-field>
         </div>
       </div>
-      <div [hidden]="!dataNOSEDispense">
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataNOSEDispense"
+      >
         <table
           mat-table
           [dataSource]="dataSource3"
@@ -563,7 +592,7 @@
           matSortActive="totalQty"
           matSortDirection="desc"
         >
-          <ng-container matColumnDef="Code">
+          <ng-container matColumnDef="Code" sticky>
             <th
               mat-header-cell
               *matHeaderCellDef
@@ -623,25 +652,27 @@
           ></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
         </table>
-        <div style="float: right">
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="
-              exporter3.exportTable('xlsx', {
-                fileName: nameNOSEDispense,
-                sheet: 'sheet_name',
-                Props: { Author: 'Talha' }
-              })
-            "
-          >
-            Export Excel
-          </button>
-          <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+      </section>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter3.exportTable('xlsx', {
+              fileName: nameNOSEDispense,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
           <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button> -->
-        </div>
+
         <mat-paginator
+          style="float: right"
           MatPaginator
           #paginator3="matPaginator"
           [length]="10"
@@ -656,7 +687,7 @@
 </mat-tab-group>
 
 <div id="edit" class="modal fade">
-  <div class="modal-dialog modal-confirm">
+  <div class="modal-dialog modal-confirm modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Location</h4>
