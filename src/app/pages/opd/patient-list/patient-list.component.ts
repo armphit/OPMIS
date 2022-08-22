@@ -177,18 +177,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       showCancelButton: true,
       allowOutsideClick: false,
       allowEscapeKey: false,
-      // preConfirm: () => {
-      //   if (
-      //     (<HTMLInputElement>document.getElementById('user')).value == 'opd' &&
-      //     (<HTMLInputElement>document.getElementById('pass')).value == '1234'
-      //   ) {
-      //     return true;
-      //   } else {
-      //     return false;
-      //     Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
-      //   }
-      //   // Prevent confirmed
-      // },
 
       preConfirm: async () => {
         let in1 = (<HTMLInputElement>document.getElementById('user')).value;
@@ -207,6 +195,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
               this.dataDrug = [];
               this.dataP = null;
+              this.getData();
             } else {
               Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
             }
