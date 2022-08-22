@@ -42,23 +42,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public startDate: any = null;
   public endDate: any = null;
   public hnPatient: any = null;
-
-  public numOrder: any = null;
   public dataSource: any = null;
   public displayedColumns: any = null;
 
-  public inputGroup: any = null;
-  public queue: string = '';
-  public nameT: string = '';
-  public brithdayT: string = '';
-  public hnT: string = '';
-  public ageT: string = '';
-  public moph_patient: any = null;
+  // public inputGroup: any = null;
+  // public queue: string = '';
+  // public nameT: string = '';
+  // public brithdayT: string = '';
+  // public hnT: string = '';
+  // public ageT: string = '';
+  // public moph_patient: any = null;
   @Input() max: any;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
-  public dataDrug: any = null;
-  @ViewChild('swiper') swiper!: ElementRef;
+  public dataDrug = new Array();
+  // @ViewChild('swiper') swiper!: ElementRef;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -68,79 +66,66 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
 
-    // this.getData();
+    this.getData();
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.swiper.nativeElement.focus();
-    }, 0);
+    // setTimeout(() => {
+    //   this.swiper.nativeElement.focus();
+    // }, 0);
   }
 
   ngOnInit(): void {}
 
   public getData = async () => {
-    // if (this.hnPatient) {
-    const start = moment(this.campaignTwo.value.picker1).format('YYYY-MM-DD');
+    this.displayedColumns = [
+      'patientNO',
+      'QN',
+      'patientName',
+      'createDT',
+      'drugcode',
+      'timestamp',
+    ];
 
-    let formData = new FormData();
-
-    formData.append('hn', this.hnPatient);
-    formData.append('start', start);
-    let getData: any = await this.http.post('getPatientDrug', formData);
-
+    let getData: any = await this.http.get('listPatientQ');
     if (getData.connect) {
-      this.displayedColumns = [
-        // 'position',
-        'drugCode',
-        'drugName',
-        'qty',
-        'unit',
-        'lastmodified',
-        'pathImage',
-      ];
-
       if (getData.response.rowCount > 0) {
-        this.dataPharmacist = getData.response.result;
-        this.dataSource = new MatTableDataSource(this.dataPharmacist);
+        let getmoph_patient: any = await this.http.get('list_moph_patient');
+        const result = Array.from(
+          new Set(getmoph_patient.response.result.map((s: { hn: any }) => s.hn))
+        ).map((lab) => {
+          return {
+            hn: lab,
+            drugcode: getmoph_patient.response.result
+              .filter((s: { hn: any }) => s.hn === lab)
+              .map((edition: { drugcode: any }) => edition.drugcode),
+            drugname: getmoph_patient.response.result
+              .filter((s: { hn: any }) => s.hn === lab)
+              .map((edition: { drugname: any }) => edition.drugname),
+          };
+        });
+
+        var finalVal = getData.response.result.map(function (emp: {
+          patientNO: any;
+        }) {
+          return {
+            ...emp,
+            ...(result.find(
+              (item: { hn: any }) => item.hn === emp.patientNO
+            ) ?? { drugcode: [], drugname: [] }),
+          };
+        });
+
+        this.dataSource = new MatTableDataSource(finalVal);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        this.nameT = getData.response.result[0].patientname;
-        let date = moment(getData.response.result[0].birthDate);
-        this.brithdayT = date.locale('th').add(543, 'year').format('LL');
-        this.hnT = getData.response.result[0].hn;
-        this.ageT = getData.response.result[0].age;
-        let getData2: any = await this.http.post('hn_moph_patient', formData);
-
-        if (getData2.connect) {
-          if (getData2.response.rowCount > 0) {
-            this.moph_patient = getData2.response.result;
-          } else {
-            this.moph_patient = null;
-          }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        }
-        let getData3: any = await this.http.post('DataQ', formData);
-        if (getData3.connect) {
-          if (getData3.response.rowCount > 0) {
-            this.queue = getData3.response.result[0].QN;
-          } else {
-            this.queue = '';
-          }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        }
       } else {
-        this.dataPharmacist = null;
-        this.nameT = '';
-        this.brithdayT = '';
-        this.hnT = '';
-        this.ageT = '';
+        this.dataSource = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+
     // }
   };
 
@@ -148,51 +133,142 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  public startChange2(event: any) {
-    this.getData();
+
+  dataP: any = null;
+  datatime: any = null;
+  public clickdrugAllergy(data: any) {
+    this.datatime = data.timestamp;
+
+    this.dataP = data;
+    if (this.dataP) {
+      for (let index = 0; index < this.dataP.drugcode.length; index++) {
+        this.dataDrug[index] = {
+          drugcode: this.dataP.drugcode[index],
+          drugname: this.dataP.drugname[index],
+        };
+      }
+    } else {
+      this.dataDrug = [];
+    }
   }
-  public sendit(data: any) {
-    this.dataPharmacist = null;
-    this.nameT = '';
-    this.brithdayT = '';
-    this.hnT = '';
-    this.ageT = '';
-    this.moph_patient = null;
-    this.queue = '';
-    this.hnPatient = null;
-    this.hnPatient = data.trim();
-    this.getData();
+
+  close() {
+    setTimeout(() => {
+      this.dataP = null;
+      this.dataDrug = [];
+    }, 500);
   }
-  public imageData: any = null;
-  items!: GalleryItem[];
-  async getArrImg(val: any) {
-    let formData = new FormData();
+  async confirm() {
+    const { value: formValues } = await Swal.fire({
+      title: 'Confirm',
+      html: `<div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">User</span>
+        </div>
+        <input type="text" class="form-control" id="user" aria-describedby="basic-addon3">
+      </div>
+      <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Password</span>
+      </div>
+      <input type="text" class="form-control" id="pass" aria-describedby="basic-addon3">
+    </div>`,
+      focusConfirm: false,
+      showCancelButton: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      // preConfirm: () => {
+      //   if (
+      //     (<HTMLInputElement>document.getElementById('user')).value == 'opd' &&
+      //     (<HTMLInputElement>document.getElementById('pass')).value == '1234'
+      //   ) {
+      //     return true;
+      //   } else {
+      //     return false;
+      //     Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
+      //   }
+      //   // Prevent confirmed
+      // },
 
-    formData.append('drugCode', val.drugCode);
-    let getDrug: any = await this.http.post('drugImg', formData);
+      preConfirm: async () => {
+        let in1 = (<HTMLInputElement>document.getElementById('user')).value;
+        let in2 = (<HTMLInputElement>document.getElementById('pass')).value;
 
-    this.imageData = getDrug.response.result;
+        if (in1 == 'opd' && in2 == '1234') {
+          let formData = new FormData();
+          formData.append('queue', this.dataP.QN);
+          formData.append('hn', this.dataP.hn);
 
-    this.items = this.imageData.map(
-      (item: any) =>
-        new ImageItem({
-          src: this.http.imgPath + item.pathImage,
-          thumb: this.http.imgPath + item.pathImage,
-        })
-    );
-
-    /** Lightbox Example */
-
-    // Get a lightbox gallery ref
-    const lightboxRef = this.gallery.ref('lightbox');
-
-    // Add custom gallery config to the lightbox (optional)
-    lightboxRef.setConfig({
-      // imageSize: ImageSize.Cover,
-      thumbPosition: ThumbnailsPosition.Top,
+          let getData: any = await this.http.post('add_moph_confirm', formData);
+          if (getData.connect) {
+            if (getData.response.rowCount > 0) {
+              let win: any = window;
+              win.$('#drugAllergy').modal('hide');
+              Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
+              this.dataDrug = [];
+              this.dataP = null;
+            } else {
+              Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
+            }
+          } else {
+            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
+          // return false
+        }
+        // return [
+        //   document.getElementById('swal-input1').value,
+        //   document.getElementById('swal-input2').value
+        // ]
+      },
     });
-
-    // Load items into the lightbox gallery ref
-    lightboxRef.load(this.items);
   }
+  // public startChange2(event: any) {
+  //   this.getData();
+  // }
+  // public sendit(data: any) {
+  //   this.dataPharmacist = null;
+  //   this.nameT = '';
+  //   this.brithdayT = '';
+  //   this.hnT = '';
+  //   this.ageT = '';
+  //   this.moph_patient = null;
+  //   this.queue = '';
+  //   this.hnPatient = null;
+  //   this.hnPatient = data.trim();
+  //   this.getData();
+  // }
+  // public imageData: any = null;
+  // items!: GalleryItem[];
+  // async getArrImg(val: any) {
+  //   let formData = new FormData();
+
+  //   formData.append('drugCode', val.drugCode);
+  //   let getDrug: any = await this.http.post('drugImg', formData);
+
+  //   this.imageData = getDrug.response.result;
+
+  //   this.items = this.imageData.map(
+  //     (item: any) =>
+  //       new ImageItem({
+  //         src: this.http.imgPath + item.pathImage,
+  //         thumb: this.http.imgPath + item.pathImage,
+  //       })
+  //   );
+
+  //   /** Lightbox Example */
+
+  //   // Get a lightbox gallery ref
+  //   const lightboxRef = this.gallery.ref('lightbox');
+
+  //   // Add custom gallery config to the lightbox (optional)
+  //   lightboxRef.setConfig({
+  //     // imageSize: ImageSize.Cover,
+  //     thumbPosition: ThumbnailsPosition.Top,
+  //   });
+
+  //   // Load items into the lightbox gallery ref
+  //   lightboxRef.load(this.items);
+  // }
 }
