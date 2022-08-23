@@ -70,95 +70,98 @@
           </mat-form-field>
         </div>
       </div>
-    </div>
 
-    <section class="example-container mat-elevation-z8" tabindex="0">
-      <table
-        mat-table
-        matTableExporter
-        [dataSource]="dataSource"
-        #MatSort2="matSort"
-        matSort
-        #exporter2="matTableExporter"
-        class="mat-elevation-z8"
-        matSortActive="checker_id"
-        matSortDirection="desc"
-        [hidden]="!dataDrug"
-      >
-        <ng-container matColumnDef="checker_id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>checker_id</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+      <div class="responsive-table" [hidden]="!dataDrug">
+        <section class="example-container mat-elevation-z8" tabindex="0">
+          <table
+            mat-table
+            matTableExporter
+            [dataSource]="dataSource"
+            #MatSort2="matSort"
+            matSort
+            #exporter2="matTableExporter"
+            class="mat-elevation-z8"
+            matSortActive="checker_id"
+            matSortDirection="desc"
           >
-            {{ element.checker_id }}
-          </td>
-        </ng-container>
+            <ng-container matColumnDef="checker_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                checker_id
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.checker_id }}
+              </td>
+            </ng-container>
 
-        <ng-container matColumnDef="checker_name" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            checker_name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+            <ng-container matColumnDef="checker_name" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                checker_name
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.checker_name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="item">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.item }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="order">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.order }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </section>
+        <div>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter2.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
+            "
           >
-            {{ element.checker_name }}
-          </td>
-        </ng-container>
+            Excel
+          </button>
 
-        <ng-container matColumnDef="item">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+          <mat-paginator
+            #MatPaginator2="matPaginator"
+            style="float: right"
+            [length]="10"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons
           >
-            {{ element.item }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="order">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.order }}
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    </section>
-    <div>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="
-          exporter2.exportTable('xlsx', {
-            fileName: nameExcel,
-            sheet: 'sheet_name',
-            Props: { Author: 'Talha' }
-          })
-        "
-      >
-        Excel
-      </button>
-
-      <mat-paginator
-        #MatPaginator2="matPaginator"
-        style="float: right"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+          </mat-paginator>
+        </div>
+      </div>
     </div>
   </mat-tab>
   <mat-tab label="ภาระงานเภสัชจ่ายยา">
@@ -231,97 +234,98 @@
           </mat-form-field>
         </div>
       </div>
-    </div>
 
-    <section class="example-container mat-elevation-z8" tabindex="0">
-      <table
-        mat-table
-        matTableExporter
-        [dataSource]="dataSource"
-        #MatSort3="matSort"
-        matSort
-        #exporter3="matTableExporter"
-        class="mat-elevation-z8"
-        matSortActive="checker_id"
-        matSortDirection="desc"
-        [hidden]="!dataDrug"
-      >
-        <ng-container matColumnDef="dispenser_id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            dispenser_id
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+      <div class="responsive-table" [hidden]="!dataDrug">
+        <section class="example-container mat-elevation-z8" tabindex="0">
+          <table
+            mat-table
+            matTableExporter
+            [dataSource]="dataSource"
+            #MatSort3="matSort"
+            matSort
+            #exporter3="matTableExporter"
+            class="mat-elevation-z8"
+            matSortActive="checker_id"
+            matSortDirection="desc"
           >
-            {{ element.dispenser_id }}
-          </td>
-        </ng-container>
+            <ng-container matColumnDef="dispenser_id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                dispenser_id
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.dispenser_id }}
+              </td>
+            </ng-container>
 
-        <ng-container matColumnDef="dispenser_name" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            dispenser_name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+            <ng-container matColumnDef="dispenser_name" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                dispenser_name
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.dispenser_name }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="item">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.item }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="order">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.order }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+          </table>
+        </section>
+        <div>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter3.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
+            "
           >
-            {{ element.dispenser_name }}
-          </td>
-        </ng-container>
+            Excel
+          </button>
 
-        <ng-container matColumnDef="item">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+          <mat-paginator
+            #MatPaginator3="matPaginator"
+            style="float: right"
+            [length]="10"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons
           >
-            {{ element.item }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="order">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.order }}
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
-      </table>
-    </section>
-    <div>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="
-          exporter3.exportTable('xlsx', {
-            fileName: nameExcel,
-            sheet: 'sheet_name',
-            Props: { Author: 'Talha' }
-          })
-        "
-      >
-        Excel
-      </button>
-
-      <mat-paginator
-        #MatPaginator3="matPaginator"
-        style="float: right"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+          </mat-paginator>
+        </div>
+      </div>
     </div>
   </mat-tab>
 
@@ -385,102 +389,107 @@
           </mat-form-field>
         </div>
       </div>
-    </div>
 
-    <section class="example-container mat-elevation-z8" tabindex="0">
-      <table
-        mat-table
-        matTableExporter
-        [dataSource]="dataSource"
-        #MatSort="matSort"
-        matSort
-        #exporter="matTableExporter"
-        class="mat-elevation-z8"
-        matSortActive="checker_id"
-        matSortDirection="desc"
-        [hidden]="!dataDrug"
-      >
-        <ng-container matColumnDef="staff">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>staff_id</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+      <div class="responsive-table" [hidden]="!dataDrug">
+        <section class="example-container mat-elevation-z8" tabindex="0">
+          <table
+            mat-table
+            matTableExporter
+            [dataSource]="dataSource"
+            #MatSort="matSort"
+            matSort
+            #exporter="matTableExporter"
+            class="mat-elevation-z8"
+            matSortActive="checker_id"
+            matSortDirection="desc"
           >
-            {{ element.staff }}
-          </td>
-        </ng-container>
+            <ng-container matColumnDef="staff">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                staff_id
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.staff }}
+              </td>
+            </ng-container>
 
-        <ng-container matColumnDef="staffName" sticky>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>staff_name</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+            <ng-container matColumnDef="staffName" sticky>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                staff_name
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.staffName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="device">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>device</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.device }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="item">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.item }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ord">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.ord }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+          </table>
+        </section>
+        <div>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
+            "
           >
-            {{ element.staffName }}
-          </td>
-        </ng-container>
+            Excel
+          </button>
 
-        <ng-container matColumnDef="device">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>device</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
+          <mat-paginator
+            style="float: right"
+            [length]="10"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons
           >
-            {{ element.device }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="item">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.item }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="ord">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.ord }}
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
-      </table>
-    </section>
-    <div>
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="
-          exporter.exportTable('xlsx', {
-            fileName: nameExcel,
-            sheet: 'sheet_name',
-            Props: { Author: 'Talha' }
-          })
-        "
-      >
-        Excel
-      </button>
-
-      <mat-paginator
-        style="float: right"
-        [length]="10"
-        [pageSize]="10"
-        [pageSizeOptions]="[10, 50, 100]"
-        showFirstLastButtons
-      >
-      </mat-paginator>
+          </mat-paginator>
+        </div>
+      </div>
     </div>
   </mat-tab>
 </mat-tab-group>

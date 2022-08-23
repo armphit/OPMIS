@@ -1,6 +1,16 @@
-<div class="container-fluid" style="overflow: auto">
+<div class="container-fluid pt-2" style="overflow: auto" [hidden]="!dataDrug">
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-6">
+      <button
+        *ngIf="dataErrsync"
+        mat-raised-button
+        color="primary"
+        (click)="resetInterface(); inputT.value = ''"
+      >
+        <i class="fas fa-undo-alt"></i>&nbsp; Reset InterfaceIPD
+      </button>
+    </div>
+    <div class="col-lg-6">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput (keyup)="applyFilter($event)" #inputT />
         <mat-placeholder>ค้นหา</mat-placeholder>
@@ -9,110 +19,109 @@
     </div>
   </div>
 
-  <div class="responsive-table" [hidden] = '!dataDrug'>
+  <div class="responsive-table">
     <section class="example-container mat-elevation-z8" tabindex="0">
-    <table
-      mat-table
-      matTableExporter
-      [dataSource]="dataSource"
-      matSort
-      #MatSort="matSort"
-      #exporter="matTableExporter"
-      class="mat-elevation-z8"
-      matSortActive="code"
-      matSortDirection="asc"
-    >
-      <ng-container matColumnDef="code" sticky>
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>code</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.code }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.Name }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="spec">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>spec</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.spec }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="firmName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>firmName</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.firmName }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="unit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>unit</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.unit }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>status</th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          <button
-            type="button"
-            class="{{
-              element.status == 'Y'
-                ? 'btn btn-success'
-                : element.status == 'N'
-                ? 'btn btn-danger'
-                : 'btn btn-warning'
-            }}"
-            style="margin-left: 20px"
-            (click)="changeActive(element)"
+      <table
+        mat-table
+        matTableExporter
+        [dataSource]="dataSource"
+        matSort
+        #MatSort="matSort"
+        #exporter="matTableExporter"
+        class="mat-elevation-z8"
+        matSortActive="code"
+        matSortDirection="asc"
+      >
+        <ng-container matColumnDef="code" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>code</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
           >
-            <i *ngIf="element.status == 'Y'" class="fas fa-check-square"></i>
-            <i *ngIf="element.status == 'N'" class="fas fa-window-close"></i>
-            <i
-              *ngIf="element.status == null"
-              class="fas fa-question-circle"
-            ></i>
-          </button>
-        </td>
-      </ng-container>
+            {{ element.code }}
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </section>
+        <ng-container matColumnDef="Name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.Name }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="spec">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>spec</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.spec }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firmName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>firmName</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.firmName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>unit</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.unit }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>status</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            <button
+              type="button"
+              class="{{
+                element.status == 'Y'
+                  ? 'btn btn-success'
+                  : element.status == 'N'
+                  ? 'btn btn-danger'
+                  : 'btn btn-warning'
+              }}"
+              style="margin-left: 20px"
+              (click)="changeActive(element)"
+            >
+              <i *ngIf="element.status == 'Y'" class="fas fa-check-square"></i>
+              <i *ngIf="element.status == 'N'" class="fas fa-window-close"></i>
+              <i
+                *ngIf="element.status == null"
+                class="fas fa-question-circle"
+              ></i>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
     <mat-paginator
       #MatPaginator="matPaginator"
-
       [length]="10"
       [pageSize]="10"
       [pageSizeOptions]="[10, 50, 100]"

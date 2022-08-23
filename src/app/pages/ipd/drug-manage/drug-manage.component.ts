@@ -16,7 +16,7 @@ export class DrugManageComponent implements OnInit {
   displayedColumns: string[] = [];
   dataSource: any = null;
   dataDrug: any = null;
-
+  dataErrsync: any = null;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   constructor(
@@ -28,6 +28,7 @@ export class DrugManageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getData();
+    this.getSync();
   }
 
   public getData = async () => {
@@ -99,6 +100,46 @@ export class DrugManageComponent implements OnInit {
               showConfirmButton: false,
               timer: 1500,
             });
+          } else {
+            Swal.fire('error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
+  }
+  async getSync() {
+    let getData: any = await this.http.get('getERRSynclastupdate');
+
+    if (getData.connect) {
+      this.dataErrsync = getData.response.rowCount;
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+  async resetInterface() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let getData: any = await this.http.get('deleteERRSynclastupdate');
+
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            this.getSync();
+            Swal.fire(
+              'Success!',
+              'You have successfully reset InterfaceIPD.',
+              'success'
+            );
           } else {
             Swal.fire('error');
           }

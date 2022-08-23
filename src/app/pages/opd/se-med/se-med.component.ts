@@ -462,13 +462,16 @@ export class SeMedComponent implements OnInit {
   }
 
   public async endChange(event: any) {
-    const momentDate = new Date(event.value);
-    const end_Date = moment(momentDate).format('DD/MM/YYYY');
-    this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
-    this.nameNOSEDispense = this.start_date + '-' + String(end_Date) + ')';
-    this.endDate = moment(momentDate).format('YYYY-MM-DD');
-    this.getDataSEDispense();
-    this.getDataSENODispense();
+    if (event.value) {
+      const momentDate = new Date(event.value);
+      const end_Date = moment(momentDate).format('DD/MM/YYYY');
+      this.nameSEDispense = this.start_date + '-' + String(end_Date) + ')';
+      this.nameNOSEDispense = this.start_date + '-' + String(end_Date) + ')';
+      this.endDate = moment(momentDate).format('YYYY-MM-DD');
+      this.getDataSEDispense();
+      this.getDataSENODispense();
+    }
+
     // let formData = new FormData();
     // formData.append('startDate', this.startDate);
     // formData.append('endDate', this.endDate);

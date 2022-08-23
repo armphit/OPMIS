@@ -108,7 +108,6 @@ export class ElMedComponent implements OnInit {
     this.startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     this.endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
     this.getData();
-    this.getDataID();
   }
 
   ngOnInit(): void {}
@@ -365,6 +364,14 @@ export class ElMedComponent implements OnInit {
     this.dataSource2.filter = filterValue.trim().toLowerCase();
     if (this.dataSource2.paginator) {
       this.dataSource2.paginator.firstPage();
+    }
+  }
+
+  public getTab(num: any) {
+    if (num == 0) {
+      this.getData();
+    } else {
+      this.getDataID();
     }
   }
 }

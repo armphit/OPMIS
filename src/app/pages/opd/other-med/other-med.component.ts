@@ -100,7 +100,7 @@ export class OtherMedComponent implements OnInit {
   }
   public dataD = Array();
   public getName: any = null;
-
+  public getHidden: any = 0;
   // public async getTest() {
   //   try {
   //     let getID: any = await this.http.getpath(
@@ -172,6 +172,7 @@ export class OtherMedComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
+        this.getHidden = 1;
         this.dataDrug = finalVal;
         if (this.name == 'JV') {
           this.dataSource = new MatTableDataSource(this.dataDrug);
@@ -216,6 +217,7 @@ export class OtherMedComponent implements OnInit {
           this.dataSource10.paginator = this.paginator10;
         }
       } else {
+        this.getHidden = 0;
         this.dataDrug = null;
       }
     } else {
@@ -233,6 +235,7 @@ export class OtherMedComponent implements OnInit {
   public nameExcel2: any = null;
   public getTab(num: any) {
     this.nameExcel = null;
+    this.getHidden = 0;
     if (num == 0) {
       this.nameExcel = 'เครื่องนับยาเม็ด (JV)';
       this.name = 'JV';

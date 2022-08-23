@@ -125,29 +125,31 @@ export class ApMedComponent implements OnInit {
   }
 
   public async endChange(event: any) {
-    const momentDate = new Date(event.value);
-    this.endDate = moment(momentDate).format('YYMMDD');
-    const end_Date = moment(momentDate).format('DD/MM/YYYY');
-    this.nameExcel = this.fileName + '-' + String(end_Date) + ')';
-    this.startDate = this.startDate + '000000000';
-    this.endDate = this.endDate + '999999999';
-    let formData = new FormData();
-    formData.append('startDate', this.startDate);
-    formData.append('endDate', this.endDate);
+    if (event.value) {
+      const momentDate = new Date(event.value);
+      this.endDate = moment(momentDate).format('YYMMDD');
+      const end_Date = moment(momentDate).format('DD/MM/YYYY');
+      this.nameExcel = this.fileName + '-' + String(end_Date) + ')';
+      this.startDate = this.startDate + '000000000';
+      this.endDate = this.endDate + '999999999';
+      let formData = new FormData();
+      formData.append('startDate', this.startDate);
+      formData.append('endDate', this.endDate);
 
-    let getData: any = await this.http.post('APDispense', formData);
+      let getData: any = await this.http.post('APDispense', formData);
 
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataDrug = getData.response.result;
-        this.dataSource = new MatTableDataSource(this.dataDrug);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+        } else {
+          this.dataDrug = null;
+        }
       } else {
-        this.dataDrug = null;
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 

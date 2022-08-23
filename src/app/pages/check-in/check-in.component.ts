@@ -21,8 +21,12 @@ import Swal from 'sweetalert2';
 export class CheckInComponent implements OnInit {
   displayedColumns: string[] = [];
   campaignOne = new FormGroup({
-    start: new FormControl(new Date()),
-    end: new FormControl(new Date()),
+    start: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() - 1))
+    ),
+    end: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() - 1))
+    ),
   });
   typeDevice: string = '';
   // startDate: any = null;
@@ -69,9 +73,7 @@ export class CheckInComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.result.length) {
-
         this.dataDrug = getData.response.result;
-
 
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
@@ -161,8 +163,8 @@ export class CheckInComponent implements OnInit {
   getTab(e: any) {
     // this.typeDevice = '';
     this.campaignOne = this.formBuilder.group({
-      start: [new Date()],
-      end: [new Date()],
+      start: [new Date(new Date().setDate(new Date().getDate() - 1))],
+      end: [new Date(new Date().setDate(new Date().getDate() - 1))],
     });
     if (e === 0) {
       this.getData();

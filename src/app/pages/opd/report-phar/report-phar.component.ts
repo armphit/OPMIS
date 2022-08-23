@@ -21,12 +21,8 @@ import Swal from 'sweetalert2';
 })
 export class ReportPharComponent implements OnInit {
   public campaignOne = new FormGroup({
-    start: new FormControl(
-      new Date(new Date().setDate(new Date().getDate() - 1))
-    ),
-    end: new FormControl(
-      new Date(new Date().setDate(new Date().getDate() - 1))
-    ),
+    start: new FormControl(new Date(new Date())),
+    end: new FormControl(new Date(new Date())),
   });
   public starttime = '08:00';
 
@@ -93,8 +89,12 @@ export class ReportPharComponent implements OnInit {
     formData.append('date1', start);
     formData.append('date2', end);
     formData.append('site', this.select);
+    // formData.forEach((value, key) => {
+    //   console.log(key + '=' + value);
+    // });
     if (this.numTab == 2) {
       getData = await this.http.post('onusPhar', formData);
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.dataDrug = getData.response.result;
@@ -110,6 +110,7 @@ export class ReportPharComponent implements OnInit {
       }
     } else if (this.numTab == 0) {
       getData = await this.http.post('checkerPhar', formData);
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.dataDrug = getData.response.result;
@@ -161,15 +162,10 @@ export class ReportPharComponent implements OnInit {
   }
 
   clearValue() {
+    // new Date(new Date().setDate(new Date().getDate() - 1)),
     this.campaignOne = this.formBuilder.group({
-      start: [
-        new Date(new Date().setDate(new Date().getDate() - 1)),
-        Validators.required,
-      ],
-      end: [
-        new Date(new Date().setDate(new Date().getDate() - 1)),
-        Validators.required,
-      ],
+      start: [new Date(new Date()), Validators.required],
+      end: [new Date(new Date()), Validators.required],
     });
     this.starttime = '08:00';
     this.endtime = '16:00';
