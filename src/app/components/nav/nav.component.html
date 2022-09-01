@@ -24,17 +24,16 @@
       </a> -->
 
       <a
-        *ngIf="dataUser != 'ipd'"
+        *ngIf="dataUser.role != 'ipd'"
         style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/manage-system']"
         [routerLinkActive]="['active']"
         (click)="togglePanel()"
-
         ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
       </a>
       <a
-        *ngIf="dataUser == 'admin'"
+        *ngIf="dataUser.role == 'admin'"
         style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/search-drug']"
@@ -55,7 +54,7 @@
       <mat-expansion-panel
         [expanded]="panelIpd"
         dense
-        *ngIf="dataUser == 'ipd' || dataUser == 'admin'"
+        *ngIf="dataUser.role == 'ipd' || dataUser.role == 'admin'"
       >
         <mat-expansion-panel-header (click)="togglePanel2()">
           <strong><i class="fas fa-syringe"></i> &nbsp; IPD</strong>
@@ -64,7 +63,8 @@
           <a
             mat-list-item
             [routerLink]="['/ipd/ap-med']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-capsules"></i>&nbsp;AP - Med
           </a>
@@ -74,7 +74,8 @@
           <a
             mat-list-item
             [routerLink]="['/ipd/med-manage']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-tasks"></i>&nbsp;Med - Manage
           </a>
@@ -83,7 +84,7 @@
       <mat-expansion-panel
         [expanded]="panelOpd"
         dense
-        *ngIf="dataUser == 'opd' || dataUser == 'admin'"
+        *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
       >
         <mat-expansion-panel-header
           (click)="togglePanel3()"
@@ -95,35 +96,40 @@
           <a
             mat-list-item
             [routerLink]="['/opd/el-med']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-capsules"></i>&nbsp;EL - Med
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/se-med']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-pills"></i>&nbsp;SE - Med
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/other-med']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-tablets"></i>&nbsp;Other - Med
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/report-dispense']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-clinic-medical"></i>&nbsp;Report &nbsp;Dispense
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/report-phar']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-user-nurse"></i>&nbsp;Report &nbsp;Phar
           </a>
@@ -131,21 +137,24 @@
           <a
             mat-list-item
             [routerLink]="['/opd/patient-list']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-user-injured"></i>&nbsp;Patient - List
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/drug-appoint']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-notes-medical"></i>&nbsp;Drug - Appoint
           </a>
           <a
             mat-list-item
             [routerLink]="['/opd/temperature-monitor']"
-            [routerLinkActive]="['active']" (click)="checkinnerWidth()"
+            [routerLinkActive]="['active']"
+            (click)="checkinnerWidth()"
           >
             <i class="fas fa-temperature-low"></i>&nbsp;Temperature - Monitor
           </a>
@@ -185,10 +194,21 @@
       </h1>
 
       <span style="flex: 1 1 auto; text-align: right">
-        <button type="button" class="btn btn-danger" (click)="signOut()">
+        <button mat-button [matMenuTriggerFor]="appMenu">
+          <i class="fas fa-user-alt" style="margin: 0 5px 5px 0"></i>
+          <div class="name-bar">{{ dataUser.name }}</div>
+        </button>
+        <mat-menu #appMenu="matMenu">
+          <ng-template matMenuContent let-name="name">
+            <button mat-menu-item (click)="signOut()">
+              <i class="fas fa-sign-out-alt"></i>&nbsp;Log off
+            </button>
+          </ng-template>
+        </mat-menu>
+        <!-- <button type="button" class="btn btn-danger" (click)="signOut()">
           <i class="fas fa-sign-out-alt"></i>&nbsp; Sign Out
-        </button></span
-      >
+        </button> -->
+      </span>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

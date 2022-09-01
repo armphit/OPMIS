@@ -306,21 +306,6 @@
         </div>
       </div>
 
-      <!-- <mat-form-field>
-        <mat-label>SELECT TYPE</mat-label>
-        <mat-select (selectionChange)="getDataPrepack($event.value);input.value = ''">
-          <mat-option value="All">All</mat-option>
-          <mat-option value="N">Main Drug</mat-option>
-          <mat-option value="Y">Prepack</mat-option>
-        </mat-select>
-      </mat-form-field> -->
-
-      <!-- <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter2($event)" #input>
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field> -->
-
       <div class="responsive-table" [hidden]="!getHidden">
         <section class="example-container mat-elevation-z8" tabindex="0">
           <table
@@ -434,59 +419,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            amount
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            drugCount
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            style="padding-left: 10px"
-          >
-            Sum
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element"
-            style="padding-left: 20px; padding-right: 20px"
-          >
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -583,21 +515,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter2.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator2="matPaginator"
@@ -672,12 +589,6 @@
           </mat-form-field>
         </div>
       </div>
-
-      <!-- <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter3($event)" #input3>
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field> -->
 
       <div class="responsive-table" [hidden]="!getHidden">
         <section class="example-container mat-elevation-z8" tabindex="0">
@@ -791,32 +702,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -913,21 +798,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter3.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator3="matPaginator"
@@ -994,26 +864,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <!-- <mat-label>เลือกวันที่</mat-label>
-            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker"
-              [comparisonStart]="campaignOne.value.start" [comparisonEnd]="campaignOne.value.end">
-              <input matStartDate placeholder="วันที่เริ่มต้น" formControlName="start"
-                (dateChange)="startChange($event)">
-              <input matEndDate placeholder="วันที่สิ้นสุด" formControlName="end" (dateChange)="endChange($event)">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        <div class="col-lg-5">
-          <mat-form-field *ngIf="getName">
-            <mat-label>SELECT TYPE</mat-label>
-            <mat-select [(ngModel)]="selected" (selectionChange)="getDataM($event.value);input4.value = ''">
-              <mat-option value="">All</mat-option>
-              <mat-option *ngFor="let item of getName " [value]="item.deviceName">{{item.deviceName}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div> -->
+
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter4($event)" #input4 />
@@ -1022,14 +873,6 @@
           </mat-form-field>
         </div>
       </div>
-
-      <!--
-
-      <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter4($event)" #input4>
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field> -->
 
       <div class="responsive-table" [hidden]="!getHidden">
         <section class="example-container mat-elevation-z8" tabindex="0">
@@ -1143,32 +986,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -1265,21 +1082,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter4.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator4="matPaginator"
@@ -1338,11 +1140,6 @@
           </mat-form-field>
         </div>
       </div>
-      <!-- <mat-form-field class="example-full-width" style="float: right;">
-        <input matInput (keyup)="applyFilter5($event)" #input>
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field> -->
 
       <div class="responsive-table" [hidden]="!getHidden">
         <section class="example-container mat-elevation-z8" tabindex="0">
@@ -1456,32 +1253,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -1578,21 +1349,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter5.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator5="matPaginator"
@@ -1764,32 +1520,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -1886,21 +1616,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter6.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator6="matPaginator"
@@ -2073,33 +1788,6 @@
               </td>
             </ng-container>
 
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
-
             <ng-container matColumnDef="deviceName">
               <th
                 mat-header-cell
@@ -2193,21 +1881,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter7.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
--->
           <mat-paginator
             style="float: right"
             #MatPaginator7="matPaginator"
@@ -2379,32 +2052,6 @@
                 </span>
               </td>
             </ng-container>
-            <!-- <ng-container matColumnDef="amount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            amount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.amount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugCount">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            drugCount
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugCount }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="drugSum">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 10px">
-            Sum
-          </th>
-          <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-            {{ element.drugSum }}
-          </td>
-        </ng-container> -->
 
             <ng-container matColumnDef="deviceName">
               <th
@@ -2501,21 +2148,6 @@
             Export Excel
           </button>
 
-          <!-- <div style="float: right">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="
-            exporter8.exportTable('xlsx', {
-              fileName: nameExcel2,
-              sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
-            })
-          "
-        >
-          Export Excel
-           </button>
- -->
           <mat-paginator
             style="float: right"
             #MatPaginator8="matPaginator"
@@ -3063,3 +2695,6 @@
     </div>
   </mat-tab>
 </mat-tab-group>
+
+
+

@@ -44,7 +44,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public hnPatient: any = null;
   public dataSource: any = null;
   public displayedColumns: any = null;
-
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   // public inputGroup: any = null;
   // public queue: string = '';
   // public nameT: string = '';
@@ -52,11 +52,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   // public hnT: string = '';
   // public ageT: string = '';
   // public moph_patient: any = null;
-  @Input() max: any;
+
+  @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   public dataDrug = new Array();
+  nameFilter = new FormControl('');
+  idFilter = new FormControl('');
+  filterValues = {
+    patientNO: '',
+    check: '',
+  };
   // @ViewChild('swiper') swiper!: ElementRef;
+
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -65,17 +73,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     public lightbox: Lightbox
   ) {
     this.dateAdapter.setLocale('en-GB');
-
     this.getData();
   }
 
   ngAfterViewInit() {
-    // setTimeout(() => {
-    //   this.swiper.nativeElement.focus();
-    // }, 0);
+    setTimeout(() => {
+      this.input.nativeElement.focus();
+    }, 500);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.idFilter.valueChanges.subscribe((patientNO) => {
+      this.filterValues.patientNO = patientNO;
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+    this.nameFilter.valueChanges.subscribe((check) => {
+      this.filterValues.check = check;
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+    });
+  }
 
   public getData = async () => {
     this.displayedColumns = [
@@ -83,7 +99,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'QN',
       'patientName',
       'createDT',
-      'drugcode',
+      'druglist',
+      // 'check',
       'timestamp',
     ];
 
@@ -102,6 +119,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             drugname: getmoph_patient.response.result
               .filter((s: { hn: any }) => s.hn === lab)
               .map((edition: { drugname: any }) => edition.drugname),
+            check: 'Y',
           };
         });
 
@@ -112,13 +130,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...emp,
             ...(result.find(
               (item: { hn: any }) => item.hn === emp.patientNO
-            ) ?? { drugcode: [], drugname: [] }),
+            ) ?? { drugcode: [], drugname: [], check: 'N' }),
           };
         });
 
         this.dataSource = new MatTableDataSource(finalVal);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+        this.dataSource.filterPredicate = this.createFilter();
       } else {
         this.dataSource = null;
       }
@@ -129,17 +148,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     // }
   };
 
-  public applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  createFilter(): (data: any, filter: string) => boolean {
+    let filterFunction = function (data: any, filter: any): boolean {
+      let searchTerms = JSON.parse(filter);
+
+      return (
+        data.patientNO.toLowerCase().indexOf(searchTerms.patientNO) !== -1 &&
+        data.check.indexOf(searchTerms.check) !== -1
+      );
+      // && data.pet.toLowerCase().indexOf(searchTerms.pet) !== -1;
+    };
+    return filterFunction;
   }
 
-  dataP: any = null;
-  datatime: any = null;
-  public clickdrugAllergy(data: any) {
-    this.datatime = data.timestamp;
+  drugPatient: any = null;
+  listDrug = async (val: any) => {
+    this.datatime = val.timestamp;
+    this.checkdrug = val.check;
 
-    this.dataP = data;
+    this.dataP = val;
     if (this.dataP) {
       for (let index = 0; index < this.dataP.drugcode.length; index++) {
         this.dataDrug[index] = {
@@ -150,7 +177,53 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else {
       this.dataDrug = [];
     }
-  }
+
+    let formData = new FormData();
+    formData.append('hn', val.patientNO);
+    formData.append(
+      'date',
+      moment(new Date()).add(543, 'year').format('YYYYMMDD')
+    );
+    formData.append('queue', val.QN);
+    let getData: any = await this.http.post('getdrugHomc', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.drugPatient = getData.response.result;
+        let win: any = window;
+        win.$('#exampleModal').modal('show');
+      } else {
+        this.drugPatient = null;
+        Swal.fire('ไม่มีข้อมูลใบสั่งยา!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+
+  // public applyFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value;
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+  // }
+
+  dataP: any = {};
+  datatime: any = null;
+  checkdrug: any = null;
+  // public clickdrugAllergy(data: any) {
+  //   console.log(data);
+
+  //   this.dataP = data;
+  //   if (this.dataP) {
+  //     for (let index = 0; index < this.dataP.drugcode.length; index++) {
+  //       this.dataDrug[index] = {
+  //         drugcode: this.dataP.drugcode[index],
+  //         drugname: this.dataP.drugname[index],
+  //       };
+  //     }
+  //   } else {
+  //     this.dataDrug = [];
+  //   }
+  // }
 
   close() {
     setTimeout(() => {
@@ -159,59 +232,92 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }, 500);
   }
   async confirm() {
-    const { value: formValues } = await Swal.fire({
-      title: 'Confirm',
-      html: `<div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text">User</span>
-        </div>
-        <input type="text" class="form-control" id="user" aria-describedby="basic-addon3">
-      </div>
-      <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Password</span>
-      </div>
-      <input type="text" class="form-control" id="pass" aria-describedby="basic-addon3">
-    </div>`,
-      focusConfirm: false,
+    Swal.fire({
+      title: 'Are you sure?',
+      text: '',
+      icon: 'warning',
       showCancelButton: true,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-
-      preConfirm: async () => {
-        let in1 = (<HTMLInputElement>document.getElementById('user')).value;
-        let in2 = (<HTMLInputElement>document.getElementById('pass')).value;
-
-        if (in1 == 'opd' && in2 == '1234') {
-          let formData = new FormData();
-          formData.append('queue', this.dataP.QN);
-          formData.append('hn', this.dataP.hn);
-
-          let getData: any = await this.http.post('add_moph_confirm', formData);
-          if (getData.connect) {
-            if (getData.response.rowCount > 0) {
-              let win: any = window;
-              win.$('#drugAllergy').modal('hide');
-              Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
-              this.dataDrug = [];
-              this.dataP = null;
-              this.getData();
-            } else {
-              Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
-            }
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append('queue', this.dataP.QN);
+        formData.append('hn', this.dataP.hn);
+        formData.append('user', this.dataUser.user);
+        let getData: any = await this.http.post('add_moph_confirm', formData);
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            let win: any = window;
+            win.$('#exampleModal').modal('hide');
+            Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
+            this.dataDrug = [];
+            this.dataP = null;
+            this.nameFilter.setValue('');
+            this.idFilter.setValue('');
+            this.getData();
           } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
           }
         } else {
-          Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
-          // return false
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
-        // return [
-        //   document.getElementById('swal-input1').value,
-        //   document.getElementById('swal-input2').value
-        // ]
-      },
+      }
     });
+    // const { value: formValues } = await Swal.fire({
+    //   title: 'Confirm',
+    //   html: `<div class="input-group mb-3">
+    //     <div class="input-group-prepend">
+    //       <span class="input-group-text">User</span>
+    //     </div>
+    //     <input type="text" class="form-control" id="user" aria-describedby="basic-addon3">
+    //   </div>
+    //   <div class="input-group mb-3">
+    //   <div class="input-group-prepend">
+    //     <span class="input-group-text">Password</span>
+    //   </div>
+    //   <input type="text" class="form-control" id="pass" aria-describedby="basic-addon3">
+    // </div>`,
+    //   focusConfirm: false,
+    //   showCancelButton: true,
+    //   allowOutsideClick: false,
+    //   allowEscapeKey: false,
+
+    //   preConfirm: async () => {
+    //     let in1 = (<HTMLInputElement>document.getElementById('user')).value;
+    //     let in2 = (<HTMLInputElement>document.getElementById('pass')).value;
+
+    //     if (in1 == 'opd' && in2 == '1234') {
+    //       let formData = new FormData();
+    //       formData.append('queue', this.dataP.QN);
+    //       formData.append('hn', this.dataP.hn);
+
+    //       let getData: any = await this.http.post('add_moph_confirm', formData);
+    //       if (getData.connect) {
+    //         if (getData.response.rowCount > 0) {
+    //           let win: any = window;
+    //           win.$('#drugAllergy').modal('hide');
+    //           Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
+    //           this.dataDrug = [];
+    //           this.dataP = null;
+    //           this.getData();
+    //         } else {
+    //           Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
+    //         }
+    //       } else {
+    //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    //       }
+    //     } else {
+    //       Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
+    //       // return false
+    //     }
+    //     // return [
+    //     //   document.getElementById('swal-input1').value,
+    //     //   document.getElementById('swal-input2').value
+    //     // ]
+    //   },
+    // });
   }
   // public startChange2(event: any) {
   //   this.getData();

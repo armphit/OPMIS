@@ -1,10 +1,30 @@
-<div class="container-fluid" [hidden]="!dataSource">
+<div class="container-fluid pt-2" [hidden]="!dataSource">
   <div class="row">
-    <div class="col-lg-9"></div>
+    <div class="col-lg-9">
+      <mat-form-field>
+        <mat-label>เลือกรายการแพ้ยา</mat-label>
+        <mat-select [formControl]="nameFilter">
+          <mat-option value="">ทั้งหมด</mat-option>
+          <mat-option value="Y">มีแพ้ยา</mat-option>
+          <mat-option value="N">ไม่มีแพ้ยา</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- <mat-form-field class="example-full-width" style="float: right">
+        <input matInput [formControl]="nameFilter" />
+        <mat-placeholder>HN</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field> -->
+    </div>
+    <!-- <div class="col-lg-4">
+      <mat-form-field class="filter" floatLabel="never">
+        <mat-label>HN</mat-label>
+        <input matInput [formControl]="idFilter" />
+      </mat-form-field>
+    </div> -->
     <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right">
-        <input matInput (keyup)="applyFilter($event)" #input #swiper />
-        <mat-placeholder>ค้นหา</mat-placeholder>
+        <input matInput [formControl]="idFilter" #input />
+        <mat-placeholder>HN</mat-placeholder>
         <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
       </mat-form-field>
     </div>
@@ -91,8 +111,43 @@
           {{ element.createDT }}
         </td>
       </ng-container>
-
-      <ng-container matColumnDef="drugcode">
+      <ng-container matColumnDef="druglist">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          Drugs
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          <!-- <button
+            type="button"
+            class="btn btn-info"
+            data-toggle="modal"
+            data-target="#exampleModal"
+            data-backdrop="static"
+            data-keyboard="false"
+            (click)="listDrug(element)"
+            style="margin-left: 20px"
+          >
+            รายการยา
+          </button> -->
+          <button
+            type="button"
+            class="btn btn-info"
+            (click)="listDrug(element)"
+            style="margin-left: 20px"
+          >
+            รายการยา
+          </button>
+        </td>
+      </ng-container>
+      <!-- <ng-container matColumnDef="check">
         <th
           mat-header-cell
           *matHeaderCellDef
@@ -107,7 +162,7 @@
           style="padding-left: 20px; padding-right: 20px"
         >
           <button
-            *ngIf="element.drugcode.length != 0"
+            *ngIf="element.check == 'Y'"
             type="button"
             class="btn btn-danger"
             data-toggle="modal"
@@ -120,7 +175,7 @@
             รายการแพ้ยา
           </button>
         </td>
-      </ng-container>
+      </ng-container> -->
       <ng-container matColumnDef="timestamp">
         <th
           mat-header-cell
@@ -206,6 +261,99 @@
           (click)="confirm()"
           class="btn btn-primary"
           *ngIf="!datatime"
+        >
+          Confirm
+        </button>
+        <button
+          type="button"
+          (click)="close()"
+          class="btn btn-danger"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p
+          style="font-size: larger; font-weight: bold"
+          class="modal-title"
+          id="exampleModalLabel"
+        >
+          รายการยา
+        </p>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div [hidden]="dataDrug.length === 0">
+          <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
+          <div class="table-responsive">
+            <table class="table table-danger">
+              <thead>
+                <tr>
+                  <th style="padding-right: 50px; border-right: 0px">#</th>
+                  <th style="padding-right: 50px; border-right: 0px">Name</th>
+                  <th style="padding-right: 50px; border-right: 0px">Code</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of dataDrug; let x = index">
+                  <td style="border-right: 0px">
+                    <div style="width: 10px">{{ x + 1 }}</div>
+                  </td>
+                  <td style="border-right: 0px">{{ i.drugname }}</td>
+                  <td style="border-right: 0px">{{ i.drugcode }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <hr />
+        </div>
+        <div class="table-responsive" [hidden]="!drugPatient">
+          <p style="font-weight: bold">รายการยา</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>drugCode</th>
+                <th>drugName</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Datetimestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of drugPatient; let i = index">
+                <td style="border-right: 0px">{{ i + 1 }}</td>
+                <td style="border-right: 0px">{{ item.drugCode }}</td>
+                <td style="border-right: 0px">{{ item.drugName }}</td>
+                <td style="border-right: 0px">{{ item.qty }}</td>
+                <td style="border-right: 0px">{{ item.unit }}</td>
+                <td style="border-right: 0px">{{ item.lastmodified }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="confirm()"
+          class="btn btn-primary"
+          *ngIf="!datatime && checkdrug === 'Y'"
         >
           Confirm
         </button>

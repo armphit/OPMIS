@@ -28,9 +28,153 @@
         Sign in
       </button>
     </div>
-    <p class="text-center small"><a href="#">Forgot Password?</a></p>
+    <p class="text-center small">
+      <a
+        href="#"
+        data-toggle="modal"
+        data-target="#repassword"
+        (click)="inputRepassword.reset()"
+        >Change Password?</a
+      >
+    </p>
+    <p class="text-center small">
+      Don't have an account?
+      <a
+        href="#"
+        data-toggle="modal"
+        data-target="#singup"
+        (click)="inputRegister.reset()"
+        >Sign up here!</a
+      >
+    </p>
   </form>
-  <p class="text-center small">
-    Don't have an account? <a href="#" style="color: black">Sign up here!</a>
-  </p>
+</div>
+
+<div class="modal fade" id="singup">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #0069d9">
+        <h1 class="modal-title" style="color: whitesmoke">Sign Up</h1>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+      <form
+        [formGroup]="inputRegister"
+        (ngSubmit)="inputRegister.valid ? submitRegister() : ''"
+      >
+        <div class="modal-body">
+          <div class="container">
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>ID</mat-label>
+                <input matInput formControlName="id" required />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" required />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>Password</mat-label>
+                <input
+                  matInput
+                  formControlName="password"
+                  type="password"
+                  required
+                />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>Confirm Password</mat-label>
+                <input
+                  matInput
+                  formControlName="passwordCon"
+                  type="password"
+                  required
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-block">
+            Sign Up
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="repassword">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #0069d9">
+        <h1 class="modal-title" style="color: whitesmoke">Reset Password</h1>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+      <form
+        [formGroup]="inputRepassword"
+        (ngSubmit)="inputRepassword.valid ? submitRepassword() : ''"
+      >
+        <div class="modal-body">
+          <div class="container">
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>ID</mat-label>
+                <input matInput formControlName="id" required />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>Old-Password</mat-label>
+                <input
+                  matInput
+                  formControlName="passwordOld"
+                  type="password"
+                  required
+                />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>New-Password</mat-label>
+                <input
+                  matInput
+                  formControlName="passwordNew"
+                  type="password"
+                  required
+                />
+              </mat-form-field>
+            </div>
+            <div class="form-group">
+              <mat-form-field class="example-full-width" style="width: 100%">
+                <mat-label>Confirm Password</mat-label>
+                <input
+                  matInput
+                  formControlName="passwordCon"
+                  type="password"
+                  required
+                />
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary btn-block">
+            Reset Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

@@ -12,22 +12,19 @@ import { MatDrawer } from '@angular/material/sidenav';
   encapsulation: ViewEncapsulation.None,
 })
 export class NavComponent {
-  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
-    .role;
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(
       map((result) => result.matches),
       shareReplay()
     );
-    @ViewChild('drawer') public drawer!: MatDrawer;
+  @ViewChild('drawer') public drawer!: MatDrawer;
   constructor(
     private breakpointObserver: BreakpointObserver,
     private http: HttpService
-  ) {
-
-
-  }
+  ) {}
 
   signOut(): void {
     this.http.alertLog('error', 'Logout Success');
@@ -39,8 +36,8 @@ export class NavComponent {
   panelOpd: boolean = false;
 
   togglePanel() {
-    if(window.innerWidth <600){
-      this.drawer.toggle()
+    if (window.innerWidth < 600) {
+      this.drawer.toggle();
     }
     this.panelIpd = false;
     this.panelOpd = false;
@@ -63,8 +60,8 @@ export class NavComponent {
   }
 
   checkinnerWidth() {
-    if(window.innerWidth <600){
-      this.drawer.toggle()
+    if (window.innerWidth < 600) {
+      this.drawer.toggle();
     }
   }
 }

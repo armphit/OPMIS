@@ -82,7 +82,7 @@ export class OtherMedComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('th-TH');
-    this.getDataID();
+
     const momentDate = new Date();
     const endDate = moment(momentDate).format('YYYY-MM-DD');
     const startDate = moment(momentDate).format('YYYY-MM-DD');
@@ -94,6 +94,7 @@ export class OtherMedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getDataID();
     // this.dataSource.filterPredicate = (data: any, filter: string) => {
     //   return data.drugCode == filter;
     // };

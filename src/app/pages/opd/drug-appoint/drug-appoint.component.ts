@@ -109,13 +109,13 @@ export class DrugAppointComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
     this.startDate = new Date(new Date().setDate(new Date().getDate() + 1));
     this.startDate2 = new Date(new Date().setDate(new Date().getDate() + 1));
-
-    this.getDataAppiont();
   }
 
   ngAfterViewInit() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getDataAppiont();
+  }
 
   public getDataAppiont = async () => {
     const start_Date = moment(this.startDate2).format('YYYY-MM-DD');

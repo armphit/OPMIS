@@ -55,9 +55,17 @@
 .text-nav {
   font-size: 30px;
 }
+
+.name-bar {
+  display: contents;
+}
+
 @media only screen and (max-width: 600px) {
   .text-nav {
     font-size: 20px;
+  }
+  .name-bar {
+    display: none;
   }
 }
 
