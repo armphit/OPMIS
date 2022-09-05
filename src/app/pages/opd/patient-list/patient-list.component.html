@@ -9,18 +9,18 @@
           <mat-option value="N">ไม่มีแพ้ยา</mat-option>
         </mat-select>
       </mat-form-field>
-      <!-- <mat-form-field class="example-full-width" style="float: right">
-        <input matInput [formControl]="nameFilter" />
-        <mat-placeholder>HN</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field> -->
+
+      <button
+        type="button"
+        matTooltip="Refresh"
+        style="margin-left: 30px"
+        class="btn btn-outline-primary btn-circle btn-md"
+        (click)="getData(); nameFilter.setValue(''); idFilter.setValue('')"
+      >
+        <i class="fas fa-sync-alt fa-lg"></i>
+      </button>
     </div>
-    <!-- <div class="col-lg-4">
-      <mat-form-field class="filter" floatLabel="never">
-        <mat-label>HN</mat-label>
-        <input matInput [formControl]="idFilter" />
-      </mat-form-field>
-    </div> -->
+
     <div class="col-lg-3">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput [formControl]="idFilter" #input />
@@ -126,7 +126,7 @@
           style="padding-left: 20px; padding-right: 20px"
         >
           <!-- <button
-            type="button"
+            type="buttonbutton"
             class="btn btn-info"
             data-toggle="modal"
             data-target="#exampleModal"

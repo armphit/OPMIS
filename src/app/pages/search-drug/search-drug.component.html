@@ -1,11 +1,28 @@
 <mat-tab-group>
   <mat-tab label="MainDrug">
-    <div class="container-fluid">
-      <mat-form-field class="example-full-width">
-        <input matInput (keyup)="applyFilter($event)" #input />
-        <mat-placeholder>ค้นหา</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg">
+          <button
+            type="button"
+            class="btn btn-warning"
+            data-toggle="modal"
+            data-target="#myModal"
+            data-backdrop="static"
+            data-keyboard="false"
+            (click)="funcAction(false); addPre.value = ''"
+          >
+            เพิ่มยา Main Drug&nbsp;<i class="fas fa-plus"></i>
+          </button>
+        </div>
+        <div class="col-lg" style="text-align: right">
+          <mat-form-field class="example-full-width">
+            <input matInput (keyup)="applyFilter($event)" #input />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
 
       <div class="responsive-table" [hidden]="!dataDrug">
         <section class="example-container mat-elevation-z8" tabindex="0">

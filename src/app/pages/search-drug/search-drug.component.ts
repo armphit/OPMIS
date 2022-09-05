@@ -118,57 +118,59 @@ export class SearchDrugComponent implements OnInit {
 
   public selectedOption: any = null;
   public funcAction = async (val: any) => {
-    const formData = new FormData();
-    formData.append(
-      'drugCode',
-      val.orderitemcode ? val.orderitemcode.trim() : val.drugCode
-    );
-    let getData: any = await this.http.post('listDrugAll101', formData);
+    if (val) {
+      const formData = new FormData();
+      formData.append(
+        'drugCode',
+        val.orderitemcode ? val.orderitemcode.trim() : val.drugCode
+      );
+      let getData: any = await this.http.post('listDrugAll101', formData);
 
-    this.valData = this.formBuilder.group({
-      code: [
-        getData.response.result[0]
-          ? getData.response.result[0].orderitemcode
-          : val.orderitemcode,
-        Validators.required,
-      ],
-      name: [
-        getData.response.result[0]
-          ? getData.response.result[0].orderitemTHname
-          : val.genericname,
-        Validators.required,
-      ],
-      unit: [
-        getData.response.result[0]
-          ? getData.response.result[0].dosageunitcode
-          : val.dosageunitcode,
-        Validators.required,
-      ],
-      form: [
-        getData.response.result[0]
-          ? getData.response.result[0].orderunitcode
-          : val.dosegeform,
-        Validators.required,
-      ],
-      capacity: [
-        getData.response.result[0] ? getData.response.result[0].capacity : '',
-        Validators.required,
-      ],
-      capacity_unit: [
-        getData.response.result[0]
-          ? getData.response.result[0].capacity_unit
-          : '',
-        Validators.required,
-      ],
-      pack: [
-        getData.response.result[0] ? getData.response.result[0].pack : '',
-        Validators.required,
-      ],
-      firmname: [
-        getData.response.result[0] ? getData.response.result[0].firmname : '',
-        Validators.required,
-      ],
-    });
+      this.valData = this.formBuilder.group({
+        code: [
+          getData.response.result[0]
+            ? getData.response.result[0].orderitemcode
+            : val.orderitemcode,
+          Validators.required,
+        ],
+        name: [
+          getData.response.result[0]
+            ? getData.response.result[0].orderitemTHname
+            : val.genericname,
+          Validators.required,
+        ],
+        unit: [
+          getData.response.result[0]
+            ? getData.response.result[0].dosageunitcode
+            : val.dosageunitcode,
+          Validators.required,
+        ],
+        form: [
+          getData.response.result[0]
+            ? getData.response.result[0].orderunitcode
+            : val.dosegeform,
+          Validators.required,
+        ],
+        capacity: [
+          getData.response.result[0] ? getData.response.result[0].capacity : '',
+          Validators.required,
+        ],
+        capacity_unit: [
+          getData.response.result[0]
+            ? getData.response.result[0].capacity_unit
+            : '',
+          Validators.required,
+        ],
+        pack: [
+          getData.response.result[0] ? getData.response.result[0].pack : '',
+          Validators.required,
+        ],
+        firmname: [
+          getData.response.result[0] ? getData.response.result[0].firmname : '',
+          Validators.required,
+        ],
+      });
+    }
   };
 
   public submitInput = async () => {

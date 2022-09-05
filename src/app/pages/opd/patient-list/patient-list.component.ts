@@ -25,6 +25,7 @@ import {
   ThumbnailsPosition,
 } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
+import { interval, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 
@@ -64,7 +65,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     check: '',
   };
   // @ViewChild('swiper') swiper!: ElementRef;
-
+  private updateSubscription!: Subscription;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -83,6 +84,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.updateSubscription = interval(300000).subscribe((val) => {
+      this.getData();
+    });
+
     this.idFilter.valueChanges.subscribe((patientNO) => {
       this.filterValues.patientNO = patientNO;
       this.dataSource.filter = JSON.stringify(this.filterValues);
@@ -91,6 +96,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.filterValues.check = check;
       this.dataSource.filter = JSON.stringify(this.filterValues);
     });
+  }
+
+  ngOnDestroy() {
+    this.updateSubscription.unsubscribe();
   }
 
   public getData = async () => {
@@ -163,6 +172,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   drugPatient: any = null;
   listDrug = async (val: any) => {
+    this.dataDrug = [];
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
 

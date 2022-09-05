@@ -10,6 +10,10 @@
   text-overflow: ellipsis;
   max-width: 200px;
 }
+
+::ng-deep.mat-sort-header-content {
+  display: block !important;
+}
 // ::ng-deep.mat-grid-tile-content {
 //   justify-content: flex-start !important ;
 //   align-items: flex-start !important;
