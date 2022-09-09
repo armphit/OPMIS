@@ -65,7 +65,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: '/opd/drug',
+        redirectTo: '/opd/patient-list',
         pathMatch: 'full',
       },
     ],

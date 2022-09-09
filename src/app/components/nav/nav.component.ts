@@ -32,8 +32,8 @@ export class NavComponent {
     this.http.navRouter('/login');
   }
 
-  panelIpd: boolean = false;
-  panelOpd: boolean = false;
+  panelIpd: boolean = true;
+  panelOpd: boolean = true;
 
   togglePanel() {
     if (window.innerWidth < 600) {

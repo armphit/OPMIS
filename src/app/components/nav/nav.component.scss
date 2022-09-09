@@ -53,7 +53,7 @@
   display: none;
 }
 .text-nav {
-  font-size: 30px;
+  font-size: 30px !important;
 }
 
 .name-bar {
@@ -62,7 +62,7 @@
 
 @media only screen and (max-width: 600px) {
   .text-nav {
-    font-size: 20px;
+    font-size: 20px !important;
   }
   .name-bar {
     display: none;
@@ -73,6 +73,10 @@
   .text-nav {
     font-size: 10px;
   }
+}
+
+.mat-menu-item {
+  font-family: "Sarabun", serif;
 }
 // span.mat-expansion-indicator {
 //   pointer-events: visiblefill !important;

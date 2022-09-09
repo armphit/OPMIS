@@ -1,11 +1,19 @@
-<div style="margin: 10px;">
+<div style="margin: 10px">
   <div class="row">
     <div class="col-lg-9">
       <form [formGroup]="campaignOne">
         <mat-form-field>
           <mat-label>Choose a date</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="picker" (dateChange)="startChange();">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            formControlName="picker"
+            (dateChange)="startChange()"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
       </form>
@@ -13,27 +21,40 @@
   </div>
 </div>
 <div id="chart">
-  <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"
-    [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels"
-    [legend]="chartOptions.legend" [markers]="chartOptions.markers" [grid]="chartOptions.grid"
-    [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
-
-
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [xaxis]="chartOptions.xaxis"
+    [stroke]="chartOptions.stroke"
+    [colors]="chartOptions.colors"
+    [dataLabels]="chartOptions.dataLabels"
+    [legend]="chartOptions.legend"
+    [markers]="chartOptions.markers"
+    [grid]="chartOptions.grid"
+    [yaxis]="chartOptions.yaxis"
+    [title]="chartOptions.title"
+  ></apx-chart>
 
   <mat-grid-list cols="2" rowHeight="2:1">
-    <mat-grid-tile> <i class="fas fa-thermometer-half fa-5x"></i>
-      <span style="font-size: 50px;">
-        <strong style="padding-left: 20px;padding-top: 100px;">{{Ctemperature}} ํ</strong>
-      </span></mat-grid-tile>
     <mat-grid-tile>
-      <span class="iconify" data-icon="carbon:humidity" style="font-size: 85px;"></span>
-      <span style="font-size: 50px;">
-        <strong>{{Chumidity}}%</strong>
+      <i class="fas fa-thermometer-half fa-5x"></i>
+      <span style="font-size: 50px">
+        <strong style="padding-left: 20px; padding-top: 100px"
+          >{{ Ctemperature }} ํ</strong
+        >
+      </span></mat-grid-tile
+    >
+    <mat-grid-tile>
+      <span
+        class="iconify"
+        data-icon="carbon:humidity"
+        style="font-size: 85px"
+      ></span>
+      <span style="font-size: 50px">
+        <strong>{{ Chumidity }}%</strong>
       </span>
     </mat-grid-tile>
   </mat-grid-list>
-
-
 </div>
 <!-- <mat-grid-list cols="2" rowHeight="1:1" *ngIf="dataDrug">
   <mat-grid-tile>
@@ -54,10 +75,6 @@
 
 
 </div> -->
-
-
-
-
 
 <!-- <div class="card-body">
 

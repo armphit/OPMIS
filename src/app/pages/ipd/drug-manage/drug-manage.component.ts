@@ -39,13 +39,26 @@ export class DrugManageComponent implements OnInit {
       'firmName',
       'unit',
       'status',
+      'drug',
     ];
 
     let getData: any = await this.http.get('dataDrug');
+    let getData2: any = await this.http.get('getDrugipd');
 
     if (getData.connect) {
       if (getData.response.result.length) {
-        this.dataDrug = getData.response.result;
+        this.dataDrug = getData.response.result.map(function (emp: {
+          code: any;
+        }) {
+          return {
+            ...emp,
+            ...(getData2.response.result.find(
+              (item: { code: any }) =>
+                item.code.toUpperCase().trim() === emp.code.toUpperCase().trim()
+            ) ?? { drug: 'n' }),
+          };
+        });
+
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -138,6 +151,97 @@ export class DrugManageComponent implements OnInit {
             Swal.fire(
               'Success!',
               'You have successfully reset InterfaceIPD.',
+              'success'
+            );
+          } else {
+            Swal.fire('error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
+  }
+
+  async addDrug(val: any) {
+    let formData = new FormData();
+    formData.append('valcode', val.code);
+    let getDrugid: any = await this.http.post('getDrugid', formData);
+    let valcode = '';
+    if (getDrugid.connect) {
+      if (getDrugid.response.rowCount > 0) {
+        valcode = getDrugid.response.result[0].drugID;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+    val.id = valcode;
+    val.datetime = moment(new Date()).format('YYYYMMDDHHmmss');
+    for (var key in val) {
+      formData.append(key, val[key]);
+    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let insertDrugipd: any = await this.http.post(
+          'insertDrugipd',
+          formData
+        );
+
+        if (insertDrugipd.connect) {
+          if (insertDrugipd.response.rowCount > 0) {
+            this.getData();
+            Swal.fire(
+              'Success!',
+              'You have successfully Insert Drug.',
+              'success'
+            );
+          } else {
+            Swal.fire('error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
+  }
+
+  dataZiuzmedical: any = null;
+  async getZiuzmedical() {
+    let getData: any = await this.http.get('getERRZiuzmedical');
+
+    if (getData.connect) {
+      this.dataZiuzmedical = getData.response.rowCount;
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+  resetZiuzmedical() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirm',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let getData: any = await this.http.get('updateERRZiuzmedical');
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            this.getZiuzmedical();
+            Swal.fire(
+              'Success!',
+              'You have successfully reset Ziuzmedical.',
               'success'
             );
           } else {

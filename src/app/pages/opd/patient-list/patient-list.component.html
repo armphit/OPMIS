@@ -1,9 +1,9 @@
-<div class="container-fluid pt-2" [hidden]="!dataSource">
+<div class="container-fluid pt-2">
   <div class="row">
     <div class="col-lg-9">
       <mat-form-field>
         <mat-label>เลือกรายการแพ้ยา</mat-label>
-        <mat-select [formControl]="nameFilter">
+        <mat-select [formControl]="nameFilter" (selectionChange)="setFocus()">
           <mat-option value="">ทั้งหมด</mat-option>
           <mat-option value="Y">มีแพ้ยา</mat-option>
           <mat-option value="N">ไม่มีแพ้ยา</mat-option>
@@ -15,7 +15,9 @@
         matTooltip="Refresh"
         style="margin-left: 30px"
         class="btn btn-outline-primary btn-circle btn-md"
-        (click)="getData(); nameFilter.setValue(''); idFilter.setValue('')"
+        (click)="
+          getData(); nameFilter.setValue(''); idFilter.setValue(''); setFocus()
+        "
       >
         <i class="fas fa-sync-alt fa-lg"></i>
       </button>
@@ -125,18 +127,6 @@
           *matCellDef="let element"
           style="padding-left: 20px; padding-right: 20px"
         >
-          <!-- <button
-            type="buttonbutton"
-            class="btn btn-info"
-            data-toggle="modal"
-            data-target="#exampleModal"
-            data-backdrop="static"
-            data-keyboard="false"
-            (click)="listDrug(element)"
-            style="margin-left: 20px"
-          >
-            รายการยา
-          </button> -->
           <button
             type="button"
             class="btn btn-info"
@@ -147,35 +137,7 @@
           </button>
         </td>
       </ng-container>
-      <!-- <ng-container matColumnDef="check">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          Action
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          <button
-            *ngIf="element.check == 'Y'"
-            type="button"
-            class="btn btn-danger"
-            data-toggle="modal"
-            data-target="#drugAllergy"
-            data-backdrop="static"
-            data-keyboard="false"
-            (click)="clickdrugAllergy(element)"
-            style="margin-left: 20px"
-          >
-            รายการแพ้ยา
-          </button>
-        </td>
-      </ng-container> -->
+
       <ng-container matColumnDef="timestamp">
         <th
           mat-header-cell
@@ -219,65 +181,7 @@
   </div>
 </div>
 
-<div
-  class="modal fade"
-  id="drugAllergy"
-  data-backdrop="static"
-  data-keyboard="false"
-  data-bs-focus="true"
->
-  <div class="modal-dialog modal-dialog-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header" style="background-color: #f40000">
-        <h1 class="modal-title">รายการแพ้ยา</h1>
-      </div>
-
-      <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th style="padding-right: 50px; border-right: 0px">#</th>
-                <th style="padding-right: 50px; border-right: 0px">Code</th>
-                <th style="padding-right: 50px; border-right: 0px">Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let i of dataDrug; let x = index">
-                <td style="border-right: 0px">
-                  <div style="width: 10px">{{ x + 1 }}</div>
-                </td>
-                <td style="border-right: 0px">{{ i.drugcode }}</td>
-                <td style="border-right: 0px">{{ i.drugname }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button
-          type="button"
-          (click)="confirm()"
-          class="btn btn-primary"
-          *ngIf="!datatime"
-        >
-          Confirm
-        </button>
-        <button
-          type="button"
-          (click)="close()"
-          class="btn btn-danger"
-          data-dismiss="modal"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="exampleModal">
+<div class="modal fade" id="exampleModal" data-backdrop="static">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -294,13 +198,13 @@
           data-dismiss="modal"
           aria-label="Close"
         >
-          <span aria-hidden="true">&times;</span>
+          <span aria-hidden="true" (click)="setFocus()">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div [hidden]="dataDrug.length === 0">
           <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
-          <div class="table-responsive">
+          <div class="table-responsive" style="max-height: 200px">
             <table class="table table-danger">
               <thead>
                 <tr>
@@ -320,10 +224,32 @@
               </tbody>
             </table>
           </div>
+          <p style="font-weight: bold" *ngIf="datatime">
+            สถานะ :
+            <i
+              class="fas fa-check-circle"
+              style="font-size: 15px; color: #20ad60"
+            ></i>
+          </p>
+          <p style="font-weight: bold" *ngIf="!datatime">
+            สถานะ :
+            <i
+              class="fas fa-times-circle"
+              style="font-size: 15px; color: #dc3545"
+            ></i>
+          </p>
+          <p *ngIf="datatime" style="font-weight: bold">
+            ผู้วินิจฉัย : {{ namePhar }}
+          </p>
           <hr />
         </div>
-        <div class="table-responsive" [hidden]="!drugPatient">
-          <p style="font-weight: bold">รายการยา</p>
+
+        <p style="font-weight: bold">รายการยา</p>
+        <div
+          class="table-responsive"
+          style="max-height: 200px"
+          [hidden]="!drugPatient"
+        >
           <table class="table">
             <thead>
               <tr>
@@ -359,9 +285,9 @@
         </button>
         <button
           type="button"
-          (click)="close()"
           class="btn btn-danger"
           data-dismiss="modal"
+          (click)="setFocus()"
         >
           Close
         </button>

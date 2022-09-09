@@ -16,9 +16,9 @@ mat-accordion {
   flex-grow: 1;
 }
 
-h1 {
-  font-family: "Sarabun", serif !important;
-}
+// h1 {
+//   font-family: "Sarabun", serif !important;
+// }
 
 ::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
 ::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {

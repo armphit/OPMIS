@@ -46,13 +46,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public dataSource: any = null;
   public displayedColumns: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-  // public inputGroup: any = null;
-  // public queue: string = '';
-  // public nameT: string = '';
-  // public brithdayT: string = '';
-  // public hnT: string = '';
-  // public ageT: string = '';
-  // public moph_patient: any = null;
 
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
@@ -80,7 +73,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       this.input.nativeElement.focus();
-    }, 500);
+    }, 100);
   }
 
   ngOnInit(): void {
@@ -100,6 +93,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy() {
     this.updateSubscription.unsubscribe();
+  }
+
+  setFocus() {
+    setTimeout(() => {
+      this.input.nativeElement.focus();
+    }, 300);
   }
 
   public getData = async () => {
@@ -171,8 +170,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   drugPatient: any = null;
+  test: any = false;
+  namePhar = '';
   listDrug = async (val: any) => {
+    this.dataP = null;
     this.dataDrug = [];
+    this.datatime = null;
+    this.checkdrug = null;
+
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
 
@@ -196,10 +201,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     );
     formData.append('queue', val.QN);
     let getData: any = await this.http.post('getdrugHomc', formData);
-
+    let getData2: any = await this.http.post('get_moph_confirm', formData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.drugPatient = getData.response.result;
+        if (getData2.response.result.length) {
+          this.namePhar = getData2.response.result[0].name;
+        }
+
         let win: any = window;
         win.$('#exampleModal').modal('show');
       } else {
@@ -211,36 +220,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   };
 
-  // public applyFilter(event: Event) {
-  //   const filterValue = (event.target as HTMLInputElement).value;
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-  // }
-
   dataP: any = {};
   datatime: any = null;
   checkdrug: any = null;
-  // public clickdrugAllergy(data: any) {
-  //   console.log(data);
 
-  //   this.dataP = data;
-  //   if (this.dataP) {
-  //     for (let index = 0; index < this.dataP.drugcode.length; index++) {
-  //       this.dataDrug[index] = {
-  //         drugcode: this.dataP.drugcode[index],
-  //         drugname: this.dataP.drugname[index],
-  //       };
-  //     }
-  //   } else {
-  //     this.dataDrug = [];
-  //   }
-  // }
-
-  close() {
-    setTimeout(() => {
-      this.dataP = null;
-      this.dataDrug = [];
-    }, 500);
-  }
   async confirm() {
     Swal.fire({
       title: 'Are you sure?',
@@ -256,17 +239,24 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         formData.append('queue', this.dataP.QN);
         formData.append('hn', this.dataP.hn);
         formData.append('user', this.dataUser.user);
+        formData.append('name', this.dataUser.name);
         let getData: any = await this.http.post('add_moph_confirm', formData);
         if (getData.connect) {
           if (getData.response.rowCount > 0) {
+            this.getData();
             let win: any = window;
             win.$('#exampleModal').modal('hide');
-            Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
+            Swal.fire({
+              icon: 'success',
+              title: 'การยืนยันเสร็จสิ้น',
+              showConfirmButton: false,
+              timer: 1500,
+            });
             this.dataDrug = [];
             this.dataP = null;
             this.nameFilter.setValue('');
             this.idFilter.setValue('');
-            this.getData();
+            this.setFocus();
           } else {
             Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
           }
@@ -275,105 +265,5 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         }
       }
     });
-    // const { value: formValues } = await Swal.fire({
-    //   title: 'Confirm',
-    //   html: `<div class="input-group mb-3">
-    //     <div class="input-group-prepend">
-    //       <span class="input-group-text">User</span>
-    //     </div>
-    //     <input type="text" class="form-control" id="user" aria-describedby="basic-addon3">
-    //   </div>
-    //   <div class="input-group mb-3">
-    //   <div class="input-group-prepend">
-    //     <span class="input-group-text">Password</span>
-    //   </div>
-    //   <input type="text" class="form-control" id="pass" aria-describedby="basic-addon3">
-    // </div>`,
-    //   focusConfirm: false,
-    //   showCancelButton: true,
-    //   allowOutsideClick: false,
-    //   allowEscapeKey: false,
-
-    //   preConfirm: async () => {
-    //     let in1 = (<HTMLInputElement>document.getElementById('user')).value;
-    //     let in2 = (<HTMLInputElement>document.getElementById('pass')).value;
-
-    //     if (in1 == 'opd' && in2 == '1234') {
-    //       let formData = new FormData();
-    //       formData.append('queue', this.dataP.QN);
-    //       formData.append('hn', this.dataP.hn);
-
-    //       let getData: any = await this.http.post('add_moph_confirm', formData);
-    //       if (getData.connect) {
-    //         if (getData.response.rowCount > 0) {
-    //           let win: any = window;
-    //           win.$('#drugAllergy').modal('hide');
-    //           Swal.fire('การยืนยันเสร็จสิ้น', '', 'success');
-    //           this.dataDrug = [];
-    //           this.dataP = null;
-    //           this.getData();
-    //         } else {
-    //           Swal.fire('การยืนยันข้อมูลไม่สำเร็จ', '', 'error');
-    //         }
-    //       } else {
-    //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    //       }
-    //     } else {
-    //       Swal.fire('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!', '', 'error');
-    //       // return false
-    //     }
-    //     // return [
-    //     //   document.getElementById('swal-input1').value,
-    //     //   document.getElementById('swal-input2').value
-    //     // ]
-    //   },
-    // });
   }
-  // public startChange2(event: any) {
-  //   this.getData();
-  // }
-  // public sendit(data: any) {
-  //   this.dataPharmacist = null;
-  //   this.nameT = '';
-  //   this.brithdayT = '';
-  //   this.hnT = '';
-  //   this.ageT = '';
-  //   this.moph_patient = null;
-  //   this.queue = '';
-  //   this.hnPatient = null;
-  //   this.hnPatient = data.trim();
-  //   this.getData();
-  // }
-  // public imageData: any = null;
-  // items!: GalleryItem[];
-  // async getArrImg(val: any) {
-  //   let formData = new FormData();
-
-  //   formData.append('drugCode', val.drugCode);
-  //   let getDrug: any = await this.http.post('drugImg', formData);
-
-  //   this.imageData = getDrug.response.result;
-
-  //   this.items = this.imageData.map(
-  //     (item: any) =>
-  //       new ImageItem({
-  //         src: this.http.imgPath + item.pathImage,
-  //         thumb: this.http.imgPath + item.pathImage,
-  //       })
-  //   );
-
-  //   /** Lightbox Example */
-
-  //   // Get a lightbox gallery ref
-  //   const lightboxRef = this.gallery.ref('lightbox');
-
-  //   // Add custom gallery config to the lightbox (optional)
-  //   lightboxRef.setConfig({
-  //     // imageSize: ImageSize.Cover,
-  //     thumbPosition: ThumbnailsPosition.Top,
-  //   });
-
-  //   // Load items into the lightbox gallery ref
-  //   lightboxRef.load(this.items);
-  // }
 }

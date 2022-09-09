@@ -198,6 +198,7 @@ export class AllDrugComponent implements OnInit {
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
+          this.getData();
           let win: any = window;
           win.$('#myModal').modal('hide');
           Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
@@ -209,8 +210,6 @@ export class AllDrugComponent implements OnInit {
           this.arrFile = [];
           this.imgResultMultiple = [];
           this.imgResultAfterCompress = '';
-
-          this.getData();
         } else {
           console.log(getData);
           Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
@@ -470,9 +469,9 @@ export class AllDrugComponent implements OnInit {
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
+          this.getData();
           Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
           this.imgMultipleDrugCode = [];
-          this.getData();
         } else {
           console.log(getData);
           Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
