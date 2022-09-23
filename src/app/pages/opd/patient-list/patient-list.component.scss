@@ -17,6 +17,17 @@ label {
     0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
 }
 
+.butt-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}
+
+.hiddenRow {
+  padding: 0 !important;
+}
+
 // p {
 //   font-size: larger !important;
 //   font-weight: bold !important;

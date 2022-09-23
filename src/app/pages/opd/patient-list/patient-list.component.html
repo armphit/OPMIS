@@ -1,4 +1,4 @@
-<div class="container-fluid pt-2">
+<div class="container-fluid pt-2" [hidden]="!dataSource">
   <div class="row">
     <div class="col-lg-9">
       <mat-form-field>
@@ -127,14 +127,29 @@
           *matCellDef="let element"
           style="padding-left: 20px; padding-right: 20px"
         >
-          <button
-            type="button"
-            class="btn btn-info"
-            (click)="listDrug(element)"
-            style="margin-left: 20px"
-          >
-            รายการยา
-          </button>
+          <div style="display: flex">
+            <button
+              button
+              mat-raised-button
+              color="primary"
+              (click)="listDrug(element)"
+              style="margin-left: 20px"
+            >
+              รายการยา
+            </button>
+
+            <!-- <button
+              button
+              mat-raised-button
+              style="background-color: #ffc107; margin-left: 10px"
+              data-toggle="modal"
+              data-target="#modal_owe"
+              (click)="drugCut(element)"
+              *ngIf="element.status === 'Y'"
+            >
+              มียาค้างจ่าย
+            </button> -->
+          </div>
         </td>
       </ng-container>
 
@@ -155,12 +170,12 @@
           <i
             class="fas fa-check-circle"
             style="font-size: 40px; color: #20ad60"
-            *ngIf="element.timestamp && element.drugcode.length != 0"
+            *ngIf="element.timestamp && element.check == 'Y'"
           ></i>
           <i
             class="fas fa-times-circle"
             style="font-size: 40px; color: #dc3545"
-            *ngIf="!element.timestamp && element.drugcode.length != 0"
+            *ngIf="!element.timestamp && element.check == 'Y'"
           ></i>
         </td>
       </ng-container>
@@ -192,6 +207,7 @@
         >
           รายการยา
         </p>
+
         <button
           type="button"
           class="close"
@@ -202,6 +218,14 @@
         </button>
       </div>
       <div class="modal-body">
+        <p
+          style="font-size: 14px; font-weight: bold"
+          class="modal-title"
+          id="exampleModalLabel"
+        >
+          ชื่อ : {{ dataP.patientName }} &nbsp; &nbsp; เลชบัตรประชาชน :
+          {{ dataP.cid }}
+        </p>
         <div [hidden]="dataDrug.length === 0">
           <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
           <div class="table-responsive" style="max-height: 200px">
@@ -211,6 +235,12 @@
                   <th style="padding-right: 50px; border-right: 0px">#</th>
                   <th style="padding-right: 50px; border-right: 0px">Name</th>
                   <th style="padding-right: 50px; border-right: 0px">Code</th>
+                  <th style="padding-right: 50px; border-right: 0px">
+                    hospcode
+                  </th>
+                  <th style="padding-right: 50px; border-right: 0px">
+                    daterecord
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -218,8 +248,12 @@
                   <td style="border-right: 0px">
                     <div style="width: 10px">{{ x + 1 }}</div>
                   </td>
-                  <td style="border-right: 0px">{{ i.drugname }}</td>
+                  <td style="border-right: 0px" class="nowrap">
+                    {{ i.drugname }}
+                  </td>
                   <td style="border-right: 0px">{{ i.drugcode }}</td>
+                  <td style="border-right: 0px">{{ i.hospcode }}</td>
+                  <td style="border-right: 0px">{{ i.daterecord }}</td>
                 </tr>
               </tbody>
             </table>
@@ -239,12 +273,13 @@
             ></i>
           </p>
           <p *ngIf="datatime" style="font-weight: bold">
-            ผู้วินิจฉัย : {{ namePhar }}
+            ลงชื่อ : {{ namePhar }}
           </p>
           <hr />
         </div>
 
-        <p style="font-weight: bold">รายการยา</p>
+        <p style="font-weight: bold; display: inline">รายการยา</p>
+
         <div
           class="table-responsive"
           style="max-height: 200px"
@@ -258,17 +293,38 @@
                 <th>drugName</th>
                 <th>Quantity</th>
                 <th>Unit</th>
-                <th>Datetimestamp</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of drugPatient; let i = index">
-                <td style="border-right: 0px">{{ i + 1 }}</td>
-                <td style="border-right: 0px">{{ item.drugCode }}</td>
-                <td style="border-right: 0px">{{ item.drugName }}</td>
-                <td style="border-right: 0px">{{ item.qty }}</td>
-                <td style="border-right: 0px">{{ item.unit }}</td>
-                <td style="border-right: 0px">{{ item.lastmodified }}</td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ i + 1 }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.drugCode }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.drugName }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.qty }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.unit }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  <!-- <button
+                    button
+                    mat-raised-button
+                    color="primary"
+                    type="button"
+                    class="butt-sm"
+                    (click)="cutDispend(item)"
+                  >
+                    ตัดจ่ายยา
+                  </button> -->
+                </td>
               </tr>
             </tbody>
           </table>
@@ -289,6 +345,162 @@
           data-dismiss="modal"
           (click)="setFocus()"
         >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_owe">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <p
+          style="font-size: larger; font-weight: bold"
+          class="modal-title"
+          id="exampleModalLabel"
+        >
+          รายการยา
+        </p>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="table-responsive" style="max-height: 500px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th>drugcode</th>
+                <th>drugname</th>
+                <th>realamount</th>
+                <th>cutamount</th>
+                <th>balanceamount</th>
+                <th>pharmacist</th>
+                <th>created date</th>
+                <th>pay</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of drugcut; let i = index">
+              <tr>
+                <td style="border-right: 0px; vertical-align: middle">
+                  <div style="display: flex">
+                    <div class="example-button-container" style="margin: 5px">
+                      <button
+                        matTooltip="ลบข้อมูล"
+                        matTooltipPosition="above"
+                        style="width: 30px; height: 30px"
+                        mat-mini-fab
+                        color="warn"
+                        (click)="deleteCutdrug(drugcut[i])"
+                      >
+                        <i
+                          class="fas fa-trash"
+                          style="margin-bottom: 15px; margin-left: 1px"
+                        ></i>
+                      </button>
+                    </div>
+                    <div class="example-button-container" style="margin: 5px">
+                      <button
+                        *ngIf="drugcut[i].amount[0]"
+                        matTooltip="ดูประวัติ"
+                        matTooltipPosition="above"
+                        style="width: 30px; height: 30px"
+                        data-toggle="collapse"
+                        [attr.data-target]="'#demo' + i"
+                        mat-mini-fab
+                        color="primary"
+                        aria-label="Example icon button with a filter list icon"
+                      >
+                        <i
+                          class="fas fa-eye"
+                          style="margin-bottom: 15px; margin-left: 1px"
+                        ></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ i + 1 }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.drugcode }}
+                </td>
+                <td
+                  class="text-nowrap"
+                  style="border-right: 0px; vertical-align: middle"
+                >
+                  {{ item.drugname }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.realamount }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.cutamount }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.balanceamount }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.phar }}
+                </td>
+                <td
+                  class="text-nowrap"
+                  style="border-right: 0px; vertical-align: middle"
+                >
+                  {{ item.createdDT }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  <button
+                    button
+                    mat-raised-button
+                    color="primary"
+                    type="button"
+                    class="butt-sm"
+                    (click)="dispendDrug(item)"
+                  >
+                    จ่ายยา
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="10" class="hiddenRow">
+                  <div id="demo{{ i }}" class="accordian-body collapse">
+                    <table class="table table-primary">
+                      <thead>
+                        <tr>
+                          <th scope="col">amount</th>
+                          <th scope="col">pharmacist</th>
+                          <th scope="col">datetime</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let item of drugcut[i].amount; let j = index"
+                        >
+                          <td>{{ item }}</td>
+                          <td>{{ drugcut[i].phar2[j] }}</td>
+                          <td>{{ drugcut[i].datetime[j] }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Close
         </button>
       </div>

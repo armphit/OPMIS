@@ -154,3 +154,11 @@ body {
 table {
   width: 100% !important;
 }
+
+.mat-h2,
+.mat-title,
+.mat-typography h2 {
+  font: 500 20px/32px "Sarabun", serif;
+  letter-spacing: normal;
+  margin: 0 0 1px;
+}
