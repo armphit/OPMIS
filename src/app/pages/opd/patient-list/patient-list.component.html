@@ -1,509 +1,864 @@
-<div class="container-fluid pt-2" [hidden]="!dataSource">
-  <div class="row">
-    <div class="col-lg-9">
-      <mat-form-field>
-        <mat-label>เลือกรายการแพ้ยา</mat-label>
-        <mat-select [formControl]="nameFilter" (selectionChange)="setFocus()">
-          <mat-option value="">ทั้งหมด</mat-option>
-          <mat-option value="Y">มีแพ้ยา</mat-option>
-          <mat-option value="N">ไม่มีแพ้ยา</mat-option>
-        </mat-select>
-      </mat-form-field>
+<mat-tab-group (selectedTabChange)="onTabChange($event.index)">
+  <mat-tab label="รายการยา">
+    <div class="container-fluid pt-2" [hidden]="!dataSource">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field>
+            <mat-label>เลือกรายการแพ้ยา</mat-label>
+            <mat-select
+              [formControl]="nameFilter"
+              (selectionChange)="setFocus()"
+            >
+              <mat-option value="">ทั้งหมด</mat-option>
+              <mat-option value="Y">มีแพ้ยา</mat-option>
+              <mat-option value="N">ไม่มีแพ้ยา</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-      <button
-        type="button"
-        matTooltip="Refresh"
-        style="margin-left: 30px"
-        class="btn btn-outline-primary btn-circle btn-md"
-        (click)="
-          getData(); nameFilter.setValue(''); idFilter.setValue(''); setFocus()
-        "
-      >
-        <i class="fas fa-sync-alt fa-lg"></i>
-      </button>
+          <button
+            type="button"
+            matTooltip="Refresh"
+            style="margin-left: 30px"
+            class="btn btn-outline-primary btn-circle btn-md"
+            (click)="
+              getData();
+              nameFilter.setValue('');
+              idFilter.setValue('');
+              setFocus()
+            "
+          >
+            <i class="fas fa-sync-alt fa-lg"></i>
+          </button>
+        </div>
+
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput [formControl]="idFilter" #input />
+            <mat-placeholder>HN</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section class="example-container mat-elevation-z8" tabindex="0">
+        <table
+          mat-table
+          [dataSource]="dataSource"
+          #MatSort="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter="matTableExporter"
+          matSortActive="createDT"
+          matSortDirection="desc"
+        >
+          <ng-container matColumnDef="patientNO">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              patientNO
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientNO }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="QN">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              QN
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.QN }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="patientName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              patientName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createDT">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              createDT
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.createDT }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="druglist">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Drugs
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              <div style="display: flex">
+                <button
+                  button
+                  mat-raised-button
+                  color="primary"
+                  (click)="listDrug(element)"
+                  style="margin-left: 20px"
+                >
+                  รายการยา
+                </button>
+
+                <button
+                  button
+                  mat-raised-button
+                  style="background-color: #ffc107; margin-left: 10px"
+                  data-toggle="modal"
+                  data-target="#modal_owe"
+                  (click)="drugCut(element)"
+                  *ngIf="element.status === 'Y'"
+                >
+                  มียาค้างจ่าย
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="timestamp">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Status
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              <i
+                class="fas fa-check-circle"
+                style="font-size: 40px; color: #20ad60"
+                *ngIf="element.timestamp && element.check == 'Y'"
+              ></i>
+              <i
+                class="fas fa-times-circle"
+                style="font-size: 40px; color: #dc3545"
+                *ngIf="!element.timestamp && element.check == 'Y'"
+              ></i>
+            </td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </section>
+      <div>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
     </div>
 
-    <div class="col-lg-3">
-      <mat-form-field class="example-full-width" style="float: right">
-        <input matInput [formControl]="idFilter" #input />
-        <mat-placeholder>HN</mat-placeholder>
-        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-      </mat-form-field>
-    </div>
-  </div>
-  <section class="example-container mat-elevation-z8" tabindex="0">
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      #MatSort="matSort"
-      matSort
-      class="mat-elevation-z8"
-      matTableExporter
-      #exporter="matTableExporter"
-      matSortActive="createDT"
-      matSortDirection="desc"
+    <div
+      class="modal fade custom-class"
+      id="exampleModal"
+      data-backdrop="static"
     >
-      <ng-container matColumnDef="patientNO">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          patientNO
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.patientNO }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="QN">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          QN
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.QN }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="patientName">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          patientName
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.patientName }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="createDT">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          createDT
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          {{ element.createDT }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="druglist">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          Drugs
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          <div style="display: flex">
-            <button
-              button
-              mat-raised-button
-              color="primary"
-              (click)="listDrug(element)"
-              style="margin-left: 20px"
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <p
+              style="font-size: larger; font-weight: bold"
+              class="modal-title"
+              id="exampleModalLabel"
             >
               รายการยา
-            </button>
+            </p>
 
-            <!-- <button
-              button
-              mat-raised-button
-              style="background-color: #ffc107; margin-left: 10px"
-              data-toggle="modal"
-              data-target="#modal_owe"
-              (click)="drugCut(element)"
-              *ngIf="element.status === 'Y'"
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
-              มียาค้างจ่าย
-            </button> -->
+              <span aria-hidden="true" (click)="setFocus()">&times;</span>
+            </button>
           </div>
-        </td>
-      </ng-container>
+          <div class="modal-body">
+            <p
+              style="font-size: 14px; font-weight: bold"
+              class="modal-title"
+              id="exampleModalLabel"
+            >
+              ชื่อ : {{ dataP.patientName }} &nbsp; &nbsp; เลชบัตรประชาชน :
+              {{ dataP.cid }}
+            </p>
+            <div [hidden]="dataDrug.length === 0">
+              <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
+              <div class="table-responsive" style="max-height: 200px">
+                <table class="table table-danger">
+                  <thead>
+                    <tr>
+                      <th style="padding-right: 50px; border-right: 0px">#</th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        ชื่อยา
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        รหัสยา
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        โรงพยาบาล
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        วันที่
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let i of dataDrug; let x = index">
+                      <td style="border-right: 0px">
+                        <div style="width: 10px">{{ x + 1 }}</div>
+                      </td>
+                      <td style="border-right: 0px" class="nowrap">
+                        {{ i.drugname }}
+                      </td>
+                      <td style="border-right: 0px">{{ i.drugcode }}</td>
+                      <td style="border-right: 0px">{{ i.hospcode }}</td>
+                      <td style="border-right: 0px">{{ i.daterecord }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="font-weight: bold" *ngIf="datatime">
+                สถานะ :
+                <i
+                  class="fas fa-check-circle"
+                  style="font-size: 15px; color: #20ad60"
+                ></i>
+              </p>
+              <p style="font-weight: bold" *ngIf="!datatime">
+                สถานะ :
+                <i
+                  class="fas fa-times-circle"
+                  style="font-size: 15px; color: #dc3545"
+                ></i>
+              </p>
+              <p *ngIf="datatime" style="font-weight: bold">
+                ลงชื่อ : {{ namePhar }}
+              </p>
+              <hr />
+            </div>
 
-      <ng-container matColumnDef="timestamp">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          style="padding-left: 10px"
-        >
-          Status
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          style="padding-left: 20px; padding-right: 20px"
-        >
-          <i
-            class="fas fa-check-circle"
-            style="font-size: 40px; color: #20ad60"
-            *ngIf="element.timestamp && element.check == 'Y'"
-          ></i>
-          <i
-            class="fas fa-times-circle"
-            style="font-size: 40px; color: #dc3545"
-            *ngIf="!element.timestamp && element.check == 'Y'"
-          ></i>
-        </td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-  </section>
-  <div>
-    <mat-paginator
-      style="float: right"
-      #MatPaginator="matPaginator"
-      [length]="10"
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 50, 100]"
-      showFirstLastButtons
-    >
-    </mat-paginator>
-  </div>
-</div>
+            <p style="font-weight: bold; display: inline">รายการยา</p>
 
-<div class="modal fade" id="exampleModal" data-backdrop="static">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <p
-          style="font-size: larger; font-weight: bold"
-          class="modal-title"
-          id="exampleModalLabel"
-        >
-          รายการยา
-        </p>
-
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true" (click)="setFocus()">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p
-          style="font-size: 14px; font-weight: bold"
-          class="modal-title"
-          id="exampleModalLabel"
-        >
-          ชื่อ : {{ dataP.patientName }} &nbsp; &nbsp; เลชบัตรประชาชน :
-          {{ dataP.cid }}
-        </p>
-        <div [hidden]="dataDrug.length === 0">
-          <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
-          <div class="table-responsive" style="max-height: 200px">
-            <table class="table table-danger">
-              <thead>
-                <tr>
-                  <th style="padding-right: 50px; border-right: 0px">#</th>
-                  <th style="padding-right: 50px; border-right: 0px">Name</th>
-                  <th style="padding-right: 50px; border-right: 0px">Code</th>
-                  <th style="padding-right: 50px; border-right: 0px">
-                    hospcode
-                  </th>
-                  <th style="padding-right: 50px; border-right: 0px">
-                    daterecord
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let i of dataDrug; let x = index">
-                  <td style="border-right: 0px">
-                    <div style="width: 10px">{{ x + 1 }}</div>
-                  </td>
-                  <td style="border-right: 0px" class="nowrap">
-                    {{ i.drugname }}
-                  </td>
-                  <td style="border-right: 0px">{{ i.drugcode }}</td>
-                  <td style="border-right: 0px">{{ i.hospcode }}</td>
-                  <td style="border-right: 0px">{{ i.daterecord }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p style="font-weight: bold" *ngIf="datatime">
-            สถานะ :
-            <i
-              class="fas fa-check-circle"
-              style="font-size: 15px; color: #20ad60"
-            ></i>
-          </p>
-          <p style="font-weight: bold" *ngIf="!datatime">
-            สถานะ :
-            <i
-              class="fas fa-times-circle"
-              style="font-size: 15px; color: #dc3545"
-            ></i>
-          </p>
-          <p *ngIf="datatime" style="font-weight: bold">
-            ลงชื่อ : {{ namePhar }}
-          </p>
-          <hr />
-        </div>
-
-        <p style="font-weight: bold; display: inline">รายการยา</p>
-
-        <div
-          class="table-responsive"
-          style="max-height: 200px"
-          [hidden]="!drugPatient"
-        >
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>drugCode</th>
-                <th>drugName</th>
-                <th>Quantity</th>
-                <th>Unit</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of drugPatient; let i = index">
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ i + 1 }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.drugCode }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.drugName }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.qty }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.unit }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  <!-- <button
-                    button
-                    mat-raised-button
-                    color="primary"
-                    type="button"
-                    class="butt-sm"
-                    (click)="cutDispend(item)"
-                  >
-                    ตัดจ่ายยา
-                  </button> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button"
-          (click)="confirm()"
-          class="btn btn-primary"
-          *ngIf="!datatime && checkdrug === 'Y'"
-        >
-          Confirm
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-dismiss="modal"
-          (click)="setFocus()"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modal_owe">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <p
-          style="font-size: larger; font-weight: bold"
-          class="modal-title"
-          id="exampleModalLabel"
-        >
-          รายการยา
-        </p>
-        <button type="button" class="close" data-dismiss="modal">
-          &times;
-        </button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        <div class="table-responsive" style="max-height: 500px">
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>#</th>
-                <th>drugcode</th>
-                <th>drugname</th>
-                <th>realamount</th>
-                <th>cutamount</th>
-                <th>balanceamount</th>
-                <th>pharmacist</th>
-                <th>created date</th>
-                <th>pay</th>
-              </tr>
-            </thead>
-            <tbody *ngFor="let item of drugcut; let i = index">
-              <tr>
-                <td style="border-right: 0px; vertical-align: middle">
-                  <div style="display: flex">
-                    <div class="example-button-container" style="margin: 5px">
+            <div
+              class="table-responsive"
+              style="max-height: 200px"
+              [hidden]="!drugPatient"
+            >
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>รหัสยา</th>
+                    <th>ชื่อยา</th>
+                    <th>จำนวน</th>
+                    <th>หน่วย</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of drugPatient; let i = index">
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ i + 1 }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.drugCode }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.drugName }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.qty }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.unit }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
                       <button
-                        matTooltip="ลบข้อมูล"
-                        matTooltipPosition="above"
-                        style="width: 30px; height: 30px"
-                        mat-mini-fab
-                        color="warn"
-                        (click)="deleteCutdrug(drugcut[i])"
-                      >
-                        <i
-                          class="fas fa-trash"
-                          style="margin-bottom: 15px; margin-left: 1px"
-                        ></i>
-                      </button>
-                    </div>
-                    <div class="example-button-container" style="margin: 5px">
-                      <button
-                        *ngIf="drugcut[i].amount[0]"
-                        matTooltip="ดูประวัติ"
-                        matTooltipPosition="above"
-                        style="width: 30px; height: 30px"
-                        data-toggle="collapse"
-                        [attr.data-target]="'#demo' + i"
-                        mat-mini-fab
+                        button
+                        mat-raised-button
                         color="primary"
-                        aria-label="Example icon button with a filter list icon"
+                        type="button"
+                        class="butt-sm"
+                        (click)="cutDispend(item)"
                       >
-                        <i
-                          class="fas fa-eye"
-                          style="margin-bottom: 15px; margin-left: 1px"
-                        ></i>
+                        ตัดจ่ายยา
                       </button>
-                    </div>
-                  </div>
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ i + 1 }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.drugcode }}
-                </td>
-                <td
-                  class="text-nowrap"
-                  style="border-right: 0px; vertical-align: middle"
-                >
-                  {{ item.drugname }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.realamount }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.cutamount }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.balanceamount }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  {{ item.phar }}
-                </td>
-                <td
-                  class="text-nowrap"
-                  style="border-right: 0px; vertical-align: middle"
-                >
-                  {{ item.createdDT }}
-                </td>
-                <td style="border-right: 0px; vertical-align: middle">
-                  <button
-                    button
-                    mat-raised-button
-                    color="primary"
-                    type="button"
-                    class="butt-sm"
-                    (click)="dispendDrug(item)"
-                  >
-                    จ่ายยา
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="10" class="hiddenRow">
-                  <div id="demo{{ i }}" class="accordian-body collapse">
-                    <table class="table table-primary">
-                      <thead>
-                        <tr>
-                          <th scope="col">amount</th>
-                          <th scope="col">pharmacist</th>
-                          <th scope="col">datetime</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          *ngFor="let item of drugcut[i].amount; let j = index"
-                        >
-                          <td>{{ item }}</td>
-                          <td>{{ drugcut[i].phar2[j] }}</td>
-                          <td>{{ drugcut[i].datetime[j] }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              (click)="confirm()"
+              class="btn btn-primary"
+              *ngIf="!datatime && checkdrug === 'Y'"
+            >
+              Confirm
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+              (click)="setFocus()"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">
-          Close
-        </button>
+    <div class="modal fade" id="modal_owe">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <p
+              style="font-size: larger; font-weight: bold"
+              class="modal-title"
+              id="exampleModalLabel"
+            >
+              รายการยาค้างจ่าย
+            </p>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="table-responsive" style="max-height: 500px">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th class="text-nowrap">รหัสยา</th>
+                    <th class="text-nowrap">ชื่อยา</th>
+                    <th class="text-nowrap">จำนวนจ่ายยา</th>
+                    <th class="text-nowrap">จำนวนตัดจ่ายยา</th>
+                    <th class="text-nowrap">จำนวนคงเหลือ</th>
+                    <th class="text-nowrap">เภสัชกร</th>
+                    <th class="text-nowrap">วันที่</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of drugcut; let i = index">
+                  <tr>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      <div style="display: flex">
+                        <div
+                          class="example-button-container"
+                          style="margin: 5px"
+                        >
+                          <button
+                            matTooltip="ลบข้อมูล"
+                            matTooltipPosition="above"
+                            style="width: 30px; height: 30px"
+                            mat-mini-fab
+                            color="warn"
+                            (click)="deleteCutdrug(drugcut[i])"
+                          >
+                            <i
+                              class="fas fa-trash"
+                              style="margin-bottom: 15px; margin-left: 1px"
+                            ></i>
+                          </button>
+                        </div>
+                        <div
+                          class="example-button-container"
+                          style="margin: 5px"
+                        >
+                          <button
+                            *ngIf="drugcut[i].amount[0]"
+                            matTooltip="ดูประวัติ"
+                            matTooltipPosition="above"
+                            style="width: 30px; height: 30px"
+                            data-toggle="collapse"
+                            [attr.data-target]="'#demo' + i"
+                            mat-mini-fab
+                            color="primary"
+                            aria-label="Example icon button with a filter list icon"
+                          >
+                            <i
+                              class="fas fa-eye"
+                              style="margin-bottom: 15px; margin-left: 1px"
+                            ></i>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ i + 1 }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.drugcode }}
+                    </td>
+                    <td
+                      class="text-nowrap"
+                      style="border-right: 0px; vertical-align: middle"
+                    >
+                      {{ item.drugname }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.realamount }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.cutamount }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.balanceamount }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      {{ item.phar }}
+                    </td>
+                    <td
+                      class="text-nowrap"
+                      style="border-right: 0px; vertical-align: middle"
+                    >
+                      {{ item.createdDT }}
+                    </td>
+                    <td style="border-right: 0px; vertical-align: middle">
+                      <button
+                        button
+                        mat-raised-button
+                        color="primary"
+                        type="button"
+                        class="butt-sm"
+                        (click)="dispendDrug(item)"
+                      >
+                        จ่ายยา
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="10" class="hiddenRow">
+                      <div id="demo{{ i }}" class="accordian-body collapse">
+                        <table class="table table-primary">
+                          <thead>
+                            <tr>
+                              <th></th>
+                              <th>จำนวนจ่ายยา</th>
+                              <th>เภสัชกร</th>
+                              <th>วันที่</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="
+                                let item of drugcut[i].amount;
+                                let j = index
+                              "
+                            >
+                              <td width="10px">
+                                <button
+                                  matTooltip="ลบข้อมูล"
+                                  matTooltipPosition="above"
+                                  style="width: 30px; height: 30px"
+                                  mat-mini-fab
+                                  color="warn"
+                                  (click)="
+                                    deleteCutowe(
+                                      drugcut[i].id,
+                                      drugcut[i].id2[j],
+                                      drugcut[i].amount[j]
+                                    )
+                                  "
+                                >
+                                  <i
+                                    class="fas fa-trash"
+                                    style="
+                                      margin-bottom: 15px;
+                                      margin-left: 1px;
+                                    "
+                                  ></i>
+                                </button>
+                              </td>
+                              <td style="vertical-align: middle">{{ item }}</td>
+                              <td style="vertical-align: middle">
+                                {{ drugcut[i].phar2[j] }}
+                              </td>
+                              <td style="vertical-align: middle">
+                                {{ drugcut[i].datetime[j] }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </mat-tab>
+  <mat-tab label="รายงานตัดจ่ายยา">
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float: left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end"
+            >
+              <input
+                matStartDate
+                placeholder="วันที่เริ่มต้น"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="วันที่สิ้นสุด"
+                formControlName="end"
+                (dateChange)="endChange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter($event)" #input2 />
+            <mat-placeholder>Search</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource2"
+      >
+        <table
+          mat-table
+          [dataSource]="dataSource2"
+          #MatSort2="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter2="matTableExporter"
+          matSortActive="createdDT"
+          matSortDirection="asc"
+          [hiddenColumns]="[7]"
+        >
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              HN
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="patientName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              patient Name
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="checker_name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Pharmacist
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.checker_name }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="drugcode">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Drug Code
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugcode }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="drugname">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Drug Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugname }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="realamount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Amount
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.realamount }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="cutamount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Cut Amount
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.cutamount }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Status
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              <i
+                [ngClass]="
+                  element.status == 'N'
+                    ? 'fas fa-check-circle'
+                    : 'fas fa-times-circle'
+                "
+                [ngStyle]="
+                  element.status == 'N'
+                    ? { 'font-size': '40px', color: '#20ad60' }
+                    : { 'font-size': '40px', color: '#dc3545' }
+                "
+              ></i>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createdDT">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Date
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.createdDT }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="relativePhone">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Phone
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.relativePhone }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="relativeAddress">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Address
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.relativeAddress }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns2; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+        </table>
+      </section>
+      <div [hidden]="!dataSource2">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter2.exportTable('xlsx', {
+              fileName: nameExcel2,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>

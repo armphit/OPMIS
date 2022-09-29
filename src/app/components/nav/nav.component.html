@@ -7,8 +7,17 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
   >
-    <div class="text-center" style="margin: 10px">
+    <div
+      class="text-center"
+      style="margin: 10px"
+      [ngStyle]="{
+        'margin-top': (isHandset$ | async) ? '75px' : '0px'
+      }"
+    >
       <img
+        [ngStyle]="{
+          display: (isHandset$ | async) ? 'none' : 'block'
+        }"
         src="assets/ดาวน์โหลด.jfif"
         class="w3-round"
         style="text-align: center"

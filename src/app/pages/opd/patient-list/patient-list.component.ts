@@ -1,3 +1,4 @@
+import { stringify } from 'querystring';
 import {
   AfterViewInit,
   Component,
@@ -33,9 +34,7 @@ import Swal from 'sweetalert2';
 export class PatientListComponent implements OnInit, AfterViewInit {
   public Date = new Date();
   public dataPharmacist: any = null;
-  public campaignTwo = new FormGroup({
-    picker1: new FormControl(new Date(), [Validators.required]),
-  });
+
   public startDate: any = null;
   public endDate: any = null;
   public hnPatient: any = null;
@@ -200,20 +199,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     };
     return filterFunction;
   }
-
+  errPatientName: any = {};
   drugPatient: any = null;
   test: any = false;
   namePhar = '';
   listDrug = async (val: any) => {
     this.hncut = null;
-    this.dataP = null;
+    this.dataP = {};
     this.dataDrug = [];
     this.datatime = null;
     this.checkdrug = null;
 
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
-
+    // this.errPatientName = val;
     this.dataP = val;
 
     if (this.dataP) {
@@ -314,7 +313,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           if (
             Number(
               (<HTMLInputElement>document.getElementById('swal-input1')).value
-            ) <= Number(val.qty)
+            ) < Number(val.qty) &&
+            Number(
+              (<HTMLInputElement>document.getElementById('swal-input1')).value
+            ) >= 0
           ) {
             return [
               (<HTMLInputElement>document.getElementById('swal-input1')).value,
@@ -371,7 +373,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   async drugCut(data: any) {
     this.hncut = null;
-    this.dataP = null;
+    this.dataP = {};
     this.dataDrug = [];
     this.datatime = null;
     this.checkdrug = null;
@@ -389,6 +391,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         ).map((lab) => {
           return {
             id: lab,
+            id2: getData.response.result
+              .filter((s: { id: any }) => s.id === lab)
+              .map((edition: { id2: any }) => edition.id2),
             amount: getData.response.result
               .filter((s: { id: any }) => s.id === lab)
               .map((edition: { amount: any }) => edition.amount),
@@ -408,6 +413,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         );
 
         dataOwe.forEach((element: any) => {
+          delete element['id2'];
           delete element['amount'];
           delete element['phar2'];
           delete element['datetime'];
@@ -417,13 +423,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           return {
             ...emp,
             ...(result.find((item: { id: any }) => item.id === emp.id) ?? {
+              id2: [],
               amount: [],
               phar2: [],
               datetime: [],
             }),
           };
         });
-        console.log(this.drugcut);
       } else {
         this.drugcut = null;
       }
@@ -445,7 +451,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               Number(
                 (<HTMLInputElement>document.getElementById('swal-input1')).value
               ) >=
-            0
+              0 &&
+            Number(
+              (<HTMLInputElement>document.getElementById('swal-input1')).value
+            ) > 0
           ) {
             return [
               (<HTMLInputElement>document.getElementById('swal-input1')).value,
@@ -547,6 +556,143 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               showConfirmButton: false,
               timer: 1500,
             });
+          } else {
+            Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
+  }
+  displayedColumns2: any = null;
+  dataSource2: any = null;
+  public campaignOne = new FormGroup({
+    start: new FormControl(
+      new Date(new Date().setDate(new Date().getDate() - 30))
+    ),
+    end: new FormControl(new Date()),
+  });
+  nameExcel2 = '';
+  @ViewChild('input2') input2!: ElementRef;
+  @ViewChild('MatSort2') sort2!: MatSort;
+  @ViewChild('MatPaginator2') paginator2!: MatPaginator;
+  public getReport = async () => {
+    this.displayedColumns2 = [
+      'hn',
+      'patientName',
+      'checker_name',
+      'drugcode',
+      'drugname',
+      'realamount',
+      'cutamount',
+      'status',
+      'createdDT',
+      'relativePhone',
+      'relativeAddress',
+    ];
+    let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    let formData = new FormData();
+    formData.append('start', datestart);
+    formData.append('end', dateend);
+
+    let getData: any = await this.http.post('getReportcutdispend', formData);
+    let nameArray = [
+      ...new Set(getData.response.result.map((val: any) => val.hn)),
+    ];
+    formData.append('data', JSON.stringify(nameArray));
+    let getData2: any = await this.http.post('getTelHomc', formData);
+
+    let arr2 = getData2.response.result;
+    let arr1 = getData.response.result;
+    let result = arr1.map((v: any) => ({
+      ...v,
+      ...arr2.find(
+        (sp: any) =>
+          sp.hn === v.hn ?? {
+            relativeAddress: '',
+            relativePhone: '',
+          }
+      ),
+    }));
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataSource2 = new MatTableDataSource(result);
+        this.dataSource2.sort = this.sort2;
+        this.dataSource2.paginator = this.paginator2;
+        this.nameExcel2 = `รายงานตัดจ่ายยา ${datestart}_${dateend}`;
+        setTimeout(() => {
+          this.input2.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource2 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+
+  public endChange(event: any) {
+    if (event.value) {
+      this.getReport();
+    }
+  }
+  public applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource2.filter = filterValue.trim().toLowerCase();
+  }
+
+  onTabChange(e: any) {
+    e === 0 ? this.getData() : this.getReport();
+  }
+
+  async deleteCutowe(dcc_id: any, val: any, amount: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append('id', val);
+
+        let getData: any = await this.http.post(
+          'deleteCutDispendOwe',
+          formData
+        );
+
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            formData.append('cdd_id', dcc_id);
+            formData.append('balanceamount', amount);
+
+            let getData2: any = await this.http.post(
+              'updateCutDispendDrugOwe',
+              formData
+            );
+
+            if (getData2.connect) {
+              if (getData2.response.rowCount > 0) {
+                this.drugCut({ patientNO: this.hncut });
+
+                Swal.fire({
+                  icon: 'success',
+                  title: 'ลบข้อมูลสำเร็จ',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           } else {
             Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
           }

@@ -64,7 +64,8 @@
   .text-nav {
     font-size: 20px !important;
   }
-  .name-bar {
+
+  .text-center.name-bar {
     display: none;
   }
 }
@@ -73,11 +74,15 @@
   .text-nav {
     font-size: 10px;
   }
+  .name-bar {
+    display: none;
+  }
 }
 
 .mat-menu-item {
   font-family: "Sarabun", serif;
 }
+
 // span.mat-expansion-indicator {
 //   pointer-events: visiblefill !important;
 // }
