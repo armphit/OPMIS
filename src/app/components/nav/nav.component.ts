@@ -39,21 +39,22 @@ export class NavComponent {
     if (window.innerWidth < 600) {
       this.drawer.toggle();
     }
+
     this.panelIpd = false;
     this.panelOpd = false;
   }
 
   togglePanel2() {
-    // if(window.innerWidth <600){
-    //   this.drawer.toggle()
+    // if (window.innerWidth < 600) {
+    //   this.drawer.toggle();
     // }
     this.panelIpd = true;
     this.panelOpd = false;
   }
 
   togglePanel3() {
-    // if(window.innerWidth <600){
-    //   this.drawer.toggle()
+    // if (window.innerWidth < 600) {
+    //   this.drawer.toggle();
     // }
     this.panelIpd = false;
     this.panelOpd = true;

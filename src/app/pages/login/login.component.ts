@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   public inputRegister = new FormGroup({
     id: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required]),
+    role: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
     passwordCon: new FormControl('', [Validators.required]),
   });
@@ -90,7 +91,7 @@ export class LoginComponent implements OnInit {
             email: this.inputRegister.value.id,
             name: this.inputRegister.value.name,
             password: this.inputRegister.value.password,
-            role: 'opd',
+            role: this.inputRegister.value.role,
           };
 
           let getInsert: any = await this.http.postNodejs('register', data);
@@ -98,7 +99,10 @@ export class LoginComponent implements OnInit {
             if (getInsert.response.message === 'success') {
               let win: any = window;
               win.$('#singup').modal('hide');
-              this.http.alertLog('success', 'เพิ่มผู้ใช้สำเร็จ');
+              this.http.alertLog(
+                'success',
+                'เพิ่มผู้ใช้สำเร็จ รอยืนยันจากผู้ดูแลระบบ'
+              );
             } else {
               this.http.alertLog('error', 'ไม่สามารถเพิ่มผู้ใช้ได้');
             }

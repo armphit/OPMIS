@@ -150,8 +150,6 @@
                   button
                   mat-raised-button
                   style="background-color: #ffc107; margin-left: 10px"
-                  data-toggle="modal"
-                  data-target="#modal_owe"
                   (click)="drugCut(element)"
                   *ngIf="element.status === 'Y'"
                 >
@@ -248,6 +246,7 @@
                   <thead>
                     <tr>
                       <th style="padding-right: 50px; border-right: 0px">#</th>
+                      <th style="padding-right: 50px; border-right: 0px"></th>
                       <th style="padding-right: 50px; border-right: 0px">
                         ชื่อยา
                       </th>
@@ -264,15 +263,55 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let i of dataDrug; let x = index">
-                      <td style="border-right: 0px">
+                      <td style="border-right: 0px; vertical-align: middle">
                         <div style="width: 10px">{{ x + 1 }}</div>
                       </td>
-                      <td style="border-right: 0px" class="nowrap">
+                      <td
+                        style="
+                          border-right: 0px;
+                          vertical-align: middle;
+                          white-space: nowrap;
+                        "
+                      >
+                        <button
+                          *ngIf="i.status_cancle !== 'Y'"
+                          button
+                          mat-raised-button
+                          style="background-color: #ffc107"
+                          type="button"
+                          class="butt-sm"
+                          (click)="cancleAllergy(x, i, dataP.cid)"
+                        >
+                          ยกเลิกแพ้ยา
+                        </button>
+                        <strong *ngIf="i.status_cancle === 'Y'"
+                          >** <i>ยกเลิกแพ้ยาแล้ว</i> **</strong
+                        >
+                      </td>
+                      <td style="border-right: 0px; vertical-align: middle">
                         {{ i.drugname }}
                       </td>
-                      <td style="border-right: 0px">{{ i.drugcode }}</td>
-                      <td style="border-right: 0px">{{ i.hospcode }}</td>
-                      <td style="border-right: 0px">{{ i.daterecord }}</td>
+                      <td
+                        style="
+                          border-right: 0px;
+                          vertical-align: middle;
+                          white-space: nowrap;
+                        "
+                      >
+                        {{ i.drugcode }}
+                      </td>
+                      <td style="border-right: 0px; vertical-align: middle">
+                        {{ i.hospcode }}
+                      </td>
+                      <td
+                        style="
+                          border-right: 0px;
+                          vertical-align: middle;
+                          white-space: nowrap;
+                        "
+                      >
+                        {{ i.daterecord }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -402,6 +441,7 @@
                     <th class="text-nowrap">จำนวนตัดจ่ายยา</th>
                     <th class="text-nowrap">จำนวนคงเหลือ</th>
                     <th class="text-nowrap">เภสัชกร</th>
+                    <th class="text-nowrap">รหัสชั้น</th>
                     <th class="text-nowrap">วันที่</th>
                     <th></th>
                   </tr>
@@ -472,8 +512,17 @@
                     <td style="border-right: 0px; vertical-align: middle">
                       {{ item.balanceamount }}
                     </td>
-                    <td style="border-right: 0px; vertical-align: middle">
-                      {{ item.phar }}
+                    <td
+                      class="text-nowrap"
+                      style="border-right: 0px; vertical-align: middle"
+                    >
+                      {{ item.phar_name }}
+                    </td>
+                    <td
+                      class="text-nowrap"
+                      style="border-right: 0px; vertical-align: middle"
+                    >
+                      {{ item.departmentcode }}
                     </td>
                     <td
                       class="text-nowrap"
@@ -539,7 +588,7 @@
                               </td>
                               <td style="vertical-align: middle">{{ item }}</td>
                               <td style="vertical-align: middle">
-                                {{ drugcut[i].phar2[j] }}
+                                {{ drugcut[i].phar2_name[j] }}
                               </td>
                               <td style="vertical-align: middle">
                                 {{ drugcut[i].datetime[j] }}
@@ -851,7 +900,201 @@
         </button>
         <mat-paginator
           style="float: right"
-          #MatPaginator="matPaginator"
+          #MatPaginator2="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab label="รายงานยืนยันแพ้ยา">
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float: left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end"
+            >
+              <input
+                matStartDate
+                placeholder="วันที่เริ่มต้น"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="วันที่สิ้นสุด"
+                formControlName="end"
+                (dateChange)="endChange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter2($event)" #input3 />
+            <mat-placeholder>Search</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource3"
+      >
+        <table
+          mat-table
+          [dataSource]="dataSource3"
+          #MatSort3="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter3="matTableExporter"
+          matSortActive="user"
+          matSortDirection="asc"
+          [hiddenColumns]="[]"
+        >
+          <ng-container matColumnDef="user">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Pharmacist ID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.user }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Pharmacist Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.name }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="queue">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Queue
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.queue }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              HN
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="patientName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Patient Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="timestamp">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Date
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.timestamp }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns3; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+        </table>
+      </section>
+      <div [hidden]="!dataSource3">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter3.exportTable('xlsx', {
+              fileName: nameExcel3,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator3="matPaginator"
           [length]="10"
           [pageSize]="10"
           [pageSizeOptions]="[10, 50, 100]"

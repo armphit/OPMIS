@@ -7,17 +7,8 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
   >
-    <div
-      class="text-center"
-      style="margin: 10px"
-      [ngStyle]="{
-        'margin-top': (isHandset$ | async) ? '75px' : '0px'
-      }"
-    >
+    <div class="text-center" style="margin: 10px">
       <img
-        [ngStyle]="{
-          display: (isHandset$ | async) ? 'none' : 'block'
-        }"
         src="assets/ดาวน์โหลด.jfif"
         class="w3-round"
         style="text-align: center"
@@ -40,6 +31,15 @@
         [routerLinkActive]="['active']"
         (click)="togglePanel()"
         ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
+      </a>
+      <a
+        *ngIf="dataUser.role == 'admin'"
+        style="margin-bottom: 4px"
+        mat-list-item
+        [routerLink]="['/manage-user']"
+        [routerLinkActive]="['active']"
+        (click)="togglePanel()"
+        ><i class="fas fa-users-cog"></i>&nbsp;<strong>Manage User</strong>
       </a>
       <a
         *ngIf="dataUser.role == 'admin'"

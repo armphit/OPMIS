@@ -68,6 +68,7 @@
         class="mat-elevation-z8"
         matSortActive="drugCode"
         matSortDirection="asc"
+        [hiddenColumns]="[5, 6, 7, 8, 9]"
       >
         <ng-container matColumnDef="drugCode" sticky>
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
@@ -242,7 +243,17 @@
       </table>
     </section>
     <div>
-      <button mat-raised-button color="primary" (click)="exportAsExcelFile()">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="
+          exporter.exportTable('xlsx', {
+            fileName: nameExcel,
+            sheet: 'sheet_name',
+            Props: { Author: 'Talha' }
+          })
+        "
+      >
         Export Excel
       </button>
 
@@ -312,56 +323,4 @@
       </div>
     </div>
   </div>
-
-  <ng-template
-    #itemTemplate
-    let-index="index"
-    let-type="type"
-    let-data="data"
-    let-currIndex="currIndex"
-  >
-    <span class="item-text">
-      {{ data?.title }}
-    </span>
-  </ng-template>
-
-  <table class="table table-bordered" id="excel-table" hidden>
-    <thead class="thead-dark">
-      <tr>
-        <th>drugCode</th>
-        <th>drugName</th>
-        <th>miniUnit</th>
-        <th>deviceName</th>
-        <th>positionID</th>
-        <th>LOT_NO</th>
-        <th>EXP_Date</th>
-        <th>qty</th>
-      </tr>
-    </thead>
-    <ng-container *ngFor="let data of dataA">
-      <ng-container *ngFor="let LOT_NO of data.LOT_NO; let i = index">
-        <tr>
-          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-            {{ data.drugCode }}
-          </td>
-          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-            {{ data.drugName }}
-          </td>
-          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-            {{ data.miniUnit }}
-          </td>
-          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-            {{ data.deviceName }}
-          </td>
-
-          <td *ngIf="i == 0" [attr.rowspan]="data.LOT_NO.length">
-            {{ data.positionID }}
-          </td>
-          <td>{{ LOT_NO }}</td>
-          <td>{{ data.EXP_Date[i] }}</td>
-          <td>{{ data.qty[i] }}</td>
-        </tr>
-      </ng-container>
-    </ng-container>
-  </table>
 </div>

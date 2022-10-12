@@ -26,6 +26,7 @@ import { ManageSystemComponent } from './pages/manage-system/manage-system.compo
 import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 import { CheckInComponent } from './pages/check-in/check-in.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
+import { ManageUserComponent } from './pages/manage-user/manage-user.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
     ManageSystemComponent,
     SearchDrugComponent,
     CheckInComponent,
+    ManageUserComponent,
   ],
   imports: [
     BrowserModule,

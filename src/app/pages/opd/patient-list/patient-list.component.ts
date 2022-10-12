@@ -18,7 +18,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { log } from 'console';
+
 import * as moment from 'moment';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
@@ -79,7 +79,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     });
 
     this.idFilter.valueChanges.subscribe((patientNO) => {
-      this.filterValues.patientNO = patientNO;
+      this.filterValues.patientNO = patientNO.trim();
       this.dataSource.filter = JSON.stringify(this.filterValues);
     });
     this.nameFilter.valueChanges.subscribe((check) => {
@@ -133,6 +133,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             daterecord: getmoph_patient.response.result
               .filter((s: { cid: any }) => s.cid === lab)
               .map((edition: { daterecord: any }) => edition.daterecord),
+            status_cancle: getmoph_patient.response.result
+              .filter((s: { cid: any }) => s.cid === lab)
+              .map((edition: { status_cancle: any }) => edition.status_cancle),
           };
         });
 
@@ -146,6 +149,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               drugname: [],
               hospcode: [],
               daterecord: [],
+              status_cancle: [],
             }),
           };
         });
@@ -174,6 +178,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
+        setTimeout(() => {
+          this.input.nativeElement.focus();
+        }, 100);
       } else {
         this.dataSource = null;
       }
@@ -222,6 +229,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           drugname: this.dataP.drugname[index],
           hospcode: this.dataP.hospcode[index],
           daterecord: this.dataP.daterecord[index],
+          status_cancle: this.dataP.status_cancle[index],
         };
       }
     } else {
@@ -333,6 +341,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     });
 
     if (formValues) {
+      let department =
+        this.dataP.QN.charAt(0) == 2
+          ? 'W8'
+          : this.dataP.QN.charAt(0) == 3
+          ? 'W18'
+          : this.dataP.QN.charAt(0) == 1
+          ? 'W9'
+          : '';
       let balanceamount = Number(val.qty) - Number(formValues[0]);
       let formData = new FormData();
       formData.append('drugcode', val.drugCode);
@@ -342,7 +358,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       formData.append('cutamount', formValues[0]);
       formData.append('realamount', val.qty);
       formData.append('balanceamount', String(balanceamount));
-
+      formData.append('departmentcode', department);
       let getData: any = await this.http.post('insertCutDispendDrug', formData);
 
       if (getData.connect) {
@@ -360,11 +376,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-      // this.dataDrug = [];
-      // this.dataP = null;
-      // this.nameFilter.setValue('');
-      // this.idFilter.setValue('');
-      // this.setFocus();
     }
   }
 
@@ -400,6 +411,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             phar2: getData.response.result
               .filter((s: { id: any }) => s.id === lab)
               .map((edition: { phar2: any }) => edition.phar2),
+            phar2_name: getData.response.result
+              .filter((s: { id: any }) => s.id === lab)
+              .map((edition: { phar2_name: any }) => edition.phar2_name),
             datetime: getData.response.result
               .filter((s: { id: any }) => s.id === lab)
               .map((edition: { datetime: any }) => edition.datetime),
@@ -416,6 +430,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           delete element['id2'];
           delete element['amount'];
           delete element['phar2'];
+          delete element['phar2_name'];
           delete element['datetime'];
         });
 
@@ -426,10 +441,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               id2: [],
               amount: [],
               phar2: [],
+              phar2_name: [],
               datetime: [],
             }),
           };
         });
+        let win: any = window;
+        win.$('#modal_owe').modal('show');
       } else {
         this.drugcut = null;
       }
@@ -569,7 +587,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   dataSource2: any = null;
   public campaignOne = new FormGroup({
     start: new FormControl(
-      new Date(new Date().setDate(new Date().getDate() - 30))
+      new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
     ),
     end: new FormControl(new Date()),
   });
@@ -636,7 +654,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   public endChange(event: any) {
     if (event.value) {
-      this.getReport();
+      if (this.getTab == 1) {
+        this.getReport();
+      } else {
+        this.getMoph();
+      }
     }
   }
   public applyFilter(event: Event) {
@@ -644,8 +666,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
 
+  getTab: any = null;
+
   onTabChange(e: any) {
-    e === 0 ? this.getData() : this.getReport();
+    this.getTab = e;
+    this.getTab === 0
+      ? this.getData()
+      : this.getTab === 1
+      ? this.getReport()
+      : this.getMoph();
   }
 
   async deleteCutowe(dcc_id: any, val: any, amount: any) {
@@ -695,6 +724,86 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             }
           } else {
             Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
+  }
+
+  displayedColumns3: any = null;
+  dataSource3: any = null;
+  nameExcel3 = '';
+  @ViewChild('input3') input3!: ElementRef;
+  @ViewChild('MatSort3') sort3!: MatSort;
+  @ViewChild('MatPaginator3') paginator3!: MatPaginator;
+  public getMoph = async () => {
+    this.displayedColumns3 = [
+      'user',
+      'name',
+      'queue',
+      'hn',
+      'patientName',
+      'timestamp',
+    ];
+    let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    let formData = new FormData();
+    formData.append('start', datestart);
+    formData.append('end', dateend);
+
+    let getData: any = await this.http.post('get_moph_report', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataSource3 = new MatTableDataSource(getData.response.result);
+        this.dataSource3.sort = this.sort3;
+        this.dataSource3.paginator = this.paginator3;
+        this.nameExcel3 = `รายงานยืนยันแพ้ยา ${datestart}_${dateend}`;
+        setTimeout(() => {
+          this.input3.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource3 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+  public applyFilter2(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource3.filter = filterValue.trim().toLowerCase();
+  }
+
+  cancleAllergy(x: any, val: any, cid: any) {
+    Swal.fire({
+      title: 'Do you want to save the changes?',
+
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+    }).then(async (result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append('drugcode', val.drugcode);
+        formData.append('cid', cid);
+        formData.append('phar', this.dataUser.user);
+
+        let getData: any = await this.http.post('cancle_allergy', formData);
+
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            this.dataDrug[x].status_cancle = 'Y';
+
+            Swal.fire({
+              icon: 'success',
+              title: 'ยกเลิกแพ้ยาสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire('ไม่สามารถยกเลิกแพ้ยาได้!', '', 'error');
           }
         } else {
           Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');

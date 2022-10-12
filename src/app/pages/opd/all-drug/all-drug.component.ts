@@ -72,7 +72,6 @@ export class AllDrugComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  dataA: any = null;
   public rowspan: any = null;
   public getData = async () => {
     if (this.dataUser == 'admin') {
@@ -274,6 +273,7 @@ export class AllDrugComponent implements OnInit {
 
   public exportAsExcelFile() {
     let element = document.getElementById('excel-table');
+
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
