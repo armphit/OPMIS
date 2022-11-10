@@ -41,7 +41,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public dataSource: any = null;
   public displayedColumns: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-
+  public select: any = null;
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
@@ -109,72 +109,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'timestamp',
     ];
 
-    let getData: any = await this.http.get('listPatientQ');
+    let formData = new FormData();
+    formData.append('floor', this.select);
+
+    let getData: any = await this.http.post('listPatientQpost', formData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        let getmoph_patient: any = await this.http.get('list_moph_patient');
-
-        const result = Array.from(
-          new Set(
-            getmoph_patient.response.result.map((s: { cid: any }) => s.cid)
-          )
-        ).map((lab) => {
-          return {
-            cid: lab,
-            drugcode: getmoph_patient.response.result
-              .filter((s: { cid: any }) => s.cid === lab)
-              .map((edition: { drugcode: any }) => edition.drugcode),
-            drugname: getmoph_patient.response.result
-              .filter((s: { cid: any }) => s.cid === lab)
-              .map((edition: { drugname: any }) => edition.drugname),
-            hospcode: getmoph_patient.response.result
-              .filter((s: { cid: any }) => s.cid === lab)
-              .map((edition: { hospcode: any }) => edition.hospcode),
-            daterecord: getmoph_patient.response.result
-              .filter((s: { cid: any }) => s.cid === lab)
-              .map((edition: { daterecord: any }) => edition.daterecord),
-            status_cancle: getmoph_patient.response.result
-              .filter((s: { cid: any }) => s.cid === lab)
-              .map((edition: { status_cancle: any }) => edition.status_cancle),
-          };
-        });
-
-        var finalVal = getData.response.result.map(function (emp: {
-          cid: any;
-        }) {
-          return {
-            ...emp,
-            ...(result.find((item: { cid: any }) => item.cid === emp.cid) ?? {
-              drugcode: [],
-              drugname: [],
-              hospcode: [],
-              daterecord: [],
-              status_cancle: [],
-            }),
-          };
-        });
-
-        // var finalVal = Array.from(
-        //   new Set(getData.response.result.map((s: any) => s))
-        // ).map((lab: any) => {
-        //   return {
-        //     cid: lab.cid,
-        //     patientNO: lab.patientNO,
-        //     QN: lab.QN,
-        //     patientName: lab.patientName,
-        //     createDT: lab.createDT,
-        //     timestamp: lab.timestamp,
-        //     check: lab.check,
-        //     drugcode: getData.response.result
-        //       .filter((s: { cid: any }) => s.cid === lab.cid)
-        //       .map((edition: { drugcode: any }) => edition.drugcode),
-        //     drugname: getData.response.result
-        //       .filter((s: { cid: any }) => s.cid === lab.cid)
-        //       .map((edition: { drugname: any }) => edition.drugname),
-        //   };
-        // });
-
-        this.dataSource = new MatTableDataSource(finalVal);
+        this.dataSource = new MatTableDataSource(getData.response.result);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
@@ -223,14 +165,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataP = val;
 
     if (this.dataP) {
-      for (let index = 0; index < this.dataP.drugcode.length; index++) {
-        this.dataDrug[index] = {
-          drugcode: this.dataP.drugcode[index],
-          drugname: this.dataP.drugname[index],
-          hospcode: this.dataP.hospcode[index],
-          daterecord: this.dataP.daterecord[index],
-          status_cancle: this.dataP.status_cancle[index],
-        };
+      let formData = new FormData();
+      formData.append('cid', val.cid);
+      let drug_allergic: any = await this.http.post('drug_allergic', formData);
+
+      if (drug_allergic.connect) {
+        if (drug_allergic.response.rowCount > 0) {
+          this.dataDrug = drug_allergic.response.result;
+        } else {
+          this.dataDrug = [];
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else {
       this.dataDrug = [];
@@ -243,7 +189,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       moment(new Date()).add(543, 'year').format('YYYYMMDD')
     );
     formData.append('queue', val.QN);
-    let getData: any = await this.http.post('getdrugHomc', formData);
+    formData.append(
+      'floor',
+      this.select == 2 ? 'W8' : this.select == 3 ? 'W18' : 'W9'
+    );
+    let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -256,6 +206,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         win.$('#exampleModal').modal('show');
       } else {
         this.drugPatient = null;
+        let win: any = window;
+        win.$('#exampleModal').modal('show');
         Swal.fire('ไม่มีข้อมูลใบสั่งยา!', '', 'error');
       }
     } else {
@@ -586,9 +538,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   displayedColumns2: any = null;
   dataSource2: any = null;
   public campaignOne = new FormGroup({
-    start: new FormControl(
-      new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
-    ),
+    // start: new FormControl(
+    //   new Date(new Date().getFullYear(), new Date().getMonth() - 3, 1)
+    // ),
+    start: new FormControl(new Date()),
     end: new FormControl(new Date()),
   });
   nameExcel2 = '';
@@ -810,5 +763,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  changeFloor() {
+    this.getData();
   }
 }

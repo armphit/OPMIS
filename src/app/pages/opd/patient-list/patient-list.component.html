@@ -1,9 +1,9 @@
 <mat-tab-group (selectedTabChange)="onTabChange($event.index)">
   <mat-tab label="รายการยา">
-    <div class="container-fluid pt-2" [hidden]="!dataSource">
+    <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-9">
-          <mat-form-field>
+        <div class="col-lg-5">
+          <mat-form-field [hidden]="!dataSource">
             <mat-label>เลือกรายการแพ้ยา</mat-label>
             <mat-select
               [formControl]="nameFilter"
@@ -16,6 +16,7 @@
           </mat-form-field>
 
           <button
+            [hidden]="!dataSource"
             type="button"
             matTooltip="Refresh"
             style="margin-left: 30px"
@@ -30,16 +31,34 @@
             <i class="fas fa-sync-alt fa-lg"></i>
           </button>
         </div>
+        <div class="col-lg-4">
+          <mat-form-field>
+            <mat-label>Select floor</mat-label>
+            <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
+              <mat-option value="1">ชั้น 1</mat-option>
+              <mat-option value="2">ชั้น 2</mat-option>
+              <mat-option value="3">ชั้น 3</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
         <div class="col-lg-3">
-          <mat-form-field class="example-full-width" style="float: right">
+          <mat-form-field
+            class="example-full-width"
+            style="float: right"
+            [hidden]="!dataSource"
+          >
             <input matInput [formControl]="idFilter" #input />
             <mat-placeholder>HN</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>
         </div>
       </div>
-      <section class="example-container mat-elevation-z8" tabindex="0">
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource"
+      >
         <table
           mat-table
           [dataSource]="dataSource"
@@ -194,6 +213,7 @@
       </section>
       <div>
         <mat-paginator
+          [hidden]="!dataSource"
           style="float: right"
           #MatPaginator="matPaginator"
           [length]="10"
@@ -236,8 +256,9 @@
               class="modal-title"
               id="exampleModalLabel"
             >
-              ชื่อ : {{ dataP.patientName }} &nbsp; &nbsp; เลชบัตรประชาชน :
-              {{ dataP.cid }}
+              ชื่อ : {{ dataP ? dataP.patientName : "" }} &nbsp; &nbsp;
+              เลชบัตรประชาชน :
+              {{ dataP ? dataP.cid : "" }}
             </p>
             <div [hidden]="dataDrug.length === 0">
               <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
@@ -246,7 +267,7 @@
                   <thead>
                     <tr>
                       <th style="padding-right: 50px; border-right: 0px">#</th>
-                      <th style="padding-right: 50px; border-right: 0px"></th>
+                      <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
                       <th style="padding-right: 50px; border-right: 0px">
                         ชื่อยา
                       </th>
@@ -266,7 +287,7 @@
                       <td style="border-right: 0px; vertical-align: middle">
                         <div style="width: 10px">{{ x + 1 }}</div>
                       </td>
-                      <td
+                      <!-- <td
                         style="
                           border-right: 0px;
                           vertical-align: middle;
@@ -287,7 +308,7 @@
                         <strong *ngIf="i.status_cancle === 'Y'"
                           >** <i>ยกเลิกแพ้ยาแล้ว</i> **</strong
                         >
-                      </td>
+                      </td> -->
                       <td style="border-right: 0px; vertical-align: middle">
                         {{ i.drugname }}
                       </td>
@@ -443,7 +464,6 @@
                     <th class="text-nowrap">เภสัชกร</th>
                     <th class="text-nowrap">รหัสชั้น</th>
                     <th class="text-nowrap">วันที่</th>
-                    <th></th>
                   </tr>
                 </thead>
                 <tbody *ngFor="let item of drugcut; let i = index">
@@ -452,12 +472,16 @@
                       <div style="display: flex">
                         <div
                           class="example-button-container"
-                          style="margin: 5px"
+                          style="margin: 5px; display: flex"
                         >
                           <button
                             matTooltip="ลบข้อมูล"
                             matTooltipPosition="above"
-                            style="width: 30px; height: 30px"
+                            style="
+                              width: 30px;
+                              height: 30px;
+                              margin-right: 10px;
+                            "
                             mat-mini-fab
                             color="warn"
                             (click)="deleteCutdrug(drugcut[i])"
@@ -466,6 +490,16 @@
                               class="fas fa-trash"
                               style="margin-bottom: 15px; margin-left: 1px"
                             ></i>
+                          </button>
+                          <button
+                            button
+                            mat-raised-button
+                            color="primary"
+                            type="button"
+                            class="butt-sm"
+                            (click)="dispendDrug(item)"
+                          >
+                            จ่ายยา
                           </button>
                         </div>
                         <div
@@ -529,18 +563,6 @@
                       style="border-right: 0px; vertical-align: middle"
                     >
                       {{ item.createdDT }}
-                    </td>
-                    <td style="border-right: 0px; vertical-align: middle">
-                      <button
-                        button
-                        mat-raised-button
-                        color="primary"
-                        type="button"
-                        class="butt-sm"
-                        (click)="dispendDrug(item)"
-                      >
-                        จ่ายยา
-                      </button>
                     </td>
                   </tr>
                   <tr>
