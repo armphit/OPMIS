@@ -16,7 +16,7 @@ export class HttpService {
   public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
   public syncPath: string = 'http://192.168.185.160:4000/';
-  public testPath: string = 'http://localhost:4000/';
+  public testPath: string = 'http://localhost:2000/';
 
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
@@ -161,6 +161,24 @@ export class HttpService {
       this.http
         // .post(this.testPath + path, data)
         .post(this.syncPath + path, data)
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+  };
+
+  public testPrintjs = async (path: string, data: any) => {
+    this.loading = true;
+    return new Promise((resolve) => {
+      this.http
+        .post(this.testPath + path, data)
+        // .post(this.syncPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

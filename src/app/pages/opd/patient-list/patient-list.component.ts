@@ -99,35 +99,67 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   public getData = async () => {
-    this.displayedColumns = [
-      'patientNO',
-      'QN',
-      'patientName',
-      'createDT',
-      'druglist',
-      // 'check',
-      'timestamp',
-    ];
-
-    let formData = new FormData();
-    formData.append('floor', this.select);
-
-    let getData: any = await this.http.post('listPatientQpost', formData);
-
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataSource = new MatTableDataSource(getData.response.result);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.filterPredicate = this.createFilter();
-        setTimeout(() => {
-          this.input.nativeElement.focus();
-        }, 100);
+    if (this.select) {
+      this.displayedColumns = [
+        'patientNO',
+        'QN',
+        'patientName',
+        'createDT',
+        'druglist',
+        // 'check',
+        'timestamp',
+      ];
+      let getData: any = null;
+      let formData = new FormData();
+      let dataPatient: any = null;
+      if (this.select == 2 || this.select == 3) {
+        formData.append('floor', this.select);
+        getData = await this.http.post('listPatientQpost', formData);
+        dataPatient = getData.response.result;
       } else {
-        this.dataSource = null;
+        let date = moment(new Date()).add(543, 'year').format('YYYYMMDD');
+        formData.append(
+          'floor',
+          this.select == 2
+            ? 'W8'
+            : this.select == 3
+            ? 'W18'
+            : this.select == 4
+            ? 'W19'
+            : this.select == 1
+            ? 'W9'
+            : ''
+        );
+        formData.append('date', date);
+        getData = await this.http.post('getdatapatientFloor', formData);
+        let getData2: any = await this.http.post('statusyHomc', formData);
+        dataPatient = getData.response.result.map(function (emp: {
+          patientNO: any;
+        }) {
+          return {
+            ...emp,
+            ...(getData2.response.result.find(
+              (item: { patientNO: any }) =>
+                item.patientNO.trim() === emp.patientNO.trim()
+            ) ?? { status: 'N' }),
+          };
+        });
       }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataSource = new MatTableDataSource(dataPatient);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.filterPredicate = this.createFilter();
+          setTimeout(() => {
+            this.input.nativeElement.focus();
+          }, 100);
+        } else {
+          this.dataSource = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
     }
 
     // }
@@ -191,7 +223,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('queue', val.QN);
     formData.append(
       'floor',
-      this.select == 2 ? 'W8' : this.select == 3 ? 'W18' : 'W9'
+      this.select == 2
+        ? 'W8'
+        : this.select == 3
+        ? 'W18'
+        : this.select == 4
+        ? 'W19'
+        : this.select == 1
+        ? 'W9'
+        : ''
     );
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
@@ -294,11 +334,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     if (formValues) {
       let department =
-        this.dataP.QN.charAt(0) == 2
+        this.select == 2
           ? 'W8'
-          : this.dataP.QN.charAt(0) == 3
+          : this.select == 3
           ? 'W18'
-          : this.dataP.QN.charAt(0) == 1
+          : this.select == 4
+          ? 'W19'
+          : this.select == 1
           ? 'W9'
           : '';
       let balanceamount = Number(val.qty) - Number(formValues[0]);

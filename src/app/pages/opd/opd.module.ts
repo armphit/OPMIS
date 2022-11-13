@@ -21,7 +21,7 @@ import { ReportPharComponent } from './report-phar/report-phar.component';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
 import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
-
+import { CheckMedComponent } from './check-med/check-med.component';
 @NgModule({
   declarations: [
     ElMedComponent,
@@ -35,6 +35,7 @@ import { ReportDispenseComponent } from './report-dispense/report-dispense.compo
     OPDStockComponent,
     ReportPharComponent,
     ReportDispenseComponent,
+    CheckMedComponent,
   ],
   imports: [
     CommonModule,
