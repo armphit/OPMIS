@@ -16,8 +16,9 @@ export class HttpService {
   public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
   public syncPath: string = 'http://192.168.185.160:4000/';
-  public testPath: string = 'http://localhost:2000/';
-
+  public testPath: string = 'http://localhost:4000/';
+  public printPath: string = 'http://192.168.185.160:5000/';
+  public printTest: string = 'http://localhost:5000/';
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
@@ -104,7 +105,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.syncPath + path, data)
+        // .post(this.syncPath + path, data)
+        .post(this.testPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -173,12 +175,12 @@ export class HttpService {
     });
   };
 
-  public testPrintjs = async (path: string, data: any) => {
+  public Printjs = async (path: string, data: any) => {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.testPath + path, data)
-        // .post(this.syncPath + path, data)
+        // .post(this.printTest + path, data)
+        .post(this.printPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

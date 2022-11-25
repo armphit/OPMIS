@@ -25,6 +25,24 @@ import { Lightbox } from 'ng-gallery/lightbox';
 import { interval, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+(pdfMake as any).fonts = {
+  THSarabunNew: {
+    normal: 'THSarabunNew.ttf',
+    bold: 'THSarabunNew-Bold.ttf',
+    italics: 'THSarabunNew-Italic.ttf',
+    bolditalics: 'THSarabunNew-BoldItalic.ttf',
+  },
+  Roboto: {
+    normal: 'Roboto-Regular.ttf',
+    bold: 'Roboto-Medium.ttf',
+    italics: 'Roboto-Italic.ttf',
+    bolditalics: 'Roboto-MediumItalic.ttf',
+  },
+};
 
 @Component({
   selector: 'app-patient-list',
@@ -41,7 +59,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public dataSource: any = null;
   public displayedColumns: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-  public select: any = null;
+  public select: any = '';
+  public checkprint: boolean = false;
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
@@ -112,24 +131,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let getData: any = null;
       let formData = new FormData();
       let dataPatient: any = null;
-      if (this.select == 2 || this.select == 3) {
-        formData.append('floor', this.select);
+      if (this.select == 'W8' || this.select == 'W18') {
+        formData.append('floor', this.select == 'W8' ? '2' : '3');
         getData = await this.http.post('listPatientQpost', formData);
         dataPatient = getData.response.result;
       } else {
         let date = moment(new Date()).add(543, 'year').format('YYYYMMDD');
-        formData.append(
-          'floor',
-          this.select == 2
-            ? 'W8'
-            : this.select == 3
-            ? 'W18'
-            : this.select == 4
-            ? 'W19'
-            : this.select == 1
-            ? 'W9'
-            : ''
-        );
+        formData.append('floor', this.select);
         formData.append('date', date);
         getData = await this.http.post('getdatapatientFloor', formData);
         let getData2: any = await this.http.post('statusyHomc', formData);
@@ -154,6 +162,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           setTimeout(() => {
             this.input.nativeElement.focus();
           }, 100);
+          this.nameFilter.setValue('');
+          this.idFilter.setValue('');
+          this.setFocus();
         } else {
           this.dataSource = null;
         }
@@ -221,20 +232,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       moment(new Date()).add(543, 'year').format('YYYYMMDD')
     );
     formData.append('queue', val.QN);
-    formData.append(
-      'floor',
-      this.select == 2
-        ? 'W8'
-        : this.select == 3
-        ? 'W18'
-        : this.select == 4
-        ? 'W19'
-        : this.select == 1
-        ? 'W9'
-        : ''
-    );
+    formData.append('floor', this.select);
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.drugPatient = getData.response.result;
@@ -333,43 +334,70 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     });
 
     if (formValues) {
-      let department =
-        this.select == 2
-          ? 'W8'
-          : this.select == 3
-          ? 'W18'
-          : this.select == 4
-          ? 'W19'
-          : this.select == 1
-          ? 'W9'
-          : '';
       let balanceamount = Number(val.qty) - Number(formValues[0]);
-      let formData = new FormData();
-      formData.append('drugcode', val.drugCode);
-      formData.append('drugname', val.drugName);
-      formData.append('phar', this.dataUser.user);
-      formData.append('hn', this.dataP.patientNO);
-      formData.append('cutamount', formValues[0]);
-      formData.append('realamount', val.qty);
-      formData.append('balanceamount', String(balanceamount));
-      formData.append('departmentcode', department);
-      let getData: any = await this.http.post('insertCutDispendDrug', formData);
+      val.balanceamount = balanceamount;
+      val.formValues = formValues[0];
+      if (this.checkprint) {
+        let dataprint = { ...val, ...this.dataP, ...this.dataUser };
+        dataprint.balanceamount = balanceamount;
 
-      if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          Swal.fire({
-            icon: 'success',
-            title: `ตัดจ่ายยา ${val.drugName}\n เสร็จสิ้น`,
-            showConfirmButton: false,
-            timer: 1500,
+        this.printPDF(dataprint).then((dataPDF) => {
+          dataPDF.getBase64(async (buffer) => {
+            let getData: any = await this.http.Printjs('convertbuffer', {
+              data: buffer,
+              name: 'testpdf' + '.pdf',
+              ip: this.dataUser.print_ip,
+              printName: this.dataUser.print_name,
+              hn: this.dataP.patientNO,
+            });
+
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                this.insertCutdispend(val);
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
+            } else {
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+            }
           });
-          this.getData();
-        } else {
-          Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
-        }
+        });
       } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        this.insertCutdispend(val);
       }
+    }
+  }
+
+  async insertCutdispend(data: any) {
+    let formData = new FormData();
+    formData.append('drugcode', data.drugCode);
+    formData.append('drugname', data.drugName);
+    formData.append('phar', this.dataUser.user);
+    formData.append('hn', this.dataP.patientNO);
+    formData.append('cutamount', data.formValues);
+    formData.append('realamount', data.qty);
+    formData.append('balanceamount', data.balanceamount);
+    formData.append('departmentcode', this.select);
+    let getData: any = await this.http.post('insertCutDispendDrug', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        Swal.fire({
+          icon: 'success',
+          title: `ตัดจ่ายยา ${data.drugName}\n เสร็จสิ้น`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        this.getData();
+      } else {
+        Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 
@@ -483,54 +511,92 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     });
 
     if (formValues) {
-      let amountB = Number(data.balanceamount) - Number(formValues[0]);
+      data.balanceamount = Number(data.balanceamount) - Number(formValues[0]);
 
-      let formData = new FormData();
-      formData.append('cdd_id', data.id);
-      formData.append('phar', this.dataUser.user);
-      formData.append('balanceamount', String(amountB));
-      formData.append('amount', String(formValues[0]));
+      if (data.balanceamount === 0) {
+        await this.updatedispendDrug(data, formValues);
+        await this.getData();
+        let win: any = window;
+        this.nameFilter.setValue('');
+        this.idFilter.setValue('');
+        this.setFocus();
+        win.$('#modal_owe').modal('hide');
+      } else {
+        if (this.checkprint) {
+          let dataprint = { ...data, ...this.dataP, ...this.dataUser };
 
-      let getData: any = await this.http.post('insertCutDispendOwe', formData);
-
-      if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          let getData2: any = await this.http.post(
-            'updateCutDispendDrug',
-            formData
-          );
-
-          if (getData2.connect) {
-            if (getData2.response.rowCount > 0) {
-              if (amountB === 0) {
-                this.getData();
-                let win: any = window;
-                win.$('#modal_owe').modal('hide');
-              } else {
-                this.drugCut({ patientNO: this.hncut });
-              }
-
-              Swal.fire({
-                icon: 'success',
-                title:
-                  amountB === 0
-                    ? `ตัดจ่ายยา ${data.drugname}\n เสร็จสิ้น`
-                    : `ตัดจ่ายยา ${data.drugname}\n คงเหลือ ${amountB}`,
-                showConfirmButton: false,
-                timer: 1500,
+          this.printPDF(dataprint).then(async (dataPDF) => {
+            dataPDF.getBase64(async (buffer) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: 'testpdf' + '.pdf',
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
               });
-            } else {
-              Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
-            }
+
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  await this.updatedispendDrug(data, formValues[0]);
+                  await this.drugCut({ patientNO: this.hncut });
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
+              } else {
+                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+              }
+            });
+          });
+        } else {
+          await this.updatedispendDrug(data, formValues[0]);
+          await this.drugCut({ patientNO: this.hncut });
+        }
+      }
+    }
+  }
+
+  async updatedispendDrug(data: any, formValues: any) {
+    let formData = new FormData();
+    formData.append('cdd_id', data.id);
+    formData.append('phar', this.dataUser.user);
+    formData.append('balanceamount', data.balanceamount);
+    formData.append('amount', String(formValues));
+
+    let getData: any = await this.http.post('insertCutDispendOwe', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let getData2: any = await this.http.post(
+          'updateCutDispendDrug',
+          formData
+        );
+
+        if (getData2.connect) {
+          if (getData2.response.rowCount > 0) {
+            Swal.fire({
+              icon: 'success',
+              title:
+                data.balanceamount === 0
+                  ? `ตัดจ่ายยา ${data.drugname}\n เสร็จสิ้น`
+                  : `ตัดจ่ายยา ${data.drugname}\n คงเหลือ ${data.balanceamount}`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
           } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
           }
         } else {
-          Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
       } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
       }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 
@@ -810,4 +876,182 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   changeFloor() {
     this.getData();
   }
+
+  async printPDF(data: any) {
+    let numHN = data.patientNO ? data.patientNO : data.hn;
+
+    let formData = new FormData();
+    formData.append('hn', numHN);
+    formData.append('floor', this.select);
+    let getData: any = await this.http.post('getSiteTel', formData);
+
+    let namePatient = getData.response[0].result[0].name_patient;
+
+    if (namePatient.length > 25) {
+      namePatient = namePatient.substring(0, 22);
+      namePatient = namePatient + '...';
+    }
+    let date = '';
+    if (data.createdDT) {
+      date = data.createdDT;
+    } else {
+      let date = moment(new Date())
+        .add(543, 'year')
+        .format('DD/MM/YYYY HH:mm:ss');
+    }
+
+    var docDefinition = {
+      // pageSize: { width: 325, height: 350 },
+      pageSize: { width: 238, height: 255 },
+      // pageMargins: [5, 50, 5, 100] as any,
+      pageMargins: [0, 0, 10, 0] as any,
+      header: {} as any,
+
+      content: [
+        {
+          text: 'ค้างจ่ายยา',
+          alignment: 'center',
+          decoration: 'underline',
+          fontSize: 18,
+          bold: true,
+        },
+        {
+          text: `ชื่อ ${namePatient}  HN ${numHN}`,
+
+          fontSize: 18,
+          bold: true,
+        },
+        {},
+        {
+          columns: [
+            {
+              width: 150,
+              text: `${data.drugName ? data.drugName : data.drugname}`,
+            },
+            {
+              width: '*',
+              text: `#${
+                data.balanceamount +
+                ' ' +
+                (data.unit ? data.unit.trim() : data.miniUnit.trim())
+              }`,
+              alignment: 'right',
+            },
+          ],
+          fontSize: 18,
+          bold: true,
+        },
+        {},
+        {
+          text: `รับยาที่ ${getData.response[1].result[0].site_name.trim()}`,
+
+          fontSize: 16,
+          bold: true,
+        },
+        {
+          text: `โทร ${getData.response[1].result[0].site_tel}`,
+
+          fontSize: 16,
+          bold: true,
+        },
+        {
+          text: `เภสัชกร ${data.name || data.phar_name}`,
+
+          fontSize: 16,
+        },
+        {
+          text: `วันที่ค้างยา ${date} น.`,
+
+          fontSize: 16,
+        },
+      ] as any,
+
+      defaultStyle: {
+        font: 'THSarabunNew',
+      },
+    };
+
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+
+    return pdfDocGenerator;
+    // let result: any = await pdfDocGenerator.getBase64(async (buffer) => {
+    //   return buffer;
+    //   // let getData: any = await this.http.testPrintjs('convertbuffer', {
+    //   //   data: buffer,
+    //   //   name: 'testpdf' + '.pdf',
+    //   // });
+    //   // console.log(getData.response.connect);
+    //   // return getData.response.connect;
+    //   // // if (getData.connect) {
+    //   // //   if (getData.response.connect === 'success') {
+    //   // //     console.log(getData.response.connect);
+    //   // //     return 1234;
+    //   // //   } else {
+    //   // //     return 'error';
+    //   // //   }
+    //   // // } else {
+    //   // //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
+    //   // //   return 'error';
+    //   // // }
+    // });
+
+    // pdfMake.createPdf(docDefinition).open();
+  }
+
+  sendprint(val: any) {
+    this.printPDF(val).then((dataPDF) => {
+      dataPDF.getBase64(async (buffer) => {
+        let getData: any = await this.http.Printjs('convertbuffer', {
+          data: buffer,
+          name: 'testpdf' + '.pdf',
+          ip: this.dataUser.print_ip,
+          printName: this.dataUser.print_name,
+          hn: this.dataP.patientNO,
+        });
+
+        if (getData.connect) {
+          if (getData.response.connect === 'success') {
+            Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+          } else {
+            Swal.fire(
+              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+              '',
+              'error'
+            );
+          }
+        } else {
+          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+        }
+      });
+    });
+  }
+  // sendprintChildren(val: any, j: any) {
+  //   val.createdDT = val.datetime[j];
+  //   val.phar = val.phar2_name;
+  //   this.printPDF(val).then((dataPDF) => {
+  //     dataPDF.getBase64(async (buffer) => {
+  //       let getData: any = await this.http.Printjs('convertbuffer', {
+  //         data: buffer,
+  //         name: 'testpdf' + '.pdf',
+  //         ip: this.dataUser.print_ip,
+  //         printName: this.dataUser.print_name,
+  //         hn: this.dataP.patientNO,
+  //       });
+
+  //       if (getData.connect) {
+  //         if (getData.response.connect === 'success') {
+  //           Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+  //         } else {
+  //           Swal.fire(
+  //             'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+  //             '',
+  //             'error'
+  //           );
+  //         }
+  //       } else {
+  //         Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+  //       }
+  //     });
+  //   });
+  // }
 }

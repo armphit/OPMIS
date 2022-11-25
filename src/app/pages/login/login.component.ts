@@ -36,40 +36,54 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public submitInput() {
-    let data = {
-      email: this.inputGroup.value.name,
-      password: this.inputGroup.value.password,
-    };
+  public submitInput = async () => {
+    let getData: any = await this.http.get('ServeMed/getRemoteHost');
 
-    this.http
-      .postNodejs('login', data)
-      .then((login: any) => {
-        if (login.connect == true) {
-          sessionStorage.setItem('userLogin', JSON.stringify(login.response));
+    if (getData.connect) {
+      if (getData.response) {
+        let data = {
+          email: this.inputGroup.value.name,
+          password: this.inputGroup.value.password,
+          ip: getData.response,
+        };
 
-          this.http.alertLog('success', 'Login Success.');
-          if (
-            JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
-            'opd'
-          ) {
-            this.http.navRouter('/opd');
-          } else if (
-            JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
-            'ipd'
-          ) {
-            this.http.navRouter('/ipd');
-          } else {
-            this.http.navRouter('/');
-          }
-        } else {
-          this.http.alertLog('error', 'Login failure.');
-        }
-      })
-      .catch((error) => {
-        this.http.alertLog('error', 'Login failure.');
-      });
-  }
+        this.http
+          .postNodejs('login', data)
+          .then((login: any) => {
+            if (login.connect == true) {
+              sessionStorage.setItem(
+                'userLogin',
+                JSON.stringify(login.response)
+              );
+
+              this.http.alertLog('success', 'Login Success.');
+              if (
+                JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+                'opd'
+              ) {
+                this.http.navRouter('/opd');
+              } else if (
+                JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+                'ipd'
+              ) {
+                this.http.navRouter('/ipd');
+              } else {
+                this.http.navRouter('/');
+              }
+            } else {
+              this.http.alertLog('error', 'Login failure.');
+            }
+          })
+          .catch((error) => {
+            this.http.alertLog('error', 'Login failure.');
+          });
+      } else {
+        Swal.fire('IP มีปัญหา!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
 
   async submitRegister() {
     if (

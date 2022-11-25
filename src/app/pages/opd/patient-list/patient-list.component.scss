@@ -33,6 +33,9 @@ label {
   color: #3f51b5;
   font-weight: bold;
 }
+::ng-deep.mat-checkbox-layout {
+  margin-top: 10px;
+}
 
 // p {
 //   font-size: larger !important;

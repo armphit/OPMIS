@@ -45,12 +45,11 @@ export class CheckMedComponent implements OnInit {
     'drugName',
     'amount',
     'takeUnit',
-    'location',
-    'position',
     'createdDT',
     'img',
   ];
   dataSource: any = null;
+  selectedRowIndex: any;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -86,40 +85,20 @@ export class CheckMedComponent implements OnInit {
 
         if (getData2.connect) {
           if (getData2.response.rowCount > 0) {
-            formData.append('qn', getData2.response.result[0].QN);
             let getData3: any = await this.http.post('patient_drug', formData);
 
             if (getData3.connect) {
               if (getData3.response.rowCount > 0) {
-                let getPathImg: any = await this.http.get('getPathImg');
-                if (getPathImg.connect) {
-                  if (getPathImg.response.rowCount > 0) {
-                    this.patient_drug = getData3.response.result.map(
-                      function (emp: { drugCode: any }) {
-                        return {
-                          ...emp,
-                          ...(getPathImg.response.result.find(
-                            (item: { drugCode: any }) =>
-                              item.drugCode === emp.drugCode
-                          ) ?? { pathImg: '' }),
-                        };
-                      }
-                    );
+                this.patient_drug = getData3.response.result;
+                this.patient_contract = getData.response.result[0];
+                this.Dataqandcheck = getData2.response.result[0];
 
-                    this.patient_contract = getData.response.result[0];
-                    this.Dataqandcheck = getData2.response.result[0];
-                    setTimeout(() => {
-                      this.drugbar.nativeElement.focus();
-                    }, 100);
-                    this.dataSource = new MatTableDataSource(this.patient_drug);
-                    this.dataSource.sort = this.sort;
-                    this.dataSource.paginator = this.paginator;
-                  } else {
-                    this.data_drug = null;
-                  }
-                } else {
-                  Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-                }
+                setTimeout(() => {
+                  this.drugbar.nativeElement.focus();
+                }, 100);
+                this.dataSource = new MatTableDataSource(this.patient_drug);
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
               } else {
                 Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
               }
@@ -147,208 +126,224 @@ export class CheckMedComponent implements OnInit {
 
   async getDrug(val: any) {
     let founddrug = this.patient_drug.find(
-      (element: any) => element.drugCode === val.trim()
+      (element: any) =>
+        element.orderitemcode.toLowerCase() === val.trim().toLowerCase()
     );
+    let formData = new FormData();
+    formData.append('hn', founddrug.hn);
+    formData.append('seq', founddrug.seq);
+    formData.append('orderitemcode', founddrug.orderitemcode);
+    formData.append('lastmodified', founddrug.lastmodified);
 
-    const { value: formValues } = await Swal.fire({
-      title: 'จำนวนยา',
-      html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
-      focusConfirm: false,
-      allowEnterKey: true,
-      preConfirm: () => {
-        if ((<HTMLInputElement>document.getElementById('swal-input1')).value) {
-          if (
-            Number(
-              (<HTMLInputElement>document.getElementById('swal-input1')).value
-            ) > 0
-          ) {
-            return [
-              (<HTMLInputElement>document.getElementById('swal-input1')).value,
-            ];
+    let getData: any = await this.http.post('updateCheckmed', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let getData3: any = await this.http.post('patient_drug', formData);
+
+        if (getData3.connect) {
+          if (getData3.response.rowCount > 0) {
+            this.patient_drug = getData3.response.result;
+
+            setTimeout(() => {
+              this.drugbar.nativeElement.focus();
+            }, 100);
+            this.dataSource = new MatTableDataSource(this.patient_drug);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
           } else {
-            Swal.showValidationMessage('Invalid number');
-            return undefined;
+            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
           }
         } else {
-          Swal.showValidationMessage('Please input number');
-          return undefined;
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
-      },
-    });
-    if (formValues) {
-      if (formValues[0] < founddrug.amount) {
-        Swal.fire('จำนวนยาไม่ครบ!', '', 'error');
-      } else if (formValues[0] > founddrug.amount) {
-        Swal.fire('จำนวนยาเกิน!', '', 'error');
       } else {
-        let getData = await this.testPDF(founddrug);
+        Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
       }
-
-      // let formData = new FormData();
-      // formData.append('barcode', val);
-      // let getData: any = await this.http.post('drugBarcode', formData);
-      // if (getData.connect) {
-      //   if (getData.response.rowCount > 0) {
-      //     let data = getData.response.result[0];
-      //     Swal.fire({
-      //       icon: 'success',
-      //       title: `ตรวจยา ${data.drugName}\n เสร็จสิ้น`,
-      //       showConfirmButton: false,
-      //       timer: 1500,
-      //     });
-      //   } else {
-      //     Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
-      //   }
-      // } else {
-      //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-      // }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+
+    // const { value: formValues } = await Swal.fire({
+    //   title: 'จำนวนยา',
+    //   html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
+    //   focusConfirm: false,
+    //   allowEnterKey: true,
+    //   preConfirm: () => {
+    //     if ((<HTMLInputElement>document.getElementById('swal-input1')).value) {
+    //       if (
+    //         Number(
+    //           (<HTMLInputElement>document.getElementById('swal-input1')).value
+    //         ) > 0
+    //       ) {
+    //         return [
+    //           (<HTMLInputElement>document.getElementById('swal-input1')).value,
+    //         ];
+    //       } else {
+    //         Swal.showValidationMessage('Invalid number');
+    //         return undefined;
+    //       }
+    //     } else {
+    //       Swal.showValidationMessage('Please input number');
+    //       return undefined;
+    //     }
+    //   },
+    // });
+    // if (formValues) {
+    //   if (founddrug) {
+    //     if (formValues[0] < founddrug.amount) {
+    //       Swal.fire('จำนวนยาไม่ครบ!', '', 'error');
+    //     } else if (formValues[0] > founddrug.amount) {
+    //       Swal.fire('จำนวนยาเกิน!', '', 'error');
+    //     } else {
+    //       let getData = await this.testPDF(founddrug);
+    //     }
+    //   } else {
+    //     Swal.fire('ไม่มียานี้ในรายการ!', '', 'error');
+    //   }
+    // }
   }
 
   testPDF(data: any) {
-    var docDefinition = {
-      // pageSize: { width: 325, height: 350 },
-      pageSize: { width: 238, height: 255 },
-      // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 35, 2, 35] as any,
-      header: {} as any,
-      footer: [
-        {
-          canvas: [
-            { type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1 },
-          ] as any,
-        },
-        {
-          columns: [
-            {
-              width: 180,
-              text: 'ชื่อสามัญ : \n' + 'ข้อบ่งใช้ : ',
-              fontSize: 12,
-              margin: [20, 0],
-            },
+    let namePatient = this.Dataqandcheck.patientName;
 
-            {
-              width: '*',
-              qr: data.drugCode,
-              fit: '40',
-              margin: [0, 2, 0, 0],
-            } as any,
-          ],
-        },
-      ] as any,
+    if (namePatient.length > 25) {
+      namePatient = namePatient.substring(0, 25);
+      namePatient = namePatient + '...';
+    }
+    let nameDrug = data.drugName;
+
+    if (nameDrug.length > 57) {
+      nameDrug = nameDrug.substring(0, 54);
+      nameDrug = nameDrug + '...';
+    }
+
+    var docDefinition = {
+      pageSize: { width: 238, height: 255 },
+      pageMargins: [0, 36, 10, 32] as any,
+      header: {} as any,
 
       content: [
         {
           columns: [
             {
-              width: 150,
-              text: 'ชื่อ นาง พุทธชาติ ประพรม',
-              bold: true,
-              style: 'margin',
+              width: 160,
+              text: namePatient,
             },
             {
               width: '*',
-              text: 'HN: 960023',
-              bold: true,
-              style: 'margin',
+              text: this.patient_contract.hn,
+              alignment: 'right',
             },
           ],
+          fontSize: 18,
+          bold: true,
         },
         {
           text: 'สิทธิ : บัตรทอง / ED / ปกติ',
+          fontSize: 18,
           bold: true,
-          style: 'margin',
         },
         {
           columns: [
             {
-              width: 160,
-              text: 'วันที่ 10/11/2022',
-              fontSize: 14,
-              style: 'margin',
+              width: 170,
+              text: 'วันที่ 08/11/2022',
             },
             {
               width: '*',
-              text: 'รายการ (1/1)',
-              fontSize: 14,
-              style: 'margin',
+              text: 'รายการ (18/18)',
+
+              alignment: 'right',
             },
           ],
+          fontSize: 14,
         },
         {
           canvas: [
-            { type: 'line', x1: 0, y1: 0, x2: 220, y2: 0, lineWidth: 1 },
-          ] as any,
+            { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
+          ],
         },
         {
           columns: [
             {
               width: 180,
-              text: data.drugName,
-              bold: true,
-              style: 'margin',
+              text: nameDrug,
             },
             {
               width: '*',
               text: '#' + data.amount + ' ' + data.takeUnit,
-              bold: true,
-              style: 'margin',
+              alignment: 'right',
             },
+          ],
+          bold: true,
+          fontSize: 16,
+        },
+
+        {
+          text: 'รับประทาน' + 'วันละ 1 ครั้ง ,ก่อนอาหารเช้า ',
+          bold: true,
+          margin: [10, 0],
+          fontSize: 14,
+          alignment: 'center',
+        },
+        {
+          text: 'เม็ดกลมสีชมพู,ยาป้องกันหลอดเลือดอุดตัน,',
+          margin: [10, 0],
+          fontSize: 14,
+          alignment: 'center',
+        },
+        {
+          text: 'รับประทานหลังอาหารทันทีแล้วดื่มน้ำตามมากๆ, หลีกเลื่ยงการหักแบ่ง บด เคี้ยวหรือทำให้เม็ดยาแตก',
+          margin: [10, 0],
+          fontSize: 14,
+          alignment: 'center',
+        },
+      ] as any,
+
+      footer: [
+        {
+          canvas: [
+            { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
           ],
         },
         {
-          text: 'รับประทานครั้งละ 1 เม็ด วันละ 1 ครั้ง ',
-          fontSize: 14,
-          alignment: 'center' as any,
+          columns: [
+            {
+              width: 210,
+              text: 'ชื่อสามัญ : \n' + 'ข้อบ่งใช้ : ',
+              fontSize: 12,
+            },
+
+            { width: '*', qr: 'test', fit: '41', margin: [0, 5, 0, 0] },
+          ],
         },
-        {
-          text: 'เวลา 20.00 น.',
-          fontSize: 14,
-          alignment: 'center' as any,
-        },
-        {
-          text: 'รับประทานยาในเวลาเดียวกันของทุกวัน',
-          fontSize: 14,
-          alignment: 'center' as any,
-        },
-        {
-          text: 'ควรดื่มน้ำอย่างน้อยวันละ 3ลิตร',
-          fontSize: 14,
-          alignment: 'center' as any,
-        },
-      ],
-      styles: {
-        margin: {
-          margin: [2, 0, 0, 0],
-        } as any,
-      },
+      ] as any,
 
       defaultStyle: {
         font: 'THSarabunNew',
-        fontSize: 16,
-        bold: true,
       },
     };
-    const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-    pdfDocGenerator.getBase64(async (buffer) => {
-      let getData: any = await this.http.testPrintjs('convertbuffer', {
-        data: buffer,
-        name: 'testpdf' + '.pdf',
-      });
-      if (getData.connect) {
-        if (getData.response.connect === 'success') {
-          Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
-          return true;
-        } else {
-          Swal.fire('ไม่สามารถ Printer ได้!', '', 'error');
-          return false;
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
-        return false;
-      }
-    });
-    // pdfMake.createPdf(docDefinition).open();
+    // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+    // pdfDocGenerator.getBase64(async (buffer) => {
+    //   let getData: any = await this.http.testPrintjs('convertbuffer', {
+    //     data: buffer,
+    //     name: 'testpdf' + '.pdf',
+    //   });
+    //   if (getData.connect) {
+    //     if (getData.response.connect === 'success') {
+    //       Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+    //       return true;
+    //     } else {
+    //       Swal.fire('ไม่สามารถ Printer ได้!', '', 'error');
+    //       return false;
+    //     }
+    //   } else {
+    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
+    //     return false;
+    //   }
+    // });
+    pdfMake.createPdf(docDefinition).open();
   }
 
   data_allergic: any = null;
@@ -403,5 +398,11 @@ export class CheckMedComponent implements OnInit {
 
     // Load items into the lightbox gallery ref
     lightboxRef.load(this.items);
+  }
+
+  currentSection = 'section1';
+
+  onSectionChange(sectionId: string) {
+    this.currentSection = sectionId;
   }
 }

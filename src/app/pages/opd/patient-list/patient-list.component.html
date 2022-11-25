@@ -30,15 +30,24 @@
           >
             <i class="fas fa-sync-alt fa-lg"></i>
           </button>
+          <mat-checkbox
+            [hidden]="!dataSource"
+            class="example-margin"
+            color="primary"
+            style="margin: 0px 0px 0px 30px"
+            [matTooltip]="dataUser.print_ip"
+            [(ngModel)]="checkprint"
+            ><strong>PRINTER</strong></mat-checkbox
+          >
         </div>
         <div class="col-lg-4">
           <mat-form-field>
             <mat-label>Select floor</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
-              <mat-option value="1">ห้องยาชั้น 1</mat-option>
-              <mat-option value="2">ห้องยาชั้น 2</mat-option>
-              <mat-option value="3">ห้องยาชั้น 3</mat-option>
-              <mat-option value="4">ห้องยา M - Park</mat-option>
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -492,6 +501,25 @@
                               style="margin-bottom: 15px; margin-left: 1px"
                             ></i>
                           </button>
+
+                          <button
+                            [hidden]="!checkprint"
+                            matTooltip="re-print"
+                            matTooltipPosition="above"
+                            style="
+                              width: 30px;
+                              height: 30px;
+                              margin-right: 10px;
+                            "
+                            mat-mini-fab
+                            color="primary"
+                            (click)="sendprint(drugcut[i])"
+                          >
+                            <i
+                              class="fas fa-print"
+                              style="margin-bottom: 15px; margin-left: 1px"
+                            ></i>
+                          </button>
                           <button
                             button
                             mat-raised-button
@@ -586,28 +614,54 @@
                               "
                             >
                               <td width="10px">
-                                <button
-                                  matTooltip="ลบข้อมูล"
-                                  matTooltipPosition="above"
-                                  style="width: 30px; height: 30px"
-                                  mat-mini-fab
-                                  color="warn"
-                                  (click)="
-                                    deleteCutowe(
-                                      drugcut[i].id,
-                                      drugcut[i].id2[j],
-                                      drugcut[i].amount[j]
-                                    )
-                                  "
-                                >
-                                  <i
-                                    class="fas fa-trash"
+                                <div style="display: flex">
+                                  <button
+                                    matTooltip="ลบข้อมูล"
+                                    matTooltipPosition="above"
                                     style="
-                                      margin-bottom: 15px;
-                                      margin-left: 1px;
+                                      width: 30px;
+                                      height: 30px;
+                                      margin-right: 10px;
                                     "
-                                  ></i>
-                                </button>
+                                    mat-mini-fab
+                                    color="warn"
+                                    (click)="
+                                      deleteCutowe(
+                                        drugcut[i].id,
+                                        drugcut[i].id2[j],
+                                        drugcut[i].amount[j]
+                                      )
+                                    "
+                                  >
+                                    <i
+                                      class="fas fa-trash"
+                                      style="
+                                        margin-bottom: 15px;
+                                        margin-left: 1px;
+                                      "
+                                    ></i>
+                                  </button>
+                                  <!-- <button
+                                    matTooltip="re-print"
+                                    matTooltipPosition="above"
+                                    style="
+                                      width: 30px;
+                                      height: 30px;
+                                      margin-right: 10px;
+                                    "
+                                    mat-mini-fab
+                                    color="primary"
+                                    (click)="sendprintChildren(drugcut[i], j)"
+                                  >
+                                    <i
+                                      class="fas fa-print"
+                                      style="
+                                        margin-bottom: 15px;
+                                        margin-left: 1px;
+                                      "
+                                    ></i>
+                                  </button> -->
+                                </div>
                               </td>
                               <td style="vertical-align: middle">{{ item }}</td>
                               <td style="vertical-align: middle">
