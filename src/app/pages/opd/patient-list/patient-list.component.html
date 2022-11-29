@@ -30,15 +30,6 @@
           >
             <i class="fas fa-sync-alt fa-lg"></i>
           </button>
-          <mat-checkbox
-            [hidden]="!dataSource"
-            class="example-margin"
-            color="primary"
-            style="margin: 0px 0px 0px 30px"
-            [matTooltip]="dataUser.print_ip"
-            [(ngModel)]="checkprint"
-            ><strong>PRINTER</strong></mat-checkbox
-          >
         </div>
         <div class="col-lg-4">
           <mat-form-field>
@@ -61,6 +52,41 @@
             <input matInput [formControl]="idFilter" #input />
             <mat-placeholder>HN</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-2">
+          <mat-checkbox
+            [hidden]="!dataSource"
+            class="example-margin"
+            color="primary"
+            style="margin: 0px 0px 0px 30px"
+            [matTooltip]="dataUser.print_ip"
+            [(ngModel)]="checkprint"
+            ><strong>PRINTER</strong></mat-checkbox
+          >
+        </div>
+
+        <div
+          class="col-lg-6"
+          *ngIf="dataSource && (select === 'W9' || select === 'W19')"
+        >
+          <mat-form-field>
+            <input
+              matInput
+              [matDatepicker]="picker1"
+              placeholder="Choose Date"
+              [formControl]="date1"
+              (dateChange)="
+                startChange(); nameFilter.setValue(''); idFilter.setValue('')
+              "
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker1"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
           </mat-form-field>
         </div>
       </div>

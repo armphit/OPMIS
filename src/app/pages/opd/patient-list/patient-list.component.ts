@@ -71,6 +71,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     patientNO: '',
     check: '',
   };
+
+  date1 = new FormControl(new Date());
   // @ViewChild('swiper') swiper!: ElementRef;
   private updateSubscription!: Subscription;
   constructor(
@@ -136,9 +138,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         getData = await this.http.post('listPatientQpost', formData);
         dataPatient = getData.response.result;
       } else {
-        let date = moment(new Date()).add(543, 'year').format('YYYYMMDD');
         formData.append('floor', this.select);
-        formData.append('date', date);
+        formData.append(
+          'date',
+          moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
+        );
         getData = await this.http.post('getdatapatientFloor', formData);
         let getData2: any = await this.http.post('statusyHomc', formData);
         dataPatient = getData.response.result.map(function (emp: {
@@ -1027,6 +1031,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         }
       });
     });
+  }
+
+  public async startChange() {
+    this.getData();
   }
   // sendprintChildren(val: any, j: any) {
   //   val.createdDT = val.datetime[j];
