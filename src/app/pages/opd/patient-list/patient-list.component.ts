@@ -999,6 +999,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   sendprint(val: any) {
+    val.phar_name = val.phar2_name[0]
+      ? val.phar2_name[val.phar2_name.length - 1]
+      : val.phar_name;
     this.printPDF(val).then((dataPDF) => {
       dataPDF.getBase64(async (buffer) => {
         let getData: any = await this.http.Printjs('convertbuffer', {
@@ -1006,7 +1009,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           name: 'testpdf' + '.pdf',
           ip: this.dataUser.print_ip,
           printName: this.dataUser.print_name,
-          hn: this.dataP.patientNO,
+          hn: val.hn,
         });
 
         if (getData.connect) {

@@ -13,7 +13,7 @@ import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-
+import * as moment from 'moment';
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -76,6 +76,11 @@ export class CheckMedComponent implements OnInit {
   async getData(hn: any) {
     let formData = new FormData();
     formData.append('hn', hn.trim());
+    formData.append(
+      'date',
+      moment(new Date()).add(543, 'year').format('YYYYMMDD')
+    );
+    let getHomc: any = await this.http.post('getcheckdrugHomc', formData);
 
     let getData: any = await this.http.post('patient_contract', formData);
 
@@ -129,39 +134,46 @@ export class CheckMedComponent implements OnInit {
       (element: any) =>
         element.orderitemcode.toLowerCase() === val.trim().toLowerCase()
     );
-    let formData = new FormData();
-    formData.append('hn', founddrug.hn);
-    formData.append('seq', founddrug.seq);
-    formData.append('orderitemcode', founddrug.orderitemcode);
-    formData.append('lastmodified', founddrug.lastmodified);
 
-    let getData: any = await this.http.post('updateCheckmed', formData);
+    console.log(founddrug);
 
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        let getData3: any = await this.http.post('patient_drug', formData);
+    if (!founddrug.checkstamp) {
+      let formData = new FormData();
+      formData.append('hn', founddrug.hn);
+      formData.append('seq', founddrug.seq);
+      formData.append('orderitemcode', founddrug.orderitemcode);
+      formData.append('lastmodified', founddrug.lastmodified);
 
-        if (getData3.connect) {
-          if (getData3.response.rowCount > 0) {
-            this.patient_drug = getData3.response.result;
+      let getData: any = await this.http.post('updateCheckmed', formData);
 
-            setTimeout(() => {
-              this.drugbar.nativeElement.focus();
-            }, 100);
-            this.dataSource = new MatTableDataSource(this.patient_drug);
-            this.dataSource.sort = this.sort;
-            this.dataSource.paginator = this.paginator;
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          let getData3: any = await this.http.post('patient_drug', formData);
+
+          if (getData3.connect) {
+            if (getData3.response.rowCount > 0) {
+              this.patient_drug = getData3.response.result;
+
+              setTimeout(() => {
+                this.drugbar.nativeElement.focus();
+              }, 100);
+              this.dataSource = new MatTableDataSource(this.patient_drug);
+              this.dataSource.sort = this.sort;
+              this.dataSource.paginator = this.paginator;
+            } else {
+              Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+            }
           } else {
-            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           }
         } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
         }
       } else {
-        Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      Swal.fire('รายการยาซ้ำ!', '', 'error');
     }
 
     // const { value: formValues } = await Swal.fire({
