@@ -43,8 +43,8 @@ export class CheckMedComponent implements OnInit {
   displayedColumns: string[] = [
     'drugCode',
     'drugName',
-    'amount',
-    'takeUnit',
+    'qty',
+    'unitCode',
     'createdDT',
     'img',
   ];
@@ -73,6 +73,8 @@ export class CheckMedComponent implements OnInit {
   Dataqandcheck: any = null;
   patient_drug: any = [];
   panelOpenState = true;
+  dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+
   async getData(hn: any) {
     let formData = new FormData();
     formData.append('hn', hn.trim());
@@ -80,7 +82,6 @@ export class CheckMedComponent implements OnInit {
       'date',
       moment(new Date()).add(543, 'year').format('YYYYMMDD')
     );
-    let getHomc: any = await this.http.post('getcheckdrugHomc', formData);
 
     let getData: any = await this.http.post('patient_contract', formData);
 
@@ -90,11 +91,19 @@ export class CheckMedComponent implements OnInit {
 
         if (getData2.connect) {
           if (getData2.response.rowCount > 0) {
-            let getData3: any = await this.http.post('patient_drug', formData);
+            let data_send = {
+              hn: hn.trim(),
+              date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+            };
+
+            let getData3: any = await this.http.postNodejs(
+              'checkpatient',
+              data_send
+            );
 
             if (getData3.connect) {
-              if (getData3.response.rowCount > 0) {
-                this.patient_drug = getData3.response.result;
+              if (getData3.response.datadrugpatient.length > 0) {
+                this.patient_drug = getData3.response.datadrugpatient;
                 this.patient_contract = getData.response.result[0];
                 this.Dataqandcheck = getData2.response.result[0];
 
@@ -132,46 +141,85 @@ export class CheckMedComponent implements OnInit {
   async getDrug(val: any) {
     let founddrug = this.patient_drug.find(
       (element: any) =>
-        element.orderitemcode.toLowerCase() === val.trim().toLowerCase()
+        element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
     );
 
-    console.log(founddrug);
-
     if (!founddrug.checkstamp) {
-      let formData = new FormData();
-      formData.append('hn', founddrug.hn);
-      formData.append('seq', founddrug.seq);
-      formData.append('orderitemcode', founddrug.orderitemcode);
-      formData.append('lastmodified', founddrug.lastmodified);
-
-      let getData: any = await this.http.post('updateCheckmed', formData);
-
-      if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          let getData3: any = await this.http.post('patient_drug', formData);
-
-          if (getData3.connect) {
-            if (getData3.response.rowCount > 0) {
-              this.patient_drug = getData3.response.result;
-
-              setTimeout(() => {
-                this.drugbar.nativeElement.focus();
-              }, 100);
-              this.dataSource = new MatTableDataSource(this.patient_drug);
-              this.dataSource.sort = this.sort;
-              this.dataSource.paginator = this.paginator;
-            } else {
-              Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
-            }
-          } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-          }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-      }
+      this.sendPDF(founddrug).then((dataPDF: any) => {
+        // if (dataPDF) {
+        //   dataPDF.getBase64(async (buffer: any) => {
+        // let pdf: any = await this.http.Printjs('convertbuffer', {
+        //   data: buffer,
+        //   name: 'testpdf' + '.pdf',
+        //   ip: this.dataUser.print_ip,
+        //   printName: this.dataUser.print_name,
+        //   hn: founddrug.hn,
+        // });
+        // if (pdf.connect) {
+        //     if (pdf.response.connect === 'success') {
+        //       let formData = new FormData();
+        //       formData.append('hn', founddrug.hn);
+        //       formData.append('seq', founddrug.seq);
+        //       formData.append('orderitemcode', founddrug.drugCode.trim());
+        //       formData.append('lastmodified', founddrug.lastmodified);
+        //       let getData: any = await this.http.post(
+        //         'updateCheckmed',
+        //         formData
+        //       );
+        //       if (getData.connect) {
+        //         if (getData.response.rowCount > 0) {
+        //           let getData3: any = await this.http.post(
+        //             'patient_drug',
+        //             formData
+        //           );
+        //           if (getData3.connect) {
+        //             if (getData3.response.rowCount > 0) {
+        //               this.patient_drug = getData3.response.result;
+        //               setTimeout(() => {
+        //                 this.drugbar.nativeElement.focus();
+        //               }, 100);
+        //               this.dataSource = new MatTableDataSource(
+        //                 this.patient_drug
+        //               );
+        //               this.dataSource.sort = this.sort;
+        //               this.dataSource.paginator = this.paginator;
+        //             } else {
+        //               Swal.fire(
+        //                 'ไม่สามารถเชื่อม patient_drug ได้!',
+        //                 '',
+        //                 'error'
+        //               );
+        //             }
+        //           } else {
+        //             Swal.fire(
+        //               'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+        //               '',
+        //               'error'
+        //             );
+        //           }
+        //         } else {
+        //           Swal.fire(
+        //             'ไม่สามารถเชื่อม updateCheckmed ได้!',
+        //             '',
+        //             'error'
+        //           );
+        //         }
+        //       } else {
+        //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        //       }
+        //     } else {
+        //       Swal.fire(
+        //         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+        //         '',
+        //         'error'
+        //       );
+        //     }
+        //   } else {
+        //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+        //   }
+        //   });
+        // }
+      });
     } else {
       Swal.fire('รายการยาซ้ำ!', '', 'error');
     }
@@ -208,7 +256,7 @@ export class CheckMedComponent implements OnInit {
     //     } else if (formValues[0] > founddrug.amount) {
     //       Swal.fire('จำนวนยาเกิน!', '', 'error');
     //     } else {
-    //       let getData = await this.testPDF(founddrug);
+    //       let getData = await this.sendPDF(founddrug);
     //     }
     //   } else {
     //     Swal.fire('ไม่มียานี้ในรายการ!', '', 'error');
@@ -216,60 +264,80 @@ export class CheckMedComponent implements OnInit {
     // }
   }
 
-  testPDF(data: any) {
-    let namePatient = this.Dataqandcheck.patientName;
+  async sendPDF(data: any) {
+    console.log(data);
+
+    let namePatient = this.patient_contract.patientName;
 
     if (namePatient.length > 25) {
       namePatient = namePatient.substring(0, 25);
       namePatient = namePatient + '...';
     }
-    let nameDrug = data.drugName;
+    let nameDrug = data.drugName.trim();
 
     if (nameDrug.length > 57) {
       nameDrug = nameDrug.substring(0, 54);
       nameDrug = nameDrug + '...';
     }
 
+    let freetext1 = data.freetext1.split(',');
+
+    let freetext2 = data.freetext2.split(',');
+    let itemidentify =
+      data.itemidentify.charAt(data.itemidentify.length - 1) == ','
+        ? data.itemidentify.substring(0, data.itemidentify.length - 1)
+        : data.itemidentify;
+
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 36, 10, 32] as any,
+      pageMargins: [0, 0, 10, 60] as any,
       header: {} as any,
 
       content: [
         {
           columns: [
             {
-              width: 160,
+              width: 150,
               text: namePatient,
             },
             {
               width: '*',
-              text: this.patient_contract.hn,
+              text: 'HN ' + this.patient_contract.hn,
               alignment: 'right',
             },
           ],
-          fontSize: 18,
+          fontSize: 16,
           bold: true,
         },
         {
-          text: 'สิทธิ : บัตรทอง / ED / ปกติ',
-          fontSize: 18,
+          text: `สิทธิ : บัตรทอง / ${
+            data.righttext2 ? data.righttext2.toUpperCase().trim() : ''
+          } / ${
+            data.righttext3
+              ? data.righttext3.trim() === 'ป'
+                ? 'ปกติ'
+                : data.righttext3.trim()
+              : ''
+          }`,
+          fontSize: 14,
           bold: true,
         },
         {
           columns: [
             {
-              width: 170,
-              text: 'วันที่ 08/11/2022',
+              width: 150,
+              text: moment(new Date())
+                .add(543, 'year')
+                .format('DD/MM/YYYY HH:mm:ss'),
             },
             {
               width: '*',
-              text: 'รายการ (18/18)',
+              text: `รายการ (${data.seq}/${data.countDrug})`,
 
               alignment: 'right',
             },
           ],
-          fontSize: 14,
+          fontSize: 12,
         },
         {
           canvas: [
@@ -279,12 +347,12 @@ export class CheckMedComponent implements OnInit {
         {
           columns: [
             {
-              width: 180,
+              width: 170,
               text: nameDrug,
             },
             {
               width: '*',
-              text: '#' + data.amount + ' ' + data.takeUnit,
+              text: '#' + data.qty + ' ' + data.unitCode.trim(),
               alignment: 'right',
             },
           ],
@@ -293,24 +361,30 @@ export class CheckMedComponent implements OnInit {
         },
 
         {
-          text: 'รับประทาน' + 'วันละ 1 ครั้ง ,ก่อนอาหารเช้า ',
+          text: ` `,
           bold: true,
-          margin: [10, 0],
-          fontSize: 14,
+          fontSize: 8,
           alignment: 'center',
         },
         {
-          text: 'เม็ดกลมสีชมพู,ยาป้องกันหลอดเลือดอุดตัน,',
-          margin: [10, 0],
-          fontSize: 14,
+          text: `${data.lamedName.trim()} ${data.dosage.trim()} ${data.freetext0.trim()} ${
+            freetext1[0] ? freetext1[0] : ''
+          }`,
+          bold: true,
+          fontSize: 16,
           alignment: 'center',
         },
         {
-          text: 'รับประทานหลังอาหารทันทีแล้วดื่มน้ำตามมากๆ, หลีกเลื่ยงการหักแบ่ง บด เคี้ยวหรือทำให้เม็ดยาแตก',
-          margin: [10, 0],
-          fontSize: 14,
+          text: freetext1[1] ? freetext1[1] : '',
+          bold: true,
+          fontSize: 16,
           alignment: 'center',
         },
+        freetext2
+          ? freetext2.map(function (item: any) {
+              return { text: item.trim(), alignment: 'center', fontSize: 14 };
+            })
+          : '',
       ] as any,
 
       footer: [
@@ -323,7 +397,7 @@ export class CheckMedComponent implements OnInit {
           columns: [
             {
               width: 210,
-              text: 'ชื่อสามัญ : \n' + 'ข้อบ่งใช้ : ',
+              text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${itemidentify}`,
               fontSize: 12,
             },
 
@@ -336,26 +410,10 @@ export class CheckMedComponent implements OnInit {
         font: 'THSarabunNew',
       },
     };
-    // const pdfDocGenerator = pdfMake.createPdf(docDefinition);
-    // pdfDocGenerator.getBase64(async (buffer) => {
-    //   let getData: any = await this.http.testPrintjs('convertbuffer', {
-    //     data: buffer,
-    //     name: 'testpdf' + '.pdf',
-    //   });
-    //   if (getData.connect) {
-    //     if (getData.response.connect === 'success') {
-    //       Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
-    //       return true;
-    //     } else {
-    //       Swal.fire('ไม่สามารถ Printer ได้!', '', 'error');
-    //       return false;
-    //     }
-    //   } else {
-    //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
-    //     return false;
-    //   }
-    // });
     pdfMake.createPdf(docDefinition).open();
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    return false;
   }
 
   data_allergic: any = null;
@@ -416,5 +474,35 @@ export class CheckMedComponent implements OnInit {
 
   onSectionChange(sectionId: string) {
     this.currentSection = sectionId;
+  }
+
+  sendServer(data: any) {
+    this.sendPDF(data).then((dataPDF: any) => {
+      if (dataPDF) {
+        dataPDF.getBase64(async (buffer: any) => {
+          let getData: any = await this.http.Printjs('convertbuffer', {
+            data: buffer,
+            name: 'testpdf' + '.pdf',
+            ip: this.dataUser.print_ip,
+            printName: this.dataUser.print_name,
+            hn: data.hn,
+          });
+
+          if (getData.connect) {
+            if (getData.response.connect === 'success') {
+              Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+            } else {
+              Swal.fire(
+                'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                '',
+                'error'
+              );
+            }
+          } else {
+            Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+          }
+        });
+      }
+    });
   }
 }

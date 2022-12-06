@@ -54,7 +54,6 @@ export class SearchDrugComponent implements OnInit {
   @ViewChild('input') input!: ElementRef;
   constructor(private http: HttpService, private formBuilder: FormBuilder) {
     this.listDrugHomc();
-    this.listDrugPrePack();
   }
   submitted = false;
   ngAfterViewInit() {
@@ -222,7 +221,7 @@ export class SearchDrugComponent implements OnInit {
         };
         let drugDict = { drug: drug };
 
-        let getDataSoap: any = await this.http.syncNodejs('soapDIH', drugDict);
+        let getDataSoap: any = await this.http.postNodejs('soapDIH', drugDict);
 
         if (getDataSoap.connect) {
           if (getDataSoap.response.status == 'success') {
@@ -232,6 +231,7 @@ export class SearchDrugComponent implements OnInit {
             );
 
             if (updatePack.connect) {
+              this.listDrugPrePack();
               Swal.fire('Success', '', 'success');
               let win: any = window;
               win.$('#myModal').modal('hide');
@@ -292,5 +292,13 @@ export class SearchDrugComponent implements OnInit {
       drugCode: val,
     };
     this.funcAction(data);
+  }
+
+  onTabChange(tab: any) {
+    if (tab === 0) {
+      this.listDrugHomc();
+    } else if (tab === 1) {
+      this.listDrugPrePack();
+    }
   }
 }

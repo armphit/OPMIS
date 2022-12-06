@@ -16,7 +16,7 @@ import { AllDrugComponent } from './all-drug/all-drug.component';
 import { TemperatureMonitorComponent } from './temperature-monitor/temperature-monitor.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgxImageCompressService } from 'ngx-image-compress';
-import { OPDStockComponent } from './opd-stock/opd-stock.component';
+
 import { ReportPharComponent } from './report-phar/report-phar.component';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
@@ -33,7 +33,7 @@ import { CheckMedComponent } from './check-med/check-med.component';
     DrugAppointComponent,
     AllDrugComponent,
     TemperatureMonitorComponent,
-    OPDStockComponent,
+
     ReportPharComponent,
     ReportDispenseComponent,
     CheckMedComponent,

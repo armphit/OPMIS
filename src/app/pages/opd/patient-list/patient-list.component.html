@@ -68,10 +68,7 @@
           >
         </div>
 
-        <div
-          class="col-lg-6"
-          *ngIf="dataSource && (select === 'W9' || select === 'W19')"
-        >
+        <div class="col-lg-6" *ngIf="select !== ''">
           <mat-form-field>
             <input
               matInput
@@ -450,7 +447,7 @@
               type="button"
               (click)="confirm()"
               class="btn btn-primary"
-              *ngIf="!datatime && checkdrug === 'Y'"
+              *ngIf="!datatime && checkdrug === 'Y' && checkW"
             >
               Confirm
             </button>
@@ -1022,7 +1019,7 @@
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
               [formGroup]="campaignOne"
-              [rangePicker]="campaignOnePicker"
+              [rangePicker]="campaignOnePickerr"
               [comparisonStart]="campaignOne.value.start"
               [comparisonEnd]="campaignOne.value.end"
             >
@@ -1040,9 +1037,9 @@
             </mat-date-range-input>
             <mat-datepicker-toggle
               matSuffix
-              [for]="campaignOnePicker"
+              [for]="campaignOnePickerr"
             ></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
           </mat-form-field>
         </div>
 

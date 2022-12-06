@@ -1,4 +1,4 @@
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="onTabChange($event.index)">
   <mat-tab label="MainDrug">
     <div class="container-fluid pt-2">
       <div class="row">
@@ -270,7 +270,7 @@
           &times;
         </button> -->
       </div>
-      <form [formGroup]="valData" (ngSubmit)="submitInput()">
+      <form [formGroup]="valData" (ngSubmit)="submitInput(); input2.value = ''">
         <!-- Modal body -->
         <div class="modal-body">
           <div class="form-group" *ngIf="addPre.value">

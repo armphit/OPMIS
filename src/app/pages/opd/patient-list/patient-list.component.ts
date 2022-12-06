@@ -135,6 +135,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let dataPatient: any = null;
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
+        formData.append('date', moment(this.date1.value).format('YYYY-MM-DD'));
         getData = await this.http.post('listPatientQpost', formData);
         dataPatient = getData.response.result;
       } else {
@@ -144,19 +145,29 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
         );
         getData = await this.http.post('getdatapatientFloor', formData);
-        let getData2: any = await this.http.post('statusyHomc', formData);
+        // let getData2: any = await this.http.post('statusyHomc', formData);
+        let getData3: any = await this.http.post(
+          'checkdrugAllergyHomc',
+          formData
+        );
+
         dataPatient = getData.response.result.map(function (emp: {
           patientNO: any;
         }) {
           return {
             ...emp,
-            ...(getData2.response.result.find(
+            ...(getData3.response[0].result.find(
               (item: { patientNO: any }) =>
                 item.patientNO.trim() === emp.patientNO.trim()
             ) ?? { status: 'N' }),
+            ...(getData3.response[1].result.find(
+              (item: { patientID: any }) =>
+                item.patientID.trim() === emp.patientNO.trim()
+            ) ?? { check: '' }),
           };
         });
       }
+
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.dataSource = new MatTableDataSource(dataPatient);
@@ -197,8 +208,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
   errPatientName: any = {};
   drugPatient: any = null;
-  test: any = false;
   namePhar = '';
+  checkW: any = null;
   listDrug = async (val: any) => {
     this.hncut = null;
     this.dataP = {};
@@ -208,9 +219,24 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
+    this.checkW =
+      this.select === 'W9' ? false : this.select === 'W19' ? false : true;
     // this.errPatientName = val;
-    this.dataP = val;
+    if (!val.cid) {
+      let formData = new FormData();
+      formData.append('hn', val.patientNO);
+      let get_cid: any = await this.http.post('patient_contract', formData);
 
+      if (get_cid.connect) {
+        if (get_cid.response.rowCount > 0) {
+          val.cid = get_cid.response.result[0].cid;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+
+    this.dataP = val;
     if (this.dataP) {
       let formData = new FormData();
       formData.append('cid', val.cid);
@@ -233,7 +259,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('hn', val.patientNO);
     formData.append(
       'date',
-      moment(new Date()).add(543, 'year').format('YYYYMMDD')
+      moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
     );
     formData.append('queue', val.QN);
     formData.append('floor', this.select);
@@ -310,28 +336,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   async cutDispend(val: any) {
     const { value: formValues } = await Swal.fire({
       title: 'จำนวนตัดจ่าย',
-      html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
-      focusConfirm: false,
-      allowEnterKey: true,
-      preConfirm: () => {
-        if ((<HTMLInputElement>document.getElementById('swal-input1')).value) {
-          if (
-            Number(
-              (<HTMLInputElement>document.getElementById('swal-input1')).value
-            ) < Number(val.qty) &&
-            Number(
-              (<HTMLInputElement>document.getElementById('swal-input1')).value
-            ) >= 0
-          ) {
-            return [
-              (<HTMLInputElement>document.getElementById('swal-input1')).value,
-            ];
-          } else {
-            Swal.showValidationMessage('Invalid number');
-            return undefined;
-          }
+      input: 'text',
+      inputAttributes: {
+        input: 'number',
+        required: 'true',
+      },
+      preConfirm: (value) => {
+        if (Number(value) < Number(val.qty) && Number(value) >= 0) {
+          return [value];
         } else {
-          Swal.showValidationMessage('Please input number');
+          Swal.showValidationMessage('Invalid number');
           return undefined;
         }
       },
@@ -484,31 +498,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   async dispendDrug(data: any) {
     const { value: formValues } = await Swal.fire({
-      title: 'จำนวนตัดจ่าย',
-      html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
-      focusConfirm: false,
-      allowEnterKey: true,
-      preConfirm: () => {
-        if ((<HTMLInputElement>document.getElementById('swal-input1')).value) {
-          if (
-            Number(data.balanceamount) -
-              Number(
-                (<HTMLInputElement>document.getElementById('swal-input1')).value
-              ) >=
-              0 &&
-            Number(
-              (<HTMLInputElement>document.getElementById('swal-input1')).value
-            ) > 0
-          ) {
-            return [
-              (<HTMLInputElement>document.getElementById('swal-input1')).value,
-            ];
-          } else {
-            Swal.showValidationMessage('Invalid number');
-            return undefined;
-          }
+      title: 'จำนวนจ่ายยา',
+      input: 'text',
+      inputAttributes: {
+        input: 'number',
+        required: 'true',
+      },
+      preConfirm: (value) => {
+        if (
+          Number(data.balanceamount) - Number(value) >= 0 &&
+          Number(value) > 0
+        ) {
+          return [value];
         } else {
-          Swal.showValidationMessage('Please input number');
+          Swal.showValidationMessage('Invalid number');
           return undefined;
         }
       },
@@ -686,6 +689,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     ];
     formData.append('data', JSON.stringify(nameArray));
     let getData2: any = await this.http.post('getTelHomc', formData);
+    console.log(getData2);
 
     let arr2 = getData2.response.result;
     let arr1 = getData.response.result;
@@ -899,9 +903,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (data.createdDT) {
       date = data.createdDT;
     } else {
-      let date = moment(new Date())
-        .add(543, 'year')
-        .format('DD/MM/YYYY HH:mm:ss');
+      date = moment(new Date()).add(543, 'year').format('DD/MM/YYYY HH:mm:ss');
     }
 
     var docDefinition = {
