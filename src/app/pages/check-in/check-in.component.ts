@@ -44,11 +44,10 @@ export class CheckInComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.dateAdapter.setLocale('en-GB');
-  }
-
-  ngOnInit(): void {
     this.getData();
   }
+
+  ngOnInit(): void {}
 
   public getData = async () => {
     this.displayedColumns = [

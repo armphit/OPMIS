@@ -31,11 +31,10 @@ export class ReportDispenseComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
-  }
-
-  ngOnInit(): void {
     this.getData();
   }
+
+  ngOnInit(): void {}
 
   public getData = async () => {
     this.displayedColumns = [

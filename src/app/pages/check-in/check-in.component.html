@@ -1,6 +1,6 @@
 <mat-tab-group (selectedTabChange)="getTab($event.index)">
   <mat-tab label="รายงานเวลาเข้าประตู">
-    <div class="container-fluid" style="overflow: auto">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-lg-7">
           <form [formGroup]="campaignOne">
@@ -164,7 +164,7 @@
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
-              [rangePicker]="campaignOnePicker"
+              [rangePicker]="campaignOnePickerr"
             >
               <input
                 matStartDate
@@ -180,9 +180,9 @@
             </mat-date-range-input>
             <mat-datepicker-toggle
               matSuffix
-              [for]="campaignOnePicker"
+              [for]="campaignOnePickerr"
             ></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+            <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
           </mat-form-field>
         </div>
         <div class="col-lg-3">

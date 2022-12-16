@@ -368,7 +368,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               printName: this.dataUser.print_name,
               hn: this.dataP.patientNO,
             });
-
             if (getData.connect) {
               if (getData.response.connect === 'success') {
                 this.insertCutdispend(val);
@@ -541,7 +540,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 printName: this.dataUser.print_name,
                 hn: this.dataP.patientNO,
               });
-
               if (getData.connect) {
                 if (getData.response.connect === 'success') {
                   await this.updatedispendDrug(data, formValues[0]);
@@ -668,6 +666,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'hn',
       'patientName',
       'checker_name',
+      'floor',
       'drugcode',
       'drugname',
       'realamount',
@@ -682,14 +681,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let formData = new FormData();
     formData.append('start', datestart);
     formData.append('end', dateend);
-
+    formData.append('floor', this.select);
     let getData: any = await this.http.post('getReportcutdispend', formData);
+
     let nameArray = [
-      ...new Set(getData.response.result.map((val: any) => val.hn)),
+      ...new Set(getData.response.result.map((val: any) => val.hn.trim())),
     ];
     formData.append('data', JSON.stringify(nameArray));
     let getData2: any = await this.http.post('getTelHomc', formData);
-    console.log(getData2);
 
     let arr2 = getData2.response.result;
     let arr1 = getData.response.result;
@@ -697,9 +696,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ...v,
       ...arr2.find(
         (sp: any) =>
-          sp.hn === v.hn ?? {
+          sp.hn.trim() == v.hn.trim() ?? {
             relativeAddress: '',
             relativePhone: '',
+            patientName: '',
           }
       ),
     }));
@@ -884,6 +884,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   changeFloor() {
     this.getData();
   }
+  changeFloorReport() {
+    this.getReport();
+  }
 
   async printPDF(data: any) {
     let numHN = data.patientNO ? data.patientNO : data.hn;
@@ -901,7 +904,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
     let date = '';
     if (data.createdDT) {
-      date = data.createdDT;
+      date = moment(data.createdDT)
+        .add(543, 'year')
+        .format('DD/MM/YYYY HH:mm:ss');
     } else {
       date = moment(new Date()).add(543, 'year').format('DD/MM/YYYY HH:mm:ss');
     }
@@ -976,7 +981,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         font: 'THSarabunNew',
       },
     };
-
+    pdfMake.createPdf(docDefinition).open();
     const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
 
     return pdfDocGenerator;
@@ -1017,7 +1022,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           printName: this.dataUser.print_name,
           hn: val.hn,
         });
-
         if (getData.connect) {
           if (getData.response.connect === 'success') {
             Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');

@@ -405,6 +405,7 @@
                     <th>ชื่อยา</th>
                     <th>จำนวน</th>
                     <th>หน่วย</th>
+                    <th>วันที่</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -424,6 +425,12 @@
                     </td>
                     <td style="border-right: 0px; vertical-align: middle">
                       {{ item.unit }}
+                    </td>
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
+                      {{ item.lastmodified }}
                     </td>
                     <td style="border-right: 0px; vertical-align: middle">
                       <button
@@ -717,7 +724,7 @@
   <mat-tab label="รายงานตัดจ่ายยา">
     <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-5">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
@@ -745,7 +752,21 @@
             <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
           </mat-form-field>
         </div>
-
+        <div class="col-lg-4">
+          <mat-form-field>
+            <mat-label>Select floor</mat-label>
+            <mat-select
+              [(ngModel)]="select"
+              (ngModelChange)="changeFloorReport()"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter($event)" #input2 />
@@ -768,8 +789,8 @@
           matTableExporter
           #exporter2="matTableExporter"
           matSortActive="createdDT"
-          matSortDirection="asc"
-          [hiddenColumns]="[7]"
+          matSortDirection="desc"
+          [hiddenColumns]="[8]"
         >
           <ng-container matColumnDef="hn">
             <th
@@ -824,6 +845,24 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.checker_name }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="floor">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Floor
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.floor }}
             </td>
           </ng-container>
           <ng-container matColumnDef="drugcode">
@@ -1064,8 +1103,8 @@
           class="mat-elevation-z8"
           matTableExporter
           #exporter3="matTableExporter"
-          matSortActive="user"
-          matSortDirection="asc"
+          matSortActive="timestamp"
+          matSortDirection="desc"
           [hiddenColumns]="[]"
         >
           <ng-container matColumnDef="user">
