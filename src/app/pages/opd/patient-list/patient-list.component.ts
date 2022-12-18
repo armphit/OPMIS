@@ -98,15 +98,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.nameFilter.setValue('');
       this.idFilter.setValue('');
     });
+    // setTimeout(() => {
 
     this.idFilter.valueChanges.subscribe((patientNO) => {
       this.filterValues.patientNO = patientNO.trim();
       this.dataSource.filter = JSON.stringify(this.filterValues);
     });
+
     this.nameFilter.valueChanges.subscribe((check) => {
       this.filterValues.check = check;
+
       this.dataSource.filter = JSON.stringify(this.filterValues);
     });
+
+    // }, 500);
   }
 
   ngOnDestroy() {
@@ -170,6 +175,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
+          // setTimeout(() => {
           this.dataSource = new MatTableDataSource(dataPatient);
           this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
@@ -359,28 +365,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         dataprint.balanceamount = balanceamount;
 
         this.printPDF(dataprint).then((dataPDF) => {
-          // dataPDF.getBase64(async (buffer) => {
-          //   let getData: any = await this.http.Printjs('convertbuffer', {
-          //     data: buffer,
-          //     name: 'testpdf' + '.pdf',
-          //     ip: this.dataUser.print_ip,
-          //     printName: this.dataUser.print_name,
-          //     hn: this.dataP.patientNO,
-          //   });
-          //   if (getData.connect) {
-          //     if (getData.response.connect === 'success') {
-          //       this.insertCutdispend(val);
-          //     } else {
-          //       Swal.fire(
-          //         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-          //         '',
-          //         'error'
-          //       );
-          //     }
-          //   } else {
-          //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-          //   }
-          // });
+          dataPDF.getBase64(async (buffer) => {
+            let getData: any = await this.http.Printjs('convertbuffer', {
+              data: buffer,
+              name: 'testpdf' + '.pdf',
+              ip: this.dataUser.print_ip,
+              printName: this.dataUser.print_name,
+              hn: this.dataP.patientNO,
+            });
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                this.insertCutdispend(val);
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
+            } else {
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+            }
+          });
         });
       } else {
         this.insertCutdispend(val);
@@ -531,29 +537,29 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           let dataprint = { ...data, ...this.dataP, ...this.dataUser };
 
           this.printPDF(dataprint).then(async (dataPDF) => {
-            // dataPDF.getBase64(async (buffer) => {
-            //   let getData: any = await this.http.Printjs('convertbuffer', {
-            //     data: buffer,
-            //     name: 'testpdf' + '.pdf',
-            //     ip: this.dataUser.print_ip,
-            //     printName: this.dataUser.print_name,
-            //     hn: this.dataP.patientNO,
-            //   });
-            //   if (getData.connect) {
-            //     if (getData.response.connect === 'success') {
-            //       await this.updatedispendDrug(data, formValues[0]);
-            //       await this.drugCut({ patientNO: this.hncut });
-            //     } else {
-            //       Swal.fire(
-            //         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-            //         '',
-            //         'error'
-            //       );
-            //     }
-            //   } else {
-            //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-            //   }
-            // });
+            dataPDF.getBase64(async (buffer) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: 'testpdf' + '.pdf',
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
+              });
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  await this.updatedispendDrug(data, formValues[0]);
+                  await this.drugCut({ patientNO: this.hncut });
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
+              } else {
+                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+              }
+            });
           });
         } else {
           await this.updatedispendDrug(data, formValues[0]);
@@ -901,7 +907,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let namePatient = getData.response[0].result[0].name_patient;
 
     let lamed = getData2.response.result[0];
-    let freetext1 = lamed.freetext1.split(',');
+
+    let freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : '';
     if (namePatient.length > 25) {
       namePatient = namePatient.substring(0, 22);
       namePatient = namePatient + '...';
@@ -948,7 +955,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               text: `#${
                 data.balanceamount +
                 ' ' +
-                (data.unit ? data.unit.trim() : data.miniUnit.trim())
+                (data.unit
+                  ? data.unit.trim()
+                  : data.miniUnit.trim()
+                  ? data.miniUnit.trim()
+                  : data.miniUnit)
               }`,
               alignment: 'right',
             },
@@ -1034,28 +1045,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? val.phar2_name[val.phar2_name.length - 1]
       : val.phar_name;
     this.printPDF(val).then((dataPDF) => {
-      // dataPDF.getBase64(async (buffer) => {
-      //   let getData: any = await this.http.Printjs('convertbuffer', {
-      //     data: buffer,
-      //     name: 'testpdf' + '.pdf',
-      //     ip: this.dataUser.print_ip,
-      //     printName: this.dataUser.print_name,
-      //     hn: val.hn,
-      //   });
-      //   if (getData.connect) {
-      //     if (getData.response.connect === 'success') {
-      //       Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
-      //     } else {
-      //       Swal.fire(
-      //         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-      //         '',
-      //         'error'
-      //       );
-      //     }
-      //   } else {
-      //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-      //   }
-      // });
+      dataPDF.getBase64(async (buffer) => {
+        let getData: any = await this.http.Printjs('convertbuffer', {
+          data: buffer,
+          name: 'testpdf' + '.pdf',
+          ip: this.dataUser.print_ip,
+          printName: this.dataUser.print_name,
+          hn: val.hn,
+        });
+        if (getData.connect) {
+          if (getData.response.connect === 'success') {
+            Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+          } else {
+            Swal.fire(
+              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+              '',
+              'error'
+            );
+          }
+        } else {
+          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+        }
+      });
     });
   }
 

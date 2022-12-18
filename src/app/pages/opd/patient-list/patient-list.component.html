@@ -75,9 +75,7 @@
               [matDatepicker]="picker1"
               placeholder="Choose Date"
               [formControl]="date1"
-              (dateChange)="
-                startChange(); nameFilter.setValue(''); idFilter.setValue('')
-              "
+              (dateChange)="startChange()"
             />
             <mat-datepicker-toggle
               matSuffix
