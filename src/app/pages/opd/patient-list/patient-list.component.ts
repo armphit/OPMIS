@@ -1012,7 +1012,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         font: 'THSarabunNew',
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+    // pdfMake.createPdf(docDefinition).open();
     const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
 
     return pdfDocGenerator;
