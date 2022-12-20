@@ -943,7 +943,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           fontSize: 18,
           bold: true,
         },
-        {},
         {
           columns: [
             {
@@ -966,7 +965,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ],
           fontSize: 18,
           bold: true,
-          margin: [0, 5, 0, 5],
+          // margin: [0, 5, 0, 0],
         },
         {
           text: `${lamed.lamedName.trim()} ${lamed.dosage.trim()} ${lamed.freetext0.trim()} ${
@@ -981,7 +980,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           bold: true,
           fontSize: 16,
           alignment: 'center',
-          margin: [0, 5, 0, 5],
+          // margin: [0, 0, 0, 5],
         },
         ,
         {

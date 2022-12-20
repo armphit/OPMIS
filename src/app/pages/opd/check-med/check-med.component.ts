@@ -265,8 +265,6 @@ export class CheckMedComponent implements OnInit {
   }
 
   async sendPDF(data: any) {
-    console.log(data);
-
     let namePatient = this.patient_contract.patientName;
 
     if (namePatient.length > 25) {
@@ -287,6 +285,9 @@ export class CheckMedComponent implements OnInit {
       data.itemidentify.charAt(data.itemidentify.length - 1) == ','
         ? data.itemidentify.substring(0, data.itemidentify.length - 1)
         : data.itemidentify;
+    let right = data.righttext1.includes(' ')
+      ? data.righttext1.replace(' ', ' - ')
+      : data.righttext1;
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
@@ -310,7 +311,7 @@ export class CheckMedComponent implements OnInit {
           bold: true,
         },
         {
-          text: `สิทธิ : บัตรทอง / ${
+          text: `สิทธิ : ${right} / ${
             data.righttext2 ? data.righttext2.toUpperCase().trim() : ''
           } / ${
             data.righttext3
@@ -332,7 +333,7 @@ export class CheckMedComponent implements OnInit {
             },
             {
               width: '*',
-              text: `รายการ (${data.seq}/${data.countDrug})`,
+              text: `รายการ (${data.seq}/${data.rowNum})`,
 
               alignment: 'right',
             },
