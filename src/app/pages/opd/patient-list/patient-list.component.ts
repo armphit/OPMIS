@@ -130,7 +130,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'patientNO',
         'QN',
         'patientName',
-        'createDT',
+        'createdDT',
         'druglist',
         // 'check',
         'timestamp',
