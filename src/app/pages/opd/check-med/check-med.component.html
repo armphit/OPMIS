@@ -63,7 +63,7 @@
   <div [hidden]="!patient_drug.length">
     <div class="card-body p-1">
       <div class="row">
-        <div class="col-lg-9" s>
+        <div class="col-lg-9" style="display: flex">
           <mat-form-field appearance="outline">
             <mat-label>Barcode Merdical</mat-label>
             <input
@@ -76,7 +76,14 @@
               <i class="fas fa-barcode" matSuffix style="width: 50px"></i>
             </div>
           </mat-form-field>
+          <span
+            style="font-size: 20px; font-weight: bold; margin: 20px 0 0 20px"
+            >จำนวนยาที่เช็คแล้ว {{ this.countcheck }}/{{
+              this.patient_drug.length
+            }}</span
+          >
         </div>
+
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter($event)" #input #swiper />

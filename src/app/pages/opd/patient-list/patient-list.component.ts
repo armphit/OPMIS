@@ -364,29 +364,31 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let dataprint = { ...val, ...this.dataP, ...this.dataUser };
         dataprint.balanceamount = balanceamount;
 
-        this.printPDF(dataprint).then((dataPDF) => {
-          dataPDF.getBase64(async (buffer) => {
-            let getData: any = await this.http.Printjs('convertbuffer', {
-              data: buffer,
-              name: 'testpdf' + '.pdf',
-              ip: this.dataUser.print_ip,
-              printName: this.dataUser.print_name,
-              hn: this.dataP.patientNO,
-            });
-            if (getData.connect) {
-              if (getData.response.connect === 'success') {
-                this.insertCutdispend(val);
+        this.printPDF(dataprint).then((dataPDF: any) => {
+          if (dataPDF) {
+            dataPDF.getBase64(async (buffer: any) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: 'testpdf' + '.pdf',
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
+              });
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  this.insertCutdispend(val);
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
               } else {
-                Swal.fire(
-                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                  '',
-                  'error'
-                );
+                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
               }
-            } else {
-              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-            }
-          });
+            });
+          }
         });
       } else {
         this.insertCutdispend(val);
@@ -536,30 +538,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         if (this.checkprint) {
           let dataprint = { ...data, ...this.dataP, ...this.dataUser };
 
-          this.printPDF(dataprint).then(async (dataPDF) => {
-            dataPDF.getBase64(async (buffer) => {
-              let getData: any = await this.http.Printjs('convertbuffer', {
-                data: buffer,
-                name: 'testpdf' + '.pdf',
-                ip: this.dataUser.print_ip,
-                printName: this.dataUser.print_name,
-                hn: this.dataP.patientNO,
-              });
-              if (getData.connect) {
-                if (getData.response.connect === 'success') {
-                  await this.updatedispendDrug(data, formValues[0]);
-                  await this.drugCut({ patientNO: this.hncut });
+          this.printPDF(dataprint).then(async (dataPDF: any) => {
+            if (dataPDF) {
+              dataPDF.getBase64(async (buffer: any) => {
+                let getData: any = await this.http.Printjs('convertbuffer', {
+                  data: buffer,
+                  name: 'testpdf' + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  printName: this.dataUser.print_name,
+                  hn: this.dataP.patientNO,
+                });
+                if (getData.connect) {
+                  if (getData.response.connect === 'success') {
+                    await this.updatedispendDrug(data, formValues[0]);
+                    await this.drugCut({ patientNO: this.hncut });
+                  } else {
+                    Swal.fire(
+                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                      '',
+                      'error'
+                    );
+                  }
                 } else {
-                  Swal.fire(
-                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                    '',
-                    'error'
-                  );
+                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
                 }
-              } else {
-                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-              }
-            });
+              });
+            }
           });
         } else {
           await this.updatedispendDrug(data, formValues[0]);
@@ -898,123 +902,176 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     let formData = new FormData();
     formData.append('hn', numHN);
-    formData.append('code', data.drugcode.trim());
+    formData.append(
+      'code',
+      data.drugcode
+        ? data.drugcode.trim()
+        : data.drugCode
+        ? data.drugCode.trim()
+        : ''
+    );
     formData.append('date', moment(data.createdDT).format('YYYY-MM-DD'));
 
     formData.append('floor', this.select);
+
     let getData: any = await this.http.post('getSiteTel', formData);
-    let getData2: any = await this.http.post('getInstruction', formData);
-    let namePatient = getData.response[0].result[0].name_patient;
 
-    let lamed = getData2.response.result[0];
+    if (getData.connect) {
+      if (getData.response.length > 0) {
+        let getData2: any = await this.http.post('getInstruction', formData);
 
-    let freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : '';
-    if (namePatient.length > 25) {
-      namePatient = namePatient.substring(0, 22);
-      namePatient = namePatient + '...';
-    }
-    let date = '';
-    if (data.createdDT) {
-      date = moment(data.createdDT)
-        .add(543, 'year')
-        .format('DD/MM/YYYY HH:mm:ss');
+        if (getData2.connect) {
+          if (getData2.response.rowCount > 0) {
+            let namePatient = getData.response[0].result[0].name_patient;
+            let lamed = getData2.response.result[0];
+
+            let freetext1 = [];
+            let freetextany = '';
+
+            if (lamed.freetext1) {
+              freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : [];
+
+              if (freetext1.length) {
+                let index = lamed.freetext1.indexOf(',');
+
+                freetextany = lamed.freetext1.substring(
+                  index + 1,
+                  lamed.freetext1.lenght
+                );
+              }
+            }
+
+            if (namePatient.length > 24) {
+              namePatient = namePatient.substring(0, 21);
+              namePatient = namePatient + '...';
+            }
+            let date = '';
+            if (data.createdDT) {
+              date = moment(data.createdDT)
+                .add(543, 'year')
+                .format('DD/MM/YYYY HH:mm:ss');
+            } else {
+              date = moment(new Date())
+                .add(543, 'year')
+                .format('DD/MM/YYYY HH:mm:ss');
+            }
+
+            var docDefinition = {
+              // pageSize: { width: 325, height: 350 },
+              pageSize: { width: 238, height: 255 },
+              // pageMargins: [5, 50, 5, 100] as any,
+              pageMargins: [0, 0, 10, 0] as any,
+              header: {} as any,
+
+              content: [
+                {
+                  text: 'ค้างจ่ายยา',
+                  alignment: 'center',
+                  decoration: 'underline',
+                  fontSize: 18,
+                  bold: true,
+                },
+                {
+                  text: `ชื่อ ${namePatient}  HN ${numHN}`,
+
+                  fontSize: 18,
+                  bold: true,
+                },
+                {
+                  columns: [
+                    {
+                      width: 150,
+                      text: `${data.drugName ? data.drugName : data.drugname}`,
+                    },
+                    {
+                      width: '*',
+                      text: `#${
+                        data.balanceamount +
+                        ' ' +
+                        (data.unit
+                          ? data.unit.trim()
+                          : data.miniUnit
+                          ? data.miniUnit.trim()
+                          : '')
+                      }`,
+                      alignment: 'right',
+                    },
+                  ],
+                  fontSize: 18,
+                  bold: true,
+                  // margin: [0, 5, 0, 0],
+                },
+                {
+                  text: `${lamed.lamedName ? lamed.lamedName.trim() : ''} ${
+                    lamed.dosage && lamed.dosage != 0 ? lamed.dosage.trim() : ''
+                  } ${lamed.freetext0 ? lamed.freetext0.trim() : ''} ${
+                    freetext1[0] ? freetext1[0] : ''
+                  }`,
+                  bold: true,
+                  fontSize: 16,
+                  alignment: 'center',
+                },
+                {
+                  text: freetextany,
+                  bold: true,
+                  fontSize: 16,
+                  alignment: 'center',
+                  // margin: [0, 0, 0, 5],
+                },
+                ,
+                {
+                  text: `รับยาที่ ${
+                    getData.response[1].result[0].site_name
+                      ? getData.response[1].result[0].site_name.trim()
+                      : ''
+                  }`,
+
+                  fontSize: 16,
+                  bold: true,
+                },
+                {
+                  text: `โทร ${getData.response[1].result[0].site_tel}`,
+
+                  fontSize: 16,
+                  bold: true,
+                },
+                {
+                  text: `เภสัชกร ${data.name || data.phar_name}`,
+
+                  fontSize: 14,
+                },
+                {
+                  text: `วันที่ค้างยา ${date} น.`,
+
+                  fontSize: 14,
+                },
+              ] as any,
+
+              defaultStyle: {
+                font: 'THSarabunNew',
+              },
+            };
+            // pdfMake.createPdf(docDefinition).open();
+            // return false;
+            const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+            return pdfDocGenerator;
+          } else {
+            Swal.fire('ไม่สามารถเชื่อมต่อ getInstruction!', '', 'error');
+            return false;
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          return false;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
+        return false;
+      }
     } else {
-      date = moment(new Date()).add(543, 'year').format('DD/MM/YYYY HH:mm:ss');
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      return false;
     }
 
-    var docDefinition = {
-      // pageSize: { width: 325, height: 350 },
-      pageSize: { width: 238, height: 255 },
-      // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 0, 10, 0] as any,
-      header: {} as any,
-
-      content: [
-        {
-          text: 'ค้างจ่ายยา',
-          alignment: 'center',
-          decoration: 'underline',
-          fontSize: 18,
-          bold: true,
-        },
-        {
-          text: `ชื่อ ${namePatient}  HN ${numHN}`,
-
-          fontSize: 18,
-          bold: true,
-        },
-        {
-          columns: [
-            {
-              width: 150,
-              text: `${data.drugName ? data.drugName : data.drugname}`,
-            },
-            {
-              width: '*',
-              text: `#${
-                data.balanceamount +
-                ' ' +
-                (data.unit
-                  ? data.unit.trim()
-                  : data.miniUnit.trim()
-                  ? data.miniUnit.trim()
-                  : data.miniUnit)
-              }`,
-              alignment: 'right',
-            },
-          ],
-          fontSize: 18,
-          bold: true,
-          // margin: [0, 5, 0, 0],
-        },
-        {
-          text: `${lamed.lamedName.trim()} ${lamed.dosage.trim()} ${lamed.freetext0.trim()} ${
-            freetext1[0] ? freetext1[0] : ''
-          }`,
-          bold: true,
-          fontSize: 16,
-          alignment: 'center',
-        },
-        {
-          text: freetext1[1] ? freetext1[1] : '',
-          bold: true,
-          fontSize: 16,
-          alignment: 'center',
-          // margin: [0, 0, 0, 5],
-        },
-        ,
-        {
-          text: `รับยาที่ ${getData.response[1].result[0].site_name.trim()}`,
-
-          fontSize: 16,
-          bold: true,
-        },
-        {
-          text: `โทร ${getData.response[1].result[0].site_tel}`,
-
-          fontSize: 16,
-          bold: true,
-        },
-        {
-          text: `เภสัชกร ${data.name || data.phar_name}`,
-
-          fontSize: 16,
-        },
-        {
-          text: `วันที่ค้างยา ${date} น.`,
-
-          fontSize: 16,
-        },
-      ] as any,
-
-      defaultStyle: {
-        font: 'THSarabunNew',
-      },
-    };
-    // pdfMake.createPdf(docDefinition).open();
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-
-    return pdfDocGenerator;
     // let result: any = await pdfDocGenerator.getBase64(async (buffer) => {
     //   return buffer;
     //   // let getData: any = await this.http.testPrintjs('convertbuffer', {
@@ -1043,29 +1100,31 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     val.phar_name = val.phar2_name[0]
       ? val.phar2_name[val.phar2_name.length - 1]
       : val.phar_name;
-    this.printPDF(val).then((dataPDF) => {
-      dataPDF.getBase64(async (buffer) => {
-        let getData: any = await this.http.Printjs('convertbuffer', {
-          data: buffer,
-          name: 'testpdf' + '.pdf',
-          ip: this.dataUser.print_ip,
-          printName: this.dataUser.print_name,
-          hn: val.hn,
-        });
-        if (getData.connect) {
-          if (getData.response.connect === 'success') {
-            Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+    this.printPDF(val).then((dataPDF: any) => {
+      if (dataPDF) {
+        dataPDF.getBase64(async (buffer: any) => {
+          let getData: any = await this.http.Printjs('convertbuffer', {
+            data: buffer,
+            name: 'testpdf' + '.pdf',
+            ip: this.dataUser.print_ip,
+            printName: this.dataUser.print_name,
+            hn: val.hn,
+          });
+          if (getData.connect) {
+            if (getData.response.connect === 'success') {
+              Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+            } else {
+              Swal.fire(
+                'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                '',
+                'error'
+              );
+            }
           } else {
-            Swal.fire(
-              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-              '',
-              'error'
-            );
+            Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
           }
-        } else {
-          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-        }
-      });
+        });
+      }
     });
   }
 

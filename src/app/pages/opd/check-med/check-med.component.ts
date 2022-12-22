@@ -38,6 +38,7 @@ import * as moment from 'moment';
 export class CheckMedComponent implements OnInit {
   data_contract: any = null;
   data_drug: any = null;
+  countcheck: any = null;
   @ViewChild('swiper') swiper!: ElementRef;
   @ViewChild('drugbar') drugbar!: ElementRef;
   displayedColumns: string[] = [
@@ -76,6 +77,7 @@ export class CheckMedComponent implements OnInit {
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
 
   async getData(hn: any) {
+    this.countcheck = 0;
     let formData = new FormData();
     formData.append('hn', hn.trim());
     formData.append(
@@ -106,6 +108,16 @@ export class CheckMedComponent implements OnInit {
                 this.patient_drug = getData3.response.datadrugpatient;
                 this.patient_contract = getData.response.result[0];
                 this.Dataqandcheck = getData2.response.result[0];
+
+                this.countcheck = this.patient_drug.filter(function (
+                  item: any
+                ) {
+                  if (item.checkstamp) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }).length;
 
                 setTimeout(() => {
                   this.drugbar.nativeElement.focus();
@@ -139,91 +151,107 @@ export class CheckMedComponent implements OnInit {
   }
 
   async getDrug(val: any) {
-    let founddrug = this.patient_drug.find(
-      (element: any) =>
-        element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
-    );
+    let founddrug: any = null;
+    let formData = new FormData();
+    formData.append('barcode', val);
+    let getBarcode: any = await this.http.post('drugBarcode', formData);
+    if (getBarcode.connect) {
+      if (getBarcode.response.rowCount > 0) {
+        founddrug = this.patient_drug.find(
+          (element: any) =>
+            element.drugCode.trim().toLowerCase() ===
+            getBarcode.response.result[0].drugCode.trim().toLowerCase()
+        );
+      } else {
+        founddrug = this.patient_drug.find(
+          (element: any) =>
+            element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
+        );
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
 
-    if (!founddrug.checkstamp) {
-      this.sendPDF(founddrug).then((dataPDF: any) => {
-        // if (dataPDF) {
-        //   dataPDF.getBase64(async (buffer: any) => {
-        // let pdf: any = await this.http.Printjs('convertbuffer', {
-        //   data: buffer,
-        //   name: 'testpdf' + '.pdf',
-        //   ip: this.dataUser.print_ip,
-        //   printName: this.dataUser.print_name,
-        //   hn: founddrug.hn,
-        // });
-        // if (pdf.connect) {
-        //     if (pdf.response.connect === 'success') {
-        //       let formData = new FormData();
-        //       formData.append('hn', founddrug.hn);
-        //       formData.append('seq', founddrug.seq);
-        //       formData.append('orderitemcode', founddrug.drugCode.trim());
-        //       formData.append('lastmodified', founddrug.lastmodified);
-        //       let getData: any = await this.http.post(
-        //         'updateCheckmed',
-        //         formData
-        //       );
-        //       if (getData.connect) {
-        //         if (getData.response.rowCount > 0) {
-        //           let getData3: any = await this.http.post(
-        //             'patient_drug',
-        //             formData
-        //           );
-        //           if (getData3.connect) {
-        //             if (getData3.response.rowCount > 0) {
-        //               this.patient_drug = getData3.response.result;
-        //               setTimeout(() => {
-        //                 this.drugbar.nativeElement.focus();
-        //               }, 100);
-        //               this.dataSource = new MatTableDataSource(
-        //                 this.patient_drug
-        //               );
-        //               this.dataSource.sort = this.sort;
-        //               this.dataSource.paginator = this.paginator;
-        //             } else {
-        //               Swal.fire(
-        //                 'ไม่สามารถเชื่อม patient_drug ได้!',
-        //                 '',
-        //                 'error'
-        //               );
-        //             }
+    if (founddrug) {
+      if (!founddrug.checkstamp) {
+        // this.sendPDF(founddrug).then((dataPDF: any) => {
+        //   if (dataPDF) {
+        //     dataPDF.getBase64(async (buffer: any) => {
+        //       let pdf: any = await this.http.Printjs('convertbuffer', {
+        //         data: buffer,
+        //         name: 'testpdf' + '.pdf',
+        //         ip: '192.168.184.46',
+        //         printName: this.dataUser.print_name,
+        //         hn: founddrug.hn,
+        //       });
+        //       if (pdf.connect) {
+        //         if (pdf.response.connect === 'success') {
+
+        formData.append('hn', founddrug.hn);
+        formData.append('seq', founddrug.seq);
+        formData.append('orderitemcode', founddrug.drugCode.trim());
+        formData.append('lastmodified', founddrug.lastmodified);
+        let getData: any = await this.http.post('updateCheckmed', formData);
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            let getData3: any = await this.http.post('patient_drug', formData);
+            if (getData3.connect) {
+              if (getData3.response.rowCount > 0) {
+                this.patient_drug = getData3.response.result;
+                this.countcheck = this.patient_drug.filter(function (
+                  item: any
+                ) {
+                  if (item.checkstamp) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }).length;
+                setTimeout(() => {
+                  this.drugbar.nativeElement.focus();
+                }, 100);
+                this.dataSource = new MatTableDataSource(this.patient_drug);
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: `เช็คยา ${founddrug.drugName} สำเร็จ`,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
+          } else {
+            Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
         //           } else {
         //             Swal.fire(
-        //               'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+        //               'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
         //               '',
         //               'error'
         //             );
         //           }
         //         } else {
-        //           Swal.fire(
-        //             'ไม่สามารถเชื่อม updateCheckmed ได้!',
-        //             '',
-        //             'error'
-        //           );
+        //           Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
         //         }
-        //       } else {
-        //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        //       }
-        //     } else {
-        //       Swal.fire(
-        //         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-        //         '',
-        //         'error'
-        //       );
-        //     }
-        //   } else {
-        //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-        //   }
-        //   });
+        //       });
         // }
-      });
+        //   });
+      } else {
+        Swal.fire('รายการยาซ้ำ!', '', 'error');
+      }
     } else {
-      Swal.fire('รายการยาซ้ำ!', '', 'error');
+      Swal.fire('ไม่มีรายการยา!', '', 'error');
     }
-
     // const { value: formValues } = await Swal.fire({
     //   title: 'จำนวนยา',
     //   html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
@@ -288,10 +316,11 @@ export class CheckMedComponent implements OnInit {
     let right = data.righttext1.includes(' ')
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
+    let qrcode = data.qrCode ? `` : '';
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 0, 10, 60] as any,
+      pageMargins: [0, 0, 10, 70] as any,
       header: {} as any,
 
       content: [
@@ -397,12 +426,20 @@ export class CheckMedComponent implements OnInit {
         {
           columns: [
             {
-              width: 210,
+              width: 200,
               text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${itemidentify}`,
               fontSize: 12,
             },
-
-            { width: '*', qr: 'test', fit: '41', margin: [0, 5, 0, 0] },
+            ...(data.qrCode
+              ? [
+                  {
+                    width: '*',
+                    qr: `${data.qrCode}`,
+                    fit: '45',
+                    margin: [0, 5, 0, 0],
+                  },
+                ]
+              : []),
           ],
         },
       ] as any,
@@ -411,9 +448,10 @@ export class CheckMedComponent implements OnInit {
         font: 'THSarabunNew',
       },
     };
-    pdfMake.createPdf(docDefinition).open();
+
     // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
     // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
     return false;
   }
 
@@ -484,7 +522,7 @@ export class CheckMedComponent implements OnInit {
           let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
             name: 'testpdf' + '.pdf',
-            ip: this.dataUser.print_ip,
+            ip: '192.168.184.46',
             printName: this.dataUser.print_name,
             hn: data.hn,
           });
