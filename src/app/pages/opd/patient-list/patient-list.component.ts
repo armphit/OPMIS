@@ -363,7 +363,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (this.checkprint) {
         let dataprint = { ...val, ...this.dataP, ...this.dataUser };
         dataprint.balanceamount = balanceamount;
-
+        dataprint.datecut = moment(new Date())
+          .add(543, 'year')
+          .format('DD/MM/YYYY HH:mm:ss');
         this.printPDF(dataprint).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
@@ -406,6 +408,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('realamount', data.qty);
     formData.append('balanceamount', data.balanceamount);
     formData.append('departmentcode', this.select);
+    formData.append('date', moment(this.date1.value).format('YYYY-MM-DD'));
     let getData: any = await this.http.post('insertCutDispendDrug', formData);
 
     if (getData.connect) {
@@ -537,7 +540,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       } else {
         if (this.checkprint) {
           let dataprint = { ...data, ...this.dataP, ...this.dataUser };
-
+          dataprint.datecut = moment(new Date());
           this.printPDF(dataprint).then(async (dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
@@ -946,7 +949,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               namePatient = namePatient + '...';
             }
             let date = '';
-            if (data.createdDT) {
+            if (data.datecut) {
+              date = data.datecut;
+            } else if (data.createdDT) {
               date = moment(data.createdDT)
                 .add(543, 'year')
                 .format('DD/MM/YYYY HH:mm:ss');
