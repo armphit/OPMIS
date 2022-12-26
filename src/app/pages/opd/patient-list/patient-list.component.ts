@@ -408,7 +408,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('realamount', data.qty);
     formData.append('balanceamount', data.balanceamount);
     formData.append('departmentcode', this.select);
-    formData.append('date', moment(data.lastmodified).format('YYYY-MM-DD'));
+    formData.append(
+      'date',
+      moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
+    );
     let getData: any = await this.http.post('insertCutDispendDrug', formData);
 
     if (getData.connect) {
@@ -543,6 +546,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           dataprint.datecut = moment(new Date())
             .add(543, 'year')
             .format('DD/MM/YYYY HH:mm:ss');
+
           this.printPDF(dataprint).then(async (dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
@@ -1107,6 +1111,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     val.phar_name = val.phar2_name[0]
       ? val.phar2_name[val.phar2_name.length - 1]
       : val.phar_name;
+    val.datecut = moment(new Date())
+      .add(543, 'year')
+      .format('DD/MM/YYYY HH:mm:ss');
     this.printPDF(val).then((dataPDF: any) => {
       if (dataPDF) {
         dataPDF.getBase64(async (buffer: any) => {
