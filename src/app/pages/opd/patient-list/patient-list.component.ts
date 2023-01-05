@@ -909,171 +909,167 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   async printPDF(data: any) {
     let numHN = data.patientNO ? data.patientNO : data.hn;
 
-    let formData = new FormData();
-    formData.append('hn', numHN);
-    formData.append(
-      'code',
-      data.drugcode
+    let data_send = {
+      hn: numHN.trim(),
+      date: moment(data.createdDT).format('YYYY-MM-DD'),
+      floor: this.select,
+      code: data.drugcode
         ? data.drugcode.trim()
         : data.drugCode
         ? data.drugCode.trim()
-        : ''
+        : '',
+    };
+
+    let getDataprint: any = await this.http.postNodejs(
+      'prinsticker',
+      data_send
     );
-    formData.append('date', moment(data.createdDT).format('YYYY-MM-DD'));
 
-    formData.append('floor', this.select);
+    if (getDataprint.connect) {
+      if (getDataprint.response) {
+        let namePatient = getDataprint.response.intruction[0]
+          ? getDataprint.response.intruction[0].name_patient
+          : '';
+        let lamed = getDataprint.response.intruction[0]
+          ? getDataprint.response.intruction[0]
+          : [];
 
-    let getData: any = await this.http.post('getSiteTel', formData);
+        let freetext1 = [];
+        let freetextany = '';
 
-    if (getData.connect) {
-      if (getData.response.length > 0) {
-        let getData2: any = await this.http.post('getInstruction', formData);
+        if (lamed.freetext1) {
+          freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : [];
 
-        if (getData2.connect) {
-          if (getData2.response.rowCount > 0) {
-            let namePatient = getData.response[0].result[0].name_patient;
-            let lamed = getData2.response.result[0];
+          if (freetext1.length) {
+            let index = lamed.freetext1.indexOf(',');
 
-            let freetext1 = [];
-            let freetextany = '';
-
-            if (lamed.freetext1) {
-              freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : [];
-
-              if (freetext1.length) {
-                let index = lamed.freetext1.indexOf(',');
-
-                freetextany = lamed.freetext1.substring(
-                  index + 1,
-                  lamed.freetext1.lenght
-                );
-              }
-            }
-
-            if (namePatient.length > 24) {
-              namePatient = namePatient.substring(0, 21);
-              namePatient = namePatient + '...';
-            }
-            let date = '';
-            if (data.datecut) {
-              date = data.datecut;
-            } else if (data.createdDT) {
-              date = moment(data.createdDT)
-                .add(543, 'year')
-                .format('DD/MM/YYYY HH:mm:ss');
-            } else {
-              date = moment(new Date())
-                .add(543, 'year')
-                .format('DD/MM/YYYY HH:mm:ss');
-            }
-
-            var docDefinition = {
-              // pageSize: { width: 325, height: 350 },
-              pageSize: { width: 238, height: 255 },
-              // pageMargins: [5, 50, 5, 100] as any,
-              pageMargins: [0, 0, 10, 0] as any,
-              header: {} as any,
-
-              content: [
-                {
-                  text: 'ค้างจ่ายยา',
-                  alignment: 'center',
-                  decoration: 'underline',
-                  fontSize: 18,
-                  bold: true,
-                },
-                {
-                  text: `ชื่อ ${namePatient}  HN ${numHN}`,
-
-                  fontSize: 18,
-                  bold: true,
-                },
-                {
-                  columns: [
-                    {
-                      width: 150,
-                      text: `${data.drugName ? data.drugName : data.drugname}`,
-                    },
-                    {
-                      width: '*',
-                      text: `#${
-                        data.balanceamount +
-                        ' ' +
-                        (data.unit
-                          ? data.unit.trim()
-                          : data.miniUnit
-                          ? data.miniUnit.trim()
-                          : '')
-                      }`,
-                      alignment: 'right',
-                    },
-                  ],
-                  fontSize: 18,
-                  bold: true,
-                  // margin: [0, 5, 0, 0],
-                },
-                {
-                  text: `${lamed.lamedName ? lamed.lamedName.trim() : ''} ${
-                    lamed.dosage && lamed.dosage != 0 ? lamed.dosage.trim() : ''
-                  } ${lamed.freetext0 ? lamed.freetext0.trim() : ''} ${
-                    freetext1[0] ? freetext1[0] : ''
-                  }`,
-                  bold: true,
-                  fontSize: 16,
-                  alignment: 'center',
-                },
-                {
-                  text: freetextany,
-                  bold: true,
-                  fontSize: 16,
-                  alignment: 'center',
-                  // margin: [0, 0, 0, 5],
-                },
-                ,
-                {
-                  text: `รับยาที่ ${
-                    getData.response[1].result[0].site_name
-                      ? getData.response[1].result[0].site_name.trim()
-                      : ''
-                  }`,
-
-                  fontSize: 16,
-                  bold: true,
-                },
-                {
-                  text: `โทร ${getData.response[1].result[0].site_tel}`,
-
-                  fontSize: 16,
-                  bold: true,
-                },
-                {
-                  text: `เภสัชกร ${data.name || data.phar_name}`,
-
-                  fontSize: 14,
-                },
-                {
-                  text: `วันที่ค้างยา ${date} น.`,
-
-                  fontSize: 14,
-                },
-              ] as any,
-
-              defaultStyle: {
-                font: 'THSarabunNew',
-              },
-            };
-            // pdfMake.createPdf(docDefinition).open();
-            // return false;
-            const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-            return pdfDocGenerator;
-          } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อ getInstruction!', '', 'error');
-            return false;
+            freetextany = lamed.freetext1.substring(
+              index + 1,
+              lamed.freetext1.lenght
+            );
           }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-          return false;
         }
+
+        if (namePatient.length > 23) {
+          namePatient = namePatient.substring(0, 20);
+          namePatient = namePatient + '...';
+        }
+        let date = '';
+        if (data.datecut) {
+          date = data.datecut;
+        } else if (data.createdDT) {
+          date = moment(data.createdDT)
+            .add(543, 'year')
+            .format('DD/MM/YYYY HH:mm:ss');
+        } else {
+          date = moment(new Date())
+            .add(543, 'year')
+            .format('DD/MM/YYYY HH:mm:ss');
+        }
+
+        var docDefinition = {
+          // pageSize: { width: 325, height: 350 },
+          pageSize: { width: 238, height: 255 },
+          // pageMargins: [5, 50, 5, 100] as any,
+          pageMargins: [0, 0, 10, 0] as any,
+          header: {} as any,
+
+          content: [
+            {
+              text: 'ค้างจ่ายยา',
+              alignment: 'center',
+              decoration: 'underline',
+              fontSize: 18,
+              bold: true,
+            },
+            {
+              text: `ชื่อ ${namePatient}  HN ${numHN}`,
+
+              fontSize: 18,
+              bold: true,
+            },
+            {
+              columns: [
+                {
+                  width: 150,
+                  text: `${data.drugName ? data.drugName : data.drugname}`,
+                },
+                {
+                  width: '*',
+                  text: `#${
+                    data.balanceamount +
+                    ' ' +
+                    (data.unit
+                      ? data.unit.trim()
+                      : data.miniUnit
+                      ? data.miniUnit.trim()
+                      : '')
+                  }`,
+                  alignment: 'right',
+                },
+              ],
+              fontSize: 18,
+              bold: true,
+              // margin: [0, 5, 0, 0],
+            },
+            {
+              text: `${lamed.lamedName ? lamed.lamedName.trim() : ''} ${
+                lamed.dosage && lamed.dosage != 0 ? lamed.dosage.trim() : ''
+              } ${lamed.freetext0 ? lamed.freetext0.trim() : ''} ${
+                freetext1[0] ? freetext1[0] : ''
+              }`,
+              bold: true,
+              fontSize: 16,
+              alignment: 'center',
+            },
+            {
+              text: freetextany,
+              bold: true,
+              fontSize: 16,
+              alignment: 'center',
+              // margin: [0, 0, 0, 5],
+            },
+            ,
+            {
+              text: `รับยาที่ ${
+                getDataprint.response.datasite[0].site_name
+                  ? getDataprint.response.datasite[0].site_name.trim()
+                  : ''
+              }`,
+
+              fontSize: 16,
+              bold: true,
+            },
+            {
+              text: `โทร ${
+                getDataprint.response.datasite[0].site_tel
+                  ? getDataprint.response.datasite[0].site_tel
+                  : ''
+              }`,
+
+              fontSize: 16,
+              bold: true,
+            },
+            {
+              text: `เภสัชกร ${data.name || data.phar_name}`,
+
+              fontSize: 14,
+            },
+            {
+              text: `วันที่ค้างยา ${date} น.`,
+
+              fontSize: 14,
+            },
+          ] as any,
+
+          defaultStyle: {
+            font: 'THSarabunNew',
+          },
+        };
+        // pdfMake.createPdf(docDefinition).open();
+        // return false;
+        const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+        return pdfDocGenerator;
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
         return false;
