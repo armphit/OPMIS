@@ -44,7 +44,8 @@ export class CheckMedComponent implements OnInit {
   displayedColumns: string[] = [
     'drugCode',
     'drugName',
-    'qty',
+    'default_qty',
+    'current_qty',
     'unitCode',
     'createdDT',
     'img',
@@ -75,7 +76,7 @@ export class CheckMedComponent implements OnInit {
   patient_drug: any = [];
   panelOpenState = true;
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-
+  drug_xmed: any = [];
   async getData(hn: any) {
     this.countcheck = 0;
     let formData = new FormData();
@@ -108,6 +109,7 @@ export class CheckMedComponent implements OnInit {
                 this.patient_drug = getData3.response.datadrugpatient;
                 this.patient_contract = getData.response.result[0];
                 this.Dataqandcheck = getData2.response.result[0];
+                this.drug_xmed = getData3.response.patientDrug;
 
                 this.countcheck = this.patient_drug.filter(function (
                   item: any
@@ -157,13 +159,13 @@ export class CheckMedComponent implements OnInit {
     let getBarcode: any = await this.http.post('drugBarcode', formData);
     if (getBarcode.connect) {
       if (getBarcode.response.rowCount > 0) {
-        founddrug = this.patient_drug.find(
+        founddrug = this.patient_drug.filter(
           (element: any) =>
             element.drugCode.trim().toLowerCase() ===
             getBarcode.response.result[0].drugCode.trim().toLowerCase()
         );
       } else {
-        founddrug = this.patient_drug.find(
+        founddrug = this.patient_drug.filter(
           (element: any) =>
             element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
         );
@@ -172,25 +174,33 @@ export class CheckMedComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
 
-    if (founddrug) {
-      if (!founddrug.checkstamp) {
-        // this.sendPDF(founddrug).then((dataPDF: any) => {
-        //   if (dataPDF) {
-        //     dataPDF.getBase64(async (buffer: any) => {
-        //       let pdf: any = await this.http.Printjs('convertbuffer', {
-        //         data: buffer,
-        //         name: 'testpdf' + '.pdf',
-        //         ip: '192.168.184.46',
-        //         printName: this.dataUser.print_name,
-        //         hn: founddrug.hn,
-        //       });
-        //       if (pdf.connect) {
-        //         if (pdf.response.connect === 'success') {
+    // founddrug = founddrug.map((emp: { drugCode: any }) => {
+    //   return {
+    //     ...emp,
+    //     ...this.drug_xmed.find(
+    //       (item: { drugCode: any }) =>
+    //         item.drugCode.trim() === emp.drugCode.trim()
+    //     ),
+    //   };
+    // });
 
-        formData.append('hn', founddrug.hn);
-        formData.append('seq', founddrug.seq);
-        formData.append('orderitemcode', founddrug.drugCode.trim());
-        formData.append('lastmodified', founddrug.lastmodified);
+    let value = founddrug.map((emp: { drugCode: any }) => ({
+      ...emp,
+      ...this.drug_xmed.find(
+        (item: { drugCode: any }) =>
+          item.drugCode.trim() === emp.drugCode.trim()
+      ),
+    }));
+    console.log(value);
+
+    if (value.realDrugCode) {
+      if (!value.checkstamp) {
+        let formData = new FormData();
+        formData.append('hn', value.hn);
+        formData.append('seq', value.seq);
+        formData.append('orderitemcode', value.drugCode.trim());
+        formData.append('lastmodified', value.lastmodified);
+        formData.append('lastmodified', value.realDrugCode);
         let getData: any = await this.http.post('updateCheckmed', formData);
         if (getData.connect) {
           if (getData.response.rowCount > 0) {
@@ -217,7 +227,7 @@ export class CheckMedComponent implements OnInit {
                 Swal.fire({
                   position: 'center',
                   icon: 'success',
-                  title: `เช็คยา ${founddrug.drugName} สำเร็จ`,
+                  // title: `เช็คยา ${value.drugName} สำเร็จ`,
                   showConfirmButton: false,
                   timer: 1500,
                 });
@@ -233,6 +243,18 @@ export class CheckMedComponent implements OnInit {
         } else {
           Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
+        // this.sendPDF(value).then((dataPDF: any) => {
+        //   if (dataPDF) {
+        //     dataPDF.getBase64(async (buffer: any) => {
+        //       let pdf: any = await this.http.Printjs('convertbuffer', {
+        //         data: buffer,
+        //         name: 'testpdf' + '.pdf',
+        //         ip: '192.168.184.46',
+        //         printName: this.dataUser.print_name,
+        //         hn: value.hn,
+        //       });
+        //       if (pdf.connect) {
+        //         if (pdf.response.connect === 'success') {
         //           } else {
         //             Swal.fire(
         //               'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
@@ -278,18 +300,66 @@ export class CheckMedComponent implements OnInit {
     //   },
     // });
     // if (formValues) {
-    //   if (founddrug) {
-    //     if (formValues[0] < founddrug.amount) {
+    //   if (value) {
+    //     if (formValues[0] < value.amount) {
     //       Swal.fire('จำนวนยาไม่ครบ!', '', 'error');
-    //     } else if (formValues[0] > founddrug.amount) {
+    //     } else if (formValues[0] > value.amount) {
     //       Swal.fire('จำนวนยาเกิน!', '', 'error');
     //     } else {
-    //       let getData = await this.sendPDF(founddrug);
+    //       let getData = await this.sendPDF(value);
     //     }
     //   } else {
     //     Swal.fire('ไม่มียานี้ในรายการ!', '', 'error');
     //   }
     // }
+  }
+  async updateCheckmed() {
+    let founddrug: any = null;
+    let formData = new FormData();
+    formData.append('hn', founddrug.hn);
+    formData.append('seq', founddrug.seq);
+    formData.append('orderitemcode', founddrug.drugCode.trim());
+    formData.append('lastmodified', founddrug.lastmodified);
+    let getData: any = await this.http.post('updateCheckmed', formData);
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let getData3: any = await this.http.post('patient_drug', formData);
+        if (getData3.connect) {
+          if (getData3.response.rowCount > 0) {
+            this.patient_drug = getData3.response.result;
+            this.countcheck = this.patient_drug.filter(function (item: any) {
+              if (item.checkstamp) {
+                return true;
+              } else {
+                return false;
+              }
+            }).length;
+            setTimeout(() => {
+              this.drugbar.nativeElement.focus();
+            }, 100);
+            this.dataSource = new MatTableDataSource(this.patient_drug);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              // title: `เช็คยา ${founddrug.drugName} สำเร็จ`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
 
   async sendPDF(data: any) {
