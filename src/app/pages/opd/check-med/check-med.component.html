@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-lg-9" style="display: flex">
           <mat-form-field appearance="outline">
-            <mat-label>Barcode Merdical</mat-label>
+            <mat-label>Barcode Medicine</mat-label>
             <input
               matInput
               #drugbar
@@ -94,6 +94,24 @@
       </div>
       <div class="responsive-table">
         <section class="example-container mat-elevation-z8" tabindex="0">
+          <div style="text-align: right">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="
+                exporter.exportTable('xlsx', {
+                  fileName:
+                    this.patient_contract.hn +
+                    ' ' +
+                    this.patient_contract.patientName,
+                  sheet: 'sheet_name',
+                  Props: { Author: 'Talha' }
+                })
+              "
+            >
+              Export Excel
+            </button>
+          </div>
           <table
             mat-table
             matTableExporter

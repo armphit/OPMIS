@@ -190,8 +190,7 @@ export class CheckMedComponent implements OnInit {
     // });
 
     // if(founddrug[0].drugcode==)
-    console.log(founddrug);
-    console.log(this.drug_xmed);
+
     let value = founddrug.map((emp: { drugCode: any }) => ({
       ...emp,
       ...this.drug_xmed.find(
@@ -203,9 +202,6 @@ export class CheckMedComponent implements OnInit {
     value = value[0] ? value[0] : '';
 
     if (value.realDrugCode) {
-      console.log(value.checkqty);
-      console.log(value.HisPackageRatio);
-
       if (Number(value.HisPackageRatio) <= value.checkqty) {
         if (value.checkqty) {
           let qty = Number(value.checkqty) - Number(value.HisPackageRatio);
@@ -216,7 +212,7 @@ export class CheckMedComponent implements OnInit {
           formData.append('lastmodified', value.lastmodified);
           formData.append('currentqty', String(qty));
           let getData: any = await this.http.post('updateCheckmed', formData);
-          console.log(getData);
+
           if (getData.connect) {
             if (getData.response.rowCount > 0) {
               let data_send = {
