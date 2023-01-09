@@ -154,17 +154,22 @@ export class CheckMedComponent implements OnInit {
 
   async getDrug(val: any) {
     let founddrug: any = null;
+    let checkcode: any = '';
+
     let formData = new FormData();
     formData.append('barcode', val);
     let getBarcode: any = await this.http.post('drugBarcode', formData);
+
     if (getBarcode.connect) {
       if (getBarcode.response.rowCount > 0) {
-        founddrug = this.patient_drug.filter(
+        checkcode = getBarcode.response.result[0].drugCode;
+        founddrug = await this.patient_drug.filter(
           (element: any) =>
             element.drugCode.trim().toLowerCase() ===
-            getBarcode.response.result[0].drugCode.trim().toLowerCase()
+            checkcode.trim().toLowerCase().substring(0, checkcode.indexOf('-'))
         );
       } else {
+        checkcode = val;
         founddrug = this.patient_drug.filter(
           (element: any) =>
             element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
@@ -184,19 +189,26 @@ export class CheckMedComponent implements OnInit {
     //   };
     // });
 
+    // if(founddrug[0].drugcode==)
+    console.log(founddrug);
+    console.log(this.drug_xmed);
     let value = founddrug.map((emp: { drugCode: any }) => ({
       ...emp,
       ...this.drug_xmed.find(
-        (item: { drugCode: any }) =>
-          item.drugCode.trim() === emp.drugCode.trim()
+        (item: { drugCode: any; realDrugCode: any }) =>
+          item.drugCode.trim() === emp.drugCode.trim() &&
+          item.realDrugCode.trim() === checkcode.trim()
       ),
     }));
     value = value[0] ? value[0] : '';
 
     if (value.realDrugCode) {
+      console.log(value.checkqty);
+      console.log(value.HisPackageRatio);
+
       if (Number(value.HisPackageRatio) <= value.checkqty) {
         if (value.checkqty) {
-          let qty = Number(value.qty) - Number(value.HisPackageRatio);
+          let qty = Number(value.checkqty) - Number(value.HisPackageRatio);
           let formData = new FormData();
           formData.append('hn', value.hn);
           formData.append('seq', value.seq);
@@ -204,15 +216,22 @@ export class CheckMedComponent implements OnInit {
           formData.append('lastmodified', value.lastmodified);
           formData.append('currentqty', String(qty));
           let getData: any = await this.http.post('updateCheckmed', formData);
+          console.log(getData);
           if (getData.connect) {
             if (getData.response.rowCount > 0) {
-              let getData3: any = await this.http.post(
-                'patient_drug',
-                formData
+              let data_send = {
+                hn: value.hn,
+                date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+              };
+
+              let getData3: any = await this.http.postNodejs(
+                'checkpatient',
+                data_send
               );
+
               if (getData3.connect) {
-                if (getData3.response.rowCount > 0) {
-                  this.patient_drug = getData3.response.result;
+                if (getData3.response.datadrugpatient.length > 0) {
+                  this.patient_drug = getData3.response.datadrugpatient;
                   // this.countcheck = this.patient_drug.filter(function (
                   //   item: any
                   // ) {
