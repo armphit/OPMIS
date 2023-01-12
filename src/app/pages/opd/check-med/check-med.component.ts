@@ -228,15 +228,15 @@ export class CheckMedComponent implements OnInit {
               if (getData3.connect) {
                 if (getData3.response.datadrugpatient.length > 0) {
                   this.patient_drug = getData3.response.datadrugpatient;
-                  // this.countcheck = this.patient_drug.filter(function (
-                  //   item: any
-                  // ) {
-                  //   if (item.checkstamp) {
-                  //     return true;
-                  //   } else {
-                  //     return false;
-                  //   }
-                  // }).length;
+                  this.countcheck = this.patient_drug.filter(function (
+                    item: any
+                  ) {
+                    if (item.checkstamp) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }).length;
                   setTimeout(() => {
                     this.drugbar.nativeElement.focus();
                   }, 100);
@@ -638,6 +638,55 @@ export class CheckMedComponent implements OnInit {
             Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
           }
         });
+      }
+    });
+  }
+
+  deletePatient() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append('hn', this.patient_contract.hn);
+
+        let getData: any = await this.http.post('deleteCheckmed', formData);
+
+        if (getData.connect) {
+          if (getData.response.result) {
+            this.patient_drug = '';
+            this.patient_contract = null;
+            this.Dataqandcheck = null;
+            this.drug_xmed = null;
+            this.dataSource = null;
+            this.countcheck = null;
+
+            Swal.fire({
+              icon: 'success',
+              title: 'ลบข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setTimeout(() => {
+              this.swiper.nativeElement.focus();
+            }, 100);
+          } else {
+            console.log(getData);
+            Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      } else {
+        setTimeout(() => {
+          this.swiper.nativeElement.focus();
+        }, 100);
       }
     });
   }
