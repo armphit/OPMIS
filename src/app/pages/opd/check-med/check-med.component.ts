@@ -204,94 +204,39 @@ export class CheckMedComponent implements OnInit {
     if (value.realDrugCode) {
       if (Number(value.HisPackageRatio) <= value.checkqty) {
         if (value.checkqty) {
-          let qty = Number(value.checkqty) - Number(value.HisPackageRatio);
-          let formData = new FormData();
-          formData.append('hn', value.hn);
-          formData.append('seq', value.seq);
-          formData.append('orderitemcode', value.drugCode.trim());
-          formData.append('lastmodified', value.lastmodified);
-          formData.append('currentqty', String(qty));
-          let getData: any = await this.http.post('updateCheckmed', formData);
-
-          if (getData.connect) {
-            if (getData.response.rowCount > 0) {
-              let data_send = {
-                hn: value.hn,
-                date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
-              };
-
-              let getData3: any = await this.http.postNodejs(
-                'checkpatient',
-                data_send
-              );
-
-              if (getData3.connect) {
-                if (getData3.response.datadrugpatient.length > 0) {
-                  this.patient_drug = getData3.response.datadrugpatient;
-                  this.countcheck = this.patient_drug.filter(function (
-                    item: any
-                  ) {
-                    if (item.checkstamp) {
-                      return true;
-                    } else {
-                      return false;
-                    }
-                  }).length;
-                  setTimeout(() => {
-                    this.drugbar.nativeElement.focus();
-                  }, 100);
-                  this.dataSource = new MatTableDataSource(this.patient_drug);
-                  this.dataSource.sort = this.sort;
-                  this.dataSource.paginator = this.paginator;
-                  let showtext =
-                    qty != 0
-                      ? ` ${value.drugName} คงเหลือ ${qty}`
-                      : `เช็คยา ${value.drugName} สำเร็จ`;
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: showtext,
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                } else {
-                  Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
-                }
-              } else {
-                Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-              }
-            } else {
-              Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
-            }
+          let currentqty =
+            Number(value.checkqty) - Number(value.HisPackageRatio);
+          value.currentqty = currentqty;
+          if (currentqty) {
+            await this.updateCheckmed(value);
           } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            this.sendPDF(value).then((dataPDF: any) => {
+              if (dataPDF) {
+                dataPDF.getBase64(async (buffer: any) => {
+                  let pdf: any = await this.http.Printjs('convertbuffer', {
+                    data: buffer,
+                    name: 'testpdf' + '.pdf',
+                    ip: '192.168.184.46',
+                    printName: this.dataUser.print_name,
+                    hn: value.hn,
+                  });
+                  if (pdf.connect) {
+                    if (pdf.response.connect === 'success') {
+                      await this.updateCheckmed(value);
+                    } else {
+                      Swal.fire(
+                        'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                        '',
+                        'error'
+                      );
+                    }
+                  } else {
+                    Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+                  }
+                });
+              }
+            });
           }
-
-          // this.sendPDF(value).then((dataPDF: any) => {
-          //   if (dataPDF) {
-          //     dataPDF.getBase64(async (buffer: any) => {
-          //       let pdf: any = await this.http.Printjs('convertbuffer', {
-          //         data: buffer,
-          //         name: 'testpdf' + '.pdf',
-          //         ip: '192.168.184.46',
-          //         printName: this.dataUser.print_name,
-          //         hn: value.hn,
-          //       });
-          //       if (pdf.connect) {
-          //         if (pdf.response.connect === 'success') {
-          //           } else {
-          //             Swal.fire(
-          //               'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-          //               '',
-          //               'error'
-          //             );
-          //           }
-          //         } else {
-          //           Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-          //         }
-          //       });
-          // }
-          //   });
         } else {
           Swal.fire('รายการยาซ้ำ!', '', 'error');
         }
@@ -301,93 +246,68 @@ export class CheckMedComponent implements OnInit {
     } else {
       Swal.fire('ไม่มีรายการยา!', '', 'error');
     }
-    // const { value: formValues } = await Swal.fire({
-    //   title: 'จำนวนยา',
-    //   html: '<input id="swal-input1" type="number" min="1" class="swal2-input">',
-    //   focusConfirm: false,
-    //   allowEnterKey: true,
-    //   preConfirm: () => {
-    //     if ((<HTMLInputElement>document.getElementById('swal-input1')).value) {
-    //       if (
-    //         Number(
-    //           (<HTMLInputElement>document.getElementById('swal-input1')).value
-    //         ) > 0
-    //       ) {
-    //         return [
-    //           (<HTMLInputElement>document.getElementById('swal-input1')).value,
-    //         ];
-    //       } else {
-    //         Swal.showValidationMessage('Invalid number');
-    //         return undefined;
-    //       }
-    //     } else {
-    //       Swal.showValidationMessage('Please input number');
-    //       return undefined;
-    //     }
-    //   },
-    // });
-    // if (formValues) {
-    //   if (value) {
-    //     if (formValues[0] < value.amount) {
-    //       Swal.fire('จำนวนยาไม่ครบ!', '', 'error');
-    //     } else if (formValues[0] > value.amount) {
-    //       Swal.fire('จำนวนยาเกิน!', '', 'error');
-    //     } else {
-    //       let getData = await this.sendPDF(value);
-    //     }
-    //   } else {
-    //     Swal.fire('ไม่มียานี้ในรายการ!', '', 'error');
-    //   }
-    // }
   }
-  // async updateCheckmed() {
-  //   let founddrug: any = null;
-  //   let formData = new FormData();
-  //   formData.append('hn', founddrug.hn);
-  //   formData.append('seq', founddrug.seq);
-  //   formData.append('orderitemcode', founddrug.drugCode.trim());
-  //   formData.append('lastmodified', founddrug.lastmodified);
-  //   let getData: any = await this.http.post('updateCheckmed', formData);
-  //   if (getData.connect) {
-  //     if (getData.response.rowCount > 0) {
-  //       let getData3: any = await this.http.post('patient_drug', formData);
-  //       if (getData3.connect) {
-  //         if (getData3.response.rowCount > 0) {
-  //           this.patient_drug = getData3.response.result;
-  //           this.countcheck = this.patient_drug.filter(function (item: any) {
-  //             if (item.checkstamp) {
-  //               return true;
-  //             } else {
-  //               return false;
-  //             }
-  //           }).length;
-  //           setTimeout(() => {
-  //             this.drugbar.nativeElement.focus();
-  //           }, 100);
-  //           this.dataSource = new MatTableDataSource(this.patient_drug);
-  //           this.dataSource.sort = this.sort;
-  //           this.dataSource.paginator = this.paginator;
+  async updateCheckmed(value: any) {
+    let formData = new FormData();
+    formData.append('hn', value.hn);
+    formData.append('seq', value.seq);
+    formData.append('orderitemcode', value.drugCode.trim());
+    formData.append('lastmodified', value.lastmodified);
+    formData.append('currentqty', String(value.currentqty));
+    let getData: any = await this.http.post('updateCheckmed', formData);
 
-  //           Swal.fire({
-  //             position: 'center',
-  //             icon: 'success',
-  //             // title: `เช็คยา ${founddrug.drugName} สำเร็จ`,
-  //             showConfirmButton: false,
-  //             timer: 1500,
-  //           });
-  //         } else {
-  //           Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
-  //         }
-  //       } else {
-  //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //       }
-  //     } else {
-  //       Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // }
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        let data_send = {
+          hn: value.hn,
+          date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+        };
+
+        let getData3: any = await this.http.postNodejs(
+          'checkpatient',
+          data_send
+        );
+
+        if (getData3.connect) {
+          if (getData3.response.datadrugpatient.length > 0) {
+            this.patient_drug = getData3.response.datadrugpatient;
+            this.countcheck = this.patient_drug.filter(function (item: any) {
+              if (item.checkstamp) {
+                return true;
+              } else {
+                return false;
+              }
+            }).length;
+            setTimeout(() => {
+              this.drugbar.nativeElement.focus();
+            }, 100);
+            this.dataSource = new MatTableDataSource(this.patient_drug);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+            let showtext =
+              value.currentqty != 0
+                ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
+                : `เช็คยา ${value.drugName} สำเร็จ`;
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: showtext,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
 
   async sendPDF(data: any) {
     let namePatient = this.patient_contract.patientName;
