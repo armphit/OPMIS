@@ -216,7 +216,7 @@ export class CheckMedComponent implements OnInit {
                   let pdf: any = await this.http.Printjs('convertbuffer', {
                     data: buffer,
                     name: 'testpdf' + '.pdf',
-                    ip: '192.168.184.46',
+                    ip: '192.168.184.163',
                     printName: this.dataUser.print_name,
                     hn: value.hn,
                   });
@@ -466,10 +466,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
-    pdfMake.createPdf(docDefinition).open();
-    return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
   }
 
   data_allergic: any = null;
@@ -539,7 +539,7 @@ export class CheckMedComponent implements OnInit {
           let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
             name: 'testpdf' + '.pdf',
-            ip: '192.168.184.46',
+            ip: '192.168.184.49',
             printName: this.dataUser.print_name,
             hn: data.hn,
           });
