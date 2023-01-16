@@ -689,10 +689,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'drugname',
       'realamount',
       'cutamount',
-      'status',
+
       'createdDT',
       'relativePhone',
       'relativeAddress',
+      'status',
     ];
     let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');

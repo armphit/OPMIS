@@ -788,7 +788,7 @@
           #exporter2="matTableExporter"
           matSortActive="createdDT"
           matSortDirection="desc"
-          [hiddenColumns]="[8]"
+          [hiddenColumns]=""
         >
           <ng-container matColumnDef="hn">
             <th
@@ -931,34 +931,7 @@
               {{ element.cutamount }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="status">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              style="padding-left: 10px"
-            >
-              Status
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              <i
-                [ngClass]="
-                  element.status == 'N'
-                    ? 'fas fa-check-circle'
-                    : 'fas fa-times-circle'
-                "
-                [ngStyle]="
-                  element.status == 'N'
-                    ? { 'font-size': '40px', color: '#20ad60' }
-                    : { 'font-size': '40px', color: '#dc3545' }
-                "
-              ></i>
-            </td>
-          </ng-container>
+
           <ng-container matColumnDef="createdDT">
             <th
               mat-header-cell
@@ -1013,7 +986,40 @@
               {{ element.relativeAddress }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="status">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Status
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="
+                padding-left: 20px;
+                padding-right: 20px;
+                white-space: nowrap;
+              "
+            >
+              <!-- <i
+                [ngClass]="
+                  element.status == 'N'
+                    ? 'fas fa-check-circle'
+                    : 'fas fa-times-circle'
+                "
+                [ngStyle]="
+                  element.status == 'N'
+                    ? { 'font-size': '40px', color: '#20ad60' }
+                    : { 'font-size': '40px', color: '#dc3545' }
+                "
+              ></i> -->
 
+              {{ element.status == "N" ? "จ่ายยาแล้ว" : "ค้างจ่ายยา" }}
+            </td>
+          </ng-container>
           <tr
             mat-header-row
             *matHeaderRowDef="displayedColumns2; sticky: true"

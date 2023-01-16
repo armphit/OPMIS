@@ -55,6 +55,7 @@ export class CheckMedComponent implements OnInit {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  checkprint: boolean = false;
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
@@ -108,6 +109,7 @@ export class CheckMedComponent implements OnInit {
               if (getData3.response.datadrugpatient.length > 0) {
                 this.patient_drug = getData3.response.datadrugpatient;
                 this.patient_contract = getData.response.result[0];
+
                 this.Dataqandcheck = getData2.response.result[0];
                 this.drug_xmed = getData3.response.patientDrug;
 
@@ -207,7 +209,8 @@ export class CheckMedComponent implements OnInit {
           let currentqty =
             Number(value.checkqty) - Number(value.HisPackageRatio);
           value.currentqty = currentqty;
-          if (currentqty) {
+
+          if (currentqty || !this.checkprint) {
             await this.updateCheckmed(value);
           } else {
             this.sendPDF(value).then((dataPDF: any) => {

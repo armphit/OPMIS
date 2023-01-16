@@ -1,3 +1,4 @@
+import { DetailMedComponent } from './detail-med/detail-med.component';
 import { CheckMedComponent } from './check-med/check-med.component';
 import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
 import { NgModule } from '@angular/core';
@@ -64,6 +65,10 @@ const routes: Routes = [
       {
         path: 'check-med',
         component: CheckMedComponent,
+      },
+      {
+        path: 'detail-med',
+        component: DetailMedComponent,
       },
       {
         path: '',
