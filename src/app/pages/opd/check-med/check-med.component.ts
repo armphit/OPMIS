@@ -165,42 +165,42 @@ export class CheckMedComponent implements OnInit {
     if (getBarcode.connect) {
       if (getBarcode.response.rowCount > 0) {
         checkcode = getBarcode.response.result[0].drugCode;
+
+        let problem =
+          getBarcode.response.result[0].isPrepack === 'N'
+            ? checkcode.trim().toLowerCase()
+            : checkcode
+                .trim()
+                .toLowerCase()
+                .substring(0, checkcode.indexOf('-'));
+
         founddrug = await this.patient_drug.filter(
           (element: any) =>
-            element.drugCode.trim().toLowerCase() ===
-            checkcode.trim().toLowerCase().substring(0, checkcode.indexOf('-'))
+            element.drugCode.trim().toLowerCase() === problem &&
+            element.checkqty != 0
         );
       } else {
         checkcode = val;
         founddrug = this.patient_drug.filter(
           (element: any) =>
-            element.drugCode.trim().toLowerCase() === val.trim().toLowerCase()
+            element.drugCode.trim().toLowerCase() ===
+              val.trim().toLowerCase() && element.checkqty != 0
         );
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
 
-    // founddrug = founddrug.map((emp: { drugCode: any }) => {
-    //   return {
-    //     ...emp,
-    //     ...this.drug_xmed.find(
-    //       (item: { drugCode: any }) =>
-    //         item.drugCode.trim() === emp.drugCode.trim()
-    //     ),
-    //   };
-    // });
-
-    // if(founddrug[0].drugcode==)
-
-    let value = founddrug.map((emp: { drugCode: any }) => ({
+    let value = founddrug.map((emp: any) => ({
       ...emp,
       ...this.drug_xmed.find(
         (item: { drugCode: any; realDrugCode: any }) =>
           item.drugCode.trim() === emp.drugCode.trim() &&
-          item.realDrugCode.trim() === checkcode.trim()
+          item.realDrugCode.trim().toLowerCase() ===
+            checkcode.trim().toLowerCase()
       ),
     }));
+
     value = value[0] ? value[0] : '';
 
     if (value.realDrugCode) {

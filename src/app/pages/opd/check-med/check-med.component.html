@@ -1,6 +1,6 @@
 <div class="container-fluid pt-2" style="overflow: auto">
   <div class="row">
-    <div class="col-lg-3">
+    <div class="col-lg-3" style="display: contents">
       <mat-form-field appearance="outline">
         <mat-label>Barcode HN</mat-label>
         <input
@@ -67,7 +67,7 @@
   <div [hidden]="!patient_drug.length">
     <div class="card-body p-1">
       <div class="row">
-        <div class="col-lg-3" style="display: flex">
+        <div class="col-lg-3" style="display: contents">
           <mat-form-field appearance="outline">
             <mat-label>Barcode Medicine</mat-label>
             <input
@@ -99,7 +99,7 @@
             }}</span
           >
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3" style="display: flex">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter($event)" #input #swiper />
             <mat-placeholder>ค้นหา</mat-placeholder>
