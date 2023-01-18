@@ -60,7 +60,9 @@ export class CheckMedComponent implements OnInit {
     private http: HttpService,
     public lightbox: Lightbox,
     public gallery: Gallery
-  ) {}
+  ) {
+    this.test();
+  }
 
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -70,6 +72,10 @@ export class CheckMedComponent implements OnInit {
   }
   getHN(hn: any) {
     this.getData(hn);
+  }
+
+  test() {
+    this.getData('1959064');
   }
 
   patient_contract: any = null;
@@ -157,17 +163,18 @@ export class CheckMedComponent implements OnInit {
   async getDrug(val: any) {
     let founddrug: any = null;
     let checkcode: any = '';
-
+    let value: any = null;
     let formData = new FormData();
     formData.append('barcode', val);
-    let getBarcode: any = await this.http.post('drugBarcode', formData);
+    let getBarcode: any = null;
+    getBarcode = await this.http.post('drugBarcode2', formData);
 
     if (getBarcode.connect) {
-      if (getBarcode.response.rowCount > 0) {
-        checkcode = getBarcode.response.result[0].drugCode;
+      if (getBarcode.response[0].rowCount > 0) {
+        checkcode = getBarcode.response[0].result[0].drugCode;
 
         let problem =
-          getBarcode.response.result[0].isPrepack === 'N'
+          getBarcode.response[0].result[0].isPrepack === 'N'
             ? checkcode.trim().toLowerCase()
             : checkcode
                 .trim()
@@ -179,31 +186,39 @@ export class CheckMedComponent implements OnInit {
             element.drugCode.trim().toLowerCase() === problem &&
             element.checkqty != 0
         );
-      } else {
-        checkcode = val;
-        founddrug = this.patient_drug.filter(
-          (element: any) =>
-            element.drugCode.trim().toLowerCase() ===
-              val.trim().toLowerCase() && element.checkqty != 0
-        );
+
+        value = founddrug.map((emp: any) => ({
+          ...emp,
+          ...this.drug_xmed.find(
+            (item: { drugCode: any; realDrugCode: any }) =>
+              item.drugCode.trim() === emp.drugCode.trim() &&
+              item.realDrugCode.trim().toLowerCase() ===
+                checkcode.trim().toLowerCase()
+          ),
+        }));
+      } else if (getBarcode.response[1].rowCount) {
+        let data = getBarcode.response[1].result[0];
+        console.log(data);
+
+        value = await this.patient_drug
+          .filter(
+            (element: any) =>
+              element.drugCode.trim().toLowerCase() ===
+                data.drugCode.trim().toLowerCase() &&
+              Number(element.checkqty) == Number(data.HisPackageRatio)
+          )
+          .map((emp: any) => ({
+            ...emp,
+            ...data,
+          }));
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
 
-    let value = founddrug.map((emp: any) => ({
-      ...emp,
-      ...this.drug_xmed.find(
-        (item: { drugCode: any; realDrugCode: any }) =>
-          item.drugCode.trim() === emp.drugCode.trim() &&
-          item.realDrugCode.trim().toLowerCase() ===
-            checkcode.trim().toLowerCase()
-      ),
-    }));
-
     value = value[0] ? value[0] : '';
 
-    if (value.realDrugCode) {
+    if (value.HisPackageRatio) {
       if (Number(value.HisPackageRatio) <= value.checkqty) {
         if (value.checkqty) {
           let currentqty =
