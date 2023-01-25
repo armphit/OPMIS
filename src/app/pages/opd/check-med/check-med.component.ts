@@ -60,9 +60,7 @@ export class CheckMedComponent implements OnInit {
     private http: HttpService,
     public lightbox: Lightbox,
     public gallery: Gallery
-  ) {
-    this.test();
-  }
+  ) {}
 
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -72,10 +70,6 @@ export class CheckMedComponent implements OnInit {
   }
   getHN(hn: any) {
     this.getData(hn);
-  }
-
-  test() {
-    this.getData('1959064');
   }
 
   patient_contract: any = null;
@@ -198,7 +192,6 @@ export class CheckMedComponent implements OnInit {
         }));
       } else if (getBarcode.response[1].rowCount) {
         let data = getBarcode.response[1].result[0];
-        console.log(data);
 
         value = await this.patient_drug
           .filter(
@@ -211,55 +204,61 @@ export class CheckMedComponent implements OnInit {
             ...emp,
             ...data,
           }));
+      } else {
+        value = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
 
-    value = value[0] ? value[0] : '';
+    value = value ? value[0] : null;
 
-    if (value.HisPackageRatio) {
-      if (Number(value.HisPackageRatio) <= value.checkqty) {
-        if (value.checkqty) {
-          let currentqty =
-            Number(value.checkqty) - Number(value.HisPackageRatio);
-          value.currentqty = currentqty;
+    if (value) {
+      if (value.HisPackageRatio) {
+        if (Number(value.HisPackageRatio) <= value.checkqty) {
+          if (value.checkqty) {
+            let currentqty =
+              Number(value.checkqty) - Number(value.HisPackageRatio);
+            value.currentqty = currentqty;
 
-          if (currentqty || !this.checkprint) {
-            await this.updateCheckmed(value);
-          } else {
-            this.sendPDF(value).then((dataPDF: any) => {
-              if (dataPDF) {
-                dataPDF.getBase64(async (buffer: any) => {
-                  let pdf: any = await this.http.Printjs('convertbuffer', {
-                    data: buffer,
-                    name: 'testpdf' + '.pdf',
-                    ip: '192.168.184.163',
-                    printName: this.dataUser.print_name,
-                    hn: value.hn,
-                  });
-                  if (pdf.connect) {
-                    if (pdf.response.connect === 'success') {
-                      await this.updateCheckmed(value);
+            if (currentqty || !this.checkprint) {
+              await this.updateCheckmed(value);
+            } else {
+              this.sendPDF(value).then((dataPDF: any) => {
+                if (dataPDF) {
+                  dataPDF.getBase64(async (buffer: any) => {
+                    let pdf: any = await this.http.Printjs('convertbuffer', {
+                      data: buffer,
+                      name: 'testpdf' + '.pdf',
+                      ip: '192.168.184.163',
+                      printName: this.dataUser.print_name,
+                      hn: value.hn,
+                    });
+                    if (pdf.connect) {
+                      if (pdf.response.connect === 'success') {
+                        await this.updateCheckmed(value);
+                      } else {
+                        Swal.fire(
+                          'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                          '',
+                          'error'
+                        );
+                      }
                     } else {
-                      Swal.fire(
-                        'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                        '',
-                        'error'
-                      );
+                      Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
                     }
-                  } else {
-                    Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-                  }
-                });
-              }
-            });
+                  });
+                }
+              });
+            }
+          } else {
+            Swal.fire('รายการยาซ้ำ!', '', 'error');
           }
         } else {
-          Swal.fire('รายการยาซ้ำ!', '', 'error');
+          Swal.fire('แพ็คยาเยอะกว่าจำนวนยาคงเหลือ!', '', 'error');
         }
       } else {
-        Swal.fire('แพ็คยาเยอะกว่าจำนวนยาคงเหลือ!', '', 'error');
+        Swal.fire('ไม่มีรายการยา Barcode!', '', 'error');
       }
     } else {
       Swal.fire('ไม่มีรายการยา!', '', 'error');

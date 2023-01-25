@@ -1,0 +1,282 @@
+<div class="container-fluid pt-2" style="overflow: auto" [hidden]="!dataDrug">
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="example-full-width" style="float: right">
+        <input matInput (keyup)="applyFilter($event)" #input />
+        <mat-placeholder>ค้นหา</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="responsive-table">
+    <section class="example-container mat-elevation-z8" tabindex="0">
+      <table
+        mat-table
+        matTableExporter
+        [dataSource]="dataSource"
+        matSort
+        #exporter="matTableExporter"
+        class="mat-elevation-z8"
+        matSortActive="drugCode"
+        matSortDirection="asc"
+        [hiddenColumns]="[5, 6, 7, 8, 9]"
+      >
+        <ng-container matColumnDef="drugCode" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.drugCode }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.drugName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="miniUnit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Unit</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.miniUnit }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Device Name</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.deviceName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="positionID">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Position</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.positionID }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            Action
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px; width: 150px"
+          >
+            <div style="padding: 10px">
+              <button
+                mat-raised-button
+                color="primary"
+                data-toggle="modal"
+                data-backdrop="static"
+                data-keyboard="false"
+                data-target="#myModal"
+                (click)="edit(element.drugCode); input.value = ''"
+              >
+                <i class="fas fa-upload"></i>&nbsp; Upload
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
+    <div>
+      <mat-paginator
+        style="float: right"
+        [length]="10"
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Image</h4>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- <div class="image-container">
+          <img
+            [hidden]="imgResultMultiple.length"
+            *ngFor="let result of imgResultAfterResize"
+            [src]="'http://192.168.185.160:88/api' + result.pathImage"
+            width="250"
+            height="250"
+            alt=""
+          />
+          <img
+            *ngFor="let result of imgResultMultiple"
+            [src]="result.image"
+            width="250"
+            height="250"
+            alt=""
+          />
+        </div>
+      </div>
+      <button
+        *ngIf="!imgResultAfterResize"
+        style="margin: 10px"
+        mat-raised-button
+        color="primary"
+        (click)="uploadMultipleFiles()"
+      >
+        <i class="fas fa-upload"></i> &nbsp; Click to upload file
+      </button>
+      <button
+        *ngIf="imgResultAfterResize"
+        mat-raised-button
+        color="warn"
+        style="margin: 10px"
+        (click)="deleteImg(); input.value = ''"
+      >
+        <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
+      </button> -->
+
+        <div class="row image-container">
+          <div class="col-lg-4">
+            <span class="span-text">กล่อง</span>
+
+            <img
+              [src]="
+                imgboxUpload
+                  ? imgboxUpload
+                  : checkbox
+                  ? checkbox
+                  : './assets/notfound.png'
+              "
+              width="250"
+              height="250"
+              alt=""
+            />
+            <button
+              style="margin: 10px"
+              mat-raised-button
+              [color]="checkbox ? 'warn' : 'primary'"
+              (click)="!checkbox ? uploadFile() : deleteImg(checkbox, 'box')"
+            >
+              <span *ngIf="!checkbox"
+                ><i class="fas fa-upload icon-fixed"></i
+              ></span>
+              <span *ngIf="checkbox">
+                <i class="fas fa-trash-alt icon-fixed"></i>
+              </span>
+              &nbsp;
+              {{ !checkbox ? "Click to upload file" : "Delete Image" }}
+            </button>
+          </div>
+          <div class="col-lg-4">
+            <span class="span-text">แผง</span>
+            <img
+              [src]="
+                imgpackUpload
+                  ? imgpackUpload
+                  : checkpack
+                  ? checkpack
+                  : './assets/notfound.png'
+              "
+              width="250"
+              height="250"
+              alt=""
+            />
+            <button
+              style="margin: 10px"
+              mat-raised-button
+              [color]="checkpack ? 'warn' : 'primary'"
+              (click)="
+                !checkpack ? uploadFile2() : deleteImg(checkpack, 'pack')
+              "
+            >
+              <span *ngIf="!checkpack"
+                ><i class="fas fa-upload icon-fixed"></i
+              ></span>
+              <span *ngIf="checkpack">
+                <i class="fas fa-trash-alt icon-fixed"></i>
+              </span>
+              &nbsp;
+              {{ !checkpack ? "Click to upload file" : "Delete Image" }}
+            </button>
+          </div>
+          <div class="col-lg-4">
+            <span class="span-text">เม็ด</span>
+            <img
+              [src]="
+                imgtabUpload
+                  ? imgtabUpload
+                  : checktab
+                  ? checktab
+                  : './assets/notfound.png'
+              "
+              width="250"
+              height="250"
+              alt=""
+            />
+            <button
+              style="margin: 10px"
+              mat-raised-button
+              [color]="checktab ? 'warn' : 'primary'"
+              (click)="!checktab ? uploadFile3() : deleteImg(checktab, 'tab')"
+            >
+              <span *ngIf="!checktab"
+                ><i class="fas fa-upload icon-fixed"></i
+              ></span>
+              <span *ngIf="checktab">
+                <i class="fas fa-trash-alt icon-fixed"></i>
+              </span>
+              &nbsp;
+              {{ !checktab ? "Click to upload file" : "Delete Image" }}
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="sendImage()">Submit</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-dismiss="modal"
+            (click)="closeImg()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

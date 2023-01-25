@@ -54,6 +54,15 @@
         (click)="togglePanel()"
         ><i class="far fa-calendar-check"></i>&nbsp;<strong>Door Report</strong>
       </a>
+
+      <a
+        style="margin-bottom: 4px"
+        mat-list-item
+        [routerLink]="['/upload-images']"
+        [routerLinkActive]="['active']"
+        (click)="togglePanel()"
+        ><i class="fas fa-upload"></i>&nbsp;<strong>Upload Images</strong>
+      </a>
       <mat-accordion>
         <mat-expansion-panel
           [expanded]="panelIpd"

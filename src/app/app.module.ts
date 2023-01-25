@@ -27,6 +27,8 @@ import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 import { CheckInComponent } from './pages/check-in/check-in.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { ManageUserComponent } from './pages/manage-user/manage-user.component';
+import { UploadImagesComponent } from './pages/upload-images/upload-images.component';
+import { LightboxModule } from 'ng-gallery/lightbox';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,7 @@ import { ManageUserComponent } from './pages/manage-user/manage-user.component';
     SearchDrugComponent,
     CheckInComponent,
     ManageUserComponent,
+    UploadImagesComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { ManageUserComponent } from './pages/manage-user/manage-user.component';
       secondaryColour: '#3f51b5',
       tertiaryColour: '#3f51b5',
     }),
+    LightboxModule,
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],

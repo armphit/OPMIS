@@ -1,3 +1,4 @@
+import { UploadImagesComponent } from './pages/upload-images/upload-images.component';
 import { ManageUserComponent } from './pages/manage-user/manage-user.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -33,6 +34,10 @@ const routes: Routes = [
       {
         path: 'check-in',
         component: CheckInComponent,
+      },
+      {
+        path: 'upload-images',
+        component: UploadImagesComponent,
       },
       {
         path: '',
