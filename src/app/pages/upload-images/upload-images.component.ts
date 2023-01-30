@@ -256,7 +256,6 @@ export class UploadImagesComponent implements OnInit {
         formData.append('type[]', arrtype[index]);
       });
       let getData: any = await this.http.post('addImgDrugcenter', formData);
-      console.log(getData);
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {

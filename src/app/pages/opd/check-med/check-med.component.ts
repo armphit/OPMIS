@@ -161,7 +161,9 @@ export class CheckMedComponent implements OnInit {
     let formData = new FormData();
     formData.append('barcode', val);
     let getBarcode: any = null;
-    getBarcode = await this.http.post('drugBarcode2', formData);
+    console.log(val);
+    // getBarcode = await this.http.post('drugBarcode2', formData);
+    // console.log(getBarcode);
 
     if (getBarcode.connect) {
       if (getBarcode.response[0].rowCount > 0) {
@@ -192,13 +194,11 @@ export class CheckMedComponent implements OnInit {
         }));
       } else if (getBarcode.response[1].rowCount) {
         let data = getBarcode.response[1].result[0];
-
         value = await this.patient_drug
           .filter(
             (element: any) =>
               element.drugCode.trim().toLowerCase() ===
-                data.drugCode.trim().toLowerCase() &&
-              Number(element.checkqty) == Number(data.HisPackageRatio)
+              data.drugCode.trim().toLowerCase()
           )
           .map((emp: any) => ({
             ...emp,
