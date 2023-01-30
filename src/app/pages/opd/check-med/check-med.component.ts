@@ -60,7 +60,9 @@ export class CheckMedComponent implements OnInit {
     private http: HttpService,
     public lightbox: Lightbox,
     public gallery: Gallery
-  ) {}
+  ) {
+    // this.test();
+  }
 
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -71,6 +73,9 @@ export class CheckMedComponent implements OnInit {
   getHN(hn: any) {
     this.getData(hn);
   }
+  // test() {
+  //   this.getData('809147');
+  // }
 
   patient_contract: any = null;
   Dataqandcheck: any = null;
@@ -155,43 +160,66 @@ export class CheckMedComponent implements OnInit {
   }
 
   async getDrug(val: any) {
-    let founddrug: any = null;
-    let checkcode: any = '';
+    // let founddrug: any = null;
+    // let checkcode: any = '';
     let value: any = null;
     let formData = new FormData();
     formData.append('barcode', val);
     let getBarcode: any = null;
-    console.log(val);
-    // getBarcode = await this.http.post('drugBarcode2', formData);
-    // console.log(getBarcode);
+
+    getBarcode = await this.http.post('drugBarcode2', formData);
 
     if (getBarcode.connect) {
       if (getBarcode.response[0].rowCount > 0) {
-        checkcode = getBarcode.response[0].result[0].drugCode;
+        value = this.drug_xmed
+          .filter((o1: any) => {
+            return getBarcode.response[0].result.some(function (o2: any) {
+              return o1.realDrugCode.trim() === o2.drugCode.trim(); // return the ones with equal id
+            });
+          })
+          .map((emp: any) => ({
+            ...emp,
+            ...this.patient_drug.find(
+              (item: any) => item.drugCode.trim() === emp.drugCode.trim()
+            ),
+          }));
+        // checkcode = getBarcode.response[0].result[0].drugCode;
+        // var test = getBarcode.response[0].result.filter((o1: any) => {
+        //   return !this.drug_xmed.some(function (o2: any) {
+        //     return o1.drugCode === o2.drugCode; // return the ones with equal id
+        //   });
+        // });
 
-        let problem =
-          getBarcode.response[0].result[0].isPrepack === 'N'
-            ? checkcode.trim().toLowerCase()
-            : checkcode
-                .trim()
-                .toLowerCase()
-                .substring(0, checkcode.indexOf('-'));
+        // this.drug_xmed.find(
+        //   (item: { drugCode: any; realDrugCode: any }) =>
+        //     item.drugCode.trim() === emp.drugCode.trim() &&
+        //     item.realDrugCode.trim().toLowerCase() ===
+        //       checkcode.trim().toLowerCase()
+        // )
 
-        founddrug = await this.patient_drug.filter(
-          (element: any) =>
-            element.drugCode.trim().toLowerCase() === problem &&
-            element.checkqty != 0
-        );
+        // let problem =
+        //   getBarcode.response[0].result[0].isPrepack === 'N'
+        //     ? checkcode.trim().toLowerCase()
+        //     : checkcode
+        //         .trim()
+        //         .toLowerCase()
+        //         .substring(0, checkcode.indexOf('-'));
 
-        value = founddrug.map((emp: any) => ({
-          ...emp,
-          ...this.drug_xmed.find(
-            (item: { drugCode: any; realDrugCode: any }) =>
-              item.drugCode.trim() === emp.drugCode.trim() &&
-              item.realDrugCode.trim().toLowerCase() ===
-                checkcode.trim().toLowerCase()
-          ),
-        }));
+        // founddrug = await this.patient_drug.filter(
+        //   (element: any) =>
+        //     element.drugCode.trim().toLowerCase() === problem &&
+        //     element.checkqty != 0
+        // );
+
+        // value = founddrug.map((emp: any) => ({
+        //   ...emp,
+        //   ...this.drug_xmed.find(
+        //     (item: { drugCode: any; realDrugCode: any }) =>
+        //       item.drugCode.trim() === emp.drugCode.trim() &&
+        //       item.realDrugCode.trim().toLowerCase() ===
+        //         checkcode.trim().toLowerCase()
+        //   ),
+        // }));
       } else if (getBarcode.response[1].rowCount) {
         let data = getBarcode.response[1].result[0];
         value = await this.patient_drug
