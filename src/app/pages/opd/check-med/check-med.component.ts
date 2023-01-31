@@ -42,13 +42,14 @@ export class CheckMedComponent implements OnInit {
   @ViewChild('swiper') swiper!: ElementRef;
   @ViewChild('drugbar') drugbar!: ElementRef;
   displayedColumns: string[] = [
+    'action',
     'drugCode',
     'drugName',
     'default_qty',
     'current_qty',
     'unitCode',
-    'createdDT',
     'img',
+    'createdDT',
   ];
   dataSource: any = null;
   selectedRowIndex: any;
@@ -73,9 +74,9 @@ export class CheckMedComponent implements OnInit {
   getHN(hn: any) {
     this.getData(hn);
   }
-  // test() {
-  //   this.getData('809147');
-  // }
+  test() {
+    this.getData('734505');
+  }
 
   patient_contract: any = null;
   Dataqandcheck: any = null;
@@ -83,6 +84,7 @@ export class CheckMedComponent implements OnInit {
   panelOpenState = true;
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   drug_xmed: any = [];
+
   async getData(hn: any) {
     this.countcheck = 0;
     let formData = new FormData();
@@ -303,45 +305,59 @@ export class CheckMedComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        let data_send = {
-          hn: value.hn,
-          date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
-        };
+        formData.append('qty', value.HisPackageRatio);
+        formData.append('prescription', value.prescriptionno);
+        formData.append('user', this.dataUser.user);
+        let getData2: any = await this.http.post('insertlogCheckmed', formData);
 
-        let getData3: any = await this.http.postNodejs(
-          'checkpatient',
-          data_send
-        );
+        if (getData2.connect) {
+          if (getData2.response.rowCount > 0) {
+            let data_send = {
+              hn: value.hn,
+              date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+            };
 
-        if (getData3.connect) {
-          if (getData3.response.datadrugpatient.length > 0) {
-            this.patient_drug = getData3.response.datadrugpatient;
-            this.countcheck = this.patient_drug.filter(function (item: any) {
-              if (item.checkstamp) {
-                return true;
+            let getData3: any = await this.http.postNodejs(
+              'checkpatient',
+              data_send
+            );
+            if (getData3.connect) {
+              if (getData3.response.datadrugpatient.length > 0) {
+                this.patient_drug = getData3.response.datadrugpatient;
+                this.countcheck = this.patient_drug.filter(function (
+                  item: any
+                ) {
+                  if (item.checkstamp) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }).length;
+                setTimeout(() => {
+                  this.drugbar.nativeElement.focus();
+                }, 100);
+                this.dataSource = new MatTableDataSource(this.patient_drug);
+                this.dataSource.sort = this.sort;
+                this.dataSource.paginator = this.paginator;
+                let showtext =
+                  value.currentqty != 0
+                    ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
+                    : `เช็คยา ${value.drugName} สำเร็จ`;
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: showtext,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
               } else {
-                return false;
+                Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
               }
-            }).length;
-            setTimeout(() => {
-              this.drugbar.nativeElement.focus();
-            }, 100);
-            this.dataSource = new MatTableDataSource(this.patient_drug);
-            this.dataSource.sort = this.sort;
-            this.dataSource.paginator = this.paginator;
-            let showtext =
-              value.currentqty != 0
-                ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
-                : `เช็คยา ${value.drugName} สำเร็จ`;
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: showtext,
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           } else {
-            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+            Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
           }
         } else {
           Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -607,7 +623,7 @@ export class CheckMedComponent implements OnInit {
     });
   }
 
-  deletePatient() {
+  deletePatient(data: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -625,22 +641,35 @@ export class CheckMedComponent implements OnInit {
 
         if (getData.connect) {
           if (getData.response.result) {
-            this.patient_drug = '';
-            this.patient_contract = null;
-            this.Dataqandcheck = null;
-            this.drug_xmed = null;
-            this.dataSource = null;
-            this.countcheck = null;
+            formData.append('num', data);
+            let getData2: any = await this.http.post(
+              'deletelogCheckmed',
+              formData
+            );
+            if (getData2.connect) {
+              if (getData2.response.result) {
+                this.patient_drug = '';
+                this.patient_contract = null;
+                this.Dataqandcheck = null;
+                this.drug_xmed = null;
+                this.dataSource = null;
+                this.countcheck = null;
 
-            Swal.fire({
-              icon: 'success',
-              title: 'ลบข้อมูลสำเร็จ',
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            setTimeout(() => {
-              this.swiper.nativeElement.focus();
-            }, 100);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'ลบข้อมูลสำเร็จ',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                setTimeout(() => {
+                  this.swiper.nativeElement.focus();
+                }, 100);
+              } else {
+                Swal.fire('ไม่สามารถลบข้อมูลlogได้!', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           } else {
             console.log(getData);
             Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
@@ -652,6 +681,22 @@ export class CheckMedComponent implements OnInit {
         setTimeout(() => {
           this.swiper.nativeElement.focus();
         }, 100);
+      }
+    });
+  }
+  sendAccept(data: any) {
+    Swal.fire({
+      title: 'คุณแน่ใจที่จะยอมรับรายการยานี้หรือไม่ ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        data.currentqty = 0;
+        data.HisPackageRatio = data.checkqty;
+        await this.updateCheckmed(data);
       }
     });
   }

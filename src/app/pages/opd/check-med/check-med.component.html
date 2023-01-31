@@ -1,7 +1,7 @@
 <div class="container-fluid pt-2" style="overflow: auto">
   <div class="row">
     <div class="col-lg-3" style="display: contents">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" style="padding-left: 10px">
         <mat-label>Barcode HN</mat-label>
         <input
           matInput
@@ -118,7 +118,11 @@
               >
                 Confirm
               </button> -->
-              <button mat-raised-button color="warn" (click)="deletePatient()">
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="deletePatient(patient_drug[0].prescriptionno)"
+              >
                 Cancle
               </button>
             </div>
@@ -157,26 +161,40 @@
               The actual rendered columns are set as a property on the row definition" -->
 
             <!-- Position Column -->
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+              <td mat-cell *matCellDef="let element">
+                <div style="display: flex; text-align: center">
+                  <button
+                    [hidden]="!element.checkqty"
+                    style="margin-right: 10px"
+                    type="button"
+                    matTooltip="Accept"
+                    matTooltipPosition="above"
+                    class="btn btn-primary btn-sm"
+                    (click)="sendAccept(element)"
+                  >
+                    <i class="fas fa-check-square"></i>
+                  </button>
+                  <button
+                    [hidden]="element.checkqty || !checkprint"
+                    style="margin: 0 23px 0 0"
+                    matTooltip="re-print"
+                    matTooltipPosition="above"
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    (click)="sendServer(element)"
+                  >
+                    <i class="fas fa-print"></i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
             <ng-container matColumnDef="drugCode">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
                 drugCode
               </th>
               <td mat-cell *matCellDef="let element">
-                <button
-                  [hidden]="element.checkqty || !checkprint"
-                  matTooltip="re-print"
-                  matTooltipPosition="above"
-                  style="width: 30px; height: 30px; margin-right: 10px"
-                  mat-mini-fab
-                  color="primary"
-                  (click)="sendServer(element)"
-                >
-                  <i
-                    class="fas fa-print"
-                    style="margin-bottom: 15px; margin-left: 1px"
-                  ></i>
-                </button>
-
                 &nbsp; {{ element.drugCode }}
               </td>
             </ng-container>
