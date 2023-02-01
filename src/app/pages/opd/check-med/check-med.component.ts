@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('734505');
+    this.getData('637760');
   }
 
   patient_contract: any = null;
@@ -182,53 +182,20 @@ export class CheckMedComponent implements OnInit {
           .map((emp: any) => ({
             ...emp,
             ...this.patient_drug.find(
-              (item: any) => item.drugCode.trim() === emp.drugCode.trim()
+              (item: any) =>
+                item.drugCode.trim() === emp.drugCode.trim() &&
+                item.checkqty != 0
             ),
           }));
-        // checkcode = getBarcode.response[0].result[0].drugCode;
-        // var test = getBarcode.response[0].result.filter((o1: any) => {
-        //   return !this.drug_xmed.some(function (o2: any) {
-        //     return o1.drugCode === o2.drugCode; // return the ones with equal id
-        //   });
-        // });
-
-        // this.drug_xmed.find(
-        //   (item: { drugCode: any; realDrugCode: any }) =>
-        //     item.drugCode.trim() === emp.drugCode.trim() &&
-        //     item.realDrugCode.trim().toLowerCase() ===
-        //       checkcode.trim().toLowerCase()
-        // )
-
-        // let problem =
-        //   getBarcode.response[0].result[0].isPrepack === 'N'
-        //     ? checkcode.trim().toLowerCase()
-        //     : checkcode
-        //         .trim()
-        //         .toLowerCase()
-        //         .substring(0, checkcode.indexOf('-'));
-
-        // founddrug = await this.patient_drug.filter(
-        //   (element: any) =>
-        //     element.drugCode.trim().toLowerCase() === problem &&
-        //     element.checkqty != 0
-        // );
-
-        // value = founddrug.map((emp: any) => ({
-        //   ...emp,
-        //   ...this.drug_xmed.find(
-        //     (item: { drugCode: any; realDrugCode: any }) =>
-        //       item.drugCode.trim() === emp.drugCode.trim() &&
-        //       item.realDrugCode.trim().toLowerCase() ===
-        //         checkcode.trim().toLowerCase()
-        //   ),
-        // }));
       } else if (getBarcode.response[1].rowCount) {
         let data = getBarcode.response[1].result[0];
+
         value = await this.patient_drug
           .filter(
             (element: any) =>
               element.drugCode.trim().toLowerCase() ===
-              data.drugCode.trim().toLowerCase()
+                data.drugCode.trim().toLowerCase() &&
+              Number(element.hn) === Number(data.PatientNo)
           )
           .map((emp: any) => ({
             ...emp,
