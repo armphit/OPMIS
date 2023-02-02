@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('637760');
+    this.getData('67734');
   }
 
   patient_contract: any = null;
@@ -189,18 +189,34 @@ export class CheckMedComponent implements OnInit {
           }));
       } else if (getBarcode.response[1].rowCount) {
         let data = getBarcode.response[1].result[0];
-
         value = await this.patient_drug
           .filter(
             (element: any) =>
               element.drugCode.trim().toLowerCase() ===
                 data.drugCode.trim().toLowerCase() &&
-              Number(element.hn) === Number(data.PatientNo)
+              Number(element.hn) === Number(data.PatientNo) &&
+              Number(element.qty) === Number(data.HisPackageRatio)
           )
           .map((emp: any) => ({
             ...emp,
             ...data,
           }));
+        if (!value.length) {
+          value = await this.patient_drug
+            .filter(
+              (element: any) =>
+                element.drugCode.trim().toLowerCase() ===
+                  data.drugCode.trim().toLowerCase() &&
+                Number(element.hn) === Number(data.PatientNo)
+            )
+            .map((emp: any) => ({
+              ...emp,
+              ...data,
+            }));
+        }
+
+        if (!value) {
+        }
       } else {
         value = null;
       }
@@ -263,72 +279,49 @@ export class CheckMedComponent implements OnInit {
   }
   async updateCheckmed(value: any) {
     let formData = new FormData();
-    formData.append('hn', value.hn);
-    formData.append('seq', value.seq);
-    formData.append('orderitemcode', value.drugCode.trim());
-    formData.append('lastmodified', value.lastmodified);
-    formData.append('currentqty', String(value.currentqty));
-    let getData: any = await this.http.post('updateCheckmed', formData);
+    // formData.append('hn', value.hn);
+    // formData.append('seq', value.seq);
+    // formData.append('orderitemcode', value.drugCode.trim());
+    // formData.append('lastmodified', value.lastmodified);
+    // formData.append('currentqty', String(value.currentqty));
+    // let getData: any = await this.http.post('updateCheckmed', formData);
+    let data_send = {
+      id: value.id,
+      currentqty: value.currentqty,
+      user: this.dataUser.user,
+      qty: value.HisPackageRatio,
+      cmp_id: value.cmp_id,
+    };
+
+    let getData: any = await this.http.postNodejs('updatecheckmed', data_send);
 
     if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        formData.append('qty', value.HisPackageRatio);
-        formData.append('prescription', value.prescriptionno);
-        formData.append('user', this.dataUser.user);
-        let getData2: any = await this.http.post('insertlogCheckmed', formData);
-
-        if (getData2.connect) {
-          if (getData2.response.rowCount > 0) {
-            let data_send = {
-              hn: value.hn,
-              date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
-            };
-
-            let getData3: any = await this.http.postNodejs(
-              'checkpatient',
-              data_send
-            );
-            if (getData3.connect) {
-              if (getData3.response.datadrugpatient.length > 0) {
-                this.patient_drug = getData3.response.datadrugpatient;
-                this.countcheck = this.patient_drug.filter(function (
-                  item: any
-                ) {
-                  if (item.checkstamp) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }).length;
-                setTimeout(() => {
-                  this.drugbar.nativeElement.focus();
-                }, 100);
-                this.dataSource = new MatTableDataSource(this.patient_drug);
-                this.dataSource.sort = this.sort;
-                this.dataSource.paginator = this.paginator;
-                let showtext =
-                  value.currentqty != 0
-                    ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
-                    : `เช็คยา ${value.drugName} สำเร็จ`;
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: showtext,
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-              } else {
-                Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
-              }
-            } else {
-              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-            }
+      if (getData.response.datadrugpatient) {
+        this.patient_drug = getData.response.datadrugpatient;
+        this.countcheck = this.patient_drug.filter(function (item: any) {
+          if (item.checkstamp) {
+            return true;
           } else {
-            Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
+            return false;
           }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        }
+        }).length;
+        setTimeout(() => {
+          this.drugbar.nativeElement.focus();
+        }, 100);
+        this.dataSource = new MatTableDataSource(this.patient_drug);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+        let showtext =
+          value.currentqty != 0
+            ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
+            : `เช็คยา ${value.drugName} สำเร็จ`;
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: showtext,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       } else {
         Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
       }
@@ -601,41 +594,39 @@ export class CheckMedComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        let formData = new FormData();
-        formData.append('hn', this.patient_contract.hn);
+        // let formData = new FormData();
+        // formData.append('hn', this.patient_contract.hn);
 
-        let getData: any = await this.http.post('deleteCheckmed', formData);
+        let data_send = {
+          cmp_id: data.cmp_id,
+          user: this.dataUser.user,
+        };
+        let getData: any = await this.http.postNodejs(
+          'deletecheckmed',
+          data_send
+        );
 
         if (getData.connect) {
-          if (getData.response.result) {
-            formData.append('num', data);
-            let getData2: any = await this.http.post(
-              'deletelogCheckmed',
-              formData
-            );
-            if (getData2.connect) {
-              if (getData2.response.result) {
-                this.patient_drug = '';
-                this.patient_contract = null;
-                this.Dataqandcheck = null;
-                this.drug_xmed = null;
-                this.dataSource = null;
-                this.countcheck = null;
-
-                Swal.fire({
-                  icon: 'success',
-                  title: 'ลบข้อมูลสำเร็จ',
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-                setTimeout(() => {
-                  this.swiper.nativeElement.focus();
-                }, 100);
-              } else {
-                Swal.fire('ไม่สามารถลบข้อมูลlogได้!', '', 'error');
-              }
+          if (getData.response) {
+            if (getData.response.dataDelete.affectedRows) {
+              this.patient_drug = '';
+              this.patient_contract = null;
+              this.Dataqandcheck = null;
+              this.drug_xmed = null;
+              this.dataSource = null;
+              this.countcheck = null;
+              Swal.fire({
+                icon: 'success',
+                title: 'ลบข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              setTimeout(() => {
+                this.swiper.nativeElement.focus();
+              }, 100);
             } else {
-              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+              console.log(getData);
+              Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
             }
           } else {
             console.log(getData);
