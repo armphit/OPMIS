@@ -105,6 +105,7 @@ export class CheckMedComponent implements OnInit {
             let data_send = {
               hn: hn.trim(),
               date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+              user: this.dataUser.user,
             };
 
             let getData3: any = await this.http.postNodejs(
@@ -123,7 +124,7 @@ export class CheckMedComponent implements OnInit {
                 this.countcheck = this.patient_drug.filter(function (
                   item: any
                 ) {
-                  if (item.checkstamp) {
+                  if (item.checkstamp || (!item.qty && !item.checkqty)) {
                     return true;
                   } else {
                     return false;
@@ -299,7 +300,7 @@ export class CheckMedComponent implements OnInit {
       if (getData.response.datadrugpatient) {
         this.patient_drug = getData.response.datadrugpatient;
         this.countcheck = this.patient_drug.filter(function (item: any) {
-          if (item.checkstamp) {
+          if (item.checkstamp || (!item.qty && !item.checkqty)) {
             return true;
           } else {
             return false;
