@@ -130,10 +130,16 @@ export class CheckMedComponent implements OnInit {
                     return false;
                   }
                 }).length;
+                if (this.countcheck === this.patient_drug.length) {
+                  setTimeout(() => {
+                    this.swiper.nativeElement.focus();
+                  }, 100);
+                } else {
+                  setTimeout(() => {
+                    this.drugbar.nativeElement.focus();
+                  }, 100);
+                }
 
-                setTimeout(() => {
-                  this.drugbar.nativeElement.focus();
-                }, 100);
                 this.dataSource = new MatTableDataSource(this.patient_drug);
                 this.dataSource.sort = this.sort;
                 this.dataSource.paginator = this.paginator;
@@ -244,9 +250,9 @@ export class CheckMedComponent implements OnInit {
                     let pdf: any = await this.http.Printjs('convertbuffer', {
                       data: buffer,
                       name: 'testpdf' + '.pdf',
-                      ip: '192.168.184.163',
+                      ip: this.dataUser.print_ip,
                       printName: this.dataUser.print_name,
-                      hn: value.hn,
+                      hn: value.hn + ' ' + value.drugName,
                     });
                     if (pdf.connect) {
                       if (pdf.response.connect === 'success') {
@@ -306,9 +312,15 @@ export class CheckMedComponent implements OnInit {
             return false;
           }
         }).length;
-        setTimeout(() => {
-          this.drugbar.nativeElement.focus();
-        }, 100);
+        if (this.countcheck === this.patient_drug.length) {
+          setTimeout(() => {
+            this.swiper.nativeElement.focus();
+          }, 100);
+        } else {
+          setTimeout(() => {
+            this.drugbar.nativeElement.focus();
+          }, 100);
+        }
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -561,9 +573,9 @@ export class CheckMedComponent implements OnInit {
           let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
             name: 'testpdf' + '.pdf',
-            ip: '192.168.184.49',
+            ip: this.dataUser.print_ip,
             printName: this.dataUser.print_name,
-            hn: data.hn,
+            hn: data.hn + ' ' + data.drugName,
           });
 
           if (getData.connect) {
@@ -638,14 +650,20 @@ export class CheckMedComponent implements OnInit {
         }
       } else {
         setTimeout(() => {
-          this.swiper.nativeElement.focus();
+          this.drugbar.nativeElement.focus();
         }, 100);
       }
     });
   }
   sendAccept(data: any) {
     Swal.fire({
-      title: 'คุณแน่ใจที่จะยอมรับรายการยานี้หรือไม่ ?',
+      // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
+      //   data.unitCode ? data.unitCode.trim() : ''
+      // }`,
+      title: `<strong>จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
+        data.unitCode ? data.unitCode.trim() : ''
+      }</strong>`,
+      text: 'คุณแน่ใจที่จะยอมรับรายการยานี้หรือไม่ ?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -653,9 +671,41 @@ export class CheckMedComponent implements OnInit {
       confirmButtonText: 'Yes',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        data.currentqty = 0;
-        data.HisPackageRatio = data.checkqty;
-        await this.updateCheckmed(data);
+        if (this.checkprint) {
+          this.sendPDF(data).then((dataPDF: any) => {
+            if (dataPDF) {
+              dataPDF.getBase64(async (buffer: any) => {
+                let getData: any = await this.http.Printjs('convertbuffer', {
+                  data: buffer,
+                  name: 'testpdf' + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                });
+
+                if (getData.connect) {
+                  if (getData.response.connect === 'success') {
+                    data.currentqty = 0;
+                    data.HisPackageRatio = data.checkqty;
+                    await this.updateCheckmed(data);
+                  } else {
+                    Swal.fire(
+                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                      '',
+                      'error'
+                    );
+                  }
+                } else {
+                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+                }
+              });
+            }
+          });
+        } else {
+          data.currentqty = 0;
+          data.HisPackageRatio = data.checkqty;
+          await this.updateCheckmed(data);
+        }
       }
     });
   }
