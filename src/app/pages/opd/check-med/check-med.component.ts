@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('67734');
+    this.getData('1153459');
   }
 
   patient_contract: any = null;
@@ -130,7 +130,21 @@ export class CheckMedComponent implements OnInit {
                     return false;
                   }
                 }).length;
-                if (this.countcheck === this.patient_drug.length) {
+                this.sumcheck = this.patient_drug
+                  .filter(function (item: any) {
+                    if (item.checkstamp || (!item.qty && !item.checkqty)) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  })
+                  .every((v: any) => {
+                    return v.checkqty == 0;
+                  });
+                if (
+                  this.sumcheck &&
+                  this.countcheck === this.patient_drug.length
+                ) {
                   setTimeout(() => {
                     this.swiper.nativeElement.focus();
                   }, 100);
@@ -221,9 +235,21 @@ export class CheckMedComponent implements OnInit {
               ...data,
             }));
         }
-
-        if (!value) {
-        }
+      } else if (getBarcode.response[2].rowCount > 0) {
+        value = this.drug_xmed
+          .filter((o1: any) => {
+            return getBarcode.response[2].result.some(function (o2: any) {
+              return o1.realDrugCode.trim() === o2.drugCode.trim(); // return the ones with equal id
+            });
+          })
+          .map((emp: any) => ({
+            ...emp,
+            ...this.patient_drug.find(
+              (item: any) =>
+                item.drugCode.trim() === emp.drugCode.trim() &&
+                item.checkqty != 0
+            ),
+          }));
       } else {
         value = null;
       }
@@ -284,6 +310,7 @@ export class CheckMedComponent implements OnInit {
       Swal.fire('ไม่มีรายการยา!', '', 'error');
     }
   }
+  sumcheck: any = null;
   async updateCheckmed(value: any) {
     let formData = new FormData();
     // formData.append('hn', value.hn);
@@ -312,7 +339,18 @@ export class CheckMedComponent implements OnInit {
             return false;
           }
         }).length;
-        if (this.countcheck === this.patient_drug.length) {
+        this.sumcheck = this.patient_drug
+          .filter(function (item: any) {
+            if (item.checkstamp || (!item.qty && !item.checkqty)) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+          .every((v: any) => {
+            return v.checkqty == 0;
+          });
+        if (this.sumcheck && this.countcheck === this.patient_drug.length) {
           setTimeout(() => {
             this.swiper.nativeElement.focus();
           }, 100);
