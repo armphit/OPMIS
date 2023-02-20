@@ -1,10 +1,5 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -483,4 +478,49 @@ export class AllDrugComponent implements OnInit {
       Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
     }
   };
+
+  async changeBarcode(e: any) {
+    let text_e: any = e.barCode ? String(e.barCode) : '';
+    const { value: result } = await Swal.fire({
+      title: 'Barcode',
+      input: 'text',
+      inputAttributes: {
+        input: 'text',
+        required: 'true',
+      },
+      inputValue: text_e,
+      preConfirm: (value) => {
+        if (value) {
+          return value;
+        } else {
+          Swal.showValidationMessage('Invalid text');
+          return undefined;
+        }
+      },
+    });
+
+    if (result) {
+      let formData = new FormData();
+      formData.append('drugCode', e.drugCode);
+      formData.append('barCode', result);
+      let getData: any = await this.http.post('updateBarcode', formData);
+      if (getData.connect) {
+        if (getData.response.result) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          this.getData();
+        } else {
+          console.log(getData);
+          Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  }
 }
