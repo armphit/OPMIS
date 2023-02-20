@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
@@ -478,23 +478,31 @@ export class AllDrugComponent implements OnInit {
       Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
     }
   };
-
+  @ViewChild('input') input!: ElementRef;
   async changeBarcode(e: any) {
-    let text_e: any = e.barCode ? String(e.barCode) : '';
     const { value: result } = await Swal.fire({
-      title: 'Barcode',
-      input: 'text',
+      title: 'Input Barcode ',
+      html: `<input id="swal-input1"  value="${
+        e.barCode ? e.barCode : ''
+      }"   class="swal2-input"/>`,
+
+      showConfirmButton: true,
+      focusConfirm: false,
       inputAttributes: {
-        input: 'text',
         required: 'true',
       },
-      inputValue: text_e,
-      preConfirm: (value) => {
-        if (value) {
-          return value;
+
+      preConfirm: () => {
+        const val1 = (
+          document.getElementById('swal-input1') as HTMLInputElement
+        ).value;
+
+        if (val1) {
+          return (document.getElementById('swal-input1') as HTMLInputElement)
+            .value;
         } else {
-          Swal.showValidationMessage('Invalid text');
-          return undefined;
+          // Swal.showValidationMessage('Invalid Barcode');
+          return 'null';
         }
       },
     });
@@ -502,7 +510,7 @@ export class AllDrugComponent implements OnInit {
     if (result) {
       let formData = new FormData();
       formData.append('drugCode', e.drugCode);
-      formData.append('barCode', result);
+      formData.append('barCode', result === 'null' ? '' : result);
       let getData: any = await this.http.post('updateBarcode', formData);
       if (getData.connect) {
         if (getData.response.result) {
@@ -513,7 +521,10 @@ export class AllDrugComponent implements OnInit {
             showConfirmButton: false,
             timer: 1500,
           });
-          this.getData();
+          await this.getData();
+          this.dataSource.filter = this.input.nativeElement.value
+            .trim()
+            .toLowerCase();
         } else {
           console.log(getData);
           Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
