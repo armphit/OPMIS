@@ -12,6 +12,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ManageSystemComponent } from './pages/manage-system/manage-system.component';
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
+import { CheckMedComponent } from './pages/check-med/check-med.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,10 @@ const routes: Routes = [
       {
         path: 'upload-images',
         component: UploadImagesComponent,
+      },
+      {
+        path: 'check-med',
+        component: CheckMedComponent,
       },
       {
         path: '',

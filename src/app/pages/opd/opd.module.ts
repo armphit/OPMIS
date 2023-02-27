@@ -21,7 +21,7 @@ import { ReportPharComponent } from './report-phar/report-phar.component';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from 'ng-gallery/lightbox';
 import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
-import { CheckMedComponent } from './check-med/check-med.component';
+// import { CheckMedComponent } from './check-med/check-med.component';
 import { DetailMedComponent } from './detail-med/detail-med.component';
 
 @NgModule({
@@ -37,7 +37,7 @@ import { DetailMedComponent } from './detail-med/detail-med.component';
 
     ReportPharComponent,
     ReportDispenseComponent,
-    CheckMedComponent,
+    // CheckMedComponent,
     DetailMedComponent,
   ],
   imports: [

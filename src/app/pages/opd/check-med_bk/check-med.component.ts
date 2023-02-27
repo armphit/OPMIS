@@ -62,7 +62,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    // this.test();
+    this.test();
   }
 
   ngOnInit(): void {}
@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('1153459');
+    this.getData('524649');
   }
 
   patient_contract: any = null;
@@ -382,10 +382,12 @@ export class CheckMedComponent implements OnInit {
   }
 
   async sendPDF(data: any) {
-    let namePatient = this.patient_contract.patientName;
+    let namePatient = '';
+    namePatient =
+      this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;
 
-    if (namePatient.length > 25) {
-      namePatient = namePatient.substring(0, 25);
+    if (namePatient.length >= 40) {
+      namePatient = namePatient.substring(0, 37);
       namePatient = namePatient + '...';
     }
     let nameDrug = data.drugName.trim();
@@ -409,22 +411,23 @@ export class CheckMedComponent implements OnInit {
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 0, 10, 70] as any,
+      pageMargins: [0, 0, 10, 65] as any,
       header: {} as any,
 
       content: [
         {
-          columns: [
-            {
-              width: 150,
-              text: namePatient,
-            },
-            {
-              width: '*',
-              text: 'HN ' + this.patient_contract.hn,
-              alignment: 'right',
-            },
-          ],
+          // columns: [
+          //   {
+          //     width: 150,
+          //     text: namePatient,
+          //   },
+          //   {
+          //     width: '*',
+          //     text: 'HN ' + this.patient_contract.hn,
+          //     alignment: 'right',
+          //   },
+          // ],
+          text: namePatient,
           fontSize: 16,
           bold: true,
         },
@@ -480,23 +483,23 @@ export class CheckMedComponent implements OnInit {
         },
 
         {
-          text: ` `,
+          text: `${data.lamedName.trim()} ${
+            data.dosage
+              ? data.dosage.trim() == '0'
+                ? ''
+                : data.dosage.trim() == '0.5'
+                ? 'ครึ่ง'
+                : data.dosage.trim()
+              : ''
+          }  ${data.freetext0.trim()} ${freetext1[0] ? freetext1[0] : ''}`,
           bold: true,
-          fontSize: 8,
-          alignment: 'center',
-        },
-        {
-          text: `${data.lamedName.trim()} ${data.dosage.trim()} ${data.freetext0.trim()} ${
-            freetext1[0] ? freetext1[0] : ''
-          }`,
-          bold: true,
-          fontSize: 16,
+          fontSize: 15,
           alignment: 'center',
         },
         {
           text: freetext1[1] ? freetext1[1] : '',
           bold: true,
-          fontSize: 16,
+          fontSize: 15,
           alignment: 'center',
         },
         freetext2
@@ -538,10 +541,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
   }
 
   data_allergic: any = null;

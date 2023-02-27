@@ -84,7 +84,11 @@
                 !element.deviceName.includes('SE-MED1') && dataUser == 'admin'
               "
             >
-              <i class="fas fa-barcode fa-lg" style="cursor: pointer"></i>
+              <i
+                class="fas fa-barcode fa-lg"
+                style="cursor: pointer"
+                [ngStyle]="{ color: element.barCode ? 'green' : 'red' }"
+              ></i>
             </div>
           </td>
         </ng-container>
@@ -130,6 +134,16 @@
             style="padding-left: 20px; padding-right: 20px"
           >
             {{ element.positionID }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="barCode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            style="padding-left: 20px; padding-right: 20px"
+          >
+            {{ element.barCode }}
           </td>
         </ng-container>
 

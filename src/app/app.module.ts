@@ -29,6 +29,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 import { ManageUserComponent } from './pages/manage-user/manage-user.component';
 import { UploadImagesComponent } from './pages/upload-images/upload-images.component';
 import { LightboxModule } from 'ng-gallery/lightbox';
+import { CheckMedComponent } from './pages/check-med/check-med.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { LightboxModule } from 'ng-gallery/lightbox';
     CheckInComponent,
     ManageUserComponent,
     UploadImagesComponent,
+    CheckMedComponent,
   ],
   imports: [
     BrowserModule,
