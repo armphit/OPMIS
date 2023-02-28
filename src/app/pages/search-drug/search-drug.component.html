@@ -4,6 +4,7 @@
       <div class="row">
         <div class="col-lg">
           <button
+            *ngIf="dataUser.role == 'admin'"
             type="button"
             class="btn btn-warning"
             data-toggle="modal"
@@ -100,17 +101,33 @@
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                <button
-                  type="button"
-                  class="btn btn-warning"
-                  data-toggle="modal"
-                  data-target="#myModal"
-                  data-backdrop="static"
-                  data-keyboard="false"
-                  (click)="funcAction(element); addPre.value = ''"
-                >
-                  Action
-                </button>
+                <div style="display: flex">
+                  <button
+                    *ngIf="dataUser.role == 'admin'"
+                    type="button"
+                    class="btn btn-warning"
+                    data-toggle="modal"
+                    data-target="#myModal"
+                    data-backdrop="static"
+                    data-keyboard="false"
+                    (click)="funcAction(element); addPre.value = ''"
+                  >
+                    Action
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    matTooltip="Print"
+                    style="margin-left: 20px"
+                    data-toggle="modal"
+                    data-target="#edit"
+                    data-backdrop="static"
+                    data-keyboard="false"
+                    (click)="printSticker(element)"
+                  >
+                    <i class="fas fa-print"></i>
+                  </button>
+                </div>
               </td>
             </ng-container>
 
@@ -129,131 +146,136 @@
       </div>
     </div>
   </mat-tab>
+
   <mat-tab label="PrePack">
-    <div class="container-fluid pt-2">
-      <mat-grid-list cols="2" rowHeight="5em">
-        <mat-grid-tile>
-          <button
-            type="button"
-            class="btn btn-primary bt-add"
-            data-toggle="modal"
-            data-target="#myModal"
-            data-backdrop="static"
-            data-keyboard="false"
-            #addPre
-            (click)="addPre.value = '1'; selectedOption = ''"
+    <div [hidden]="dataUser.role !== 'admin'">
+      <div class="container-fluid pt-2">
+        <mat-grid-list cols="2" rowHeight="5em">
+          <mat-grid-tile>
+            <button
+              type="button"
+              class="btn btn-primary bt-add"
+              data-toggle="modal"
+              data-target="#myModal"
+              data-backdrop="static"
+              data-keyboard="false"
+              #addPre
+              (click)="addPre.value = '1'; selectedOption = ''"
+            >
+              เพิ่มยา PrePack &nbsp;<i class="fas fa-plus"></i></button
+          ></mat-grid-tile>
+          <mat-grid-tile>
+            <mat-form-field
+              class="example-full-width input-search"
+              style="float: right"
+            >
+              <input matInput (keyup)="applyFilter2($event)" #input2 />
+              <mat-placeholder>ค้นหา</mat-placeholder>
+              <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+            </mat-form-field></mat-grid-tile
           >
-            เพิ่มยา PrePack &nbsp;<i class="fas fa-plus"></i></button
-        ></mat-grid-tile>
-        <mat-grid-tile>
-          <mat-form-field
-            class="example-full-width input-search"
-            style="float: right"
-          >
-            <input matInput (keyup)="applyFilter2($event)" #input2 />
-            <mat-placeholder>ค้นหา</mat-placeholder>
-            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-          </mat-form-field></mat-grid-tile
-        >
-      </mat-grid-list>
+        </mat-grid-list>
 
-      <div class="responsive-table" [hidden]="!dataDrug">
-        <section class="example-container mat-elevation-z8" tabindex="0">
-          <table
-            mat-table
-            matTableExporter
-            [dataSource]="dataSource2"
-            #MatSort2="matSort"
-            matSort
-            class="mat-elevation-z8"
-            matSortActive="deviceCode"
-            matSortDirection="desc"
-          >
-            <ng-container matColumnDef="drugCode" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                drugCode
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.drugCode }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="drugName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                drugName
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.drugName }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="deviceCode">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                deviceCode
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.deviceCode }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="positionID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                positionID
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.positionID }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="action">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                <button
-                  type="button"
-                  class="btn btn-warning"
-                  data-toggle="modal"
-                  data-target="#myModal"
-                  data-backdrop="static"
-                  data-keyboard="false"
-                  (click)="funcAction(element); addPre.value = ''"
+        <div class="responsive-table" [hidden]="!dataDrug">
+          <section class="example-container mat-elevation-z8" tabindex="0">
+            <table
+              mat-table
+              matTableExporter
+              [dataSource]="dataSource2"
+              #MatSort2="matSort"
+              matSort
+              class="mat-elevation-z8"
+              matSortActive="deviceCode"
+              matSortDirection="desc"
+            >
+              <ng-container matColumnDef="drugCode" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  drugCode
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  style="padding-left: 20px; padding-right: 20px"
                 >
-                  Action
-                </button>
-              </td>
-            </ng-container>
+                  {{ element.drugCode }}
+                </td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
-          </table>
-        </section>
-        <mat-paginator
-          #MatPaginator2="matPaginator"
-          [length]="10"
-          [pageSize]="10"
-          [pageSizeOptions]="[10, 50, 100]"
-          showFirstLastButtons
-        >
-        </mat-paginator>
+              <ng-container matColumnDef="drugName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  drugName
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  style="padding-left: 20px; padding-right: 20px"
+                >
+                  {{ element.drugName }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="deviceCode">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  deviceCode
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  style="padding-left: 20px; padding-right: 20px"
+                >
+                  {{ element.deviceCode }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="positionID">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  positionID
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  style="padding-left: 20px; padding-right: 20px"
+                >
+                  {{ element.positionID }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                  Action
+                </th>
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  style="padding-left: 20px; padding-right: 20px"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    data-toggle="modal"
+                    data-target="#myModal"
+                    data-backdrop="static"
+                    data-keyboard="false"
+                    (click)="funcAction(element); addPre.value = ''"
+                  >
+                    Action
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+            </table>
+          </section>
+          <mat-paginator
+            #MatPaginator2="matPaginator"
+            [length]="10"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons
+          >
+          </mat-paginator>
+        </div>
       </div>
     </div>
   </mat-tab>
@@ -409,6 +431,84 @@
             class="btn btn-danger"
             data-dismiss="modal"
           >
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="edit" class="modal fade">
+  <div class="modal-dialog modal-confirm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Print Sticker</h2>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-hidden="true"
+        >
+          &times;
+        </button>
+      </div>
+
+      <form [formGroup]="inputGroup2" (ngSubmit)="printSubmit()">
+        <div class="modal-body">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">ชื่อยา</span>
+            </div>
+            <input
+              [ngClass]="{ 'is-invalid': submitPrint && p.name.errors }"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              required
+            />
+          </div>
+          <br />
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="">LotNo.</span>
+            </div>
+
+            <input
+              [ngClass]="{ 'is-invalid': submitPrint && p.lotno.errors }"
+              type="text"
+              class="form-control"
+              formControlName="lotno"
+            />
+          </div>
+          <br />
+          <div class="input-group">
+            <mat-form-field>
+              <mat-label>วันผลิต</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="mfd" />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <br />
+          <div class="input-group">
+            <mat-form-field>
+              <mat-label>วันหมดอายุ</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="exp" />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="picker2"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
             Close
           </button>
         </div>

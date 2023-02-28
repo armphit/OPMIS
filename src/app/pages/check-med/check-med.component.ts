@@ -62,7 +62,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    this.test();
+    // this.test();
   }
 
   ngOnInit(): void {}
@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    // this.getData('524649');
+    this.getData('46876');
   }
 
   patient_contract: any = null;
@@ -541,10 +541,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
-    pdfMake.createPdf(docDefinition).open();
-    return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
   }
 
   data_allergic: any = null;
@@ -615,6 +615,7 @@ export class CheckMedComponent implements OnInit {
             data: buffer,
             name: 'testpdf' + '.pdf',
             ip: this.dataUser.print_ip,
+            // ip: '192.168.184.163',
             printName: this.dataUser.print_name,
             hn: data.hn + ' ' + data.drugName,
           });

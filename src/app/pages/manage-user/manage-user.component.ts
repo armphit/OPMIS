@@ -16,11 +16,11 @@ export class ManageUserComponent implements OnInit {
   dataUser: any = null;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
-  constructor(private http: HttpService) {}
-
-  ngOnInit(): void {
+  constructor(private http: HttpService) {
     this.getData();
   }
+
+  ngOnInit(): void {}
 
   public getData = async () => {
     this.displayedColumns = [

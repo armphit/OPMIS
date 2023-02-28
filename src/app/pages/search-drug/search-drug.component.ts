@@ -1,3 +1,4 @@
+import { DateAdapter } from '@angular/material/core';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -36,6 +37,7 @@ export class SearchDrugComponent implements OnInit {
     'dosegeform',
     'action',
   ];
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   public displayedColumns2: string[] = [
     'drugCode',
     'drugName',
@@ -52,8 +54,13 @@ export class SearchDrugComponent implements OnInit {
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('input') input!: ElementRef;
-  constructor(private http: HttpService, private formBuilder: FormBuilder) {
+  constructor(
+    private http: HttpService,
+    private formBuilder: FormBuilder,
+    private dateAdapter: DateAdapter<Date>
+  ) {
     this.listDrugHomc();
+    this.dateAdapter.setLocale('en-GB');
   }
   submitted = false;
   ngAfterViewInit() {
@@ -73,6 +80,12 @@ export class SearchDrugComponent implements OnInit {
       capacity_unit: ['', [Validators.required]],
       pack: ['', [Validators.required]],
       firmname: ['', [Validators.required]],
+    });
+    this.inputGroup2 = this.formBuilder.group({
+      name: ['', Validators.required],
+      lotno: ['', Validators.required],
+      mfd: [new Date(), Validators.required],
+      exp: [new Date(), Validators.required],
     });
     setTimeout(() => {
       this.filteredOptions = this.myControl.valueChanges.pipe(
@@ -300,5 +313,40 @@ export class SearchDrugComponent implements OnInit {
     } else if (tab === 1) {
       this.listDrugPrePack();
     }
+  }
+  public inputGroup2!: FormGroup;
+  // public inputGroup2 = new FormGroup({
+  //   name: new FormControl(),
+  //   lotno: new FormControl(),
+  //   mfd: new FormControl(),
+  //   exp: new FormControl(),
+  // });
+
+  printSticker(val: any) {
+    const date = new Date();
+    let dateaddyear = new Date(
+      date.getFullYear() + 1,
+      date.getMonth(),
+      date.getDate()
+    );
+    // const dateTwo = new Date(new Date(a).setDate(a.getDate() + 365));
+    this.inputGroup2 = this.formBuilder.group({
+      name: [val.genericname, Validators.required],
+      lotno: ['', Validators.required],
+      mfd: [new Date(), Validators.required],
+      exp: [dateaddyear, Validators.required],
+    });
+  }
+  submitPrint = false;
+  printSubmit() {
+    this.submitPrint = true;
+
+    if (this.inputGroup2.invalid) return;
+
+    console.log(1234);
+  }
+
+  get p() {
+    return this.inputGroup2.controls;
   }
 }
