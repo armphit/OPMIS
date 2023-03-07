@@ -62,7 +62,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    // this.test();
+    this.test();
   }
 
   ngOnInit(): void {}
@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('46876');
+    this.getData('1055775');
   }
 
   patient_contract: any = null;
@@ -251,7 +251,16 @@ export class CheckMedComponent implements OnInit {
             ),
           }));
       } else {
-        value = null;
+        if (val.includes(';')) {
+          let split = val.split(';');
+
+          value = this.patient_drug.filter(
+            (item: any) =>
+              item.drugCode.trim() === split[0].trim() && item.checkqty != 0
+          );
+
+          value[0].HisPackageRatio = split[1];
+        }
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
