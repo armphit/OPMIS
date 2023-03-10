@@ -719,6 +719,200 @@
       </div>
     </div>
   </mat-tab>
+
+  <mat-tab label="รายงานยืนยันแพ้ยา">
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg-9">
+          <mat-form-field class="example-form-field" style="float: left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePickerr"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end"
+            >
+              <input
+                matStartDate
+                placeholder="วันที่เริ่มต้น"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="วันที่สิ้นสุด"
+                formControlName="end"
+                (dateChange)="endChange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePickerr"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter2($event)" #input3 />
+            <mat-placeholder>Search</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource3"
+      >
+        <table
+          mat-table
+          [dataSource]="dataSource3"
+          #MatSort3="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter3="matTableExporter"
+          matSortActive="timestamp"
+          matSortDirection="desc"
+          [hiddenColumns]="[]"
+        >
+          <ng-container matColumnDef="user">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Pharmacist ID
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.user }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Pharmacist Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.name }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="queue">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Queue
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.queue }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              HN
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="patientName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Patient Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="timestamp">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Date
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.timestamp }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns3; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+        </table>
+      </section>
+      <div [hidden]="!dataSource3">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter3.exportTable('xlsx', {
+              fileName: nameExcel3,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator3="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </mat-tab>
   <mat-tab label="รายงานตัดจ่ายยา">
     <div class="container-fluid pt-2">
       <div class="row">
@@ -1053,16 +1247,15 @@
       </div>
     </div>
   </mat-tab>
-
-  <mat-tab label="รายงานยืนยันแพ้ยา">
+  <mat-tab label="รายงานจ่ายยาตัดจ่ายยา">
     <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-5">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
               [formGroup]="campaignOne"
-              [rangePicker]="campaignOnePickerr"
+              [rangePicker]="campaignOnePicker2"
               [comparisonStart]="campaignOne.value.start"
               [comparisonEnd]="campaignOne.value.end"
             >
@@ -1080,15 +1273,29 @@
             </mat-date-range-input>
             <mat-datepicker-toggle
               matSuffix
-              [for]="campaignOnePickerr"
+              [for]="campaignOnePicker2"
             ></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
+            <mat-date-range-picker #campaignOnePicker2></mat-date-range-picker>
           </mat-form-field>
         </div>
-
+        <div class="col-lg-4">
+          <mat-form-field>
+            <mat-label>Select floor</mat-label>
+            <mat-select
+              [(ngModel)]="select"
+              (ngModelChange)="changeFloorReport()"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
         <div class="col-lg-3">
           <mat-form-field class="example-full-width" style="float: right">
-            <input matInput (keyup)="applyFilter2($event)" #input3 />
+            <input matInput (keyup)="applyFilter4($event)" #input4 />
             <mat-placeholder>Search</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>
@@ -1097,137 +1304,124 @@
       <section
         class="example-container mat-elevation-z8"
         tabindex="0"
-        [hidden]="!dataSource3"
+        [hidden]="!dataSource4"
       >
         <table
           mat-table
-          [dataSource]="dataSource3"
-          #MatSort3="matSort"
+          [dataSource]="dataSource4"
+          #MatSort4="matSort"
           matSort
           class="mat-elevation-z8"
           matTableExporter
-          #exporter3="matTableExporter"
-          matSortActive="timestamp"
+          #exporter4="matTableExporter"
+          matSortActive="createdDT"
           matSortDirection="desc"
-          [hiddenColumns]="[]"
+          [hiddenColumns]=""
         >
-          <ng-container matColumnDef="user">
+          <ng-container matColumnDef="pharmacist">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              Pharmacist ID
+              Pharmacist
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.user }}
+              {{ element.pharmacist }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="name">
+
+          <ng-container matColumnDef="departmentcode">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              Pharmacist Name
+              Departmentcode
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.name }}
+              {{ element.departmentcode }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="queue">
+
+          <ng-container matColumnDef="drugname">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              Queue
+              Drugname
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.queue }}
+              {{ element.drugname }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="hn">
+
+          <ng-container matColumnDef="amount">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              HN
+              Amount
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.hn }}
+              {{ element.amount }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="patientName">
+
+          <ng-container matColumnDef="createDT">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              Patient Name
+              createDT
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.patientName }}
-            </td>
-          </ng-container>
-          <ng-container matColumnDef="timestamp">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              style="padding-left: 10px"
-            >
-              Date
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              {{ element.timestamp }}
+              {{ element.createDT }}
             </td>
           </ng-container>
 
           <tr
             mat-header-row
-            *matHeaderRowDef="displayedColumns3; sticky: true"
+            *matHeaderRowDef="displayedColumns4; sticky: true"
           ></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns4"></tr>
         </table>
       </section>
-      <div [hidden]="!dataSource3">
+      <div [hidden]="!dataSource4">
         <button
           mat-raised-button
           color="primary"
           (click)="
-            exporter3.exportTable('xlsx', {
-              fileName: nameExcel3,
+            exporter4.exportTable('xlsx', {
+              fileName: nameExcel4,
               sheet: 'sheet_name',
               Props: { Author: 'Talha' }
             })
@@ -1237,14 +1431,13 @@
         </button>
         <mat-paginator
           style="float: right"
-          #MatPaginator3="matPaginator"
+          #MatPaginator4="matPaginator"
           [length]="10"
           [pageSize]="10"
           [pageSizeOptions]="[10, 50, 100]"
           showFirstLastButtons
         >
         </mat-paginator>
-      </div>
-    </div>
-  </mat-tab>
+      </div></div
+  ></mat-tab>
 </mat-tab-group>

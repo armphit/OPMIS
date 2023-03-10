@@ -742,10 +742,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   public endChange(event: any) {
     if (event.value) {
-      if (this.getTab == 1) {
+      if (this.getTab == 2) {
         this.getReport();
-      } else {
+      } else if (this.getTab == 1) {
         this.getMoph();
+      } else if (this.getTab == 3) {
+        this.reportDispend();
       }
     }
   }
@@ -761,8 +763,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.getTab === 0
       ? this.getData()
       : this.getTab === 1
+      ? this.getMoph()
+      : this.getTab === 2
       ? this.getReport()
-      : this.getMoph();
+      : this.reportDispend();
   }
 
   async deleteCutowe(dcc_id: any, val: any, amount: any) {
@@ -904,7 +908,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.getData();
   }
   changeFloorReport() {
-    this.getReport();
+    if (this.getTab === 2) {
+      this.getReport();
+    } else if (this.getTab === 3) {
+      this.reportDispend();
+    }
   }
 
   async printPDF(data: any) {
@@ -1141,6 +1149,48 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   public async startChange() {
     this.getData();
+  }
+  nameExcel4 = '';
+  dataSource4: any = null;
+  displayedColumns4: any = null;
+  @ViewChild('input4') input4!: ElementRef;
+  @ViewChild('MatSort4') sort4!: MatSort;
+  @ViewChild('MatPaginator4') paginator4!: MatPaginator;
+  public reportDispend = async () => {
+    this.displayedColumns4 = [
+      'pharmacist',
+      'departmentcode',
+      'drugname',
+      'amount',
+      'createDT',
+    ];
+    let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    let formData = new FormData();
+    formData.append('start', datestart);
+    formData.append('end', dateend);
+    formData.append('floor', this.select);
+
+    let getData: any = await this.http.post('getReportdispenddrug', formData);
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataSource4 = new MatTableDataSource(getData.response.result);
+        this.dataSource4.sort = this.sort4;
+        this.dataSource4.paginator = this.paginator4;
+        this.nameExcel2 = `รายงานตัดจ่ายยา ${datestart}_${dateend}`;
+        setTimeout(() => {
+          this.input4.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource4 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+  public applyFilter4(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource4.filter = filterValue.trim().toLowerCase();
   }
   // sendprintChildren(val: any, j: any) {
   //   val.createdDT = val.datetime[j];

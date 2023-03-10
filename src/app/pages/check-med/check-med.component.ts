@@ -62,7 +62,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    this.test();
+    // this.test();
   }
 
   ngOnInit(): void {}
@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('1055775');
+    this.getData('460988');
   }
 
   patient_contract: any = null;
@@ -121,6 +121,16 @@ export class CheckMedComponent implements OnInit {
                 this.Dataqandcheck = getData2.response.result[0];
                 this.drug_xmed = getData3.response.patientDrug;
 
+                this.patient_drug.forEach((v: any) => {
+                  if (!v.checkstamp) {
+                    v.isSort = 2;
+                  } else if (v.checkstamp && v.checkqty) {
+                    v.isSort = 1;
+                  } else if (v.checkstamp && !v.checkqty) {
+                    v.isSort = 3;
+                  }
+                });
+
                 this.countcheck = this.patient_drug.filter(function (
                   item: any
                 ) {
@@ -130,6 +140,7 @@ export class CheckMedComponent implements OnInit {
                     return false;
                   }
                 }).length;
+
                 this.sumcheck = this.patient_drug
                   .filter(function (item: any) {
                     if (item.checkstamp || (!item.qty && !item.checkqty)) {
@@ -141,6 +152,7 @@ export class CheckMedComponent implements OnInit {
                   .every((v: any) => {
                     return v.checkqty == 0;
                   });
+
                 if (
                   this.sumcheck &&
                   this.countcheck === this.patient_drug.length
@@ -255,8 +267,7 @@ export class CheckMedComponent implements OnInit {
           let split = val.split(';');
 
           value = this.patient_drug.filter(
-            (item: any) =>
-              item.drugCode.trim() === split[0].trim() && item.checkqty != 0
+            (item: any) => item.drugCode.trim() === split[0].trim()
           );
 
           value[0].HisPackageRatio = split[1];
@@ -321,13 +332,6 @@ export class CheckMedComponent implements OnInit {
   }
   sumcheck: any = null;
   async updateCheckmed(value: any) {
-    let formData = new FormData();
-    // formData.append('hn', value.hn);
-    // formData.append('seq', value.seq);
-    // formData.append('orderitemcode', value.drugCode.trim());
-    // formData.append('lastmodified', value.lastmodified);
-    // formData.append('currentqty', String(value.currentqty));
-    // let getData: any = await this.http.post('updateCheckmed', formData);
     let data_send = {
       id: value.id,
       currentqty: value.currentqty,
@@ -341,6 +345,17 @@ export class CheckMedComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.datadrugpatient) {
         this.patient_drug = getData.response.datadrugpatient;
+
+        this.patient_drug.forEach((v: any) => {
+          if (!v.checkstamp) {
+            v.isSort = 2;
+          } else if (v.checkstamp && v.checkqty) {
+            v.isSort = 1;
+          } else if (v.checkstamp && !v.checkqty) {
+            v.isSort = 3;
+          }
+        });
+
         this.countcheck = this.patient_drug.filter(function (item: any) {
           if (item.checkstamp || (!item.qty && !item.checkqty)) {
             return true;
