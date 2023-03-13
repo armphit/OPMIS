@@ -75,7 +75,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('460988');
+    this.getData('1383740');
   }
 
   patient_contract: any = null;
@@ -422,7 +422,7 @@ export class CheckMedComponent implements OnInit {
     }
 
     let freetext1 = data.freetext1.split(',');
-
+    let free_under = freetext1.slice(1);
     let freetext2 = data.freetext2.split(',');
     let itemidentify =
       data.itemidentify.charAt(data.itemidentify.length - 1) == ','
@@ -431,7 +431,36 @@ export class CheckMedComponent implements OnInit {
     let right = data.righttext1.includes(' ')
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
-    let qrcode = data.qrCode ? `` : '';
+    let lang = /[\u0E00-\u0E7F]/;
+    if (!lang.test(this.patient_contract.patientName)) {
+      if (data.lamedName) {
+        if (data.lamedName.trim() == 'รับประทานครั้งละ') {
+          data.lamedName = 'take';
+        }
+      }
+
+      if (data.freetext0) {
+        if (data.freetext0.trim() == 'เม็ด') {
+          if (Number(data.dosage.trim()) <= 1) {
+            data.freetext0 = 'tablet';
+          } else {
+            data.freetext0 = 'tablets';
+          }
+        } else if (data.freetext0.trim() == 'ซีซี') {
+          data.freetext0 = 'cc';
+        }
+      }
+    } else {
+      data.dosage = data.dosage
+        ? data.dosage.trim() == '0'
+          ? ''
+          : data.dosage.trim() == '0.5'
+          ? 'ครึ่ง'
+          : data.dosage.trim() == '0.25'
+          ? 'หนึ่งส่วนสี่'
+          : data.dosage.trim()
+        : '';
+    }
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
@@ -507,25 +536,29 @@ export class CheckMedComponent implements OnInit {
         },
 
         {
-          text: `${data.lamedName.trim()} ${
-            data.dosage
-              ? data.dosage.trim() == '0'
-                ? ''
-                : data.dosage.trim() == '0.5'
-                ? 'ครึ่ง'
-                : data.dosage.trim()
-              : ''
-          }  ${data.freetext0.trim()} ${freetext1[0] ? freetext1[0] : ''}`,
+          text: `${data.lamedName.trim()} ${data.dosage.trim()} ${data.freetext0.trim()} ${
+            freetext1[0] ? freetext1[0] : ''
+          }`,
           bold: true,
           fontSize: 15,
           alignment: 'center',
         },
         {
-          text: freetext1[1] ? freetext1[1] : '',
+          text: free_under ? free_under.join(', ') : '',
           bold: true,
           fontSize: 15,
           alignment: 'center',
         },
+        // free_under
+        //   ? free_under.map(function (item: any) {
+        //       return {
+        //         text: item.trim(),
+        //         alignment: 'center',
+        //         bold: true,
+        //         fontSize: 15,
+        //       };
+        //     })
+        //   : '',
         freetext2
           ? freetext2.map(function (item: any) {
               return { text: item.trim(), alignment: 'center', fontSize: 14 };
