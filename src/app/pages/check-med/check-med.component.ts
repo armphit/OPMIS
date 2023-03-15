@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as moment from 'moment';
+import * as CryptoJS from 'crypto-js';
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -75,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('1383740');
+    this.getData('2292816');
   }
 
   patient_contract: any = null;
@@ -173,20 +174,28 @@ export class CheckMedComponent implements OnInit {
                 Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
               }
             } else {
-              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+              Swal.fire(
+                'patient_drugไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+                '',
+                'error'
+              );
             }
           } else {
             // this.data_drug = null;
             Swal.fire('ไม่สามารถเชื่อม dataQ ได้!', '', 'error');
           }
         } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          Swal.fire('dataQไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อม patient_contract ได้!', '', 'error');
       }
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      Swal.fire(
+        'patient_contractไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+        '',
+        'error'
+      );
     }
   }
   public applyFilter(event: Event) {
@@ -263,14 +272,24 @@ export class CheckMedComponent implements OnInit {
             ),
           }));
       } else {
-        if (val.includes(';')) {
-          let split = val.split(';');
+        const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
+        const decryptedDataBase64InUtf = decryptedDataBase64.toString(
+          CryptoJS.enc.Utf8
+        );
 
-          value = this.patient_drug.filter(
-            (item: any) => item.drugCode.trim() === split[0].trim()
-          );
+        if (decryptedDataBase64InUtf) {
+          try {
+            let dataQr = JSON.parse(decryptedDataBase64InUtf);
 
-          value[0].HisPackageRatio = split[1];
+            value = this.patient_drug.filter(
+              (item: any) => item.drugCode.trim() === dataQr.drug.trim()
+            );
+            if (value.length) {
+              value[0].HisPackageRatio = dataQr.qty;
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     } else {
@@ -432,25 +451,14 @@ export class CheckMedComponent implements OnInit {
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
     let lang = /[\u0E00-\u0E7F]/;
+    let lamed = '';
+    let freetext_lang = '';
     if (!lang.test(this.patient_contract.patientName)) {
-      if (data.lamedName) {
-        if (data.lamedName.trim() == 'รับประทานครั้งละ') {
-          data.lamedName = 'take';
-        }
-      }
-
-      if (data.freetext0) {
-        if (data.freetext0.trim() == 'เม็ด') {
-          if (Number(data.dosage.trim()) <= 1) {
-            data.freetext0 = 'tablet';
-          } else {
-            data.freetext0 = 'tablets';
-          }
-        } else if (data.freetext0.trim() == 'ซีซี') {
-          data.freetext0 = 'cc';
-        }
-      }
+      lamed = data.lamedEng ? data.lamedEng.trim() : '';
+      freetext_lang = data.freetext1Eng ? data.freetext1Eng.trim() : '';
     } else {
+      lamed = data.lamedName ? data.lamedName.trim() : '';
+      freetext_lang = data.freetext0 ? data.freetext0.trim() : '';
       data.dosage = data.dosage
         ? data.dosage.trim() == '0'
           ? ''
@@ -458,6 +466,8 @@ export class CheckMedComponent implements OnInit {
           ? 'ครึ่ง'
           : data.dosage.trim() == '0.25'
           ? 'หนึ่งส่วนสี่'
+          : data.dosage.trim() == '0.75'
+          ? 'สามส่วนสี่'
           : data.dosage.trim()
         : '';
     }
@@ -536,7 +546,7 @@ export class CheckMedComponent implements OnInit {
         },
 
         {
-          text: `${data.lamedName.trim()} ${data.dosage.trim()} ${data.freetext0.trim()} ${
+          text: `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
             freetext1[0] ? freetext1[0] : ''
           }`,
           bold: true,
