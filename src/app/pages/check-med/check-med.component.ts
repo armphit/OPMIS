@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('2292816');
+    this.getData('1164638');
   }
 
   patient_contract: any = null;
@@ -314,8 +314,9 @@ export class CheckMedComponent implements OnInit {
                   dataPDF.getBase64(async (buffer: any) => {
                     let pdf: any = await this.http.Printjs('convertbuffer', {
                       data: buffer,
-                      name: 'testpdf' + '.pdf',
+                      name: value.hn + ' ' + value.drugCode + '.pdf',
                       ip: this.dataUser.print_ip,
+
                       printName: this.dataUser.print_name,
                       hn: value.hn + ' ' + value.drugName,
                     });
@@ -474,7 +475,7 @@ export class CheckMedComponent implements OnInit {
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 0, 10, 65] as any,
+      pageMargins: [0, 0, 7, 70] as any,
       header: {} as any,
 
       content: [
@@ -532,17 +533,19 @@ export class CheckMedComponent implements OnInit {
         {
           columns: [
             {
-              width: 170,
+              width: 185,
               text: nameDrug,
+              bold: true,
+              fontSize: 14,
             },
             {
               width: '*',
               text: '#' + data.qty + ' ' + data.unitCode.trim(),
+              fontSize: 14,
+              bold: true,
               alignment: 'right',
             },
           ],
-          bold: true,
-          fontSize: 16,
         },
 
         {
@@ -550,13 +553,13 @@ export class CheckMedComponent implements OnInit {
             freetext1[0] ? freetext1[0] : ''
           }`,
           bold: true,
-          fontSize: 15,
+          fontSize: 14,
           alignment: 'center',
         },
         {
           text: free_under ? free_under.join(', ') : '',
           bold: true,
-          fontSize: 15,
+          fontSize: 14,
           alignment: 'center',
         },
         // free_under
@@ -585,7 +588,7 @@ export class CheckMedComponent implements OnInit {
         {
           columns: [
             {
-              width: 200,
+              width: 195,
               text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${itemidentify}`,
               fontSize: 12,
             },
@@ -680,9 +683,9 @@ export class CheckMedComponent implements OnInit {
         dataPDF.getBase64(async (buffer: any) => {
           let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
-            name: 'testpdf' + '.pdf',
+            name: data.hn + ' ' + data.drugCode + '.pdf',
             ip: this.dataUser.print_ip,
-            // ip: '192.168.184.163',
+
             printName: this.dataUser.print_name,
             hn: data.hn + ' ' + data.drugName,
           });
@@ -786,8 +789,9 @@ export class CheckMedComponent implements OnInit {
               dataPDF.getBase64(async (buffer: any) => {
                 let getData: any = await this.http.Printjs('convertbuffer', {
                   data: buffer,
-                  name: 'testpdf' + '.pdf',
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
                   ip: this.dataUser.print_ip,
+
                   printName: this.dataUser.print_name,
                   hn: data.hn + ' ' + data.drugName,
                 });
