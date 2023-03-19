@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('1164638');
+    this.getData('2284544');
   }
 
   patient_contract: any = null;
@@ -272,25 +272,36 @@ export class CheckMedComponent implements OnInit {
             ),
           }));
       } else {
-        const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
-        const decryptedDataBase64InUtf = decryptedDataBase64.toString(
-          CryptoJS.enc.Utf8
-        );
+        if (val.includes(';')) {
+          let textSpilt = val.split(';');
 
-        if (decryptedDataBase64InUtf) {
-          try {
-            let dataQr = JSON.parse(decryptedDataBase64InUtf);
-
-            value = this.patient_drug.filter(
-              (item: any) => item.drugCode.trim() === dataQr.drug.trim()
-            );
-            if (value.length) {
-              value[0].HisPackageRatio = dataQr.qty;
-            }
-          } catch (error) {
-            console.log(error);
+          value = this.patient_drug.filter(
+            (item: any) => item.drugCode.trim() === textSpilt[0].trim()
+          );
+          if (value.length) {
+            value[0].HisPackageRatio = textSpilt[1];
           }
         }
+
+        // const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
+        // const decryptedDataBase64InUtf = decryptedDataBase64.toString(
+        //   CryptoJS.enc.Utf8
+        // );
+
+        // if (decryptedDataBase64InUtf) {
+        //   try {
+        //     let dataQr = JSON.parse(decryptedDataBase64InUtf);
+
+        //     value = this.patient_drug.filter(
+        //       (item: any) => item.drugCode.trim() === dataQr.drug.trim()
+        //     );
+        //     if (value.length) {
+        //       value[0].HisPackageRatio = dataQr.qty;
+        //     }
+        //   } catch (error) {
+        //     console.log(error);
+        //   }
+        // }
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -430,24 +441,21 @@ export class CheckMedComponent implements OnInit {
     namePatient =
       this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;
 
-    if (namePatient.length >= 40) {
-      namePatient = namePatient.substring(0, 37);
+    if (namePatient.length >= 50) {
+      namePatient = namePatient.substring(0, 47);
       namePatient = namePatient + '...';
     }
     let nameDrug = data.drugName.trim();
 
-    if (nameDrug.length > 57) {
-      nameDrug = nameDrug.substring(0, 54);
+    if (nameDrug.length >= 38) {
+      nameDrug = nameDrug.substring(0, 35);
       nameDrug = nameDrug + '...';
     }
 
     let freetext1 = data.freetext1.split(',');
     let free_under = freetext1.slice(1);
     let freetext2 = data.freetext2.split(',');
-    let itemidentify =
-      data.itemidentify.charAt(data.itemidentify.length - 1) == ','
-        ? data.itemidentify.substring(0, data.itemidentify.length - 1)
-        : data.itemidentify;
+
     let right = data.righttext1.includes(' ')
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
@@ -533,7 +541,7 @@ export class CheckMedComponent implements OnInit {
         {
           columns: [
             {
-              width: 185,
+              width: 183,
               text: nameDrug,
               bold: true,
               fontSize: 14,
@@ -547,19 +555,23 @@ export class CheckMedComponent implements OnInit {
             },
           ],
         },
+        {
+          text: data.itemidentify ? data.itemidentify.trim() : `   `,
 
+          fontSize: 13,
+        },
         {
           text: `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
             freetext1[0] ? freetext1[0] : ''
           }`,
           bold: true,
-          fontSize: 14,
+          fontSize: 15,
           alignment: 'center',
         },
         {
           text: free_under ? free_under.join(', ') : '',
           bold: true,
-          fontSize: 14,
+          fontSize: 15,
           alignment: 'center',
         },
         // free_under
@@ -574,7 +586,12 @@ export class CheckMedComponent implements OnInit {
         //   : '',
         freetext2
           ? freetext2.map(function (item: any) {
-              return { text: item.trim(), alignment: 'center', fontSize: 14 };
+              return {
+                text: item.trim(),
+                alignment: 'center',
+                fontSize: 14,
+                bold: true,
+              };
             })
           : '',
       ] as any,
@@ -589,7 +606,9 @@ export class CheckMedComponent implements OnInit {
           columns: [
             {
               width: 195,
-              text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${itemidentify}`,
+              text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
+                data.indication
+              }`,
               fontSize: 12,
             },
             ...(data.qrCode
@@ -685,7 +704,7 @@ export class CheckMedComponent implements OnInit {
             data: buffer,
             name: data.hn + ' ' + data.drugCode + '.pdf',
             ip: this.dataUser.print_ip,
-
+            // ip: '192.168.184.163',
             printName: this.dataUser.print_name,
             hn: data.hn + ' ' + data.drugName,
           });
