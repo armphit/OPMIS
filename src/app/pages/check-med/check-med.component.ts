@@ -279,7 +279,19 @@ export class CheckMedComponent implements OnInit {
             (item: any) => item.drugCode.trim() === textSpilt[0].trim()
           );
           if (value.length) {
-            value[0].HisPackageRatio = textSpilt[1];
+            let formData = new FormData();
+            formData.append('code', textSpilt[0].trim());
+
+            let getBot: any = await this.http.post('getDrubot', formData);
+            if (getBot.connect) {
+              if (getBot.response.rowCount > 0) {
+                value[0].HisPackageRatio = 1;
+              } else {
+                value[0].HisPackageRatio = textSpilt[1];
+              }
+            } else {
+              Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           }
         }
 
@@ -468,17 +480,31 @@ export class CheckMedComponent implements OnInit {
     } else {
       lamed = data.lamedName ? data.lamedName.trim() : '';
       freetext_lang = data.freetext0 ? data.freetext0.trim() : '';
-      data.dosage = data.dosage
-        ? data.dosage.trim() == '0'
-          ? ''
-          : data.dosage.trim() == '0.5'
-          ? 'ครึ่ง'
-          : data.dosage.trim() == '0.25'
-          ? 'หนึ่งส่วนสี่'
-          : data.dosage.trim() == '0.75'
-          ? 'สามส่วนสี่'
-          : data.dosage.trim()
-        : '';
+      if (data.freetext0.trim() == 'เม็ด') {
+        data.dosage = data.dosage
+          ? data.dosage.trim() == '0'
+            ? ''
+            : data.dosage.trim() == '0.5'
+            ? 'ครึ่ง'
+            : data.dosage.trim() == '0.25'
+            ? 'หนึ่งส่วนสี่'
+            : data.dosage.trim() == '0.75'
+            ? 'สามส่วนสี่'
+            : data.dosage.trim() == '1.5'
+            ? 'หนึ่งเม็ดครึ่ง'
+            : data.dosage.trim() == '2.5'
+            ? 'สองเม็ดครึ่ง'
+            : data.dosage.trim() == '3.5'
+            ? 'สามเม็ดครึ่ง'
+            : data.dosage.trim()
+          : '';
+      } else {
+        data.dosage = data.dosage
+          ? data.dosage.trim() == '0'
+            ? ''
+            : data.dosage.trim()
+          : '';
+      }
     }
 
     var docDefinition = {
