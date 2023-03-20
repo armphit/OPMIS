@@ -459,8 +459,8 @@ export class CheckMedComponent implements OnInit {
     }
     let nameDrug = data.drugName.trim();
 
-    if (nameDrug.length >= 38) {
-      nameDrug = nameDrug.substring(0, 35);
+    if (nameDrug.length >= 36) {
+      nameDrug = nameDrug.substring(0, 33);
       nameDrug = nameDrug + '...';
     }
 
@@ -656,10 +656,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
   }
 
   data_allergic: any = null;
