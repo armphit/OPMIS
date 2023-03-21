@@ -251,15 +251,15 @@
                 style="text-align: center; width: 150px"
               >
                 <img
-                  *ngIf="element.pathImage"
-                  [src]="'http://192.168.185.160:88/api' + element.pathImage"
+                  *ngIf="element.pathImage.length"
+                  [src]="'http://192.168.185.160:88/api' + element.pathImage[0]"
                   width="130"
                   height="115"
                   style="padding: 5px; cursor: pointer"
                   (click)="getArrImg(element); lightbox.open(0)"
                 />
                 <img
-                  *ngIf="!element.pathImage"
+                  *ngIf="!element.pathImage.length"
                   src="./assets/notfound.png"
                   width="130"
                   height="115"

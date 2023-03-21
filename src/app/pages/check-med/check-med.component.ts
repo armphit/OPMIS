@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('2284544');
+    this.getData('368832');
   }
 
   patient_contract: any = null;
@@ -435,6 +435,16 @@ export class CheckMedComponent implements OnInit {
             ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
             : `เช็คยา ${value.drugName} สำเร็จ`;
         Swal.fire({
+          imageUrl: value.pathImage.length
+            ? value.typeNum.indexOf('pack') != -1
+              ? this.http.imgPath +
+                value.pathImage[value.typeNum.indexOf('pack')]
+              : value.pathImage[value.pathImage.length - 1]
+              ? this.http.imgPath + value.pathImage[value.pathImage.length - 1]
+              : ''
+            : '',
+          imageWidth: 200,
+          imageHeight: 200,
           position: 'center',
           icon: 'success',
           title: showtext,
@@ -687,18 +697,11 @@ export class CheckMedComponent implements OnInit {
   public imageData: any = null;
   items!: GalleryItem[];
   async getArrImg(val: any) {
-    let formData = new FormData();
-
-    formData.append('drugCode', val.drugCode);
-    let getDrug: any = await this.http.post('drugImg', formData);
-
-    this.imageData = getDrug.response.result;
-
-    this.items = this.imageData.map(
+    this.items = val.pathImage.map(
       (item: any) =>
         new ImageItem({
-          src: this.http.imgPath + item.pathImage,
-          thumb: this.http.imgPath + item.pathImage,
+          src: this.http.imgPath + item,
+          thumb: this.http.imgPath + item,
         })
     );
 
@@ -818,6 +821,15 @@ export class CheckMedComponent implements OnInit {
       // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
       //   data.unitCode ? data.unitCode.trim() : ''
       // }`,
+      imageUrl: data.pathImage.length
+        ? data.typeNum.indexOf('pack') != -1
+          ? this.http.imgPath + data.pathImage[data.typeNum.indexOf('pack')]
+          : data.pathImage[data.pathImage.length - 1]
+          ? this.http.imgPath + data.pathImage[data.pathImage.length - 1]
+          : ''
+        : '',
+      imageWidth: 200,
+      imageHeight: 200,
       title: `<strong>จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
         data.unitCode ? data.unitCode.trim() : ''
       }</strong>`,
