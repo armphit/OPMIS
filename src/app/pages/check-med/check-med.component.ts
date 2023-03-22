@@ -279,20 +279,20 @@ export class CheckMedComponent implements OnInit {
             (item: any) => item.drugCode.trim() === textSpilt[0].trim()
           );
           if (value.length) {
-            // let formData = new FormData();
-            // formData.append('code', textSpilt[0].trim());
+            let formData = new FormData();
+            formData.append('code', textSpilt[0].trim());
 
-            // let getBot: any = await this.http.post('getDrubot', formData);
-            // if (getBot.connect) {
-            //   if (getBot.response.rowCount > 0) {
-            //     value[0].HisPackageRatio = 1;
-            //   } else {
-            //     value[0].HisPackageRatio = textSpilt[1];
-            //   }
-            // } else {
-            //   Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-            // }
-            value[0].HisPackageRatio = textSpilt[1];
+            let getBot: any = await this.http.post('getDrubot', formData);
+            if (getBot.connect) {
+              if (getBot.response.rowCount > 0) {
+                value[0].HisPackageRatio = 1;
+              } else {
+                value[0].HisPackageRatio = textSpilt[1];
+              }
+            } else {
+              Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
+            // value[0].HisPackageRatio = textSpilt[1];
           }
         }
 
