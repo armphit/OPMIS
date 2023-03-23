@@ -471,10 +471,14 @@ export class CheckMedComponent implements OnInit {
     let nameDrug = data.drugName.trim();
 
     if (nameDrug.length >= 36) {
-      nameDrug = nameDrug.substring(0, 33);
-      nameDrug = nameDrug + '...';
+      if (data.drugCode === 'LEVO25') {
+        nameDrug = nameDrug.substring(0, 30);
+        nameDrug = nameDrug + '...';
+      } else {
+        nameDrug = nameDrug.substring(0, 33);
+        nameDrug = nameDrug + '...';
+      }
     }
-
     let freetext1 = data.freetext1.split(',');
     let free_under = freetext1.slice(1);
     let freetext2 = data.freetext2.split(',');
