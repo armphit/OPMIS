@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot --open",
-    "build": "ng build --build-optimizer --prod --base-href=/opmis/",
+    "build": "ng build --build-optimizer --output-hashing=all --prod --base-href=/opmis/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
