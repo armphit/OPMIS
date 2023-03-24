@@ -200,7 +200,11 @@
                 drugCode
               </th>
               <td mat-cell *matCellDef="let element">
-                &nbsp; {{ element.drugCode }}
+                &nbsp; {{ element.drugCode }}<br />
+                <div *ngIf="element.barCode" (click)="changeBarcode(element)">
+                  &nbsp;
+                  <i class="fas fa-barcode fa-lg" style="cursor: pointer"></i>
+                </div>
               </td>
             </ng-container>
 
@@ -251,7 +255,7 @@
                 style="text-align: center; width: 150px"
               >
                 <img
-                  *ngIf="element.pathImage.length"
+                  *ngIf="element.pathImage"
                   [src]="'http://192.168.185.160:88/api' + element.pathImage[0]"
                   width="130"
                   height="115"
@@ -259,7 +263,7 @@
                   (click)="getArrImg(element); lightbox.open(0)"
                 />
                 <img
-                  *ngIf="!element.pathImage.length"
+                  *ngIf="!element.pathImage"
                   src="./assets/notfound.png"
                   width="130"
                   height="115"

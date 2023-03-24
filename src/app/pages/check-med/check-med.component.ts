@@ -435,7 +435,7 @@ export class CheckMedComponent implements OnInit {
             ? ` ${value.drugName} คงเหลือ ${value.currentqty}`
             : `เช็คยา ${value.drugName} สำเร็จ`;
         Swal.fire({
-          imageUrl: value.pathImage.length
+          imageUrl: value.pathImage
             ? value.typeNum.indexOf('pack') != -1
               ? this.http.imgPath +
                 value.pathImage[value.typeNum.indexOf('pack')]
@@ -825,7 +825,7 @@ export class CheckMedComponent implements OnInit {
       // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
       //   data.unitCode ? data.unitCode.trim() : ''
       // }`,
-      imageUrl: data.pathImage.length
+      imageUrl: data.pathImage
         ? data.typeNum.indexOf('pack') != -1
           ? this.http.imgPath + data.pathImage[data.typeNum.indexOf('pack')]
           : data.pathImage[data.pathImage.length - 1]
@@ -883,5 +883,57 @@ export class CheckMedComponent implements OnInit {
         }
       }
     });
+  }
+  async changeBarcode(e: any) {
+    const { value: result } = await Swal.fire({
+      title: 'Input Barcode ',
+      html: `<input id="swal-input1"  value="${
+        e.barCode ? e.barCode : ''
+      }"   class="swal2-input"/>`,
+
+      showConfirmButton: true,
+      focusConfirm: false,
+      inputAttributes: {
+        required: 'true',
+      },
+
+      preConfirm: () => {
+        const val1 = (
+          document.getElementById('swal-input1') as HTMLInputElement
+        ).value;
+
+        if (val1) {
+          return (document.getElementById('swal-input1') as HTMLInputElement)
+            .value;
+        } else {
+          // Swal.showValidationMessage('Invalid Barcode');
+          return 'null';
+        }
+      },
+    });
+
+    if (result) {
+      let formData = new FormData();
+      formData.append('drugCode', e.drugCode);
+      formData.append('barCode', result === 'null' ? '' : result);
+      let getData: any = await this.http.post('updateBarcode', formData);
+      if (getData.connect) {
+        if (getData.response.result) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          await this.getData(String(e.hn));
+        } else {
+          console.log(getData);
+          Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
   }
 }
