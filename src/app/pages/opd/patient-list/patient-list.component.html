@@ -1562,6 +1562,23 @@
               {{ element.hn }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="countCheck">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              countCheck
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.countCheck }}
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="timestamp">
             <th

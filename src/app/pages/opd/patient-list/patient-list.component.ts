@@ -1205,6 +1205,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'codeUserCheck',
       'nameUserCheck',
       'hn',
+      'countCheck',
       'timestamp',
       'checkComplete',
     ];
