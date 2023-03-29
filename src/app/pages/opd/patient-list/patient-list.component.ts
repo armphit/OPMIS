@@ -766,7 +766,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? this.getMoph()
       : this.getTab === 2
       ? this.getReport()
-      : this.reportDispend();
+      : this.getTab === 3
+      ? this.reportDispend()
+      : this.reportCheckmed();
   }
 
   async deleteCutowe(dcc_id: any, val: any, amount: any) {
@@ -1192,33 +1194,47 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource4.filter = filterValue.trim().toLowerCase();
   }
-  // sendprintChildren(val: any, j: any) {
-  //   val.createdDT = val.datetime[j];
-  //   val.phar = val.phar2_name;
-  //   this.flistDrug(val).then((dataPDF) => {
-  //     dataPDF.getBase64(async (buffer) => {
-  //       let getData: any = await this.http.Printjs('convertbuffer', {
-  //         data: buffer,
-  //         name: 'testpdf' + '.pdf',
-  //         ip: this.dataUser.print_ip,
-  //         printName: this.dataUser.print_name,
-  //         hn: this.dataP.patientNO,
-  //       });
+  nameExcel5 = '';
+  dataSource5: any = null;
+  displayedColumns5: any = null;
+  @ViewChild('input5') input5!: ElementRef;
+  @ViewChild('MatSort5') sort5!: MatSort;
+  @ViewChild('MatPaginator5') paginator5!: MatPaginator;
+  public reportCheckmed = async () => {
+    this.displayedColumns5 = [
+      'codeUserCheck',
+      'nameUserCheck',
+      'hn',
+      'timestamp',
+      'checkComplete',
+    ];
+    let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    let formData = new FormData();
+    formData.append('start', datestart);
+    formData.append('end', dateend);
+    // formData.append('floor', this.select);
 
-  //       if (getData.connect) {
-  //         if (getData.response.connect === 'success') {
-  //           Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
-  //         } else {
-  //           Swal.fire(
-  //             'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-  //             '',
-  //             'error'
-  //           );
-  //         }
-  //       } else {
-  //         Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-  //       }
-  //     });
-  //   });
-  // }
+    let getData: any = await this.http.post('getReportCheckmed', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        this.dataSource5 = new MatTableDataSource(getData.response.result);
+        this.dataSource5.sort = this.sort5;
+        this.dataSource5.paginator = this.paginator5;
+        this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
+        setTimeout(() => {
+          this.input5.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource5 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+  public applyFilter5(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource5.filter = filterValue.trim().toLowerCase();
+  }
 }

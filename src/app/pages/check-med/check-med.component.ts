@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('368832');
+    this.getData('41098');
   }
 
   patient_contract: any = null;
@@ -206,7 +206,7 @@ export class CheckMedComponent implements OnInit {
   async getDrug(val: any) {
     // let founddrug: any = null;
     // let checkcode: any = '';
-    let value: any = null;
+    let value: any = [];
     let formData = new FormData();
     formData.append('barcode', val);
     let getBarcode: any = null;
@@ -214,7 +214,7 @@ export class CheckMedComponent implements OnInit {
     getBarcode = await this.http.post('drugBarcode2', formData);
 
     if (getBarcode.connect) {
-      if (getBarcode.response[0].rowCount > 0) {
+      if (getBarcode.response[0].rowCount > 0 && !value.length) {
         value = this.drug_xmed
           .filter((o1: any) => {
             return getBarcode.response[0].result.some(function (o2: any) {
@@ -229,7 +229,8 @@ export class CheckMedComponent implements OnInit {
                 item.checkqty != 0
             ),
           }));
-      } else if (getBarcode.response[1].rowCount) {
+      }
+      if (getBarcode.response[1].rowCount && !value.length) {
         let data = getBarcode.response[1].result[0];
         value = await this.patient_drug
           .filter(
@@ -256,7 +257,8 @@ export class CheckMedComponent implements OnInit {
               ...data,
             }));
         }
-      } else if (getBarcode.response[2].rowCount > 0) {
+      }
+      if (getBarcode.response[2].rowCount > 0 && !value.length) {
         value = this.drug_xmed
           .filter((o1: any) => {
             return getBarcode.response[2].result.some(function (o2: any) {
@@ -271,51 +273,51 @@ export class CheckMedComponent implements OnInit {
                 item.checkqty != 0
             ),
           }));
-      } else {
-        if (val.includes(';')) {
-          let textSpilt = val.split(';');
-
-          value = this.patient_drug.filter(
-            (item: any) => item.drugCode.trim() === textSpilt[0].trim()
-          );
-          if (value.length) {
-            let formData = new FormData();
-            formData.append('code', textSpilt[0].trim());
-
-            let getBot: any = await this.http.post('getDrubot', formData);
-            if (getBot.connect) {
-              if (getBot.response.rowCount > 0) {
-                value[0].HisPackageRatio = 1;
-              } else {
-                value[0].HisPackageRatio = textSpilt[1];
-              }
-            } else {
-              Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-            }
-            // value[0].HisPackageRatio = textSpilt[1];
-          }
-        }
-
-        // const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
-        // const decryptedDataBase64InUtf = decryptedDataBase64.toString(
-        //   CryptoJS.enc.Utf8
-        // );
-
-        // if (decryptedDataBase64InUtf) {
-        //   try {
-        //     let dataQr = JSON.parse(decryptedDataBase64InUtf);
-
-        //     value = this.patient_drug.filter(
-        //       (item: any) => item.drugCode.trim() === dataQr.drug.trim()
-        //     );
-        //     if (value.length) {
-        //       value[0].HisPackageRatio = dataQr.qty;
-        //     }
-        //   } catch (error) {
-        //     console.log(error);
-        //   }
-        // }
       }
+
+      if (val.includes(';') && !value.length) {
+        let textSpilt = val.split(';');
+
+        value = this.patient_drug.filter(
+          (item: any) => item.drugCode.trim() === textSpilt[0].trim()
+        );
+        if (value.length) {
+          let formData = new FormData();
+          formData.append('code', textSpilt[0].trim());
+
+          let getBot: any = await this.http.post('getDrubot', formData);
+          if (getBot.connect) {
+            if (getBot.response.rowCount > 0) {
+              value[0].HisPackageRatio = 1;
+            } else {
+              value[0].HisPackageRatio = textSpilt[1];
+            }
+          } else {
+            Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
+          // value[0].HisPackageRatio = textSpilt[1];
+        }
+      }
+
+      // const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
+      // const decryptedDataBase64InUtf = decryptedDataBase64.toString(
+      //   CryptoJS.enc.Utf8
+      // );
+
+      // if (decryptedDataBase64InUtf) {
+      //   try {
+      //     let dataQr = JSON.parse(decryptedDataBase64InUtf);
+
+      //     value = this.patient_drug.filter(
+      //       (item: any) => item.drugCode.trim() === dataQr.drug.trim()
+      //     );
+      //     if (value.length) {
+      //       value[0].HisPackageRatio = dataQr.qty;
+      //     }
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
@@ -471,7 +473,7 @@ export class CheckMedComponent implements OnInit {
     let nameDrug = data.drugName.trim();
 
     if (nameDrug.length >= 36) {
-      if (data.drugCode === 'LEVO25') {
+      if (data.drugCode === 'LEVO25' || data.drugCode === 'CYCLO3') {
         nameDrug = nameDrug.substring(0, 30);
         nameDrug = nameDrug + '...';
       } else {
@@ -496,23 +498,46 @@ export class CheckMedComponent implements OnInit {
       lamed = data.lamedName ? data.lamedName.trim() : '';
       freetext_lang = data.freetext0 ? data.freetext0.trim() : '';
       if (data.freetext0.trim() == 'เม็ด') {
-        data.dosage = data.dosage
-          ? data.dosage.trim() == '0'
-            ? ''
-            : data.dosage.trim() == '0.5'
-            ? 'ครึ่ง'
-            : data.dosage.trim() == '0.25'
-            ? 'หนึ่งส่วนสี่'
-            : data.dosage.trim() == '0.75'
-            ? 'สามส่วนสี่'
-            : data.dosage.trim() == '1.5'
-            ? 'หนึ่งเม็ดครึ่ง'
-            : data.dosage.trim() == '2.5'
-            ? 'สองเม็ดครึ่ง'
-            : data.dosage.trim() == '3.5'
-            ? 'สามเม็ดครึ่ง'
-            : data.dosage.trim()
-          : '';
+        if (data.dosage) {
+          if (data.dosage.trim() == '0') {
+            data.dosage = '';
+            freetext_lang = '';
+          } else if (data.dosage.trim() == '0.5') {
+            data.dosage = 'ครึ่ง';
+          } else if (data.dosage.trim() == '0.25') {
+            data.dosage = 'หนึ่งส่วนสี่';
+          } else if (data.dosage.trim() == '0.75') {
+            data.dosage = 'สามส่วนสี่';
+          } else if (data.dosage.trim() == '1.5') {
+            data.dosage = 'หนึ่งเม็ดครึ่ง';
+            freetext_lang = '';
+          } else if (data.dosage.trim() == '2.5') {
+            data.dosage = 'สองเม็ดครึ่ง';
+            freetext_lang = '';
+          } else if (data.dosage.trim() == '3.5') {
+            data.dosage = 'สามเม็ดครึ่ง';
+            freetext_lang = '';
+          }
+        } else {
+          data.dosage = '';
+        }
+        // data.dosage = data.dosage
+        //   ? data.dosage.trim() == '0'
+        //     ? ''
+        //     : data.dosage.trim() == '0.5'
+        //     ? 'ครึ่ง'
+        //     : data.dosage.trim() == '0.25'
+        //     ? 'หนึ่งส่วนสี่'
+        //     : data.dosage.trim() == '0.75'
+        //     ? 'สามส่วนสี่'
+        //     : data.dosage.trim() == '1.5'
+        //     ? '1 เม็ดครึ่ง'freetext_lang = 1
+        //     : data.dosage.trim() == '2.5'
+        //     ? '2 เม็ดครึ่ง'
+        //     : data.dosage.trim() == '3.5'
+        //     ? '3 เม็ดครึ่ง'
+        //     : data.dosage.trim()
+        //   : '';
       } else {
         data.dosage = data.dosage
           ? data.dosage.trim() == '0'
@@ -671,10 +696,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
   }
 
   data_allergic: any = null;
