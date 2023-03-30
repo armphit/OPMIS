@@ -696,10 +696,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
-    pdfMake.createPdf(docDefinition).open();
-    return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
   }
 
   data_allergic: any = null;
