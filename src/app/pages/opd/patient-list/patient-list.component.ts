@@ -961,10 +961,42 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           }
         }
 
-        if (namePatient.length > 23) {
-          namePatient = namePatient.substring(0, 20);
-          namePatient = namePatient + '...';
+        let freetext2 = lamed.freetext2 ? lamed.freetext2.split(',') : '';
+
+        let nameHn = namePatient + '   HN ' + numHN.trim();
+
+        if (lamed.freetext0.trim() == 'เม็ด') {
+          if (lamed.dosage) {
+            if (lamed.dosage.trim() == '0') {
+              lamed.dosage = '';
+              lamed.freetext0 = '';
+            } else if (lamed.dosage.trim() == '0.5') {
+              lamed.dosage = 'ครึ่ง';
+            } else if (lamed.dosage.trim() == '0.25') {
+              lamed.dosage = 'หนึ่งส่วนสี่';
+            } else if (lamed.dosage.trim() == '0.75') {
+              lamed.dosage = 'สามส่วนสี่';
+            } else if (lamed.dosage.trim() == '1.5') {
+              lamed.dosage = 'หนึ่งเม็ดครึ่ง';
+              lamed.freetext0 = '';
+            } else if (lamed.dosage.trim() == '2.5') {
+              lamed.dosage = 'สองเม็ดครึ่ง';
+              lamed.freetext0 = '';
+            } else if (lamed.dosage.trim() == '3.5') {
+              lamed.dosage = 'สามเม็ดครึ่ง';
+              lamed.freetext0 = '';
+            }
+          } else {
+            lamed.dosage = '';
+          }
+        } else {
+          lamed.dosage = data.dosage
+            ? lamed.dosage.trim() == '0'
+              ? ''
+              : lamed.dosage.trim()
+            : '';
         }
+
         let date = '';
         if (data.datecut) {
           date = data.datecut;
@@ -982,7 +1014,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           // pageSize: { width: 325, height: 350 },
           pageSize: { width: 238, height: 255 },
           // pageMargins: [5, 50, 5, 100] as any,
-          pageMargins: [0, 0, 10, 0] as any,
+          pageMargins: [0, 0, 7, 88] as any,
           header: {} as any,
 
           content: [
@@ -990,20 +1022,26 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               text: 'ค้างจ่ายยา',
               alignment: 'center',
               decoration: 'underline',
-              fontSize: 18,
+              fontSize: 16,
               bold: true,
             },
             {
-              text: `ชื่อ ${namePatient}  HN ${numHN}`,
-
-              fontSize: 18,
+              text: nameHn,
+              noWrap: true,
+              fontSize: 16,
               bold: true,
+            },
+            {
+              canvas: [
+                { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
+              ],
             },
             {
               columns: [
                 {
                   width: 150,
                   text: `${data.drugName ? data.drugName : data.drugname}`,
+                  noWrap: true,
                 },
                 {
                   width: '*',
@@ -1019,9 +1057,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   alignment: 'right',
                 },
               ],
-              fontSize: 18,
+              fontSize: 14,
               bold: true,
               // margin: [0, 5, 0, 0],
+            },
+            {
+              text: lamed.itemidentify ? lamed.itemidentify.trim() : ``,
+
+              fontSize: 13,
             },
             {
               text: `${lamed.lamedName ? lamed.lamedName.trim() : ''} ${
@@ -1030,17 +1073,34 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 freetext1[0] ? freetext1[0] : ''
               }`,
               bold: true,
-              fontSize: 16,
+              fontSize: 15,
               alignment: 'center',
             },
             {
               text: freetextany,
               bold: true,
-              fontSize: 16,
+              fontSize: 15,
               alignment: 'center',
               // margin: [0, 0, 0, 5],
             },
-            ,
+            freetext2
+              ? freetext2.map(function (item: any) {
+                  return {
+                    text: item.trim(),
+                    alignment: 'center',
+                    fontSize: item.trim().length >= 80 ? 12 : 13,
+                    bold: true,
+                  };
+                })
+              : '',
+          ] as any,
+
+          footer: [
+            {
+              canvas: [
+                { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
+              ],
+            },
             {
               text: `รับยาที่ ${
                 getDataprint.response.datasite[0].site_name
@@ -1048,7 +1108,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   : ''
               }`,
 
-              fontSize: 16,
+              fontSize: 14,
               bold: true,
             },
             {
@@ -1058,21 +1118,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   : ''
               }`,
 
-              fontSize: 16,
+              fontSize: 14,
               bold: true,
             },
             {
               text: `เภสัชกร ${data.name || data.phar_name}`,
-
-              fontSize: 14,
+              bold: true,
+              fontSize: 12,
             },
             {
               text: `วันที่ค้างยา ${date} น.`,
 
-              fontSize: 14,
+              fontSize: 12,
             },
           ] as any,
-
           defaultStyle: {
             font: 'THSarabunNew',
           },
@@ -1089,29 +1148,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       return false;
     }
-
-    // let result: any = await pdfDocGenerator.getBase64(async (buffer) => {
-    //   return buffer;
-    //   // let getData: any = await this.http.testPrintjs('convertbuffer', {
-    //   //   data: buffer,
-    //   //   name: 'testpdf' + '.pdf',
-    //   // });
-    //   // console.log(getData.response.connect);
-    //   // return getData.response.connect;
-    //   // // if (getData.connect) {
-    //   // //   if (getData.response.connect === 'success') {
-    //   // //     console.log(getData.response.connect);
-    //   // //     return 1234;
-    //   // //   } else {
-    //   // //     return 'error';
-    //   // //   }
-    //   // // } else {
-    //   // //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
-    //   // //   return 'error';
-    //   // // }
-    // });
-
-    // pdfMake.createPdf(docDefinition).open();
   }
 
   sendprint(val: any) {
