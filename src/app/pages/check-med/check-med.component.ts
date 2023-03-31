@@ -473,7 +473,10 @@ export class CheckMedComponent implements OnInit {
     let nameDrug = data.drugName.trim();
 
     if (nameDrug.length >= 36) {
-      if (data.drugCode === 'LEVO25' || data.drugCode === 'CYCLO3') {
+      if (
+        data.drugCode.trim() === 'LEVO25' ||
+        data.drugCode.trim() === 'CYCLO3'
+      ) {
         nameDrug = nameDrug.substring(0, 30);
         nameDrug = nameDrug + '...';
       } else {
@@ -655,7 +658,7 @@ export class CheckMedComponent implements OnInit {
               return {
                 text: item.trim(),
                 alignment: 'center',
-                fontSize: 13,
+                fontSize: item.trim().length >= 80 ? 12 : 13,
                 bold: true,
               };
             })
