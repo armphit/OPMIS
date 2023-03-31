@@ -466,24 +466,24 @@ export class CheckMedComponent implements OnInit {
     namePatient =
       this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;
 
-    if (namePatient.length >= 50) {
-      namePatient = namePatient.substring(0, 47);
-      namePatient = namePatient + '...';
-    }
+    // if (namePatient.length >= 50) {
+    //   namePatient = namePatient.substring(0, 47);
+    //   namePatient = namePatient + '...';
+    // }
     let nameDrug = data.drugName.trim();
 
-    if (nameDrug.length >= 36) {
-      if (
-        data.drugCode.trim() === 'LEVO25' ||
-        data.drugCode.trim() === 'CYCLO3'
-      ) {
-        nameDrug = nameDrug.substring(0, 30);
-        nameDrug = nameDrug + '...';
-      } else {
-        nameDrug = nameDrug.substring(0, 33);
-        nameDrug = nameDrug + '...';
-      }
-    }
+    // if (nameDrug.length >= 36) {
+    //   if (
+    //     data.drugCode.trim() === 'LEVO25' ||
+    //     data.drugCode.trim() === 'CYCLO3'
+    //   ) {
+    //     nameDrug = nameDrug.substring(0, 30);
+    //     nameDrug = nameDrug + '...';
+    //   } else {
+    //     nameDrug = nameDrug.substring(0, 33);
+    //     nameDrug = nameDrug + '...';
+    //   }
+    // }
     let freetext1 = data.freetext1.split(',');
     let free_under = freetext1.slice(1);
     let freetext2 = data.freetext2.split(',');
@@ -571,6 +571,7 @@ export class CheckMedComponent implements OnInit {
           text: namePatient,
           fontSize: 16,
           bold: true,
+          noWrap: true,
         },
         {
           text: `สิทธิ : ${right} / ${
@@ -614,6 +615,7 @@ export class CheckMedComponent implements OnInit {
               text: nameDrug,
               bold: true,
               fontSize: 14,
+              noWrap: true,
             },
             {
               width: '*',
