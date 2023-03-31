@@ -57,7 +57,7 @@ export class AllDrugComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>,
     public router: Router,
-    private imageCompress: NgxImageCompressService,
+    // private imageCompress: NgxImageCompressService,
     public gallery: Gallery,
     public lightbox: Lightbox
   ) {
@@ -81,7 +81,6 @@ export class AllDrugComponent implements OnInit {
         'EXP_Date',
         'qty',
         'img',
-        'action',
       ];
     } else {
       this.displayedColumns = [
@@ -135,9 +134,6 @@ export class AllDrugComponent implements OnInit {
             ...(result.find(
               (item: { drugCode: any }) => item.drugCode === emp.drugCode
             ) ?? { LOT_NO: [''], EXP_Date: [''], qty: [''] }),
-            ...(getPathImg.response.result.find(
-              (item: { drugCode: any }) => item.drugCode === emp.drugCode
-            ) ?? { pathImg: '' }),
           };
         });
 
@@ -148,7 +144,13 @@ export class AllDrugComponent implements OnInit {
             );
           }
         });
-
+        this.dataDrug.map((item: any) => {
+          if (item.pathImg) {
+            item.pathImg = item.pathImg.split(',');
+            return item;
+          }
+        });
+        console.log(this.dataDrug);
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -164,95 +166,96 @@ export class AllDrugComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
-  public upload_img: any = null;
-  public upload_img_name: any = null;
-  public img_name: any = null;
 
-  public closeImg() {
-    this.drug_code = null;
-    this.arrFile = [];
-    this.imgResultMultiple = [];
+  // public upload_img: any = null;
+  // public upload_img_name: any = null;
+  // public img_name: any = null;
 
-    this.imgResultAfterCompress = '';
-  }
+  // public closeImg() {
+  //   this.drug_code = null;
+  //   this.arrFile = [];
+  //   this.imgResultMultiple = [];
 
-  public drug_code: any = null;
-  public edit = async (code: any) => {
-    this.imgResultAfterCompress = '';
-    this.drug_code = code;
-  };
+  //   this.imgResultAfterCompress = '';
+  // }
 
-  public sendImage = async () => {
-    if (this.arrFile) {
-      let formData = new FormData();
-      formData.append('code', this.drug_code);
+  // public drug_code: any = null;
+  // public edit = async (code: any) => {
+  //   this.imgResultAfterCompress = '';
+  //   this.drug_code = code;
+  // };
 
-      this.arrFile.forEach((item: any) => {
-        formData.append('upload[]', item);
-      });
-      let getData: any = await this.http.post('addImgDrug', formData);
+  // public sendImage = async () => {
+  //   if (this.arrFile) {
+  //     let formData = new FormData();
+  //     formData.append('code', this.drug_code);
 
-      if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          this.getData();
-          let win: any = window;
-          win.$('#myModal').modal('hide');
-          Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
-          this.upload_img = null;
-          this.upload_img_name = null;
+  //     this.arrFile.forEach((item: any) => {
+  //       formData.append('upload[]', item);
+  //     });
+  //     let getData: any = await this.http.post('addImgDrug', formData);
 
-          this.drug_code = null;
-          this.img_name = null;
-          this.arrFile = [];
-          this.imgResultMultiple = [];
-          this.imgResultAfterCompress = '';
-        } else {
-          console.log(getData);
-          Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
-        }
-      } else {
-        alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-      }
-    } else {
-      Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
-    }
-  };
+  //     if (getData.connect) {
+  //       if (getData.response.rowCount > 0) {
+  //         this.getData();
+  //         let win: any = window;
+  //         win.$('#myModal').modal('hide');
+  //         Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
+  //         this.upload_img = null;
+  //         this.upload_img_name = null;
 
-  imgResultBeforeCompress: DataUrl = '';
-  imgResultAfterCompress: DataUrl = '';
-  imgResultMultiple: UploadResponse[] = [];
-  test: UploadResponse[] = [];
-  imgResultAfterResize: any = '';
-  public arrFile: any = [];
-  public async uploadMultipleFiles() {
-    const multipleOrientedFiles =
-      await this.imageCompress.uploadMultipleFiles();
+  //         this.drug_code = null;
+  //         this.img_name = null;
+  //         this.arrFile = [];
+  //         this.imgResultMultiple = [];
+  //         this.imgResultAfterCompress = '';
+  //       } else {
+  //         console.log(getData);
+  //         Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
+  //       }
+  //     } else {
+  //       alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+  //     }
+  //   } else {
+  //     Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
+  //   }
+  // };
 
-    this.imgResultMultiple = multipleOrientedFiles;
+  // imgResultBeforeCompress: DataUrl = '';
+  // imgResultAfterCompress: DataUrl = '';
+  // imgResultMultiple: UploadResponse[] = [];
+  // test: UploadResponse[] = [];
+  // imgResultAfterResize: any = '';
+  // public arrFile: any = [];
+  // public async uploadMultipleFiles() {
+  //   const multipleOrientedFiles =
+  //     await this.imageCompress.uploadMultipleFiles();
 
-    let imgResize = [];
-    for (let index = 0; index < this.imgResultMultiple.length; index++) {
-      imgResize[index] = await this.imageCompress.compressFile(
-        this.imgResultMultiple[index].image,
-        this.imgResultMultiple[index].orientation,
-        50,
-        50
-      );
-    }
+  //   this.imgResultMultiple = multipleOrientedFiles;
 
-    imgResize.forEach((element: any, index: any) => {
-      this.arrFile.push(
-        this.base64ToFile(
-          element,
-          this.drug_code +
-            '_' +
-            moment(new Date()).format('DDMMYYYYHHmmss') +
-            '_' +
-            (index + 1)
-        )
-      );
-    });
-  }
+  //   let imgResize = [];
+  //   for (let index = 0; index < this.imgResultMultiple.length; index++) {
+  //     imgResize[index] = await this.imageCompress.compressFile(
+  //       this.imgResultMultiple[index].image,
+  //       this.imgResultMultiple[index].orientation,
+  //       50,
+  //       50
+  //     );
+  //   }
+
+  //   imgResize.forEach((element: any, index: any) => {
+  //     this.arrFile.push(
+  //       this.base64ToFile(
+  //         element,
+  //         this.drug_code +
+  //           '_' +
+  //           moment(new Date()).format('DDMMYYYYHHmmss') +
+  //           '_' +
+  //           (index + 1)
+  //       )
+  //     );
+  //   });
+  // }
 
   base64ToFile(data: any, filename: any) {
     const arr = data.split(',');
@@ -342,18 +345,11 @@ export class AllDrugComponent implements OnInit {
   public imageData: any = null;
 
   async getArrImg(val: any) {
-    let formData = new FormData();
-
-    formData.append('drugCode', val.drugCode);
-    let getDrug: any = await this.http.post('drugImg', formData);
-
-    this.imageData = getDrug.response.result;
-
-    this.items = this.imageData.map(
+    this.items = val.map(
       (item: any) =>
         new ImageItem({
-          src: this.http.imgPath + item.pathImage,
-          thumb: this.http.imgPath + item.pathImage,
+          src: this.http.imgPath + item,
+          thumb: this.http.imgPath + item,
         })
     );
 
@@ -381,105 +377,105 @@ export class AllDrugComponent implements OnInit {
     this.getData();
   }
 
-  deleteImg(val: any) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let formData = new FormData();
-        formData.append('code', val);
+  // deleteImg(val: any) {
+  //   Swal.fire({
+  //     title: 'Are you sure?',
+  //     text: "You won't be able to revert this!",
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonColor: '#3085d6',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Yes, delete it!',
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       let formData = new FormData();
+  //       formData.append('code', val);
 
-        let getData: any = await this.http.post('deleteImg', formData);
+  //       let getData: any = await this.http.post('deleteImg', formData);
 
-        if (getData.connect) {
-          if (getData.response.result) {
-            this.campaignOne = this.formBuilder.group({
-              start: [''],
-              end: [''],
-            });
+  //       if (getData.connect) {
+  //         if (getData.response.result) {
+  //           this.campaignOne = this.formBuilder.group({
+  //             start: [''],
+  //             end: [''],
+  //           });
 
-            let win: any = window;
-            win.$('#myModal').modal('hide');
-            this.getData();
-            Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-          } else {
-            console.log(getData);
-            Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
-          }
-        } else {
-          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        }
-      }
-    });
-  }
-  imgMultipleDrugCode: UploadResponse[] = [];
-  public async uploadDrugCode() {
-    const multipleOrientedFiles =
-      await this.imageCompress.uploadMultipleFiles();
+  //           let win: any = window;
+  //           win.$('#myModal').modal('hide');
+  //           this.getData();
+  //           Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+  //         } else {
+  //           console.log(getData);
+  //           Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
+  //         }
+  //       } else {
+  //         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //       }
+  //     }
+  //   });
+  // }
+  // imgMultipleDrugCode: UploadResponse[] = [];
+  // public async uploadDrugCode() {
+  //   const multipleOrientedFiles =
+  //     await this.imageCompress.uploadMultipleFiles();
 
-    this.imgMultipleDrugCode = multipleOrientedFiles;
+  //   this.imgMultipleDrugCode = multipleOrientedFiles;
 
-    let imgResize = [];
-    for (let index of this.imgMultipleDrugCode) {
-      imgResize.push({
-        img: await this.imageCompress.compressFile(
-          index.image,
-          index.orientation,
-          50,
-          50
-        ),
-        name: index.fileName.substring(0, index.fileName.indexOf('.jpg')),
-      });
-    }
-    let arrFile: any = [];
+  //   let imgResize = [];
+  //   for (let index of this.imgMultipleDrugCode) {
+  //     imgResize.push({
+  //       img: await this.imageCompress.compressFile(
+  //         index.image,
+  //         index.orientation,
+  //         50,
+  //         50
+  //       ),
+  //       name: index.fileName.substring(0, index.fileName.indexOf('.jpg')),
+  //     });
+  //   }
+  //   let arrFile: any = [];
 
-    imgResize.forEach((element: any, index: any) => {
-      arrFile.push({
-        img: this.base64ToFile(
-          element.img,
-          element.name +
-            '_' +
-            moment(new Date()).format('DDMMYYYYHHmmss') +
-            '_' +
-            (index + 1)
-        ),
-        code: element.name,
-      });
-    });
-    this.sendImageWithdrugCode(arrFile);
-  }
-  public sendImageWithdrugCode = async (arrFile: any) => {
-    if (arrFile) {
-      let formData = new FormData();
+  //   imgResize.forEach((element: any, index: any) => {
+  //     arrFile.push({
+  //       img: this.base64ToFile(
+  //         element.img,
+  //         element.name +
+  //           '_' +
+  //           moment(new Date()).format('DDMMYYYYHHmmss') +
+  //           '_' +
+  //           (index + 1)
+  //       ),
+  //       code: element.name,
+  //     });
+  //   });
+  //   this.sendImageWithdrugCode(arrFile);
+  // }
+  // public sendImageWithdrugCode = async (arrFile: any) => {
+  //   if (arrFile) {
+  //     let formData = new FormData();
 
-      arrFile.forEach((item: any) => {
-        formData.append('upload[]', item.img);
-        formData.append('code[]', item.code);
-      });
-      let getData: any = await this.http.post('addImgWithDrugCode', formData);
+  //     arrFile.forEach((item: any) => {
+  //       formData.append('upload[]', item.img);
+  //       formData.append('code[]', item.code);
+  //     });
+  //     let getData: any = await this.http.post('addImgWithDrugCode', formData);
 
-      if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          this.getData();
-          Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
-          this.imgMultipleDrugCode = [];
-        } else {
-          console.log(getData);
-          Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
-        }
-      } else {
-        alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-      }
-    } else {
-      Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
-    }
-  };
+  //     if (getData.connect) {
+  //       if (getData.response.rowCount > 0) {
+  //         this.getData();
+  //         Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
+  //         this.imgMultipleDrugCode = [];
+  //       } else {
+  //         console.log(getData);
+  //         Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
+  //       }
+  //     } else {
+  //       alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+  //     }
+  //   } else {
+  //     Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
+  //   }
+  // };
   @ViewChild('input') input!: ElementRef;
   async changeBarcode(e: any) {
     const { value: result } = await Swal.fire({

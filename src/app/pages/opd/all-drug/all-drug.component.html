@@ -38,7 +38,7 @@
         <mat-icon>clear</mat-icon>
       </button>
     </div>
-    <div class="col-lg-4" style="padding-top: 7px">
+    <!-- <div class="col-lg-4" style="padding-top: 7px">
       <button
         *ngIf="dataUser == 'admin'"
         mat-raised-button
@@ -47,8 +47,8 @@
       >
         <i class="fas fa-upload"></i>&nbsp; Upload Image with Drug Code
       </button>
-    </div>
-    <div class="col-lg-3">
+    </div> -->
+    <div class="col-lg-7">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput (keyup)="applyFilter($event)" #input />
         <mat-placeholder>ค้นหา</mat-placeholder>
@@ -211,16 +211,16 @@
             style="text-align: center; width: 150px"
           >
             <img
-              *ngIf="element.pathImage"
-              [src]="'http://192.168.185.160:88/api' + element.pathImage"
+              *ngIf="element.pathImg"
+              [src]="'http://192.168.185.160:88/api' + element.pathImg[0]"
               width="130"
               height="115"
               style="padding: 5px; cursor: pointer"
-              (click)="getArrImg(element); lightbox.open(0)"
+              (click)="getArrImg(element.pathImg); lightbox.open(0)"
             />
             <img
-              *ngIf="!element.pathImage"
-              src="http://pizzamana.com/manager/data/file/notfound.png"
+              *ngIf="!element.pathImg"
+              src="./assets/notfound.png"
               width="130"
               height="115"
               style="padding: 5px; cursor: none"
@@ -228,7 +228,7 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="action">
+        <!-- <ng-container matColumnDef="action">
           <th mat-header-cell *matHeaderCellDef>Action</th>
           <td
             mat-cell
@@ -258,7 +258,7 @@
               <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
             </button>
           </td>
-        </ng-container>
+        </ng-container> -->
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
@@ -290,7 +290,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="myModal">
+  <!-- <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -344,5 +344,5 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
