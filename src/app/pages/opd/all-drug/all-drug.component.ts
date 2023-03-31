@@ -103,7 +103,6 @@ export class AllDrugComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let getDrugOnHand: any = await this.http.get('getDrugOnHand');
-        let getPathImg: any = await this.http.get('getPathImg');
 
         const result = Array.from(
           new Set(
