@@ -1509,110 +1509,74 @@
           #exporter5="matTableExporter"
           [hiddenColumns]=""
         >
-          <ng-container matColumnDef="codeUserCheck">
+          <ng-container matColumnDef="userCheck">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              codeUserCheck
+              รหัส
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.codeUserCheck }}
+              {{ element.userCheck }}
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="nameUserCheck">
+          <ng-container matColumnDef="name">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              nameUserCheck
+              ชื่อ
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.nameUserCheck }}
+              {{ element.name }}
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="hn">
+          <ng-container matColumnDef="countuserCheck">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              HN
+              จำนวนใบสั่งยา
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.hn }}
+              {{ element.countuserCheck }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="countCheck">
+          <ng-container matColumnDef="countdrugCode">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              countCheck
+              จำนวนราการยา
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.countCheck }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="timestamp">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              style="padding-left: 10px"
-            >
-              Timestamp
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              {{ element.timestamp }}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="checkComplete">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              mat-sort-header
-              style="padding-left: 10px"
-            >
-              checkComplete
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element"
-              style="padding-left: 20px; padding-right: 20px"
-            >
-              {{ element.checkComplete }}
+              {{ element.countdrugCode }}
             </td>
           </ng-container>
 

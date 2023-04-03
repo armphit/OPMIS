@@ -748,6 +748,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.getMoph();
       } else if (this.getTab == 3) {
         this.reportDispend();
+      } else if (this.getTab == 4) {
+        this.reportCheckmed();
       }
     }
   }
@@ -972,10 +974,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               lamed.freetext0 = '';
             } else if (lamed.dosage.trim() == '0.5') {
               lamed.dosage = 'ครึ่ง';
-            } else if (lamed.dosage.trim() == '0.25') {
-              lamed.dosage = 'หนึ่งส่วนสี่';
-            } else if (lamed.dosage.trim() == '0.75') {
-              lamed.dosage = 'สามส่วนสี่';
+            } else if (
+              data.dosage.trim() == '0.25' ||
+              data.dosage.trim() == '1/4'
+            ) {
+              data.dosage = 'หนึ่งส่วนสี่';
+            } else if (
+              data.dosage.trim() == '0.75' ||
+              data.dosage.trim() == '3/4'
+            ) {
+              data.dosage = 'สามส่วนสี่';
             } else if (lamed.dosage.trim() == '1.5') {
               lamed.dosage = 'หนึ่งเม็ดครึ่ง';
               lamed.freetext0 = '';
@@ -1238,25 +1246,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
   public reportCheckmed = async () => {
     this.displayedColumns5 = [
-      'codeUserCheck',
-      'nameUserCheck',
-      'hn',
-      'countCheck',
-      'timestamp',
-      'checkComplete',
+      'userCheck',
+      'name',
+      'countuserCheck',
+      'countdrugCode',
     ];
     let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
-    let formData = new FormData();
-    formData.append('start', datestart);
-    formData.append('end', dateend);
-    // formData.append('floor', this.select);
+    let formData = {
+      datestart: datestart,
+      dateend: dateend,
+    };
 
-    let getData: any = await this.http.post('getReportCheckmed', formData);
+    let getData: any = await this.http.postNodejs('reportcheckmed', formData);
 
     if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        this.dataSource5 = new MatTableDataSource(getData.response.result);
+      if (getData.response.datadrugcheck.length) {
+        this.dataSource5 = new MatTableDataSource(
+          getData.response.datadrugcheck
+        );
         this.dataSource5.sort = this.sort5;
         this.dataSource5.paginator = this.paginator5;
         this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;

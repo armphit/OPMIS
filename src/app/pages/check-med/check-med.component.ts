@@ -63,7 +63,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    // this.test();
+    this.test();
   }
 
   ngOnInit(): void {}
@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('41098');
+    this.getData('2202966');
   }
 
   patient_contract: any = null;
@@ -507,9 +507,15 @@ export class CheckMedComponent implements OnInit {
             freetext_lang = '';
           } else if (data.dosage.trim() == '0.5') {
             data.dosage = 'ครึ่ง';
-          } else if (data.dosage.trim() == '0.25') {
+          } else if (
+            data.dosage.trim() == '0.25' ||
+            data.dosage.trim() == '1/4'
+          ) {
             data.dosage = 'หนึ่งส่วนสี่';
-          } else if (data.dosage.trim() == '0.75') {
+          } else if (
+            data.dosage.trim() == '0.75' ||
+            data.dosage.trim() == '3/4'
+          ) {
             data.dosage = 'สามส่วนสี่';
           } else if (data.dosage.trim() == '1.5') {
             data.dosage = 'หนึ่งเม็ดครึ่ง';
@@ -614,7 +620,7 @@ export class CheckMedComponent implements OnInit {
               width: 183,
               text: nameDrug,
               bold: true,
-              fontSize: 14,
+              fontSize: data.checkLength ? 13 : 14,
               noWrap: true,
             },
             {
