@@ -63,7 +63,7 @@ export class CheckMedComponent implements OnInit {
     public lightbox: Lightbox,
     public gallery: Gallery
   ) {
-    this.test();
+    // this.test();
   }
 
   ngOnInit(): void {}

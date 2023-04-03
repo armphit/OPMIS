@@ -998,11 +998,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             lamed.dosage = '';
           }
         } else {
-          lamed.dosage = data.dosage
-            ? lamed.dosage.trim() == '0'
-              ? ''
-              : lamed.dosage.trim()
-            : '';
+          if (lamed.dosage) {
+            if (lamed.dosage.trim() == '0') {
+              lamed.dosage = '';
+            }
+          } else {
+            lamed.dosage = '';
+          }
         }
 
         let date = '';
