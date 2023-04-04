@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('2202966');
+    this.getData('294299');
   }
 
   patient_contract: any = null;
@@ -555,6 +555,9 @@ export class CheckMedComponent implements OnInit {
           : '';
       }
     }
+    let textProbrem = `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
+      freetext1[0] ? freetext1[0] : ''
+    }`;
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
@@ -638,11 +641,10 @@ export class CheckMedComponent implements OnInit {
           fontSize: 13,
         },
         {
-          text: `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
-            freetext1[0] ? freetext1[0] : ''
-          }`,
+          text: textProbrem,
           bold: true,
-          fontSize: 15,
+          fontSize: textProbrem.length > 57 ? 14 : 15,
+          noWrap: true,
           alignment: 'center',
         },
         {
