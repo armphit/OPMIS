@@ -975,15 +975,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             } else if (lamed.dosage.trim() == '0.5') {
               lamed.dosage = 'ครึ่ง';
             } else if (
-              data.dosage.trim() == '0.25' ||
-              data.dosage.trim() == '1/4'
+              lamed.dosage.trim() == '0.25' ||
+              lamed.dosage.trim() == '1/4'
             ) {
-              data.dosage = 'หนึ่งส่วนสี่';
+              lamed.dosage = 'หนึ่งส่วนสี่';
             } else if (
-              data.dosage.trim() == '0.75' ||
-              data.dosage.trim() == '3/4'
+              lamed.dosage.trim() == '0.75' ||
+              lamed.dosage.trim() == '3/4'
             ) {
-              data.dosage = 'สามส่วนสี่';
+              lamed.dosage = 'สามส่วนสี่';
             } else if (lamed.dosage.trim() == '1.5') {
               lamed.dosage = 'หนึ่งเม็ดครึ่ง';
               lamed.freetext0 = '';
@@ -1084,6 +1084,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               }`,
               bold: true,
               fontSize: 15,
+              noWrap: true,
               alignment: 'center',
             },
             {
