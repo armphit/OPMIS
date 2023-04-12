@@ -171,7 +171,7 @@
               <td mat-cell *matCellDef="let element">
                 <div style="display: flex; text-align: center">
                   <button
-                    [hidden]="!element.checkqty"
+                    [hidden]="!element.checkqty && element.checkstamp"
                     style="margin-right: 10px"
                     type="button"
                     matTooltip="Accept"
@@ -276,7 +276,7 @@
             <tr
               mat-row
               [ngClass]="{
-                highlightTableColor: !row.checkqty,
+                highlightTableColor: !row.checkqty && row.checkstamp,
                 highlightQtyleColor: row.checkqty < row.qty && row.checkqty > 0
               }"
               *matRowDef="let row; columns: displayedColumns"

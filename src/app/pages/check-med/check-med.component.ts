@@ -76,7 +76,7 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn);
   }
   test() {
-    this.getData('1772520');
+    this.getData('1937012');
   }
   checkprint: boolean = false;
   patient_contract: any = null;
@@ -135,7 +135,7 @@ export class CheckMedComponent implements OnInit {
                 this.countcheck = this.patient_drug.filter(function (
                   item: any
                 ) {
-                  if (item.checkstamp || (!item.qty && !item.checkqty)) {
+                  if (item.checkstamp && !item.checkqty) {
                     return true;
                   } else {
                     return false;
@@ -144,7 +144,7 @@ export class CheckMedComponent implements OnInit {
 
                 this.sumcheck = this.patient_drug
                   .filter(function (item: any) {
-                    if (item.checkstamp || (!item.qty && !item.checkqty)) {
+                    if (item.checkstamp && !item.checkqty) {
                       return true;
                     } else {
                       return false;
@@ -403,7 +403,7 @@ export class CheckMedComponent implements OnInit {
         });
 
         this.countcheck = this.patient_drug.filter(function (item: any) {
-          if (item.checkstamp || (!item.qty && !item.checkqty)) {
+          if (item.checkstamp && !item.checkqty) {
             return true;
           } else {
             return false;
@@ -411,7 +411,7 @@ export class CheckMedComponent implements OnInit {
         }).length;
         this.sumcheck = this.patient_drug
           .filter(function (item: any) {
-            if (item.checkstamp || (!item.qty && !item.checkqty)) {
+            if (item.checkstamp && !item.checkqty) {
               return true;
             } else {
               return false;
