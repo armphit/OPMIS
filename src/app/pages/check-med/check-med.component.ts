@@ -65,7 +65,10 @@ export class CheckMedComponent implements OnInit {
   ) {
     // this.test();
   }
-
+  checkprint: boolean = false;
+  test() {
+    this.getData('558472');
+  }
   ngOnInit(): void {}
   ngAfterViewInit() {
     setTimeout(() => {
@@ -75,10 +78,7 @@ export class CheckMedComponent implements OnInit {
   getHN(hn: any) {
     this.getData(hn);
   }
-  test() {
-    this.getData('1937012');
-  }
-  checkprint: boolean = false;
+
   patient_contract: any = null;
   Dataqandcheck: any = null;
   patient_drug: any = [];
@@ -635,14 +635,21 @@ export class CheckMedComponent implements OnInit {
         //     })
         //   : '',
         freetext2
-          ? freetext2.map(function (item: any) {
-              return {
-                text: item.trim(),
+          ? data.drugCode.trim() === 'MIRTA'
+            ? {
+                text: data.freetext2.trim(),
                 alignment: 'center',
-                fontSize: item.trim().length >= 80 ? 12 : 13,
+                fontSize: 13,
                 bold: true,
-              };
-            })
+              }
+            : freetext2.map(function (item: any) {
+                return {
+                  text: item.trim(),
+                  alignment: 'center',
+                  fontSize: item.trim().length >= 80 ? 12 : 13,
+                  bold: true,
+                };
+              })
           : '',
       ] as any,
 
