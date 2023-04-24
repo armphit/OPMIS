@@ -149,7 +149,7 @@ export class AllDrugComponent implements OnInit {
             return item;
           }
         });
-        console.log(this.dataDrug);
+
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;

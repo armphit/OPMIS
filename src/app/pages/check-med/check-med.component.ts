@@ -101,92 +101,87 @@ export class CheckMedComponent implements OnInit {
       if (getData.response.rowCount > 0) {
         let getData2: any = await this.http.post('Datacheckdrug', formData);
 
-        if (getData2.connect) {
-          if (getData2.response.rowCount > 0) {
-            let data_send = {
-              hn: hn.trim(),
-              date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
-              user: this.dataUser.user,
-            };
+        // if (getData2.connect) {
+        //   if (getData2.response.rowCount > 0) {
+        let data_send = {
+          hn: hn.trim(),
+          date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+          user: this.dataUser.user,
+        };
 
-            let getData3: any = await this.http.postNodejs(
-              'checkpatient',
-              data_send
-            );
+        let getData3: any = await this.http.postNodejs(
+          'checkpatient',
+          data_send
+        );
 
-            if (getData3.connect) {
-              if (getData3.response.datadrugpatient.length > 0) {
-                this.patient_drug = getData3.response.datadrugpatient;
-                this.patient_contract = getData.response.result[0];
+        if (getData3.connect) {
+          if (getData3.response.datadrugpatient.length > 0) {
+            this.patient_drug = getData3.response.datadrugpatient;
+            this.patient_contract = getData.response.result[0];
 
-                this.Dataqandcheck = getData2.response.result[0];
-                this.drug_xmed = getData3.response.patientDrug;
+            // this.Dataqandcheck = getData2.response.result[0];
+            this.drug_xmed = getData3.response.patientDrug;
 
-                this.patient_drug.forEach((v: any) => {
-                  if (!v.checkstamp) {
-                    v.isSort = 2;
-                  } else if (v.checkstamp && v.checkqty) {
-                    v.isSort = 1;
-                  } else if (v.checkstamp && !v.checkqty) {
-                    v.isSort = 3;
-                  }
-                });
-
-                this.countcheck = this.patient_drug.filter(function (
-                  item: any
-                ) {
-                  if (item.checkstamp && !item.checkqty) {
-                    return true;
-                  } else {
-                    return false;
-                  }
-                }).length;
-
-                this.sumcheck = this.patient_drug
-                  .filter(function (item: any) {
-                    if (item.checkstamp && !item.checkqty) {
-                      return true;
-                    } else {
-                      return false;
-                    }
-                  })
-                  .every((v: any) => {
-                    return v.checkqty == 0;
-                  });
-
-                if (
-                  this.sumcheck &&
-                  this.countcheck === this.patient_drug.length
-                ) {
-                  setTimeout(() => {
-                    this.swiper.nativeElement.focus();
-                  }, 100);
-                } else {
-                  setTimeout(() => {
-                    this.drugbar.nativeElement.focus();
-                  }, 100);
-                }
-
-                this.dataSource = new MatTableDataSource(this.patient_drug);
-                this.dataSource.sort = this.sort;
-                this.dataSource.paginator = this.paginator;
-              } else {
-                Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+            this.patient_drug.forEach((v: any) => {
+              if (!v.checkstamp) {
+                v.isSort = 2;
+              } else if (v.checkstamp && v.checkqty) {
+                v.isSort = 1;
+              } else if (v.checkstamp && !v.checkqty) {
+                v.isSort = 3;
               }
+            });
+
+            this.countcheck = this.patient_drug.filter(function (item: any) {
+              if (item.checkstamp && !item.checkqty) {
+                return true;
+              } else {
+                return false;
+              }
+            }).length;
+
+            this.sumcheck = this.patient_drug
+              .filter(function (item: any) {
+                if (item.checkstamp && !item.checkqty) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              .every((v: any) => {
+                return v.checkqty == 0;
+              });
+
+            if (this.sumcheck && this.countcheck === this.patient_drug.length) {
+              setTimeout(() => {
+                this.swiper.nativeElement.focus();
+              }, 100);
             } else {
-              Swal.fire(
-                'patient_drugไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
-                '',
-                'error'
-              );
+              setTimeout(() => {
+                this.drugbar.nativeElement.focus();
+              }, 100);
             }
+
+            this.dataSource = new MatTableDataSource(this.patient_drug);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
           } else {
-            // this.data_drug = null;
-            Swal.fire('ไม่สามารถเชื่อม dataQ ได้!', '', 'error');
+            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
           }
         } else {
-          Swal.fire('dataQไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          Swal.fire(
+            'patient_drugไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+            '',
+            'error'
+          );
         }
+        //   } else {
+        //     // this.data_drug = null;
+        //     Swal.fire('ไม่สามารถเชื่อม dataQ ได้!', '', 'error');
+        //   }
+        // } else {
+        //   Swal.fire('dataQไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        // }
       } else {
         Swal.fire('ไม่สามารถเชื่อม patient_contract ได้!', '', 'error');
       }
