@@ -143,40 +143,40 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let getData: any = null;
       let formData = new FormData();
       let dataPatient: any = null;
-      // if (this.select == 'W8' || this.select == 'W18') {
-      //   formData.append('floor', this.select == 'W8' ? '2' : '3');
-      //   formData.append('date', moment(this.date1.value).format('YYYY-MM-DD'));
-      //   getData = await this.http.post('listPatientQpost', formData);
-      //   dataPatient = getData.response.result;
-      // } else {
-      formData.append('floor', this.select);
-      formData.append(
-        'date',
-        moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
-      );
-      getData = await this.http.post('getdatapatientFloor', formData);
-      // let getData2: any = await this.http.post('statusyHomc', formData);
-      let getData3: any = await this.http.post(
-        'checkdrugAllergyHomc',
-        formData
-      );
+      if (this.select == 'W8' || this.select == 'W18') {
+        formData.append('floor', this.select == 'W8' ? '2' : '3');
+        formData.append('date', moment(this.date1.value).format('YYYY-MM-DD'));
+        getData = await this.http.post('listPatientQpost', formData);
+        dataPatient = getData.response.result;
+      } else {
+        formData.append('floor', this.select);
+        formData.append(
+          'date',
+          moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
+        );
+        getData = await this.http.post('getdatapatientFloor', formData);
+        // let getData2: any = await this.http.post('statusyHomc', formData);
+        let getData3: any = await this.http.post(
+          'checkdrugAllergyHomc',
+          formData
+        );
 
-      dataPatient = getData.response.result.map(function (emp: {
-        patientNO: any;
-      }) {
-        return {
-          ...emp,
-          ...(getData3.response[0].result.find(
-            (item: { patientNO: any }) =>
-              item.patientNO.trim() === emp.patientNO.trim()
-          ) ?? { status: 'N' }),
-          ...(getData3.response[1].result.find(
-            (item: { patientID: any }) =>
-              item.patientID.trim() === emp.patientNO.trim()
-          ) ?? { check: '' }),
-        };
-      });
-      // }
+        dataPatient = getData.response.result.map(function (emp: {
+          patientNO: any;
+        }) {
+          return {
+            ...emp,
+            ...(getData3.response[0].result.find(
+              (item: { patientNO: any }) =>
+                item.patientNO.trim() === emp.patientNO.trim()
+            ) ?? { status: 'N' }),
+            ...(getData3.response[1].result.find(
+              (item: { patientID: any }) =>
+                item.patientID.trim() === emp.patientNO.trim()
+            ) ?? { check: '' }),
+          };
+        });
+      }
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
