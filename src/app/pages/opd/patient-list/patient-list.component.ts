@@ -1252,40 +1252,83 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('input5') input5!: ElementRef;
   @ViewChild('MatSort5') sort5!: MatSort;
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
+  choicecheckmed = '1';
   public reportCheckmed = async () => {
-    this.displayedColumns5 = [
-      'userCheck',
-      'name',
-      'countuserCheck',
-      'countdrugCode',
-    ];
-    let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
-    let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
-    let formData = {
-      datestart: datestart,
-      dateend: dateend,
-    };
+    this.dataSource5 = null;
+    this.displayedColumns5 = [];
+    if (this.choicecheckmed == '1') {
+      this.displayedColumns5 = [
+        'userCheck',
+        'name',
+        'countuserCheck',
+        'countdrugCode',
+      ];
+      let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+      let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+      let formData = {
+        datestart: datestart,
+        dateend: dateend,
+        choice: this.choicecheckmed,
+      };
 
-    let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+      let getData: any = await this.http.postNodejs('reportcheckmed', formData);
 
-    if (getData.connect) {
-      if (getData.response.datadrugcheck.length) {
-        this.dataSource5 = new MatTableDataSource(
-          getData.response.datadrugcheck
-        );
-        this.dataSource5.sort = this.sort5;
-        this.dataSource5.paginator = this.paginator5;
-        this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
-        setTimeout(() => {
-          this.input5.nativeElement.focus();
-        }, 100);
+      if (getData.connect) {
+        if (getData.response.datadrugcheck.length) {
+          this.dataSource5 = new MatTableDataSource(
+            getData.response.datadrugcheck
+          );
+          this.dataSource5.sort = this.sort5;
+          this.dataSource5.paginator = this.paginator5;
+          this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
+          setTimeout(() => {
+            this.input5.nativeElement.focus();
+          }, 100);
+        } else {
+          this.dataSource5 = null;
+        }
       } else {
-        this.dataSource5 = null;
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      this.displayedColumns5 = [
+        'hn',
+        'userCheck',
+        'timestamp',
+        'checkComplete',
+        'time',
+        'item',
+      ];
+      let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+      let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+      let formData = {
+        datestart: datestart,
+        dateend: dateend,
+        choice: this.choicecheckmed,
+      };
+
+      let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+
+      if (getData.connect) {
+        if (getData.response.datadrugcheck.length) {
+          this.dataSource5 = new MatTableDataSource(
+            getData.response.datadrugcheck
+          );
+          this.dataSource5.sort = this.sort5;
+          this.dataSource5.paginator = this.paginator5;
+          this.nameExcel5 = `รายงานเวลาเช็คยา ${datestart}_${dateend}`;
+          setTimeout(() => {
+            this.input5.nativeElement.focus();
+          }, 100);
+        } else {
+          this.dataSource5 = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
     }
   };
+
   public applyFilter5(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource5.filter = filterValue.trim().toLowerCase();
