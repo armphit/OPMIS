@@ -971,47 +971,47 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let freetext2 = lamed.freetext2 ? lamed.freetext2.split(',') : '';
 
         let nameHn = namePatient + '   HN ' + numHN.trim();
-
-        if (lamed.freetext0.trim() == 'เม็ด') {
-          if (lamed.dosage) {
-            if (lamed.dosage.trim() == '0') {
-              lamed.dosage = '';
-              lamed.freetext0 = '';
-            } else if (lamed.dosage.trim() == '0.5') {
-              lamed.dosage = 'ครึ่ง';
-            } else if (
-              lamed.dosage.trim() == '0.25' ||
-              lamed.dosage.trim() == '1/4'
-            ) {
-              lamed.dosage = 'หนึ่งส่วนสี่';
-            } else if (
-              lamed.dosage.trim() == '0.75' ||
-              lamed.dosage.trim() == '3/4'
-            ) {
-              lamed.dosage = 'สามส่วนสี่';
-            } else if (lamed.dosage.trim() == '1.5') {
-              lamed.dosage = 'หนึ่งเม็ดครึ่ง';
-              lamed.freetext0 = '';
-            } else if (lamed.dosage.trim() == '2.5') {
-              lamed.dosage = 'สองเม็ดครึ่ง';
-              lamed.freetext0 = '';
-            } else if (lamed.dosage.trim() == '3.5') {
-              lamed.dosage = 'สามเม็ดครึ่ง';
-              lamed.freetext0 = '';
-            }
-          } else {
-            lamed.dosage = '';
-          }
-        } else {
-          if (lamed.dosage) {
-            if (lamed.dosage.trim() == '0') {
+        if (lamed.freetext0) {
+          if (lamed.freetext0.trim() == 'เม็ด') {
+            if (lamed.dosage) {
+              if (lamed.dosage.trim() == '0') {
+                lamed.dosage = '';
+                lamed.freetext0 = '';
+              } else if (lamed.dosage.trim() == '0.5') {
+                lamed.dosage = 'ครึ่ง';
+              } else if (
+                lamed.dosage.trim() == '0.25' ||
+                lamed.dosage.trim() == '1/4'
+              ) {
+                lamed.dosage = 'หนึ่งส่วนสี่';
+              } else if (
+                lamed.dosage.trim() == '0.75' ||
+                lamed.dosage.trim() == '3/4'
+              ) {
+                lamed.dosage = 'สามส่วนสี่';
+              } else if (lamed.dosage.trim() == '1.5') {
+                lamed.dosage = 'หนึ่งเม็ดครึ่ง';
+                lamed.freetext0 = '';
+              } else if (lamed.dosage.trim() == '2.5') {
+                lamed.dosage = 'สองเม็ดครึ่ง';
+                lamed.freetext0 = '';
+              } else if (lamed.dosage.trim() == '3.5') {
+                lamed.dosage = 'สามเม็ดครึ่ง';
+                lamed.freetext0 = '';
+              }
+            } else {
               lamed.dosage = '';
             }
           } else {
-            lamed.dosage = '';
+            if (lamed.dosage) {
+              if (lamed.dosage.trim() == '0') {
+                lamed.dosage = '';
+              }
+            } else {
+              lamed.dosage = '';
+            }
           }
         }
-
         let date = '';
         if (data.datecut) {
           date = data.datecut;
@@ -1262,6 +1262,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'name',
         'countuserCheck',
         'countdrugCode',
+        'time',
       ];
       let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
       let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
