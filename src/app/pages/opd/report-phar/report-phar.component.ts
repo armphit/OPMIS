@@ -54,7 +54,7 @@ export class ReportPharComponent implements OnInit {
     'item',
   ];
 
-  select = 'W8';
+  select = '';
 
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
@@ -109,7 +109,7 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 0) {
-      getData = await this.http.post('checkerPhar', formData);
+      getData = await this.http.post('checkerPhar_copy', formData);
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
@@ -125,7 +125,7 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 1) {
-      getData = await this.http.post('dispenserPhar', formData);
+      getData = await this.http.post('dispenserPhar_copy', formData);
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
