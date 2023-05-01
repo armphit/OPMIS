@@ -55,6 +55,7 @@
           <mat-form-field>
             <mat-label>Select floor</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
+              <mat-option value="">All</mat-option>
               <mat-option value="W9">ชั้น 1</mat-option>
               <mat-option value="W8">ชั้น 2</mat-option>
               <mat-option value="W18">ชั้น 3</mat-option>
@@ -220,6 +221,7 @@
           <mat-form-field>
             <mat-label>Select floor</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
+              <mat-option value="">All</mat-option>
               <mat-option value="W9">ชั้น 1</mat-option>
               <mat-option value="W8">ชั้น 2</mat-option>
               <mat-option value="W18">ชั้น 3</mat-option>
