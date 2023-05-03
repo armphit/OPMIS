@@ -963,7 +963,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
             freetextany = lamed.freetext1.substring(
               index + 1,
-              lamed.freetext1.lenght
+              lamed.freetext1.length
             );
           }
         }
@@ -1273,12 +1273,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       };
 
       let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+      let dataDrug = getData.response.datadrugcheck;
+      let sum = dataDrug.reduce(function (a: any, b: any) {
+        return a + +new Date('1970T' + b.time + 'Z');
+      }, 0);
+      dataDrug[dataDrug.length] = dataDrug[dataDrug.length] = {
+        userChec: '',
+        name: 'รวม',
+        countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
+          return accumulator + object.countuserCheck;
+        }, 0),
+        countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
+          return accumulator + object.countdrugCode;
+        }, 0),
+        time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
+      };
 
       if (getData.connect) {
-        if (getData.response.datadrugcheck.length) {
-          this.dataSource5 = new MatTableDataSource(
-            getData.response.datadrugcheck
-          );
+        if (dataDrug.length) {
+          this.dataSource5 = new MatTableDataSource(dataDrug);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
           this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
