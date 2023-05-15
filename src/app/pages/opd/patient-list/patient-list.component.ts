@@ -960,11 +960,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
           if (freetext1.length) {
             let index = lamed.freetext1.indexOf(',');
-
-            freetextany = lamed.freetext1.substring(
-              index + 1,
-              lamed.freetext1.length
-            );
+            if (index > 0) {
+              freetextany = lamed.freetext1.substring(
+                index + 1,
+                lamed.freetext1.length
+              );
+            }
           }
         }
 
