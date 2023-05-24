@@ -376,7 +376,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             dataPDF.getBase64(async (buffer: any) => {
               let getData: any = await this.http.Printjs('convertbuffer', {
                 data: buffer,
-                name: 'testpdf' + '.pdf',
+                name: `${this.dataP.patientNO}.pdf`,
                 ip: this.dataUser.print_ip,
                 printName: this.dataUser.print_name,
                 hn: this.dataP.patientNO,
@@ -557,7 +557,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               dataPDF.getBase64(async (buffer: any) => {
                 let getData: any = await this.http.Printjs('convertbuffer', {
                   data: buffer,
-                  name: 'testpdf' + '.pdf',
+                  name: `${this.dataP.patientNO}.pdf`,
                   ip: this.dataUser.print_ip,
                   printName: this.dataUser.print_name,
                   hn: this.dataP.patientNO,
@@ -1179,7 +1179,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         dataPDF.getBase64(async (buffer: any) => {
           let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
-            name: 'testpdf' + '.pdf',
+            name: `${this.dataP.patientNO}.pdf`,
             ip: this.dataUser.print_ip,
             printName: this.dataUser.print_name,
             hn: val.hn,
@@ -1275,23 +1275,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       let getData: any = await this.http.postNodejs('reportcheckmed', formData);
       let dataDrug = getData.response.datadrugcheck;
-      let sum = dataDrug.reduce(function (a: any, b: any) {
-        return a + +new Date('1970T' + b.time + 'Z');
-      }, 0);
-      dataDrug[dataDrug.length] = dataDrug[dataDrug.length] = {
-        userChec: '',
-        name: 'รวม',
-        countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
-          return accumulator + object.countuserCheck;
-        }, 0),
-        countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
-          return accumulator + object.countdrugCode;
-        }, 0),
-        time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
-      };
 
       if (getData.connect) {
         if (dataDrug.length) {
+          let sum = dataDrug.reduce(function (a: any, b: any) {
+            return a + +new Date('1970T' + b.time + 'Z');
+          }, 0);
+          dataDrug[dataDrug.length] = {
+            userChec: '',
+            name: 'รวม',
+            countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
+              return accumulator + object.countuserCheck;
+            }, 0),
+            countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
+              return accumulator + object.countdrugCode;
+            }, 0),
+            time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
+          };
           this.dataSource5 = new MatTableDataSource(dataDrug);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
