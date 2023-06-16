@@ -163,10 +163,7 @@ export class SeMedComponent implements OnInit {
         'percenStock',
         // 'totalQty',
         'drugLocation',
-        'LOT_NO',
-        'EXP_Date',
 
-        'amount',
         'active',
         'Action',
       ];
@@ -179,10 +176,6 @@ export class SeMedComponent implements OnInit {
         'percenStock',
         // 'totalQty',
         'drugLocation',
-        'LOT_NO',
-        'EXP_Date',
-
-        'amount',
       ];
     }
 

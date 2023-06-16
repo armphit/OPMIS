@@ -5,6 +5,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import _ from 'lodash';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
@@ -28,56 +29,56 @@ export class OtherMedComponent implements OnInit {
   });
 
   public location: any = [
-    {
-      id: 'JV',
-      name: 'เครื่องนับยาเม็ด',
-    },
-    {
-      id: 'LCA',
-      name: 'แพ็คยาเม็ด',
-    },
-    {
-      id: 'Manual',
-      name: 'ตู้จัดมือ',
-    },
-    {
-      id: 'CDMed',
-      name: 'ตู้ยาควบคุม',
-    },
-    {
-      id: 'INJ',
-      name: 'ตู้ยาฉีด',
-    },
-    {
-      id: 'Ref',
-      name: 'ตู้เย็น',
-    },
-    {
-      id: 'Nsemed',
-      name: 'ยาเศษ',
-    },
-    {
-      id: 'ตู้ฉร',
-      name: 'ตู้ฉร',
-    },
-    {
-      id: 'EL11',
-      name: 'EL11M',
-    },
-    {
-      id: 'EL14',
-      name: 'EL14M',
-    },
-    {
-      id: 'EL15',
-      name: 'EL15M',
-    },
+    // {
+    //   id: 'JV',
+    //   name: 'เครื่องนับยาเม็ด',
+    // },
+    // {
+    //   id: 'LCA',
+    //   name: 'แพ็คยาเม็ด',
+    // },
+    // {
+    //   id: 'Manual',
+    //   name: 'ตู้จัดมือ',
+    // },
+    // {
+    //   id: 'CDMed',
+    //   name: 'ตู้ยาควบคุม',
+    // },
+    // {
+    //   id: 'INJ',
+    //   name: 'ตู้ยาฉีด',
+    // },
+    // {
+    //   id: 'Ref',
+    //   name: 'ตู้เย็น',
+    // },
+    // {
+    //   id: 'Nsemed',
+    //   name: 'ยาเศษ',
+    // },
+    // {
+    //   id: 'ตู้ฉร',
+    //   name: 'ตู้ฉร',
+    // },
+    // {
+    //   id: 'EL11',
+    //   name: 'EL11M',
+    // },
+    // {
+    //   id: 'EL14',
+    //   name: 'EL14M',
+    // },
+    // {
+    //   id: 'EL15',
+    //   name: 'EL15M',
+    // },
   ];
 
   deviceFilter = new FormControl('');
   codeFilter = new FormControl('');
   filterValues = {
-    deviceName: '',
+    device: '',
     drugCode: '',
     // check: '',
   };
@@ -126,8 +127,8 @@ export class OtherMedComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.deviceFilter.valueChanges.subscribe((deviceName) => {
-      this.filterValues.deviceName = deviceName;
+    this.deviceFilter.valueChanges.subscribe((device) => {
+      this.filterValues.device = device;
       this.dataSource.filter = JSON.stringify(this.filterValues);
     });
     this.codeFilter.valueChanges.subscribe((drugCode) => {
@@ -155,9 +156,7 @@ export class OtherMedComponent implements OnInit {
     this.displayedColumns = [
       'drugCode',
       'drugName',
-      'LOT_NO',
-      'EXP_Date',
-      'qty',
+
       'device',
       'position',
       'freq',
@@ -169,46 +168,22 @@ export class OtherMedComponent implements OnInit {
     formData.append('date1', this.startDate);
     formData.append('date2', this.endDate);
     let getData: any = await this.http.post('listOtherDrug', formData);
-    let getDrugOnHand: any = await this.http.get('getDrugOnHand');
-
-    const result = Array.from(
-      new Set(
-        getDrugOnHand.response.result.map((s: { drugCode: any }) => s.drugCode)
-      )
-    ).map((lab) => {
-      return {
-        drugCode: lab,
-        LOT_NO: getDrugOnHand.response.result
-          .filter((s: { drugCode: any }) => s.drugCode === lab)
-          .map((edition: { LOT_NO: any }) => edition.LOT_NO),
-        EXP_Date: getDrugOnHand.response.result
-          .filter((s: { drugCode: any }) => s.drugCode === lab)
-          .map((edition: { EXP_Date: any }) => edition.EXP_Date),
-        qty: getDrugOnHand.response.result
-          .filter((s: { drugCode: any }) => s.drugCode === lab)
-          .map((edition: { amount: any }) => edition.amount),
-      };
-    });
-
-    var finalVal = getData.response.result.map(function (emp: {
-      drugCode: any;
-    }) {
-      return {
-        ...emp,
-        ...(result.find(
-          (item: { drugCode: any }) => item.drugCode === emp.drugCode
-        ) ?? { LOT_NO: null, EXP_Date: null, qty: null }),
-      };
-    });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.getHidden = 1;
-        this.dataDrug = finalVal;
+        this.dataDrug = getData.response.result;
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
+        this.location = this.dataDrug
+          .map((a: any) => a.device)
+          .filter(
+            (arr: any, index: any, self: any) =>
+              index === self.findIndex((t: any) => t === arr)
+          )
+          .sort();
       } else {
         this.getHidden = 0;
         this.dataDrug = null;
@@ -225,7 +200,7 @@ export class OtherMedComponent implements OnInit {
       let searchTerms = JSON.parse(filter);
 
       return (
-        data.deviceName.indexOf(searchTerms.deviceName) !== -1 &&
+        data.device.indexOf(searchTerms.device) !== -1 &&
         data.drugCode
           .toLowerCase()
           .indexOf(searchTerms.drugCode.toLowerCase()) !== -1
@@ -235,8 +210,8 @@ export class OtherMedComponent implements OnInit {
     return filterFunction;
   }
   loname = 'All';
-  drug_r = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
-  drug_m = ['M1', 'M2', 'M21', 'M22', 'M3', 'M41', 'M42'];
+  // drug_r = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7'];
+  // drug_m = ['M1', 'M2', 'M21', 'M22', 'M3', 'M41', 'M42'];
   loName(e: any) {
     this.loname = e.source.triggerValue;
     this.nameExcel2 = `${this.loname} ${this.startDate}_${this.endDate}`;

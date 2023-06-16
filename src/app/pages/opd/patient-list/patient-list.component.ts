@@ -103,17 +103,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.idFilter.valueChanges.subscribe((patientNO) => {
       this.filterValues.patientNO = patientNO.trim();
 
-      if (this.filterValues.patientNO) {
-        this.dataSource.filter = JSON.stringify(this.filterValues);
-      }
+      // if (this.filterValues.patientNO) {
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+      // }
     });
 
     this.nameFilter.valueChanges.subscribe((check) => {
       this.filterValues.check = check;
 
-      if (this.filterValues.check) {
-        this.dataSource.filter = JSON.stringify(this.filterValues);
-      }
+      // if (this.filterValues.check) {
+      this.dataSource.filter = JSON.stringify(this.filterValues);
+      // }
     });
 
     // }, 500);

@@ -24,12 +24,11 @@ export class DrugManageComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
-  }
-
-  ngOnInit(): void {
     this.getData();
     this.getSync();
   }
+
+  ngOnInit(): void {}
 
   public getData = async () => {
     this.displayedColumns = [
