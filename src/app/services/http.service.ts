@@ -106,7 +106,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .post(this.syncPath + path, data)
-        // .post(thSSis.testPath + path, data)
+        // .post(this.testPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
