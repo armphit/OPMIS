@@ -56,11 +56,14 @@ export class ReportDispenseComponent implements OnInit {
     formData.append('date1', startDate);
     formData.append('date2', endDate);
 
-    let getData: any = await this.http.post('getDispenseDaterange', formData);
+    // let getData: any = await this.http.post('getDispenseDaterange', formData);
+    let val = { date1: startDate, date2: endDate };
+
+    let getData: any = await this.http.postNodejs('getDispenseDaterange', val);
 
     if (getData.connect) {
-      if (getData.response.result.length) {
-        this.dataDrug = getData.response.result;
+      if (getData.response[0].length) {
+        this.dataDrug = getData.response[0];
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
