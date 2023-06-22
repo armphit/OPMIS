@@ -101,7 +101,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     // setTimeout(() => {
 
     this.idFilter.valueChanges.subscribe((patientNO) => {
-      this.filterValues.patientNO = patientNO ? patientNO.trim() : patientNO;
+      this.filterValues.patientNO = patientNO ? patientNO.trim() : '';
 
       // if (this.filterValues.patientNO) {
 
