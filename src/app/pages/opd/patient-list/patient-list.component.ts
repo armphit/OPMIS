@@ -111,9 +111,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.nameFilter.valueChanges.subscribe((check) => {
       this.filterValues.check = check;
 
-      // if (this.filterValues.check) {
-      this.dataSource.filter = JSON.stringify(this.filterValues);
-      // }
+      if (this.filterValues.check) {
+        this.filterValues.check =
+          this.filterValues.check === 'ALL' ? '' : this.filterValues.check;
+        this.dataSource.filter = JSON.stringify(this.filterValues);
+      }
     });
 
     // }, 500);
