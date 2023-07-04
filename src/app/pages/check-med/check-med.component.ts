@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as moment from 'moment';
-import * as CryptoJS from 'crypto-js';
+
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -67,7 +67,7 @@ export class CheckMedComponent implements OnInit {
   }
   checkprint: boolean = false;
   test() {
-    this.getData('558472');
+    this.getData('1766465');
   }
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -415,15 +415,7 @@ export class CheckMedComponent implements OnInit {
           .every((v: any) => {
             return v.checkqty == 0;
           });
-        if (this.sumcheck && this.countcheck === this.patient_drug.length) {
-          setTimeout(() => {
-            this.swiper.nativeElement.focus();
-          }, 100);
-        } else {
-          setTimeout(() => {
-            this.drugbar.nativeElement.focus();
-          }, 100);
-        }
+
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -448,6 +440,15 @@ export class CheckMedComponent implements OnInit {
           showConfirmButton: false,
           timer: 1500,
         });
+        if (this.sumcheck && this.countcheck === this.patient_drug.length) {
+          setTimeout(() => {
+            this.swiper.nativeElement.focus();
+          }, 1800);
+        } else {
+          setTimeout(() => {
+            this.drugbar.nativeElement.focus();
+          }, 100);
+        }
       } else {
         Swal.fire('ไม่สามารถเชื่อม updateCheckmed ได้!', '', 'error');
       }

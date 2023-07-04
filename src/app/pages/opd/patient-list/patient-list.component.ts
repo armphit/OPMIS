@@ -146,14 +146,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let dataPatient: any = null;
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
-        formData.append('date', moment(this.date1.value).format('YYYY-MM-DD'));
+        formData.append(
+          'date',
+          moment(this.campaignOne.value.start).format('YYYY-MM-DD')
+        );
         getData = await this.http.post('listPatientQpost', formData);
         dataPatient = getData.response.result;
       } else {
         formData.append('floor', this.select);
         formData.append(
           'date',
-          moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
+          moment(this.campaignOne.value.start)
+            .add(543, 'year')
+            .format('YYYYMMDD')
         );
         getData = await this.http.post('getdatapatientFloor', formData);
         // let getData2: any = await this.http.post('statusyHomc', formData);
@@ -747,6 +752,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
 
   public endChange(event: any) {
+    console.log(this.getTab);
+
     if (event.value) {
       if (this.getTab == 2) {
         this.getReport();
@@ -756,6 +763,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.reportDispend();
       } else if (this.getTab == 4) {
         this.reportCheckmed();
+      } else if (this.getTab == 0 || this.getTab == null) {
+        this.getData();
       }
     }
   }
