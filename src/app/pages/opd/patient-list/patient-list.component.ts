@@ -147,10 +147,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
         formData.append(
-          'date',
+          'date1',
           moment(this.campaignOne.value.start).format('YYYY-MM-DD')
         );
+        formData.append(
+          'date2',
+          moment(this.campaignOne.value.end).format('YYYY-MM-DD')
+        );
         getData = await this.http.post('listPatientQpost', formData);
+
         dataPatient = getData.response.result;
       } else {
         formData.append('floor', this.select);
@@ -752,8 +757,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
 
   public endChange(event: any) {
-    console.log(this.getTab);
-
     if (event.value) {
       if (this.getTab == 2) {
         this.getReport();
