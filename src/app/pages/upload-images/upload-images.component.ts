@@ -39,7 +39,7 @@ export class UploadImagesComponent implements OnInit {
   upload_img: any = null;
   upload_img_name: any = null;
   img_name: any = null;
-
+  mathRandom: any = '?lastmod=' + Math.random();
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;

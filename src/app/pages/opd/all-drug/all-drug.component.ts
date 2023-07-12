@@ -47,7 +47,7 @@ export class AllDrugComponent implements OnInit {
     .role;
 
   items!: GalleryItem[];
-
+  mathRandom: any = '?lastmod=' + Math.random();
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -347,8 +347,8 @@ export class AllDrugComponent implements OnInit {
     this.items = val.map(
       (item: any) =>
         new ImageItem({
-          src: this.http.imgPath + item,
-          thumb: this.http.imgPath + item,
+          src: this.http.imgPath + item + this.mathRandom,
+          thumb: this.http.imgPath + item + this.mathRandom,
         })
     );
 

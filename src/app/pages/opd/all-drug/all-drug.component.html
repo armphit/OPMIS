@@ -212,7 +212,11 @@
           >
             <img
               *ngIf="element.pathImg"
-              [src]="'http://192.168.185.160:88/api' + element.pathImg[0]"
+              [src]="
+                'http://192.168.185.160:88/api' +
+                element.pathImg[0] +
+                mathRandom
+              "
               width="130"
               height="115"
               style="padding: 5px; cursor: pointer"
