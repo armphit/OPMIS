@@ -85,7 +85,7 @@ export class CheckMedComponent implements OnInit {
   panelOpenState = true;
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   drug_xmed: any = [];
-
+  mathRandom: any = '?lastmod=' + Math.random();
   async getData(hn: any) {
     this.countcheck = 0;
     let formData = new FormData();
@@ -427,9 +427,12 @@ export class CheckMedComponent implements OnInit {
           imageUrl: value.pathImage
             ? value.typeNum.indexOf('pack') != -1
               ? this.http.imgPath +
-                value.pathImage[value.typeNum.indexOf('pack')]
+                value.pathImage[value.typeNum.indexOf('pack')] +
+                this.mathRandom
               : value.pathImage[value.pathImage.length - 1]
-              ? this.http.imgPath + value.pathImage[value.pathImage.length - 1]
+              ? this.http.imgPath +
+                value.pathImage[value.pathImage.length - 1] +
+                this.mathRandom
               : ''
             : '',
           imageWidth: 200,
@@ -716,8 +719,8 @@ export class CheckMedComponent implements OnInit {
     this.items = val.pathImage.map(
       (item: any) =>
         new ImageItem({
-          src: this.http.imgPath + item,
-          thumb: this.http.imgPath + item,
+          src: this.http.imgPath + item + this.mathRandom,
+          thumb: this.http.imgPath + item + this.mathRandom,
         })
     );
 
@@ -839,9 +842,13 @@ export class CheckMedComponent implements OnInit {
       // }`,
       imageUrl: data.pathImage
         ? data.typeNum.indexOf('pack') != -1
-          ? this.http.imgPath + data.pathImage[data.typeNum.indexOf('pack')]
+          ? this.http.imgPath +
+            data.pathImage[data.typeNum.indexOf('pack')] +
+            this.mathRandom
           : data.pathImage[data.pathImage.length - 1]
-          ? this.http.imgPath + data.pathImage[data.pathImage.length - 1]
+          ? this.http.imgPath +
+            data.pathImage[data.pathImage.length - 1] +
+            this.mathRandom
           : ''
         : '',
       imageWidth: 200,
