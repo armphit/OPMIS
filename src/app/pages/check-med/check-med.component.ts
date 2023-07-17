@@ -473,8 +473,11 @@ export class CheckMedComponent implements OnInit {
 
     let freetext1 = data.freetext1.split(',');
     let free_under = freetext1.slice(1);
+    data.freetext2 =
+      data.freetext2.charAt(0) === ','
+        ? data.freetext2.substring(1)
+        : data.freetext2;
     let freetext2 = data.freetext2.split(',');
-
     let right = data.righttext1.includes(' ')
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
@@ -634,7 +637,7 @@ export class CheckMedComponent implements OnInit {
         //     })
         //   : '',
         freetext2
-          ? data.drugCode.trim() === 'MIRTA'
+          ? data.drugCode.trim() === 'MIRTA' || data.drugCode.trim() === 'ALEND'
             ? {
                 text: data.freetext2.trim(),
                 alignment: 'center',
