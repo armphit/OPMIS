@@ -14,7 +14,8 @@ import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as moment from 'moment';
-
+import { FormGroup, FormControl } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -57,13 +58,16 @@ export class CheckMedComponent implements OnInit {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  public campaignOne = new FormGroup({
+    picker: new FormControl(new Date()),
+  });
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
-    public gallery: Gallery
+    public gallery: Gallery,
+    private dateAdapter: DateAdapter<Date>
   ) {
-    // this.test();
+    this.dateAdapter.setLocale('en-GB');
   }
   checkprint: boolean = false;
   test() {
@@ -90,22 +94,25 @@ export class CheckMedComponent implements OnInit {
     this.countcheck = 0;
     let formData = new FormData();
     formData.append('hn', hn.trim());
-    formData.append(
-      'date',
-      moment(new Date()).add(543, 'year').format('YYYYMMDD')
-    );
+    // formData.append(
+    //   'date',
+    //   moment(this.campaignOne.value.picker).add(543, 'year').format('YYYYMMDD')
+    // );
 
     let getData: any = await this.http.post('patient_contract', formData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        let getData2: any = await this.http.post('Datacheckdrug', formData);
+        // let getData2: any = await this.http.post('Datacheckdrug', formData);
 
         // if (getData2.connect) {
         //   if (getData2.response.rowCount > 0) {
         let data_send = {
           hn: hn.trim(),
-          date: moment(new Date()).add(543, 'year').format('YYYYMMDD'),
+          date: moment(this.campaignOne.value.picker)
+            .add(543, 'year')
+            .format('YYYYMMDD'),
+          dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
           user: this.dataUser.user,
         };
 
@@ -461,6 +468,8 @@ export class CheckMedComponent implements OnInit {
   }
 
   async sendPDF(data: any) {
+    console.log(data);
+
     let namePatient = '';
     namePatient =
       this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;
