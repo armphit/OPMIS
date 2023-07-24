@@ -53,16 +53,29 @@ export class ReportPharComponent implements OnInit {
     'order',
     'item',
   ];
+  public displayedColumns4: string[] = [
+    'patientNO',
+    'QN',
+    'patientName',
+    'checker_id',
+    'checker_name',
+    'check_time',
+    'dispenser_id',
+    'dispenser_name',
+    'dispens_time',
+    'createDT_Q',
+  ];
 
   select = '';
 
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
   @ViewChild('MatSort3') sort3!: MatSort;
+  @ViewChild('MatSort4') sort4!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   @ViewChild('MatPaginator2') paginator2!: MatPaginator;
   @ViewChild('MatPaginator3') paginator3!: MatPaginator;
-
+  @ViewChild('MatPaginator4') paginator4!: MatPaginator;
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -140,6 +153,22 @@ export class ReportPharComponent implements OnInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
+    } else if (this.numTab == 3) {
+      getData = await this.http.post('reportPharCheckandDispend', formData);
+
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort4;
+          this.dataSource.paginator = this.paginator4;
+          this.nameExcel = `รายงานเภสัชเช็คยาและจ่ายยา`;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
     }
   };
 
@@ -153,6 +182,10 @@ export class ReportPharComponent implements OnInit {
   }
 
   public applyFilter3(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  public applyFilter4(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
