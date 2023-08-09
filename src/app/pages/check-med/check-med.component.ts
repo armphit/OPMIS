@@ -468,8 +468,6 @@ export class CheckMedComponent implements OnInit {
   }
 
   async sendPDF(data: any) {
-    console.log(data);
-
     let namePatient = '';
     namePatient =
       this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;

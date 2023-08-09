@@ -965,32 +965,41 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ? getDataprint.response.intruction[0]
           : [];
 
-        let freetext1 = [];
-        let freetextany = '';
+        // let freetext1 = [];
+        // let freetextany = '';
 
-        if (lamed.freetext1) {
-          freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : [];
+        // if (lamed.freetext1) {
+        //   freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : [];
 
-          if (freetext1.length) {
-            let index = lamed.freetext1.indexOf(',');
-            if (index > 0) {
-              freetextany = lamed.freetext1.substring(
-                index + 1,
-                lamed.freetext1.length
-              );
-            }
-          }
-        }
+        //   if (freetext1.length) {
+        //     let index = lamed.freetext1.indexOf(',');
 
-        let freetext2 = lamed.freetext2 ? lamed.freetext2.split(',') : '';
+        //     if (index > 0) {
+        //       freetextany = lamed.freetext1.substring(
+        //         index + 1,
+        //         lamed.freetext1.length
+        //       );
+        //       console.log(freetextany);
+        //     }
+        //   }
+        // }
 
+        // let freetext2 = lamed.freetext2 ? lamed.freetext2.split(',') : '';
+        let freetext1 = lamed.freetext1.split(',');
+        let free_under = freetext1.slice(1);
+        lamed.freetext2 =
+          lamed.freetext2.charAt(0) === ','
+            ? lamed.freetext2.substring(1)
+            : lamed.freetext2;
+        let freetext2 = lamed.freetext2.split(',');
+        let freetext_lang = lamed.freetext0 ? lamed.freetext0.trim() : '';
         let nameHn = namePatient + '   HN ' + numHN.trim();
         if (lamed.freetext0) {
           if (lamed.freetext0.trim() == 'เม็ด') {
             if (lamed.dosage) {
               if (lamed.dosage.trim() == '0') {
                 lamed.dosage = '';
-                lamed.freetext0 = '';
+                freetext_lang = '';
               } else if (lamed.dosage.trim() == '0.5') {
                 lamed.dosage = 'ครึ่ง';
               } else if (
@@ -1005,13 +1014,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 lamed.dosage = 'สามส่วนสี่';
               } else if (lamed.dosage.trim() == '1.5') {
                 lamed.dosage = 'หนึ่งเม็ดครึ่ง';
-                lamed.freetext0 = '';
+                freetext_lang = '';
               } else if (lamed.dosage.trim() == '2.5') {
                 lamed.dosage = 'สองเม็ดครึ่ง';
-                lamed.freetext0 = '';
+                freetext_lang = '';
               } else if (lamed.dosage.trim() == '3.5') {
                 lamed.dosage = 'สามเม็ดครึ่ง';
-                lamed.freetext0 = '';
+                freetext_lang = '';
               }
             } else {
               lamed.dosage = '';
@@ -1026,6 +1035,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             }
           }
         }
+        let lamedName = lamed.lamedName ? lamed.lamedName.trim() : '';
+        let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${
+          freetext1[0] ? freetext1[0] : ''
+        }`;
+
         let date = '';
         if (data.datecut) {
           date = data.datecut;
@@ -1071,6 +1085,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   width: 150,
                   text: `${data.drugName ? data.drugName : data.drugname}`,
                   noWrap: true,
+                  bold: true,
+                  fontSize: 14,
                 },
                 {
                   width: '*',
@@ -1096,32 +1112,45 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               fontSize: 13,
             },
             {
-              text: `${lamed.lamedName ? lamed.lamedName.trim() : ''} ${
-                lamed.dosage && lamed.dosage != 0 ? lamed.dosage.trim() : ''
-              } ${lamed.freetext0 ? lamed.freetext0.trim() : ''} ${
-                freetext1[0] ? freetext1[0] : ''
-              }`,
+              text: textProbrem,
               bold: true,
-              fontSize: 15,
+              fontSize: textProbrem.length > 57 ? 14 : 15,
               noWrap: true,
               alignment: 'center',
             },
             {
-              text: freetextany,
+              text: free_under ? free_under.join(', ') : '',
               bold: true,
               fontSize: 15,
               alignment: 'center',
-              // margin: [0, 0, 0, 5],
             },
+            // free_under
+            //   ? free_under.map(function (item: any) {
+            //       return {
+            //         text: item.trim(),
+            //         alignment: 'center',
+            //         bold: true,
+            //         fontSize: 15,
+            //       };
+            //     })
+            //   : '',
             freetext2
-              ? freetext2.map(function (item: any) {
-                  return {
-                    text: item.trim(),
+              ? lamed.invCode.trim() === 'MIRTA' ||
+                lamed.invCode.trim() === 'ALEND'
+                ? {
+                    text: lamed.freetext2.trim(),
                     alignment: 'center',
-                    fontSize: item.trim().length >= 80 ? 12 : 13,
+                    fontSize: 13,
                     bold: true,
-                  };
-                })
+                  }
+                : freetext2.map(function (item: any) {
+                    return {
+                      text: item.trim(),
+                      alignment: 'center',
+                      fontSize: item.trim().length >= 80 ? 12 : 13,
+                      bold: true,
+                    };
+                  })
               : '',
           ] as any,
 
