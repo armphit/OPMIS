@@ -994,6 +994,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let freetext2 = lamed.freetext2.split(',');
         let freetext_lang = lamed.freetext0 ? lamed.freetext0.trim() : '';
         let nameHn = namePatient + '   HN ' + numHN.trim();
+
         if (lamed.freetext0) {
           if (lamed.freetext0.trim() == 'เม็ด') {
             if (lamed.dosage) {
@@ -1034,11 +1035,33 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               lamed.dosage = '';
             }
           }
+        } else {
+          lamed.dosage = lamed.dosage
+            ? lamed.dosage.trim() == '0'
+              ? ''
+              : lamed.dosage.trim()
+            : '';
         }
         let lamedName = lamed.lamedName ? lamed.lamedName.trim() : '';
         let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${
           freetext1[0] ? freetext1[0] : ''
         }`;
+
+        let nameDrug = data.drugName
+          ? data.drugName.trim()
+          : data.drugname
+          ? data.drugname.trim()
+          : '';
+        let drugCode = data.drugcode
+          ? data.drugcode.trim()
+          : data.drugCode
+          ? data.drugCode.trim()
+          : '';
+
+        if (drugCode === 'SOFOS8') {
+          nameDrug = nameDrug.substring(0, 36);
+          nameDrug = nameDrug + '...';
+        }
 
         let date = '';
         if (data.datecut) {
@@ -1083,10 +1106,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               columns: [
                 {
                   width: 150,
-                  text: `${data.drugName ? data.drugName : data.drugname}`,
-                  noWrap: true,
+                  text: nameDrug,
                   bold: true,
-                  fontSize: 14,
+                  fontSize: data.checkLength ? 13 : 14,
+                  noWrap: true,
                 },
                 {
                   width: '*',
@@ -1195,10 +1218,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             font: 'THSarabunNew',
           },
         };
-        // pdfMake.createPdf(docDefinition).open();
-        // return false;
-        const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-        return pdfDocGenerator;
+        pdfMake.createPdf(docDefinition).open();
+        return false;
+        // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+        // return pdfDocGenerator;
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
         return false;
