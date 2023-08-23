@@ -591,6 +591,7 @@ export class CheckMedComponent implements OnInit {
             },
           ],
           fontSize: 12,
+          bold: true,
         },
         {
           canvas: [
@@ -617,7 +618,7 @@ export class CheckMedComponent implements OnInit {
         },
         {
           text: data.itemidentify ? data.itemidentify.trim() : `   `,
-
+          bold: true,
           fontSize: 13,
         },
         {
@@ -676,6 +677,7 @@ export class CheckMedComponent implements OnInit {
                 data.indication
               }`,
               fontSize: 12,
+              bold: true,
             },
             ...(data.qrCode
               ? [

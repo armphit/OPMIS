@@ -1218,10 +1218,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             font: 'THSarabunNew',
           },
         };
-        pdfMake.createPdf(docDefinition).open();
-        return false;
-        // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-        // return pdfDocGenerator;
+        // pdfMake.createPdf(docDefinition).open();
+        // return false;
+        const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+        return pdfDocGenerator;
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
         return false;
