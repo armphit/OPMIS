@@ -68,10 +68,11 @@ export class CheckMedComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('en-GB');
+    // this.test();
   }
   checkprint: boolean = false;
   test() {
-    this.getData('1766465');
+    this.getData('1553115');
   }
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -966,5 +967,88 @@ export class CheckMedComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     }
+  }
+
+  async dataFix(data: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to print all?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let sendVal = [];
+        data.sort((a: any, b: any) => {
+          return a.seq - b.seq;
+        });
+
+        for (let index = 0; index < data.length; index++) {
+          sendVal[index] = {
+            user: this.dataUser.name,
+            date: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
+            hn: data[index].hn,
+            drugCode: data[index].drugCode.trim(),
+            led: 'LED1',
+            check: 1,
+          };
+        }
+
+        let getData: any = await this.http.Printjs('dataCheckmed', sendVal);
+
+        if (getData.connect) {
+          if (getData.response.length) {
+            this.patient_drug = getData.response;
+
+            this.patient_drug.forEach((v: any) => {
+              if (!v.checkstamp) {
+                v.isSort = 2;
+              } else if (v.checkstamp && v.checkqty) {
+                v.isSort = 1;
+              } else if (v.checkstamp && !v.checkqty) {
+                v.isSort = 3;
+              }
+            });
+
+            this.countcheck = this.patient_drug.filter(function (item: any) {
+              if (item.checkstamp && !item.checkqty) {
+                return true;
+              } else {
+                return false;
+              }
+            }).length;
+            this.sumcheck = this.patient_drug
+              .filter(function (item: any) {
+                if (item.checkstamp && !item.checkqty) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              .every((v: any) => {
+                return v.checkqty == 0;
+              });
+
+            this.dataSource = new MatTableDataSource(this.patient_drug);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'บันทึกข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            console.log(getData);
+            Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
+        }
+      }
+    });
   }
 }

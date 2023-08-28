@@ -139,9 +139,18 @@
                 mat-raised-button
                 color="warn"
                 (click)="deletePatient(patient_drug[0])"
+                style="margin-right: 10px"
               >
                 Cancle
               </button>
+              <!-- <button
+                *ngIf="countcheck !== patient_drug.length && sumcheck"
+                mat-raised-button
+                color="primary"
+                (click)="dataFix(patient_drug)"
+              >
+                Print All
+              </button> -->
             </div>
             <div class="col-lg-3" style="text-align: right">
               <button

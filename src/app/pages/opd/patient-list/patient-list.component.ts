@@ -22,7 +22,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { interval, Subscription } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -72,7 +72,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     check: '',
   };
 
-  date1 = new FormControl(new Date());
+  // date1 = new FormControl(new Date());
   // @ViewChild('swiper') swiper!: ElementRef;
   private updateSubscription!: Subscription;
   constructor(
@@ -84,6 +84,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
+
+    // this.getDrug();
   }
 
   ngAfterViewInit() {
@@ -260,7 +262,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.dataP = val;
     if (this.dataP) {
-      let formData = new FormData();
       formData.append('cid', val.cid);
       let drug_allergic: any = await this.http.post('drug_allergic', formData);
 
@@ -280,16 +281,36 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('hn', val.patientNO);
     formData.append(
       'date',
-      moment(this.date1.value).add(543, 'year').format('YYYYMMDD')
+      moment(val.createdDT).add(543, 'year').format('YYYYMMDD')
     );
+    formData.append('date2', moment(val.createdDT).format('YYYY-MM-DD'));
     formData.append('queue', val.QN);
     formData.append('floor', this.select);
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
+    // let getData3: any = await this.http.postNodejs('getCompiler', {
+    //   hn: val.patientNO,
+    //   date: moment(val.createdDT).format('YYYY-MM-DD'),
+    // });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        this.drugPatient = getData.response.result;
+        let mergeData = getData.response.result;
+        // if (getData3.connect) {
+        //   if (getData3.response) {
+        //     mergeData = getData.response.result.map((emp: any) => {
+        //       return {
+        //         ...emp,
+        //         ...(getData3.response.find(
+        //           (item: { drugCode: any }) =>
+        //             item.drugCode.trim() === emp.drugCode.trim()
+        //         ) ?? { userCheck: '' }),
+        //       };
+        //     });
+        //   }
+        // }
+        this.drugPatient = mergeData;
+
         if (getData2.response.result.length) {
           this.namePhar = getData2.response.result[0].name;
         }
@@ -298,14 +319,72 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         win.$('#exampleModal').modal('show');
       } else {
         this.drugPatient = null;
-        let win: any = window;
-        win.$('#exampleModal').modal('show');
+        // let win: any = window;
+        // win.$('#exampleModal').modal('show');
         Swal.fire('ไม่มีข้อมูลใบสั่งยา!', '', 'error');
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
+
+  // filteredOptions!: Observable<any>;
+  myControl: FormControl = new FormControl();
+  dataSelect: any = null;
+  options: string[] = ['One', 'Two', 'Three', 'Four', 'Five'];
+  filteredOptions: any;
+  // public inputRegister = new FormGroup({
+  //   id: new FormControl('', [Validators.required]),
+  //   name: new FormControl('', [Validators.required]),
+  //   role: new FormControl('', [Validators.required]),
+  //   password: new FormControl('', [Validators.required]),
+  //   passwordCon: new FormControl('', [Validators.required]),
+  // });
+
+  @ViewChild('inputerror') inputerror!: ElementRef<HTMLInputElement>;
+  @Input() selectedValues: any = null;
+  reportError(val: any) {
+    // setTimeout(() => {
+    //   this.filteredOptions = this.myControl.valueChanges.pipe(
+    //     startWith(''),
+    //     map((value) => this._filter(value))
+    //   );
+    // }, 500);
+    this.getDrug();
+    let win: any = window;
+    win.$('#check_error').modal('show');
+  }
+  public onChange(event: any) {}
+
+  async getDrug() {
+    let getData: any = await this.http.serchDrug();
+
+    if (getData.connect) {
+      if (getData.response.data.length > 0) {
+        this.dataSelect = getData.response.data;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+  filter(): void {
+    const filterValue = this.inputerror.nativeElement.value.toLowerCase();
+
+    this.filteredOptions = this.dataSelect.filter((o: any) =>
+      o.tradename.trim().toLowerCase().includes(filterValue)
+    );
+  }
+
+  // private _filter(value: string): string[] {
+  //   return this.dataSelect
+  //     .map((x: { orderitemcode: any }) => x.orderitemcode)
+  //     .filter((option: string) =>
+  //       option
+  //         ? option.trim().toLowerCase().includes(value.toLowerCase())
+  //         : null
+  //     );
+  // }
 
   dataP: any = {};
   datatime: any = null;

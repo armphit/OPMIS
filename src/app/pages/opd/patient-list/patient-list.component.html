@@ -287,7 +287,7 @@
       id="exampleModal"
       data-backdrop="static"
     >
-      <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <p
@@ -429,6 +429,7 @@
                     <th>ชื่อยา</th>
                     <th>จำนวน</th>
                     <th>หน่วย</th>
+                    <th>ผู้จัด</th>
                     <th>วันที่</th>
                     <th></th>
                   </tr>
@@ -454,9 +455,18 @@
                       style="border-right: 0px; vertical-align: middle"
                       class="text-nowrap"
                     >
+                      {{ item.userCheck ? item.userCheck : "" }}
+                    </td>
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
                       {{ item.lastmodified }}
                     </td>
-                    <td style="border-right: 0px; vertical-align: middle">
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
                       <button
                         button
                         mat-raised-button
@@ -464,9 +474,20 @@
                         type="button"
                         class="butt-sm"
                         (click)="cutDispend(item)"
+                        style="margin-right: 10px"
                       >
                         ตัดจ่ายยา
                       </button>
+                      <!-- <button
+                        button
+                        mat-raised-button
+                        color="warn"
+                        type="button"
+                        class="butt-sm"
+                        (click)="reportError({ dataP: dataP, item: item })"
+                      >
+                        รายงานข้อผิดพลาด
+                      </button> -->
                     </td>
                   </tr>
                 </tbody>
@@ -740,6 +761,69 @@
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               Close
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="check_error">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Med Error</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- <mat-form-field class="example-full-width">
+              <mat-label>Number</mat-label>
+              <input
+                required
+                #inputerror
+                type="text"
+                placeholder="Pick one"
+                matInput
+                [formControl]="myControl"
+                [matAutocomplete]="auto"
+                (input)="filter()"
+                (focus)="filter()"
+              />
+              <mat-autocomplete requireSelection #auto="matAutocomplete">
+                <mat-option
+                  *ngFor="let option of filteredOptions"
+                  [value]="option.tradename.trim()"
+                >
+                  {{ option.tradename.trim() }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field> -->
+            <!-- <ng-select
+              [items]=""
+              (ngModelChange)="onChange($event)"
+              [(ngModel)]="selectedValues"
+              style="cursor: pointer"
+              [ngModelOptions]="{ standalone: true }"
+              bindLabel="hn"
+              bindValue="typeId"
+              placeholder="Select HN"
+            >
+            </ng-select> -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Save changes</button>
           </div>
         </div>
       </div>
