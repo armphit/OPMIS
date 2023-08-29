@@ -234,6 +234,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   drugPatient: any = null;
   namePhar = '';
   checkW: any = null;
+  userList: any = null;
+  drugList: any = null;
   listDrug = async (val: any) => {
     let formData = new FormData();
     this.hncut = null;
@@ -288,27 +290,37 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('floor', this.select);
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
-    // let getData3: any = await this.http.postNodejs('getCompiler', {
-    //   hn: val.patientNO,
-    //   date: moment(val.createdDT).format('YYYY-MM-DD'),
-    // });
+    let getData3: any = await this.http.postNodejs('getCompiler', {
+      hn: val.patientNO,
+      date: moment(val.createdDT).format('YYYY-MM-DD'),
+    });
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let mergeData = getData.response.result;
-        // if (getData3.connect) {
-        //   if (getData3.response) {
-        //     mergeData = getData.response.result.map((emp: any) => {
-        //       return {
-        //         ...emp,
-        //         ...(getData3.response.find(
-        //           (item: { drugCode: any }) =>
-        //             item.drugCode.trim() === emp.drugCode.trim()
-        //         ) ?? { userCheck: '' }),
-        //       };
-        //     });
-        //   }
-        // }
+        if (getData3.connect) {
+          if (getData3.response.get_compiler) {
+            mergeData = getData.response.result.map((emp: any) => {
+              return {
+                ...emp,
+                ...(getData3.response.get_compiler.find(
+                  (item: { drugCode: any }) =>
+                    item.drugCode.trim() === emp.drugCode.trim()
+                ) ?? { userCheck: '' }),
+              };
+            });
+          }
+          if (getData3.response.user) {
+            this.userList = getData3.response.user;
+          } else {
+            this.userList = null;
+          }
+          if (getData3.response.drug) {
+            this.drugList = getData3.response.drug;
+          } else {
+            this.drugList = null;
+          }
+        }
         this.drugPatient = mergeData;
 
         if (getData2.response.result.length) {
@@ -328,63 +340,175 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   };
 
-  // filteredOptions!: Observable<any>;
-  myControl: FormControl = new FormControl();
-  dataSelect: any = null;
-  options: string[] = ['One', 'Two', 'Three', 'Four', 'Five'];
-  filteredOptions: any;
-  // public inputRegister = new FormGroup({
-  //   id: new FormControl('', [Validators.required]),
-  //   name: new FormControl('', [Validators.required]),
-  //   role: new FormControl('', [Validators.required]),
-  //   password: new FormControl('', [Validators.required]),
-  //   passwordCon: new FormControl('', [Validators.required]),
-  // });
-
-  @ViewChild('inputerror') inputerror!: ElementRef<HTMLInputElement>;
-  @Input() selectedValues: any = null;
+  // dataSelect: any = null;
+  dataGood: any;
+  dataWrong: any;
+  dataInterceptor: any;
+  dataOffender: any;
+  @ViewChild('inputgood') inputgood!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputwrong') inputwrong!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputinterceptor')
+  inputinterceptor!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputoffender') inputoffender!: ElementRef<HTMLInputElement>;
+  setText = {
+    textposition: false,
+    texttype: false,
+  };
+  public medError = new FormGroup({
+    hn: new FormControl(''),
+    med: new FormControl(''),
+    position: new FormControl(''),
+    position_text: new FormControl(''),
+    type: new FormControl(''),
+    type_text: new FormControl(''),
+    medGood: new FormControl(''),
+    medGood_text: new FormControl(''),
+    medWrong: new FormControl(''),
+    medWrong_text: new FormControl(''),
+    interceptor: new FormControl(''),
+    offender: new FormControl(''),
+    note: new FormControl(''),
+    location: new FormControl(''),
+  });
   reportError(val: any) {
-    // setTimeout(() => {
-    //   this.filteredOptions = this.myControl.valueChanges.pipe(
-    //     startWith(''),
-    //     map((value) => this._filter(value))
-    //   );
-    // }, 500);
-    this.getDrug();
+    this.medError.reset();
+    this.getDataselect();
+    this.medError.patchValue({
+      med: {
+        code: val.item.drugCode ? val.item.drugCode.trim() : '',
+        med_name: val.item.drugName ? val.item.drugName.trim() : '',
+      },
+      hn: {
+        hn: val.dataP.patientNO,
+        hnDT: val.dataP.createdDT,
+      },
+      location: this.select,
+    });
+
     let win: any = window;
     win.$('#check_error').modal('show');
   }
-  public onChange(event: any) {}
+  public async submitInput() {
+    this.medError.value.position === 'other'
+      ? this.medError.value.position_text
+        ? this.medError.value.position_text
+        : 'ไม่ระบุข้อความ'
+      : this.medError.patchValue({
+          position_text: this.medError.value.position,
+        });
 
-  async getDrug() {
-    let getData: any = await this.http.serchDrug();
+    this.medError.value.type === 'other'
+      ? this.medError.value.type_text
+        ? this.medError.value.type_text
+        : 'ไม่ระบุข้อความ'
+      : this.medError.patchValue({
+          type_text: this.medError.value.type,
+        });
 
-    if (getData.connect) {
-      if (getData.response.data.length > 0) {
-        this.dataSelect = getData.response.data;
+    this.medError.patchValue({
+      interceptor: this.userList.find(
+        (val: any) => val.name === this.medError.value.interceptor
+      ),
+    });
+    this.medError.patchValue({
+      offender: this.userList.find(
+        (val: any) => val.name === this.medError.value.offender
+      ),
+    });
+
+    this.medError.patchValue({
+      medGood: this.drugList.find(
+        (val: any) => val.name.trim() === this.medError.value.medGood
+      ),
+    });
+    this.medError.patchValue({
+      medWrong: this.drugList.find(
+        (val: any) => val.name.trim() === this.medError.value.medWrong
+      ),
+    });
+    let win: any = window;
+    win.$('#check_error').modal('hide');
+    let getData3: any = await this.http.postNodejs(
+      'medError',
+      this.medError.value
+    );
+    if (getData3.connect) {
+      if (getData3.response.length) {
+        Swal.fire({
+          icon: 'success',
+          title: 'บันทึกข้อมูลสำเร็จ',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire('ไม่มีข้อมูล!', '', 'error');
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 
-  filter(): void {
-    const filterValue = this.inputerror.nativeElement.value.toLowerCase();
+  getDataselect() {
+    this.medError.value.position === 'other'
+      ? (this.setText.textposition = true)
+      : ((this.setText.textposition = false),
+        this.medError.patchValue({ position_text: '' }));
+    this.medError.value.type === 'other'
+      ? (this.setText.texttype = true)
+      : ((this.setText.texttype = false),
+        this.medError.patchValue({ type_text: '' }));
+  }
 
-    this.filteredOptions = this.dataSelect.filter((o: any) =>
-      o.tradename.trim().toLowerCase().includes(filterValue)
+  // async getDrug() {
+  //   let getData: any = await this.http.serchDrug();
+
+  //   if (getData.connect) {
+  //     if (getData.response.data.length > 0) {
+  //       this.dataSelect = getData.response.data;
+  //       this.dataSelect = this.dataSelect.map((val: any) => {
+  //         return {
+  //           orderitemcode: val.orderitemcode
+  //             ? val.orderitemcode.trim()
+  //             : val.orderitemcode,
+  //           name: val.name ? val.name.trim() : val.name,
+  //         };
+  //       });
+  //     }
+  //   } else {
+  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //   }
+  // }
+
+  filter_good(): void {
+    const filterValue = this.inputgood.nativeElement.value.toLowerCase();
+
+    this.dataGood = this.drugList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
+    );
+  }
+  filter_wrong(): void {
+    const filterValue = this.inputwrong.nativeElement.value.toLowerCase();
+
+    this.dataWrong = this.drugList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
     );
   }
 
-  // private _filter(value: string): string[] {
-  //   return this.dataSelect
-  //     .map((x: { orderitemcode: any }) => x.orderitemcode)
-  //     .filter((option: string) =>
-  //       option
-  //         ? option.trim().toLowerCase().includes(value.toLowerCase())
-  //         : null
-  //     );
-  // }
+  filter_interceptor(): void {
+    const filterValue = this.inputinterceptor.nativeElement.value.toLowerCase();
+
+    this.dataInterceptor = this.userList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
+    );
+  }
+
+  filter_offender(): void {
+    const filterValue = this.inputoffender.nativeElement.value.toLowerCase();
+
+    this.dataOffender = this.userList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
+    );
+  }
 
   dataP: any = {};
   datatime: any = null;
@@ -1402,13 +1526,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataSource5 = null;
     this.displayedColumns5 = [];
     if (this.choicecheckmed == '1') {
+      // this.displayedColumns5 = [
+      //   'userCheck',
+      //   'name',
+      //   'countuserCheck',
+      //   'countdrugCode',
+      //   'time',
+      // ];
       this.displayedColumns5 = [
-        'userCheck',
-        'name',
-        'countuserCheck',
-        'countdrugCode',
-        'time',
+        'hn',
+        'location',
+        'position_text',
+        'type_text',
+        'med_wrong_name',
+        'med_wrong_text',
+        'med_good_name',
+        'med_good_text',
+        'interceptor_name',
+        'offender_name',
+        'note',
+        'createDT',
       ];
+
       let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
       let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
       let formData = {
@@ -1422,24 +1561,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (getData.connect) {
         if (dataDrug.length) {
-          let sum = dataDrug.reduce(function (a: any, b: any) {
-            return a + +new Date('1970T' + b.time + 'Z');
-          }, 0);
-          dataDrug[dataDrug.length] = {
-            userChec: '',
-            name: 'รวม',
-            countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
-              return accumulator + object.countuserCheck;
-            }, 0),
-            countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
-              return accumulator + object.countdrugCode;
-            }, 0),
-            time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
-          };
+          // let sum = dataDrug.reduce(function (a: any, b: any) {
+          //   return a + +new Date('1970T' + b.time + 'Z');
+          // }, 0);
+          // dataDrug[dataDrug.length] = {
+          //   userChec: '',
+          //   name: 'รวม',
+          //   countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
+          //     return accumulator + object.countuserCheck;
+          //   }, 0),
+          //   countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
+          //     return accumulator + object.countdrugCode;
+          //   }, 0),
+          //   time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
+          // };
           this.dataSource5 = new MatTableDataSource(dataDrug);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
-          this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
+          this.nameExcel5 = `รายงาน MED-Error ${datestart}_${dateend}`;
+          // this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
           setTimeout(() => {
             this.input5.nativeElement.focus();
           }, 100);
