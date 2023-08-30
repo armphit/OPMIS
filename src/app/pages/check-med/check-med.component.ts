@@ -728,7 +728,7 @@ export class CheckMedComponent implements OnInit {
 
   public imageData: any = null;
   items!: GalleryItem[];
-  async getArrImg(val: any) {
+  async getArrImg(val: any, evt: any) {
     this.items = val.pathImage.map(
       (item: any) =>
         new ImageItem({
@@ -750,6 +750,10 @@ export class CheckMedComponent implements OnInit {
 
     // Load items into the lightbox gallery ref
     lightboxRef.load(this.items);
+
+    if (evt) {
+      evt.stopPropagation();
+    }
   }
 
   currentSection = 'section1';
@@ -758,35 +762,40 @@ export class CheckMedComponent implements OnInit {
     this.currentSection = sectionId;
   }
 
-  sendServer(data: any) {
-    this.sendPDF(data).then((dataPDF: any) => {
-      if (dataPDF) {
-        dataPDF.getBase64(async (buffer: any) => {
-          let getData: any = await this.http.Printjs('convertbuffer', {
-            data: buffer,
-            name: data.hn + ' ' + data.drugCode + '.pdf',
-            ip: this.dataUser.print_ip,
-            // ip: '192.168.184.163',
-            printName: this.dataUser.print_name,
-            hn: data.hn + ' ' + data.drugName,
-          });
+  sendServer(data: any, evt: any) {
+    if (this.checkprint) {
+      this.sendPDF(data).then((dataPDF: any) => {
+        if (dataPDF) {
+          dataPDF.getBase64(async (buffer: any) => {
+            let getData: any = await this.http.Printjs('convertbuffer', {
+              data: buffer,
+              name: data.hn + ' ' + data.drugCode + '.pdf',
+              ip: this.dataUser.print_ip,
+              // ip: '192.168.184.163',
+              printName: this.dataUser.print_name,
+              hn: data.hn + ' ' + data.drugName,
+            });
 
-          if (getData.connect) {
-            if (getData.response.connect === 'success') {
-              Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
             } else {
-              Swal.fire(
-                'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                '',
-                'error'
-              );
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
             }
-          } else {
-            Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    }
+    if (evt) {
+      evt.stopPropagation();
+    }
   }
 
   deletePatient(data: any) {
@@ -848,7 +857,7 @@ export class CheckMedComponent implements OnInit {
       }
     });
   }
-  sendAccept(data: any) {
+  sendAccept(data: any, evt: any) {
     Swal.fire({
       // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
       //   data.unitCode ? data.unitCode.trim() : ''
@@ -915,6 +924,9 @@ export class CheckMedComponent implements OnInit {
         }
       }
     });
+    if (evt) {
+      evt.stopPropagation();
+    }
   }
   async changeBarcode(e: any) {
     const { value: result } = await Swal.fire({
@@ -970,86 +982,98 @@ export class CheckMedComponent implements OnInit {
   }
 
   async dataFix(data: any) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to print all?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let sendVal = [];
-        data.sort((a: any, b: any) => {
-          return a.seq - b.seq;
-        });
+    if (this.checkprint) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to print all?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let sendVal = [];
+          data.sort((a: any, b: any) => {
+            return a.seq - b.seq;
+          });
 
-        for (let index = 0; index < data.length; index++) {
-          sendVal[index] = {
-            user: this.dataUser.name,
-            date: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
-            hn: data[index].hn,
-            drugCode: data[index].drugCode.trim(),
-            led: this.dataUser.ip,
-            check: 1,
-          };
+          for (let index = 0; index < data.length; index++) {
+            sendVal[index] = {
+              user: this.dataUser.name,
+              date: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
+              hn: data[index].hn,
+              drugCode: data[index].drugCode.trim(),
+              led: this.dataUser.ip,
+              check: 1,
+            };
+          }
+
+          let getData: any = await this.http.Printjs('dataCheckmed', sendVal);
+
+          if (getData.connect) {
+            if (getData.response.length) {
+              this.patient_drug = getData.response;
+
+              this.patient_drug.forEach((v: any) => {
+                if (!v.checkstamp) {
+                  v.isSort = 2;
+                } else if (v.checkstamp && v.checkqty) {
+                  v.isSort = 1;
+                } else if (v.checkstamp && !v.checkqty) {
+                  v.isSort = 3;
+                }
+              });
+
+              this.countcheck = this.patient_drug.filter(function (item: any) {
+                if (item.checkstamp && !item.checkqty) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }).length;
+              this.sumcheck = this.patient_drug
+                .filter(function (item: any) {
+                  if (item.checkstamp && !item.checkqty) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                })
+                .every((v: any) => {
+                  return v.checkqty == 0;
+                });
+
+              this.dataSource = new MatTableDataSource(this.patient_drug);
+              this.dataSource.sort = this.sort;
+              this.dataSource.paginator = this.paginator;
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            } else {
+              console.log(getData);
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+            }
+          } else {
+            Swal.fire(
+              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+              '',
+              'error'
+            );
+          }
         }
-        console.log(sendVal);
-
-        // let getData: any = await this.http.Printjs('dataCheckmed', sendVal);
-
-        // if (getData.connect) {
-        //   if (getData.response.length) {
-        //     this.patient_drug = getData.response;
-
-        //     this.patient_drug.forEach((v: any) => {
-        //       if (!v.checkstamp) {
-        //         v.isSort = 2;
-        //       } else if (v.checkstamp && v.checkqty) {
-        //         v.isSort = 1;
-        //       } else if (v.checkstamp && !v.checkqty) {
-        //         v.isSort = 3;
-        //       }
-        //     });
-
-        //     this.countcheck = this.patient_drug.filter(function (item: any) {
-        //       if (item.checkstamp && !item.checkqty) {
-        //         return true;
-        //       } else {
-        //         return false;
-        //       }
-        //     }).length;
-        //     this.sumcheck = this.patient_drug
-        //       .filter(function (item: any) {
-        //         if (item.checkstamp && !item.checkqty) {
-        //           return true;
-        //         } else {
-        //           return false;
-        //         }
-        //       })
-        //       .every((v: any) => {
-        //         return v.checkqty == 0;
-        //       });
-
-        //     this.dataSource = new MatTableDataSource(this.patient_drug);
-        //     this.dataSource.sort = this.sort;
-        //     this.dataSource.paginator = this.paginator;
-        //     Swal.fire({
-        //       position: 'center',
-        //       icon: 'success',
-        //       title: 'บันทึกข้อมูลสำเร็จ',
-        //       showConfirmButton: false,
-        //       timer: 1500,
-        //     });
-        //   } else {
-        //     console.log(getData);
-        //     Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-        //   }
-        // } else {
-        //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!', '', 'error');
-        // }
-      }
-    });
+      });
+    }
+  }
+  getRecord(val: any) {
+    if (val.checkqty) {
+      this.sendAccept(val, null);
+    } else {
+      this.sendServer(val, null);
+    }
   }
 }

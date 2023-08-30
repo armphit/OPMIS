@@ -198,7 +198,7 @@
                     matTooltip="Accept"
                     matTooltipPosition="above"
                     class="btn btn-primary btn-sm"
-                    (click)="sendAccept(element)"
+                    (click)="sendAccept(element, $event)"
                   >
                     <i class="fas fa-check-square"></i>
                   </button>
@@ -209,7 +209,7 @@
                     matTooltipPosition="above"
                     type="button"
                     class="btn btn-primary btn-sm"
-                    (click)="sendServer(element)"
+                    (click)="sendServer(element, $event)"
                   >
                     <i class="fas fa-print"></i>
                   </button>
@@ -285,7 +285,7 @@
                   width="130"
                   height="115"
                   style="padding: 5px; cursor: pointer"
-                  (click)="getArrImg(element); lightbox.open(0)"
+                  (click)="getArrImg(element, $event); lightbox.open(0)"
                 />
                 <img
                   *ngIf="!element.pathImage"
@@ -305,6 +305,7 @@
                 highlightQtyleColor: row.checkqty < row.qty && row.checkqty > 0
               }"
               *matRowDef="let row; columns: displayedColumns"
+              (click)="getRecord(row)"
             ></tr>
           </table>
         </section>
