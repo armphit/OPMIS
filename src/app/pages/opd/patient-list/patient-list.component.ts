@@ -371,8 +371,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     location: new FormControl(''),
   });
   reportError(val: any) {
+    let dataDrug = this.drugList.find(
+      (data: any) => data.code === val.item.drugCode.trim()
+    );
+    let dataUser = this.userList.find(
+      (data: any) => data.user === val.item.userCheck
+    );
     this.medError.reset();
     this.getDataselect();
+
     this.medError.patchValue({
       med: {
         code: val.item.drugCode ? val.item.drugCode.trim() : '',
@@ -383,6 +390,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         hnDT: val.dataP.createdDT,
       },
       location: this.select,
+      medWrong: dataDrug ? dataDrug.name : '',
+      medGood: dataDrug ? dataDrug.name : '',
+      interceptor: this.dataUser.name,
+      offender: dataUser ? dataUser.name : '',
     });
 
     let win: any = window;
@@ -409,25 +420,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       interceptor: this.userList.find(
         (val: any) => val.name === this.medError.value.interceptor
       ),
-    });
-    this.medError.patchValue({
       offender: this.userList.find(
         (val: any) => val.name === this.medError.value.offender
       ),
-    });
-
-    this.medError.patchValue({
       medGood: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medGood
       ),
-    });
-    this.medError.patchValue({
       medWrong: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medWrong
       ),
+      note: this.medError.value.note ? this.medError.value.note : '',
     });
+
     let win: any = window;
     win.$('#check_error').modal('hide');
+
     let getData3: any = await this.http.postNodejs(
       'medError',
       this.medError.value
