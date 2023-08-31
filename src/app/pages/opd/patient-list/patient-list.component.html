@@ -788,7 +788,7 @@
               <div class="row">
                 <div class="col">
                   <mat-form-field>
-                    <mat-label>ตำแหน่งที่พบ</mat-label>
+                    <mat-label>ตำแหน่งที่ผิด</mat-label>
                     <mat-select
                       formControlName="position"
                       (selectionChange)="getDataselect()"
@@ -824,6 +824,7 @@
                       <mat-option value="รูปแแบบ"> รูปแแบบ </mat-option>
                       <mat-option value="ความแรง"> ความแรง </mat-option>
                       <mat-option value="จำนวน"> จำนวน </mat-option>
+                      <mat-option value="จำนวน"> วิธีใช้ </mat-option>
                       <mat-option value="ไม่ปฎิบัติ"> ไม่ปฎิบัติ </mat-option>
                       <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
                     </mat-select>
@@ -868,7 +869,6 @@
                 <div class="col">
                   <mat-form-field class="example-full-width">
                     <input
-                      required
                       matInput
                       placeholder="รายละเอียดผิด"
                       formControlName="medWrong_text"
@@ -903,7 +903,6 @@
                 <div class="col">
                   <mat-form-field class="example-full-width">
                     <input
-                      required
                       matInput
                       placeholder="รายละเอียดถูก"
                       formControlName="medGood_text"
@@ -1820,7 +1819,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              {{ choicecheckmed == "1" ? "ตำแหน่งที่พบ" : "เวลาเช็คยา" }}
+              {{ choicecheckmed == "1" ? "ตำแหน่งที่ผิด" : "เวลาเช็คยา" }}
             </th>
             <td
               mat-cell

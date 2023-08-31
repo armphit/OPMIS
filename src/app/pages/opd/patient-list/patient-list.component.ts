@@ -298,15 +298,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let mergeData = getData.response.result;
+
         if (getData3.connect) {
           if (getData3.response.get_compiler) {
-            if (getData3.response.user) {
+            if (getData3.response.user.length) {
               this.userList = getData3.response.user;
-              let fixUser = getData3.response.user;
-              fixUser.forEach(function (obj: any) {
-                obj.nameCheck = obj.name;
-                delete obj.name;
-              });
+
+              let fixUser = getData3.response.user.map((elm: any) => ({
+                user: elm.user,
+                nameCheck: elm.name,
+              }));
 
               mergeData = getData.response.result
                 .map((emp: any) => {
