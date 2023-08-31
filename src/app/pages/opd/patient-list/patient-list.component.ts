@@ -300,21 +300,51 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let mergeData = getData.response.result;
         if (getData3.connect) {
           if (getData3.response.get_compiler) {
-            mergeData = getData.response.result.map((emp: any) => {
-              return {
-                ...emp,
-                ...(getData3.response.get_compiler.find(
-                  (item: { drugCode: any }) =>
-                    item.drugCode.trim() === emp.drugCode.trim()
-                ) ?? { userCheck: '' }),
-              };
-            });
+            if (getData3.response.user) {
+              this.userList = getData3.response.user;
+              let fixUser = getData3.response.user;
+              fixUser.forEach(function (obj: any) {
+                obj.nameCheck = obj.name;
+                delete obj.name;
+              });
+
+              mergeData = getData.response.result
+                .map((emp: any) => {
+                  return {
+                    ...emp,
+                    ...(getData3.response.get_compiler.find(
+                      (item: { drugCode: any }) =>
+                        item.drugCode.trim() === emp.drugCode.trim()
+                    ) ??
+                      (this.select == 'W9'
+                        ? { userCheck: 'จนท ชั้น1' }
+                        : this.select == 'W18'
+                        ? { userCheck: 'จนท ชั้น3' }
+                        : this.select == 'W19'
+                        ? { userCheck: 'จนท M-Park' }
+                        : { userCheck: '' })),
+                  };
+                })
+                .map((val: any) => {
+                  return {
+                    ...val,
+                    ...(fixUser.find(
+                      (item: { user: any }) => item.user === val.userCheck
+                    ) ??
+                      (this.select == 'W9'
+                        ? { nameCheck: 'จนท ชั้น1' }
+                        : this.select == 'W18'
+                        ? { nameCheck: 'จนท ชั้น3' }
+                        : this.select == 'W19'
+                        ? { nameCheck: 'จนท M-Park' }
+                        : { nameCheck: '' })),
+                  };
+                });
+            } else {
+              this.userList = null;
+            }
           }
-          if (getData3.response.user) {
-            this.userList = getData3.response.user;
-          } else {
-            this.userList = null;
-          }
+
           if (getData3.response.drug) {
             this.drugList = getData3.response.drug;
           } else {
@@ -393,7 +423,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       medWrong: dataDrug ? dataDrug.name : '',
       medGood: dataDrug ? dataDrug.name : '',
       interceptor: this.dataUser.name,
-      offender: dataUser ? dataUser.name : '',
+      offender: dataUser ? dataUser.name : val.item.userCheck,
     });
 
     let win: any = window;
@@ -466,7 +496,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-
+  fixUser: any = null;
   getDataselect() {
     this.medError.value.position === 'other'
       ? (this.setText.textposition = true)
@@ -476,6 +506,26 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? (this.setText.texttype = true)
       : ((this.setText.texttype = false),
         this.medError.patchValue({ type_text: '' }));
+    // if (this.medError.value.position === 'key') {
+    //   this.fixUser = this.userList.filter(
+    //     (o: any) => o.user.charAt(0).toLowerCase() === 'c'
+    //   );
+    // } else if (this.medError.value.position === 'จัด') {
+    //   this.fixUser = this.userList.filter(
+    //     (o: any) =>
+    //       o.user.charAt(0).toLowerCase() === 'o' ||
+    //       o.user.toLowerCase() === 'robot'
+    //   );
+    // } else if (this.medError.value.position === 'check') {
+    //   this.fixUser = this.userList.filter(
+    //     (o: any) =>
+    //       o.user.charAt(0).toLowerCase() !== 'c' &&
+    //       o.user.charAt(0).toLowerCase() !== 'o'
+    //   );
+    // } else {
+    //   this.fixUser = this.userList;
+    // }
+    this.fixUser = this.userList;
   }
 
   // async getDrug() {
@@ -524,7 +574,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   filter_offender(): void {
     const filterValue = this.inputoffender.nativeElement.value.toLowerCase();
 
-    this.dataOffender = this.userList.filter((o: any) =>
+    this.dataOffender = this.fixUser.filter((o: any) =>
       o.name.trim().toLowerCase().includes(filterValue)
     );
   }
