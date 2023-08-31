@@ -419,16 +419,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.medError.patchValue({
       interceptor: this.userList.find(
         (val: any) => val.name === this.medError.value.interceptor
-      ),
+      ) ?? {
+        name: this.medError.value.interceptor,
+        user: this.medError.value.interceptor,
+      },
       offender: this.userList.find(
         (val: any) => val.name === this.medError.value.offender
-      ),
+      ) ?? {
+        name: this.medError.value.offender,
+        user: this.medError.value.offender,
+      },
       medGood: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medGood
-      ),
+      ) ?? {
+        code: '',
+        name: this.medError.value.medGood,
+      },
       medWrong: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medWrong
-      ),
+      ) ?? {
+        code: '',
+        name: this.medError.value.medWrong,
+      },
       note: this.medError.value.note ? this.medError.value.note : '',
     });
 
