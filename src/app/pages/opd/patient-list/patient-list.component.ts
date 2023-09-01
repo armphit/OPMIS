@@ -302,11 +302,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         if (getData3.connect) {
           if (getData3.response.get_compiler) {
             if (getData3.response.user.length) {
-              this.userList = getData3.response.user;
-
-              let fixUser = getData3.response.user.map((elm: any) => ({
+              this.userList = getData3.response.user.map((elm: any) => ({
                 user: elm.user,
+                name: elm.name,
                 nameCheck: elm.name,
+                userName: elm.user + ' ' + elm.name,
               }));
 
               mergeData = getData.response.result
@@ -329,16 +329,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 .map((val: any) => {
                   return {
                     ...val,
-                    ...(fixUser.find(
+                    ...(this.userList.find(
                       (item: { user: any }) => item.user === val.userCheck
                     ) ??
                       (this.select == 'W9'
-                        ? { nameCheck: 'จนท ชั้น1' }
+                        ? { nameCheck: 'จนท ชั้น1', userName: 'จนท ชั้น1' }
                         : this.select == 'W18'
-                        ? { nameCheck: 'จนท ชั้น3' }
+                        ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น1' }
                         : this.select == 'W19'
-                        ? { nameCheck: 'จนท M-Park' }
-                        : { nameCheck: '' })),
+                        ? { nameCheck: 'จนท M-Park', userName: 'จนท ชั้น1' }
+                        : { nameCheck: '', userName: '' })),
                   };
                 });
             } else {
@@ -401,13 +401,25 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     note: new FormControl(''),
     location: new FormControl(''),
   });
-  reportError(val: any) {
+  dataUsercheck: any = null;
+  async reportError(val: any) {
+    let dataUser: any = await this.http.postNodejs('positionError', val.dataP);
+    let positionError = {
+      key: '',
+      check: '',
+    };
+    if (dataUser.connect) {
+      positionError = {
+        key: dataUser.response.key,
+        check: dataUser.response.check,
+      };
+    }
+
+    this.dataUsercheck = { ...positionError, userName: val.item.userName };
     let dataDrug = this.drugList.find(
       (data: any) => data.code === val.item.drugCode.trim()
     );
-    let dataUser = this.userList.find(
-      (data: any) => data.user === val.item.userCheck
-    );
+
     this.medError.reset();
     this.getDataselect();
 
@@ -423,8 +435,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       location: this.select,
       medWrong: dataDrug ? dataDrug.name : '',
       medGood: dataDrug ? dataDrug.name : '',
-      interceptor: this.dataUser.name,
-      offender: dataUser ? dataUser.name : val.item.userCheck,
+      interceptor: this.dataUser.user + ' ' + this.dataUser.name,
+      // offender: dataUser ? dataUser.userName : this.drugPatient.userName,
     });
 
     let win: any = window;
@@ -449,16 +461,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.medError.patchValue({
       interceptor: this.userList.find(
-        (val: any) => val.name === this.medError.value.interceptor
+        (val: any) => val.userName === this.medError.value.interceptor
       ) ?? {
         name: this.medError.value.interceptor,
         user: this.medError.value.interceptor,
+        userName: this.medError.value.interceptor,
       },
       offender: this.userList.find(
-        (val: any) => val.name === this.medError.value.offender
+        (val: any) => val.userName === this.medError.value.offender
       ) ?? {
         name: this.medError.value.offender,
         user: this.medError.value.offender,
+        userName: this.medError.value.offender,
       },
       medGood: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medGood
@@ -473,6 +487,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         name: this.medError.value.medWrong,
       },
       note: this.medError.value.note ? this.medError.value.note : '',
+      medGood_text: this.medError.value.medGood_text
+        ? this.medError.value.note
+        : '',
+      medWrong_text: this.medError.value.medWrong_text
+        ? this.medError.value.note
+        : '',
     });
 
     let win: any = window;
@@ -497,7 +517,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-  fixUser: any = null;
+
   getDataselect() {
     this.medError.value.position === 'other'
       ? (this.setText.textposition = true)
@@ -507,47 +527,50 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? (this.setText.texttype = true)
       : ((this.setText.texttype = false),
         this.medError.patchValue({ type_text: '' }));
-    // if (this.medError.value.position === 'key') {
-    //   this.fixUser = this.userList.filter(
-    //     (o: any) => o.user.charAt(0).toLowerCase() === 'c'
-    //   );
-    // } else if (this.medError.value.position === 'จัด') {
-    //   this.fixUser = this.userList.filter(
-    //     (o: any) =>
-    //       o.user.charAt(0).toLowerCase() === 'o' ||
-    //       o.user.toLowerCase() === 'robot'
-    //   );
-    // } else if (this.medError.value.position === 'check') {
-    //   this.fixUser = this.userList.filter(
-    //     (o: any) =>
-    //       o.user.charAt(0).toLowerCase() !== 'c' &&
-    //       o.user.charAt(0).toLowerCase() !== 'o'
-    //   );
-    // } else {
-    //   this.fixUser = this.userList;
-    // }
-    this.fixUser = this.userList;
+
+    if (this.medError.value.position === 'key') {
+      this.medError.patchValue({
+        offender: this.dataUsercheck.key,
+      });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
+        };
+      });
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    } else if (this.medError.value.position === 'จัด') {
+      this.medError.patchValue({
+        offender: this.dataUsercheck.userName,
+      });
+
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort: val.user.toLowerCase().charAt(0) == 'o' ? 1 : 2,
+        };
+      });
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    } else if (this.medError.value.position === 'check') {
+      this.medError.patchValue({
+        offender: this.dataUsercheck.check,
+      });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort:
+            val.user.toLowerCase().charAt(0) != 'c' &&
+            val.user.toLowerCase().charAt(0) != 'o'
+              ? 1
+              : 2,
+        };
+      });
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    }
+    this.userList.forEach((v: any) => {
+      delete v.valSort;
+    });
   }
-
-  // async getDrug() {
-  //   let getData: any = await this.http.serchDrug();
-
-  //   if (getData.connect) {
-  //     if (getData.response.data.length > 0) {
-  //       this.dataSelect = getData.response.data;
-  //       this.dataSelect = this.dataSelect.map((val: any) => {
-  //         return {
-  //           orderitemcode: val.orderitemcode
-  //             ? val.orderitemcode.trim()
-  //             : val.orderitemcode,
-  //           name: val.name ? val.name.trim() : val.name,
-  //         };
-  //       });
-  //     }
-  //   } else {
-  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-  //   }
-  // }
 
   filter_good(): void {
     const filterValue = this.inputgood.nativeElement.value.toLowerCase();
@@ -568,15 +591,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputinterceptor.nativeElement.value.toLowerCase();
 
     this.dataInterceptor = this.userList.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+      o.userName.trim().toLowerCase().includes(filterValue)
     );
   }
 
   filter_offender(): void {
     const filterValue = this.inputoffender.nativeElement.value.toLowerCase();
 
-    this.dataOffender = this.fixUser.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+    this.dataOffender = this.userList.filter((o: any) =>
+      o.userName.trim().toLowerCase().includes(filterValue)
     );
   }
 

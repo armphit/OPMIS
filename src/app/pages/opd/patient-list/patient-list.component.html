@@ -927,9 +927,9 @@
                     <mat-autocomplete requireSelection #auto3="matAutocomplete">
                       <mat-option
                         *ngFor="let option of dataInterceptor"
-                        [value]="option.name"
+                        [value]="option.userName"
                       >
-                        {{ option.name }}
+                        {{ option.userName }}
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
@@ -951,9 +951,9 @@
                     <mat-autocomplete requireSelection #auto4="matAutocomplete">
                       <mat-option
                         *ngFor="let option of dataOffender"
-                        [value]="option.name"
+                        [value]="option.userName"
                       >
-                        {{ option.name }}
+                        {{ option.userName }}
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
