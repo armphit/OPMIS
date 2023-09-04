@@ -335,9 +335,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                       (this.select == 'W9'
                         ? { nameCheck: 'จนท ชั้น1', userName: 'จนท ชั้น1' }
                         : this.select == 'W18'
-                        ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น1' }
+                        ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น3' }
                         : this.select == 'W19'
-                        ? { nameCheck: 'จนท M-Park', userName: 'จนท ชั้น1' }
+                        ? { nameCheck: 'จนท M-Park', userName: 'จนท M-Park' }
                         : { nameCheck: '', userName: '' })),
                   };
                 });
@@ -414,6 +414,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         check: dataUser.response.check,
       };
     }
+    console.log(val);
 
     this.dataUsercheck = { ...positionError, userName: val.item.userName };
     let dataDrug = this.drugList.find(
@@ -477,13 +478,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       medGood: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medGood
       ) ?? {
-        code: '',
+        code: this.medError.value.medGood,
         name: this.medError.value.medGood,
       },
       medWrong: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medWrong
       ) ?? {
-        code: '',
+        code: this.medError.value.medWrong,
         name: this.medError.value.medWrong,
       },
       note: this.medError.value.note ? this.medError.value.note : '',
