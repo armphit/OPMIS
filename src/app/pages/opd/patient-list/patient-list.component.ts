@@ -403,7 +403,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   });
   dataUsercheck: any = null;
   async reportError(val: any) {
-    let dataUser: any = await this.http.postNodejs('positionError', val.dataP);
+    let dataUser: any = await this.http.postNodejs('positionError', {
+      ...val.dataP,
+      ...val.item,
+      site: this.select,
+    });
     let positionError = {
       key: '',
       check: '',
@@ -489,10 +493,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       },
       note: this.medError.value.note ? this.medError.value.note : '',
       medGood_text: this.medError.value.medGood_text
-        ? this.medError.value.note
+        ? this.medError.value.medGood_text
         : '',
       medWrong_text: this.medError.value.medWrong_text
-        ? this.medError.value.note
+        ? this.medError.value.medWrong_text
         : '',
     });
 
@@ -523,11 +527,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.medError.value.position === 'other'
       ? (this.setText.textposition = true)
       : ((this.setText.textposition = false),
-        this.medError.patchValue({ position_text: '' }));
+        this.medError.patchValue({ position_text: '', offender: '' }));
     this.medError.value.type === 'other'
       ? (this.setText.texttype = true)
       : ((this.setText.texttype = false),
-        this.medError.patchValue({ type_text: '' }));
+        this.medError.patchValue({ type_text: '', offender: '' }));
 
     if (this.medError.value.position === 'key') {
       this.medError.patchValue({
