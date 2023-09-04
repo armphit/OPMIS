@@ -418,7 +418,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         check: dataUser.response.check,
       };
     }
-    console.log(val);
 
     this.dataUsercheck = { ...positionError, userName: val.item.userName };
     let dataDrug = this.drugList.find(
