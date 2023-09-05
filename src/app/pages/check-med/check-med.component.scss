@@ -104,3 +104,61 @@ a:focus {
 tr:hover {
   cursor: pointer;
 }
+
+/* set correct box model */
+.left-sidebar-floated-blocks * {
+  box-sizing: border-box;
+}
+
+/* floated container */
+.left-sidebar-floated-blocks {
+  overflow: hidden;
+  background-color: darkgrey;
+}
+/* stacked columns on mobile */
+
+.left-sidebar-floated-blocks .main-content {
+  padding: 5px;
+}
+.left-sidebar-floated-blocks .left-sidebar {
+  padding: 5px;
+}
+
+/* tablet breakpoint */
+@media (min-width: 768px) {
+  .left-sidebar-floated-blocks .main-wrap {
+    float: left;
+    width: 100%;
+  }
+  .left-sidebar-floated-blocks .left-wrap {
+    position: relative;
+    right: calc(100% / 3 * 2);
+
+    float: left;
+    width: 100%;
+  }
+  .left-sidebar-floated-blocks .main-content {
+    width: calc(100% / 3 * 2);
+    position: relative;
+    left: calc(100% / 3 * 2);
+    background: none;
+    float: right;
+  }
+  .left-sidebar-floated-blocks .left-sidebar {
+    width: calc(100% / 3);
+    position: relative;
+    left: calc(100% / 3 * 2);
+    float: left;
+  }
+}
+.panel-body {
+  background-color: #fff;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.example-container {
+  max-width: 100%;
+  max-height: 600px;
+  overflow: auto;
+}

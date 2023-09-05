@@ -72,7 +72,7 @@ export class CheckMedComponent implements OnInit {
   }
   checkprint: boolean = false;
   test() {
-    this.getData('1553115');
+    this.getData('1692279');
   }
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -699,10 +699,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
   }
 
   data_allergic: any = null;
