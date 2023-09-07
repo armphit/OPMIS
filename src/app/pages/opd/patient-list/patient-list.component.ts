@@ -371,6 +371,60 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   };
 
+  public manageErrormed = async (val: any, text: any) => {
+    if (text === 'edit') {
+      // let check_interceptor = this.userList.find((user: any) => {
+      //   if (user.user === val.interceptor_id) {
+      //     return val.interceptor_id + ' ' + val.interceptor_name;
+      //   } else {
+      //     return val.interceptor_id;
+      //   }
+      // });
+      // console.log(check_interceptor);
+      this.medError.reset();
+      this.medError.patchValue({
+        med: val.med,
+        hn: val.hn,
+        location: val.location,
+        position: val.position_text,
+        position_text: '',
+        type: val.type_text,
+        type_text: '',
+        medWrong: val.med_wrong,
+        medWrong_text: val.med_wrong_text,
+        medGood: val.med_good,
+        medGood_text: val.med_good_text,
+        interceptor: val.interceptor_id + ' ' + val.interceptor_name,
+        offender: val.offender_id + ' ' + val.offender_name,
+        note: val.note,
+      });
+
+      let win: any = window;
+      win.$('#check_error').modal('show');
+    } else {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          console.log(val.id);
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Your file has been deleted.',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
+    }
+  };
+
   // dataSelect: any = null;
   dataGood: any;
   dataWrong: any;
@@ -425,7 +479,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     );
 
     this.medError.reset();
-    this.getDataselect();
 
     this.medError.patchValue({
       med: {
@@ -437,12 +490,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         hnDT: val.dataP.createdDT,
       },
       location: this.select,
+      position: 'key',
+      type: 'จำนวน',
       medWrong: dataDrug ? dataDrug.name : '',
       medGood: dataDrug ? dataDrug.name : '',
       interceptor: this.dataUser.user + ' ' + this.dataUser.name,
       // offender: dataUser ? dataUser.userName : this.drugPatient.userName,
     });
-
+    this.getDataselect();
     let win: any = window;
     win.$('#check_error').modal('show');
   }
@@ -1612,6 +1667,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource4.filter = filterValue.trim().toLowerCase();
   }
+
   nameExcel5 = '';
   dataSource5: any = null;
   displayedColumns5: any = null;
@@ -1631,6 +1687,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       //   'time',
       // ];
       this.displayedColumns5 = [
+        'Action',
         'hn',
         'location',
         'position_text',

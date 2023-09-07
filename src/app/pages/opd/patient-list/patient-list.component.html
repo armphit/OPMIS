@@ -765,223 +765,6 @@
         </div>
       </div>
     </div>
-
-    <div class="modal fade" id="check_error" data-backdrop="static">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Med Error</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form
-            [formGroup]="medError"
-            (ngSubmit)="medError.valid ? submitInput() : ''"
-          >
-            <div class="modal-body">
-              <div class="row">
-                <div class="col">
-                  <mat-form-field>
-                    <mat-label>ตำแหน่งที่ผิด</mat-label>
-                    <mat-select
-                      formControlName="position"
-                      (selectionChange)="getDataselect()"
-                      required
-                    >
-                      <mat-option value="key"> key </mat-option>
-                      <mat-option value="จัด"> จัด </mat-option>
-                      <mat-option value="check"> check </mat-option>
-                      <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field
-                    class="example-full-width"
-                    *ngIf="setText.textposition"
-                  >
-                    <input
-                      matInput
-                      placeholder="ระบุข้อความ"
-                      formControlName="position_text"
-                    />
-                  </mat-form-field>
-                </div>
-                <div class="col">
-                  <mat-form-field>
-                    <mat-label>รูปแบบความผิดพลาด</mat-label>
-                    <mat-select
-                      required
-                      formControlName="type"
-                      (selectionChange)="getDataselect()"
-                    >
-                      <mat-option value="ชื่อ"> ชื่อ </mat-option>
-                      <mat-option value="ชนิด"> ชนิด </mat-option>
-                      <mat-option value="รูปแแบบ"> รูปแแบบ </mat-option>
-                      <mat-option value="ความแรง"> ความแรง </mat-option>
-                      <mat-option value="จำนวน"> จำนวน </mat-option>
-                      <mat-option value="จำนวน"> วิธีใช้ </mat-option>
-                      <mat-option value="ไม่ปฎิบัติ"> ไม่ปฎิบัติ </mat-option>
-                      <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field
-                    class="example-full-width"
-                    *ngIf="setText.texttype"
-                  >
-                    <input
-                      matInput
-                      placeholder="ระบุข้อความ"
-                      formControlName="type_text"
-                    />
-                  </mat-form-field>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>ชื่อยาผิด</mat-label>
-                    <input
-                      required
-                      #inputwrong
-                      type="text"
-                      matInput
-                      formControlName="medWrong"
-                      [matAutocomplete]="auto2"
-                      (input)="filter_wrong()"
-                      (focus)="filter_wrong()"
-                    />
-                    <mat-autocomplete requireSelection #auto2="matAutocomplete">
-                      <mat-option
-                        *ngFor="let option of dataWrong"
-                        [value]="option.name.trim()"
-                      >
-                        {{ option.name.trim() }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <input
-                      matInput
-                      placeholder="รายละเอียดผิด"
-                      formControlName="medWrong_text"
-                    />
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>ชื่อยาถูก</mat-label>
-                    <input
-                      required
-                      #inputgood
-                      type="text"
-                      matInput
-                      formControlName="medGood"
-                      [matAutocomplete]="auto"
-                      (input)="filter_good()"
-                      (focus)="filter_good()"
-                    />
-                    <mat-autocomplete requireSelection #auto="matAutocomplete">
-                      <mat-option
-                        *ngFor="let option of dataGood"
-                        [value]="option.name.trim()"
-                      >
-                        {{ option.name.trim() }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <input
-                      matInput
-                      placeholder="รายละเอียดถูก"
-                      formControlName="medGood_text"
-                    />
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>ผู้ดักจับ</mat-label>
-                    <input
-                      required
-                      #inputinterceptor
-                      type="text"
-                      matInput
-                      formControlName="interceptor"
-                      [matAutocomplete]="auto3"
-                      (input)="filter_interceptor()"
-                      (focus)="filter_interceptor()"
-                    />
-                    <mat-autocomplete requireSelection #auto3="matAutocomplete">
-                      <mat-option
-                        *ngFor="let option of dataInterceptor"
-                        [value]="option.userName"
-                      >
-                        {{ option.userName }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>ผู้ก่อความคลาดเคลื่อน</mat-label>
-                    <input
-                      required
-                      #inputoffender
-                      type="text"
-                      matInput
-                      formControlName="offender"
-                      [matAutocomplete]="auto4"
-                      (input)="filter_offender()"
-                      (focus)="filter_offender()"
-                    />
-
-                    <mat-autocomplete requireSelection #auto4="matAutocomplete">
-                      <mat-option
-                        *ngFor="let option of dataOffender"
-                        [value]="option.userName"
-                      >
-                        {{ option.userName }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>หมายเหตุ</mat-label>
-                    <textarea matInput formControlName="note"></textarea>
-                  </mat-form-field>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Save</button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
   </mat-tab>
 
   <mat-tab label="รายงานยืนยันแพ้ยา">
@@ -1704,7 +1487,7 @@
         </mat-paginator>
       </div></div
   ></mat-tab>
-  <mat-tab label="รายงานเช็คยา">
+  <mat-tab label="รายงานการพิมพ์ฉลากยา">
     <div class="container-fluid pt-2">
       <div class="row">
         <div class="col-lg-5">
@@ -2018,6 +1801,40 @@
               {{ element.createDT }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="Action" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Action
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 5px; padding-right: 5px"
+            >
+              <span style="display: flex">
+                <button
+                  style="margin: 5px"
+                  mat-flat-button
+                  color="primary"
+                  (click)="manageErrormed(element, 'edit')"
+                >
+                  แก้ไข
+                </button>
+                <button
+                  style="margin: 5px"
+                  mat-flat-button
+                  color="warn"
+                  (click)="manageErrormed(element, 'delete')"
+                >
+                  ลบ
+                </button></span
+              >
+            </td>
+          </ng-container>
 
           <tr
             mat-header-row
@@ -2052,3 +1869,217 @@
       </div></div
   ></mat-tab>
 </mat-tab-group>
+
+<div class="modal fade" id="check_error" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Med Error</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form
+        [formGroup]="medError"
+        (ngSubmit)="medError.valid ? submitInput() : ''"
+      >
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <mat-form-field>
+                <mat-label>ตำแหน่งที่ผิด</mat-label>
+                <mat-select
+                  formControlName="position"
+                  (selectionChange)="getDataselect()"
+                  required
+                >
+                  <mat-option value="key"> key </mat-option>
+                  <mat-option value="จัด"> จัด </mat-option>
+                  <mat-option value="check"> check </mat-option>
+                  <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                *ngIf="setText.textposition"
+              >
+                <input
+                  matInput
+                  placeholder="ระบุข้อความ"
+                  formControlName="position_text"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field>
+                <mat-label>รูปแบบความผิดพลาด</mat-label>
+                <mat-select
+                  required
+                  formControlName="type"
+                  (selectionChange)="getDataselect()"
+                >
+                  <mat-option value="จำนวน"> จำนวน </mat-option>
+                  <mat-option value="วิธีใช้"> วิธีใช้ </mat-option>
+                  <mat-option value="ความแรง"> ความแรง </mat-option>
+                  <mat-option value="รูปแแบบ"> รูปแแบบ </mat-option>
+                  <mat-option value="ชนิด"> ชนิด </mat-option>
+                  <mat-option value="ชื่อผู้ป่วย"> ชื่อผู้ป่วย </mat-option>
+                  <mat-option value="ไม่ปฎิบัติ"> ไม่ปฎิบัติ </mat-option>
+                  <mat-option value="ไม่มี Order"> ไม่มี Order </mat-option>
+                  <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                *ngIf="setText.texttype"
+              >
+                <input
+                  matInput
+                  placeholder="ระบุข้อความ"
+                  formControlName="type_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ชื่อยาผิด</mat-label>
+                <input
+                  required
+                  #inputwrong
+                  type="text"
+                  matInput
+                  formControlName="medWrong"
+                  [matAutocomplete]="auto2"
+                  (input)="filter_wrong()"
+                  (focus)="filter_wrong()"
+                />
+                <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataWrong"
+                    [value]="option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <input
+                  matInput
+                  placeholder="รายละเอียดผิด"
+                  formControlName="medWrong_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ชื่อยาถูก</mat-label>
+                <input
+                  required
+                  #inputgood
+                  type="text"
+                  matInput
+                  formControlName="medGood"
+                  [matAutocomplete]="auto"
+                  (input)="filter_good()"
+                  (focus)="filter_good()"
+                />
+                <mat-autocomplete requireSelection #auto="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataGood"
+                    [value]="option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <input
+                  matInput
+                  placeholder="รายละเอียดถูก"
+                  formControlName="medGood_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ผู้ดักจับ</mat-label>
+                <input
+                  required
+                  #inputinterceptor
+                  type="text"
+                  matInput
+                  formControlName="interceptor"
+                  [matAutocomplete]="auto3"
+                  (input)="filter_interceptor()"
+                  (focus)="filter_interceptor()"
+                />
+                <mat-autocomplete requireSelection #auto3="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataInterceptor"
+                    [value]="option.userName"
+                  >
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ผู้ก่อความคลาดเคลื่อน</mat-label>
+                <input
+                  required
+                  #inputoffender
+                  type="text"
+                  matInput
+                  formControlName="offender"
+                  [matAutocomplete]="auto4"
+                  (input)="filter_offender()"
+                  (focus)="filter_offender()"
+                />
+
+                <mat-autocomplete requireSelection #auto4="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataOffender"
+                    [value]="option.userName"
+                  >
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>หมายเหตุ</mat-label>
+                <textarea matInput formControlName="note"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

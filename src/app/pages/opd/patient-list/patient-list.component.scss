@@ -65,3 +65,7 @@ label {
 //   width: auto;
 //   min-width: 300px;
 // }
+
+::ng-deep.mat-select-panel {
+  max-height: 80vh !important;
+}
