@@ -1686,21 +1686,38 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       //   'countdrugCode',
       //   'time',
       // ];
-      this.displayedColumns5 = [
-        'Action',
-        'hn',
-        'location',
-        'position_text',
-        'type_text',
-        'med_wrong_name',
-        'med_wrong_text',
-        'med_good_name',
-        'med_good_text',
-        'interceptor_name',
-        'offender_name',
-        'note',
-        'createDT',
-      ];
+      if (this.dataUser.user === 'admin') {
+        this.displayedColumns5 = [
+          'Action',
+          'hn',
+          'location',
+          'position_text',
+          'type_text',
+          'med_wrong_name',
+          'med_wrong_text',
+          'med_good_name',
+          'med_good_text',
+          'interceptor_name',
+          'offender_name',
+          'note',
+          'createDT',
+        ];
+      } else {
+        this.displayedColumns5 = [
+          'hn',
+          'location',
+          'position_text',
+          'type_text',
+          'med_wrong_name',
+          'med_wrong_text',
+          'med_good_name',
+          'med_good_text',
+          'interceptor_name',
+          'offender_name',
+          'note',
+          'createDT',
+        ];
+      }
 
       let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
       let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
