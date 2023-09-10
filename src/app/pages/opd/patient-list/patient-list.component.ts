@@ -462,14 +462,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ...val.item,
       site: this.select,
     });
+
     let positionError = {
       key: '',
       check: '',
+      dispend: '',
     };
     if (dataUser.connect) {
       positionError = {
         key: dataUser.response.key,
         check: dataUser.response.check,
+        dispend: dataUser.response.dispend,
       };
     }
 
@@ -613,6 +616,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else if (this.medError.value.position === 'check') {
       this.medError.patchValue({
         offender: this.dataUsercheck.check,
+      });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort:
+            val.user.toLowerCase().charAt(0) != 'c' &&
+            val.user.toLowerCase().charAt(0) != 'o'
+              ? 1
+              : 2,
+        };
+      });
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    } else if (this.medError.value.position === 'จ่าย') {
+      this.medError.patchValue({
+        offender: this.dataUsercheck.dispend,
       });
       this.userList = this.userList.map((val: any) => {
         return {

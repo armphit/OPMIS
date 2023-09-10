@@ -1816,23 +1816,39 @@
               style="padding-left: 5px; padding-right: 5px"
             >
               <span style="display: flex">
-                <button
+                <!-- <button
                   style="margin: 5px"
                   mat-flat-button
                   color="primary"
                   (click)="manageErrormed(element, 'edit')"
                 >
                   แก้ไข
+                </button> -->
+                <button
+                  type="button"
+                  style="margin: 5px"
+                  class="btn btn-warning btn-sm"
+                  (click)="manageErrormed(element, 'edit')"
+                >
+                  แก้ไข
                 </button>
                 <button
+                  style="margin: 5px"
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  (click)="manageErrormed(element, 'delete')"
+                >
+                  ลบ
+                </button>
+                <!-- <button
                   style="margin: 5px"
                   mat-flat-button
                   color="warn"
                   (click)="manageErrormed(element, 'delete')"
                 >
                   ลบ
-                </button></span
-              >
+                </button> -->
+              </span>
             </td>
           </ng-container>
 
@@ -1901,6 +1917,7 @@
                   <mat-option value="key"> key </mat-option>
                   <mat-option value="จัด"> จัด </mat-option>
                   <mat-option value="check"> check </mat-option>
+                  <mat-option value="จ่าย"> จ่าย </mat-option>
                   <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
                 </mat-select>
               </mat-form-field>
