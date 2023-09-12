@@ -372,100 +372,104 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
 
   public manageErrormed = async (val: any, text: any) => {
-    console.log(val);
+    this.medError.reset();
+    // เซตชื่อยาตอนกดปุ่ม
+    if (text === 'edit') {
+      val.date = moment(val.hnDT).format('YYYY-MM-DD');
+      let getData3: any = await this.http.postNodejs('getCompiler', {
+        hn: val.hn,
+        date: moment(val.createdDT).format('YYYY-MM-DD'),
+      });
+      if (getData3.connect) {
+        if (getData3.response.get_compiler) {
+          if (getData3.response.user.length) {
+            this.userList = getData3.response.user.map((elm: any) => ({
+              user: elm.user,
+              name: elm.name,
+              nameCheck: elm.name,
+              userName: elm.user + ' ' + elm.name,
+            }));
 
-    val.date = moment(val.hnDT).format('YYYY-MM-DD');
-    let getData3: any = await this.http.postNodejs('getCompiler', {
-      hn: val.hn,
-      date: moment(val.createdDT).format('YYYY-MM-DD'),
-    });
-    if (getData3.connect) {
-      if (getData3.response.get_compiler) {
-        if (getData3.response.user.length) {
-          this.userList = getData3.response.user.map((elm: any) => ({
-            user: elm.user,
-            name: elm.name,
-            nameCheck: elm.name,
-            userName: elm.user + ' ' + elm.name,
-          }));
-          if (getData3.response.drug.length) {
-            this.drugList = getData3.response.drug;
+            if (getData3.response.drug.length) {
+              this.drugList = getData3.response.drug;
+            } else {
+              this.drugList = null;
+            }
+
+            val.createdDT = val.hnDT;
+            val.patientNO = val.hn;
+            val.drugCode = val.med;
+
+            let dataUser: any = await this.http.postNodejs('positionError', {
+              ...val,
+              site: val.location,
+            });
+            let check: any = '';
+            let dis: any = '';
+            if (val.position_text === 'check') {
+              check = this.userList.find(
+                (data: any) => data.user == val.offender_id
+              );
+              if (check) {
+                check = check.userName;
+              }
+            }
+
+            if (val.position_text === 'จ่าย') {
+              dis = this.userList.find(
+                (data: any) => data.user == val.offender_id
+              );
+              if (dis) {
+                dis = dis.userName;
+              }
+            }
+
+            this.dataUsercheck = {
+              key: dataUser.response.key,
+              check: check,
+              dispend: dis,
+              userName: dataUser.response.dispend,
+            };
           } else {
-            this.drugList = null;
+            this.userList = null;
           }
-
-          val.createdDT = val.hnDT;
-          val.patientNO = val.hn;
-          val.drugCode = val.med;
-
-          let dataUser: any = await this.http.postNodejs('positionError', {
-            ...val,
-            site: val.location,
-          });
-          let check: any = '';
-          let dis: any = '';
-          if (val.position_text === 'check') {
-            check = this.userList.find(
-              (data: any) => data.user == val.offender_id
-            );
-            if (check) {
-              check = check.userName;
-            } else {
-              check = val.offender_id;
-            }
-          }
-
-          if (val.position_text === 'จ่าย') {
-            dis = this.userList.find(
-              (data: any) => data.user == val.offender_id
-            );
-            if (dis) {
-              dis = dis.userName;
-            } else {
-              dis = val.offender_id;
-            }
-          }
-
-          console.log(check);
-          this.dataUsercheck = {
-            key: dataUser.response.key,
-            check: check,
-            dispend: dis,
-            userName: dataUser.response.dispend,
-          };
-        } else {
-          this.userList = null;
         }
       }
-    }
+      let offender =
+        this.userList.find((user: any) => user.user === val.offender_id) ??
+        null;
+      let interceptor =
+        this.userList.find((user: any) => user.user === val.interceptor_id) ??
+        null;
+      let finePo =
+        this.positionE.find((po: any) => po === val.position_text) ?? 'other';
+      await this.getDataposition();
+      await this.getDatatype();
 
-    if (text === 'edit') {
-      // let check_interceptor = this.userList.find((user: any) => {
-      //   if (user.user === val.interceptor_id) {
-      //     return val.interceptor_id + ' ' + val.interceptor_name;
-      //   } else {
-      //     return val.interceptor_id;
-      //   }
-      // });
-      // console.log(check_interceptor);
-      this.medError.reset();
+      let fineTy =
+        this.typeE.find((ty: any) => ty === val.type_text) ?? 'other';
       this.medError.patchValue({
         med: val.med,
         hn: val.hn,
         location: val.location,
-        position: val.position_text,
-        position_text: '',
-        type: val.type_text,
-        type_text: '',
+        position: finePo,
+        position_text: finePo === 'other' ? val.position_text : '',
+        type: fineTy,
+        type_text: fineTy === 'other' ? val.type_text : '',
         medWrong: val.med_wrong,
         medWrong_text: val.med_wrong_text,
         medGood: val.med_good,
         medGood_text: val.med_good_text,
-        interceptor: val.interceptor_id + ' ' + val.interceptor_name,
-        offender: val.offender_id + ' ' + val.offender_name,
+        interceptor: interceptor ? interceptor.userName : val.interceptor_name,
+        offender: offender ? offender.userName : val.offender_name,
         note: val.note,
       });
-
+      finePo === 'other'
+        ? (this.setText.textposition = true)
+        : (this.setText.textposition = false);
+      fineTy === 'other'
+        ? (this.setText.texttype = true)
+        : (this.setText.texttype = false);
       let win: any = window;
       win.$('#check_error').modal('show');
     } else {

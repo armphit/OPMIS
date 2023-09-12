@@ -87,6 +87,9 @@ export class NavComponent {
     this.panelIpd = false;
     this.panelOpd = false;
   }
+  ex() {
+    this.drawer.toggle();
+  }
 
   togglePanel2() {
     // if (window.innerWidth < 600) {

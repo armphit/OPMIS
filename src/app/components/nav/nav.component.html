@@ -57,7 +57,7 @@
         mat-list-item
         [routerLink]="['/check-med']"
         [routerLinkActive]="['active']"
-        (click)="togglePanel()"
+        (click)="ex(); togglePanel()"
       >
         <i class="fas fa-tasks"></i>&nbsp;<strong>Check - Med</strong>
       </a>
@@ -291,7 +291,6 @@
         aria-label="Toggle sidenav"
         mat-icon-button
         (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async"
       >
         <i class="fas fa-bars"></i>
       </button>
