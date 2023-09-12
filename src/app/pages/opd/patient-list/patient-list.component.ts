@@ -372,6 +372,73 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
 
   public manageErrormed = async (val: any, text: any) => {
+    console.log(val);
+
+    val.date = moment(val.hnDT).format('YYYY-MM-DD');
+    let getData3: any = await this.http.postNodejs('getCompiler', {
+      hn: val.hn,
+      date: moment(val.createdDT).format('YYYY-MM-DD'),
+    });
+    if (getData3.connect) {
+      if (getData3.response.get_compiler) {
+        if (getData3.response.user.length) {
+          this.userList = getData3.response.user.map((elm: any) => ({
+            user: elm.user,
+            name: elm.name,
+            nameCheck: elm.name,
+            userName: elm.user + ' ' + elm.name,
+          }));
+          if (getData3.response.drug.length) {
+            this.drugList = getData3.response.drug;
+          } else {
+            this.drugList = null;
+          }
+
+          val.createdDT = val.hnDT;
+          val.patientNO = val.hn;
+          val.drugCode = val.med;
+
+          let dataUser: any = await this.http.postNodejs('positionError', {
+            ...val,
+            site: val.location,
+          });
+          let check: any = '';
+          let dis: any = '';
+          if (val.position_text === 'check') {
+            check = this.userList.find(
+              (data: any) => data.user == val.offender_id
+            );
+            if (check) {
+              check = check.userName;
+            } else {
+              check = val.offender_id;
+            }
+          }
+
+          if (val.position_text === 'จ่าย') {
+            dis = this.userList.find(
+              (data: any) => data.user == val.offender_id
+            );
+            if (dis) {
+              dis = dis.userName;
+            } else {
+              dis = val.offender_id;
+            }
+          }
+
+          console.log(check);
+          this.dataUsercheck = {
+            key: dataUser.response.key,
+            check: check,
+            dispend: dis,
+            userName: dataUser.response.dispend,
+          };
+        } else {
+          this.userList = null;
+        }
+      }
+    }
+
     if (text === 'edit') {
       // let check_interceptor = this.userList.find((user: any) => {
       //   if (user.user === val.interceptor_id) {
@@ -456,6 +523,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     location: new FormControl(''),
   });
   dataUsercheck: any = null;
+  positionE: string[] = ['key', 'จัด', 'check', 'จ่าย', 'other'];
+  typeE: string[] = [
+    'จำนวน',
+    'วิธีใช้',
+    'ความแรง',
+    'รูปแแบบ',
+    'ชนิด',
+    'ชื่อผู้ป่วย',
+    'ไม่ปฎิบัติ',
+    'ไม่มี Order',
+    'other',
+  ];
   async reportError(val: any) {
     let dataUser: any = await this.http.postNodejs('positionError', {
       ...val.dataP,
@@ -500,7 +579,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       interceptor: this.dataUser.user + ' ' + this.dataUser.name,
       // offender: dataUser ? dataUser.userName : this.drugPatient.userName,
     });
-    this.getDataselect();
+    await this.getDataposition();
+    await this.getDatatype();
     let win: any = window;
     win.$('#check_error').modal('show');
   }
@@ -579,20 +659,26 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
+  getDatatype() {
+    if (this.medError.value.type === 'other') {
+      this.setText.texttype = true;
+      this.medError.patchValue({
+        type_text: '',
+      });
+    } else {
+      this.setText.texttype = false;
+      this.medError.patchValue({
+        type_text: this.medError.value.type,
+      });
+    }
+  }
 
-  getDataselect() {
-    this.medError.value.position === 'other'
-      ? (this.setText.textposition = true)
-      : ((this.setText.textposition = false),
-        this.medError.patchValue({ position_text: '', offender: '' }));
-    this.medError.value.type === 'other'
-      ? (this.setText.texttype = true)
-      : ((this.setText.texttype = false),
-        this.medError.patchValue({ type_text: '', offender: '' }));
-
+  getDataposition() {
     if (this.medError.value.position === 'key') {
+      this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.key,
+        position_text: this.medError.value.position,
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -602,8 +688,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
     } else if (this.medError.value.position === 'จัด') {
+      this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.userName,
+        position_text: this.medError.value.position,
       });
 
       this.userList = this.userList.map((val: any) => {
@@ -614,8 +702,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
     } else if (this.medError.value.position === 'check') {
+      this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.check,
+        position_text: this.medError.value.position,
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -629,8 +719,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
     } else if (this.medError.value.position === 'จ่าย') {
+      this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.dispend,
+        position_text: this.medError.value.position,
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -643,6 +735,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    } else {
+      this.setText.textposition = true;
+      this.medError.patchValue({
+        offender: '',
+        position_text: '',
+      });
     }
     this.userList.forEach((v: any) => {
       delete v.valSort;

@@ -873,17 +873,16 @@ export class CheckMedComponent implements OnInit {
             this.mathRandom
           : ''
         : '',
-      imageWidth: 200,
-      imageHeight: 200,
-      title: `<strong>จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
-        data.unitCode ? data.unitCode.trim() : ''
-      }</strong>`,
-      text: 'คุณแน่ใจที่จะยอมรับรายการยานี้หรือไม่ ?',
-      icon: 'warning',
+      imageWidth: 150,
+      imageHeight: 150,
+      title: `<strong style="font-size:18px">จำนวน ${data.drugName} คงเหลือ ${
+        data.checkqty
+      } ${data.unitCode ? data.unitCode.trim() : ''}</strong>`,
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes',
+      position: 'top',
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (this.checkprint) {

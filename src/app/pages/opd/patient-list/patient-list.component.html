@@ -1911,14 +1911,12 @@
                 <mat-label>ตำแหน่งที่ผิด</mat-label>
                 <mat-select
                   formControlName="position"
-                  (selectionChange)="getDataselect()"
+                  (selectionChange)="getDataposition()"
                   required
                 >
-                  <mat-option value="key"> key </mat-option>
-                  <mat-option value="จัด"> จัด </mat-option>
-                  <mat-option value="check"> check </mat-option>
-                  <mat-option value="จ่าย"> จ่าย </mat-option>
-                  <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
+                  <mat-option *ngFor="let item of positionE" [value]="item">
+                    {{ item === "other" ? "อื่นๆ (โปรดระบุ)" : item }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
               <mat-form-field
@@ -1938,17 +1936,11 @@
                 <mat-select
                   required
                   formControlName="type"
-                  (selectionChange)="getDataselect()"
+                  (selectionChange)="getDatatype()"
                 >
-                  <mat-option value="จำนวน"> จำนวน </mat-option>
-                  <mat-option value="วิธีใช้"> วิธีใช้ </mat-option>
-                  <mat-option value="ความแรง"> ความแรง </mat-option>
-                  <mat-option value="รูปแแบบ"> รูปแแบบ </mat-option>
-                  <mat-option value="ชนิด"> ชนิด </mat-option>
-                  <mat-option value="ชื่อผู้ป่วย"> ชื่อผู้ป่วย </mat-option>
-                  <mat-option value="ไม่ปฎิบัติ"> ไม่ปฎิบัติ </mat-option>
-                  <mat-option value="ไม่มี Order"> ไม่มี Order </mat-option>
-                  <mat-option value="other"> อื่นๆ (โปรดระบุ) </mat-option>
+                  <mat-option *ngFor="let item of typeE" [value]="item">
+                    {{ item === "other" ? "อื่นๆ (โปรดระบุ)" : item }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
               <mat-form-field
