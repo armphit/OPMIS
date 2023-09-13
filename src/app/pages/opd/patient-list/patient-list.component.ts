@@ -373,97 +373,107 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   public manageErrormed = async (val: any, text: any) => {
     this.medError.reset();
-    // เซตชื่อยาตอนกดปุ่ม
-    if (text === 'edit') {
-      val.date = moment(val.hnDT).format('YYYY-MM-DD');
-      let getData3: any = await this.http.postNodejs('getCompiler', {
-        hn: val.hn,
-        date: moment(val.createdDT).format('YYYY-MM-DD'),
-      });
-      if (getData3.connect) {
-        if (getData3.response.get_compiler) {
-          if (getData3.response.user.length) {
-            this.userList = getData3.response.user.map((elm: any) => ({
-              user: elm.user,
-              name: elm.name,
-              nameCheck: elm.name,
-              userName: elm.user + ' ' + elm.name,
-            }));
 
-            if (getData3.response.drug.length) {
-              this.drugList = getData3.response.drug;
-            } else {
-              this.drugList = null;
-            }
+    val.date = moment(val.hnDT).format('YYYY-MM-DD');
+    let getData3: any = await this.http.postNodejs('getCompiler', {
+      hn: val.hn,
+      date: moment(val.createdDT).format('YYYY-MM-DD'),
+    });
+    if (getData3.connect) {
+      if (getData3.response.get_compiler) {
+        if (getData3.response.user.length) {
+          this.userList = getData3.response.user.map((elm: any) => ({
+            user: elm.user,
+            name: elm.name,
+            nameCheck: elm.name,
+            userName: elm.user + ' ' + elm.name,
+          }));
 
-            val.createdDT = val.hnDT;
-            val.patientNO = val.hn;
-            val.drugCode = val.med;
-
-            let dataUser: any = await this.http.postNodejs('positionError', {
-              ...val,
-              site: val.location,
-            });
-            let check: any = '';
-            let dis: any = '';
-            if (val.position_text === 'check') {
-              check = this.userList.find(
-                (data: any) => data.user == val.offender_id
-              );
-              if (check) {
-                check = check.userName;
-              }
-            }
-
-            if (val.position_text === 'จ่าย') {
-              dis = this.userList.find(
-                (data: any) => data.user == val.offender_id
-              );
-              if (dis) {
-                dis = dis.userName;
-              }
-            }
-
-            this.dataUsercheck = {
-              key: dataUser.response.key,
-              check: check,
-              dispend: dis,
-              userName: dataUser.response.dispend,
-            };
+          if (getData3.response.drug.length) {
+            this.drugList = getData3.response.drug;
           } else {
-            this.userList = null;
+            this.drugList = null;
           }
+
+          val.createdDT = val.hnDT;
+          val.patientNO = val.hn;
+          val.drugCode = val.med;
+
+          let dataUser: any = await this.http.postNodejs('positionError', {
+            ...val,
+            site: val.location,
+          });
+          let check: any = '';
+          let dis: any = '';
+          if (val.position_text === 'check') {
+            check = this.userList.find(
+              (data: any) => data.user == val.offender_id
+            );
+            if (check) {
+              check = check.userName;
+            }
+          }
+
+          if (val.position_text === 'จ่าย') {
+            dis = this.userList.find(
+              (data: any) => data.user == val.offender_id
+            );
+            if (dis) {
+              dis = dis.userName;
+            }
+          }
+
+          this.dataUsercheck = {
+            key: dataUser.response.key,
+            check: check,
+            dispend: dis,
+            userName: val.position_text === 'จัด' ? val.offender_id : '',
+          };
+        } else {
+          this.userList = null;
         }
       }
-      let offender =
-        this.userList.find((user: any) => user.user === val.offender_id) ??
-        null;
-      let interceptor =
-        this.userList.find((user: any) => user.user === val.interceptor_id) ??
-        null;
-      let finePo =
-        this.positionE.find((po: any) => po === val.position_text) ?? 'other';
-      await this.getDataposition();
-      await this.getDatatype();
+    }
 
-      let fineTy =
-        this.typeE.find((ty: any) => ty === val.type_text) ?? 'other';
-      this.medError.patchValue({
-        med: val.med,
-        hn: val.hn,
-        location: val.location,
-        position: finePo,
-        position_text: finePo === 'other' ? val.position_text : '',
-        type: fineTy,
-        type_text: fineTy === 'other' ? val.type_text : '',
-        medWrong: val.med_wrong,
-        medWrong_text: val.med_wrong_text,
-        medGood: val.med_good,
-        medGood_text: val.med_good_text,
-        interceptor: interceptor ? interceptor.userName : val.interceptor_name,
-        offender: offender ? offender.userName : val.offender_name,
-        note: val.note,
-      });
+    let med_wrong =
+      this.drugList.find(
+        (data: any) => data.code.trim() === val.med_wrong.trim()
+      ) ?? null;
+    let med_good =
+      this.drugList.find(
+        (data: any) => data.code.trim() === val.med_good.trim()
+      ) ?? null;
+    let offender =
+      this.userList.find((user: any) => user.user === val.offender_id) ?? null;
+    let interceptor =
+      this.userList.find((user: any) => user.user === val.interceptor_id) ??
+      null;
+    let finePo =
+      this.positionE.find((po: any) => po === val.position_text) ?? 'other';
+    await this.getDataposition();
+    await this.getDatatype();
+
+    let fineTy = this.typeE.find((ty: any) => ty === val.type_text) ?? 'other';
+    this.medError.patchValue({
+      med: val.med,
+      hn: val.hn,
+      location: val.location,
+      position: finePo,
+      position_text: finePo === 'other' ? val.position_text : '',
+      type: fineTy,
+      type_text: fineTy === 'other' ? val.type_text : '',
+      medWrong: med_wrong ? med_wrong.name : '',
+      medWrong_text: val.med_wrong_text,
+      medGood: med_good ? med_good.name : '',
+      medGood_text: val.med_good_text,
+      interceptor: interceptor ? interceptor.userName : val.interceptor_name,
+      offender: offender ? offender.userName : val.offender_name,
+      note: val.note,
+      id: val.id,
+      check: text,
+      userLogin: this.dataUser.user,
+    });
+    if (text === 'edit') {
       finePo === 'other'
         ? (this.setText.textposition = true)
         : (this.setText.textposition = false);
@@ -474,23 +484,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       win.$('#check_error').modal('show');
     } else {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'คุณต้องการที่จะลบข้อมูลหรือไม่?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: 'ตกลง',
+        cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log(val.id);
-          Swal.fire({
-            icon: 'success',
-            title: 'Deleted!',
-            text: 'Your file has been deleted.',
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          this.submitInput();
         }
       });
     }
@@ -525,6 +528,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     offender: new FormControl(''),
     note: new FormControl(''),
     location: new FormControl(''),
+    id: new FormControl(''),
+    check: new FormControl(''),
+    userLogin: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = ['key', 'จัด', 'check', 'จ่าย', 'other'];
@@ -644,18 +650,28 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let win: any = window;
     win.$('#check_error').modal('hide');
 
+    if (this.medError.value.id) {
+    }
     let getData3: any = await this.http.postNodejs(
-      'medError',
+      this.medError.value.id ? 'manageError' : 'medError',
       this.medError.value
     );
+
     if (getData3.connect) {
       if (getData3.response.length) {
         Swal.fire({
           icon: 'success',
-          title: 'บันทึกข้อมูลสำเร็จ',
+          title:
+            this.medError.value.check === 'delete'
+              ? 'ลบข้อมูลสำเร็จ'
+              : 'บันทึกข้อมูลสำเร็จ',
           showConfirmButton: false,
           timer: 1500,
         });
+
+        this.medError.value.id
+          ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
+          : '';
       } else {
         Swal.fire('ไม่มีข้อมูล!', '', 'error');
       }
@@ -1806,7 +1822,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       //   'countdrugCode',
       //   'time',
       // ];
-      if (this.dataUser.user === 'admin') {
+      if (
+        this.dataUser.user === 'admin' ||
+        this.dataUser.user.toLowerCase() === 'p07' ||
+        this.dataUser.user.toLowerCase() === 'p54' ||
+        this.dataUser.user.toLowerCase() === 'test'
+      ) {
         this.displayedColumns5 = [
           'Action',
           'hn',

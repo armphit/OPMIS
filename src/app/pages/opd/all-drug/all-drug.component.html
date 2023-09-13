@@ -80,9 +80,7 @@
             {{ element.drugCode }}<br />
             <div
               (click)="changeBarcode(element)"
-              *ngIf="
-                !element.deviceName.includes('SE-MED1') && dataUser == 'admin'
-              "
+              *ngIf="!element.deviceName.includes('SE-MED1')"
             >
               <i
                 class="fas fa-barcode fa-lg"

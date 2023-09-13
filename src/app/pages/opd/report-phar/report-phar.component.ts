@@ -37,14 +37,7 @@ export class ReportPharComponent implements OnInit {
     'item',
   ];
 
-  public displayedColumns2: string[] = [
-    'staff',
-    'staffName',
-    'device',
-
-    'ord',
-    'item',
-  ];
+  public displayedColumns2: string[] = ['staff', 'staffName', 'item'];
 
   public displayedColumns3: string[] = [
     'dispenser_id',
@@ -107,10 +100,20 @@ export class ReportPharComponent implements OnInit {
     // });
     if (this.numTab == 2) {
       getData = await this.http.post('onusPhar', formData);
+      let getData2: any = await this.http.post('getUserall', formData);
 
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
-          this.dataDrug = getData.response.result;
+          this.dataDrug = getData.response.result.map((e: any) => {
+            let temp = getData2.response.result.find(
+              (element: any) => element.staff === e.staff
+            );
+            if (temp.staffName) {
+              e.staffName = temp.staffName;
+            }
+            return e;
+          });
+          // this.dataDrug= getData.response.result;
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
