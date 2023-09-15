@@ -580,6 +580,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     'ชื่อผู้ป่วย',
     'ไม่ปฎิบัติ',
     'ไม่มี Order',
+    'ผิดโครงการ',
     'other',
   ];
   async reportError(val: any) {
