@@ -346,36 +346,38 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 });
 
               for (let index = 0; index < mergeData.length; index++) {
-                if (mergeData[index].userCheck.includes(',')) {
-                  let fixUser = mergeData[index].userCheck.split(',');
-                  let op = fixUser.map((e: any) => {
-                    let temp = this.userList.find((v: any) => v.user === e);
+                if (mergeData[index].userCheck) {
+                  if (mergeData[index].userCheck.includes(',')) {
+                    let fixUser = mergeData[index].userCheck.split(',');
+                    let op = fixUser.map((e: any) => {
+                      let temp = this.userList.find((v: any) => v.user === e);
 
-                    return temp;
-                  });
-                  let dataJoin = {
-                    name: Array.prototype.map
-                      .call(op, function (item) {
-                        return item.name;
-                      })
-                      .join(','),
-                    nameCheck: Array.prototype.map
-                      .call(op, function (item) {
-                        return item.nameCheck;
-                      })
-                      .join(','),
-                    user: Array.prototype.map
-                      .call(op, function (item) {
-                        return item.user;
-                      })
-                      .join(','),
-                    userName: Array.prototype.map
-                      .call(op, function (item) {
-                        return item.userName;
-                      })
-                      .join(','),
-                  };
-                  mergeData[index] = { ...mergeData[index], ...dataJoin };
+                      return temp;
+                    });
+                    let dataJoin = {
+                      name: Array.prototype.map
+                        .call(op, function (item) {
+                          return item.name;
+                        })
+                        .join(','),
+                      nameCheck: Array.prototype.map
+                        .call(op, function (item) {
+                          return item.nameCheck;
+                        })
+                        .join(','),
+                      user: Array.prototype.map
+                        .call(op, function (item) {
+                          return item.user;
+                        })
+                        .join(','),
+                      userName: Array.prototype.map
+                        .call(op, function (item) {
+                          return item.userName;
+                        })
+                        .join(','),
+                    };
+                    mergeData[index] = { ...mergeData[index], ...dataJoin };
+                  }
                 }
               }
             } else {
