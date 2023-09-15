@@ -1490,7 +1490,7 @@
   <mat-tab label="รายงานการพิมพ์ฉลากยา">
     <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-7 d-flex">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
@@ -1517,8 +1517,17 @@
             ></mat-datepicker-toggle>
             <mat-date-range-picker #campaignOnePicker3></mat-date-range-picker>
           </mat-form-field>
+          <span
+            *ngIf="choicecheckmed != '1'"
+            style="
+              font-size: 18px;
+              font-weight: bold;
+              margin: 20px 10px 13px 20px;
+            "
+            >เวลาเฉลี่ย : {{ avgTime }}</span
+          >
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-2">
           <mat-form-field>
             <mat-label>เลือกรายงาน</mat-label>
             <mat-select
@@ -1551,7 +1560,15 @@
           class="mat-elevation-z8"
           matTableExporter
           #exporter5="matTableExporter"
-          [hiddenColumns]=""
+          [hiddenColumns]="
+            (dataUser.user === 'admin' ||
+              dataUser.user.toLowerCase() === 'p07' ||
+              dataUser.user.toLowerCase() === 'p54' ||
+              dataUser.user.toLowerCase() === 'test') &&
+            choicecheckmed == '1'
+              ? [0]
+              : []
+          "
         >
           <ng-container matColumnDef="hn">
             <th
@@ -1572,7 +1589,7 @@
           </ng-container>
 
           <ng-container
-            [matColumnDef]="choicecheckmed == '1' ? 'location' : 'userCheck'"
+            [matColumnDef]="choicecheckmed == '1' ? 'location' : 'queue'"
           >
             <th
               mat-header-cell
@@ -1580,14 +1597,14 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              {{ choicecheckmed == "1" ? "ห้องยา" : "รหัสเจ้าหน้าที่" }}
+              {{ choicecheckmed == "1" ? "ห้องยา" : "คิว" }}
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ choicecheckmed == "1" ? element.location : element.userCheck }}
+              {{ choicecheckmed == "1" ? element.location : element.queue }}
             </td>
           </ng-container>
 
@@ -1664,25 +1681,21 @@
               }}
             </td>
           </ng-container>
-          <ng-container
-            [matColumnDef]="choicecheckmed == '1' ? 'med_wrong_text' : 'item'"
-          >
+          <ng-container matColumnDef="med_wrong_text">
             <th
               mat-header-cell
               *matHeaderCellDef
               mat-sort-header
               style="padding-left: 10px"
             >
-              {{ choicecheckmed == "1" ? "รายละเอียดผิด" : "จำนวนยา" }}
+              รายละเอียดผิด
             </th>
             <td
               mat-cell
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{
-                choicecheckmed == "1" ? element.med_wrong_text : element.item
-              }}
+              {{ element.med_wrong_text }}
             </td>
           </ng-container>
           <ng-container
@@ -1784,7 +1797,7 @@
               {{ element.note }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="createDT" *ngIf="choicecheckmed == '1'">
+          <ng-container matColumnDef="hnDT" *ngIf="choicecheckmed == '1'">
             <th
               mat-header-cell
               *matHeaderCellDef
@@ -1798,7 +1811,7 @@
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.createDT }}
+              {{ element.hnDT }}
             </td>
           </ng-container>
           <ng-container matColumnDef="Action" *ngIf="choicecheckmed == '1'">

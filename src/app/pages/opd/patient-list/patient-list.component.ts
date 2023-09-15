@@ -27,6 +27,7 @@ import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import { includes } from 'lodash';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
@@ -323,7 +324,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                         ? { userCheck: 'จนท ชั้น3' }
                         : this.select == 'W19'
                         ? { userCheck: 'จนท M-Park' }
-                        : { userCheck: '' })),
+                        : this.select == 'W8'
+                        ? { userCheck: emp.userCheck }
+                        : '')),
                   };
                 })
                 .map((val: any) => {
@@ -341,6 +344,40 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                         : { nameCheck: '', userName: '' })),
                   };
                 });
+
+              for (let index = 0; index < mergeData.length; index++) {
+                if (mergeData[index].userCheck.includes(',')) {
+                  let fixUser = mergeData[index].userCheck.split(',');
+                  let op = fixUser.map((e: any) => {
+                    let temp = this.userList.find((v: any) => v.user === e);
+
+                    return temp;
+                  });
+                  let dataJoin = {
+                    name: Array.prototype.map
+                      .call(op, function (item) {
+                        return item.name;
+                      })
+                      .join(','),
+                    nameCheck: Array.prototype.map
+                      .call(op, function (item) {
+                        return item.nameCheck;
+                      })
+                      .join(','),
+                    user: Array.prototype.map
+                      .call(op, function (item) {
+                        return item.user;
+                      })
+                      .join(','),
+                    userName: Array.prototype.map
+                      .call(op, function (item) {
+                        return item.userName;
+                      })
+                      .join(','),
+                  };
+                  mergeData[index] = { ...mergeData[index], ...dataJoin };
+                }
+              }
             } else {
               this.userList = null;
             }
@@ -1811,6 +1848,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('MatSort5') sort5!: MatSort;
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
   choicecheckmed = '1';
+  avgTime: any = '';
   public reportCheckmed = async () => {
     this.dataSource5 = null;
     this.displayedColumns5 = [];
@@ -1841,7 +1879,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'interceptor_name',
           'offender_name',
           'note',
-          'createDT',
+          'hnDT',
         ];
       } else {
         this.displayedColumns5 = [
@@ -1856,7 +1894,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'interceptor_name',
           'offender_name',
           'note',
-          'createDT',
+          'hnDT',
         ];
       }
 
@@ -1873,20 +1911,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (getData.connect) {
         if (dataDrug.length) {
-          // let sum = dataDrug.reduce(function (a: any, b: any) {
-          //   return a + +new Date('1970T' + b.time + 'Z');
-          // }, 0);
-          // dataDrug[dataDrug.length] = {
-          //   userChec: '',
-          //   name: 'รวม',
-          //   countuserCheck: dataDrug.reduce((accumulator: any, object: any) => {
-          //     return accumulator + object.countuserCheck;
-          //   }, 0),
-          //   countdrugCode: dataDrug.reduce((accumulator: any, object: any) => {
-          //     return accumulator + object.countdrugCode;
-          //   }, 0),
-          //   time: new Date(sum / dataDrug.length + 500).toJSON().slice(11, 19),
-          // };
           this.dataSource5 = new MatTableDataSource(dataDrug);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
@@ -1903,12 +1927,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       }
     } else {
       this.displayedColumns5 = [
+        'queue',
         'hn',
-        'userCheck',
         'timestamp',
         'checkComplete',
         'time',
-        'item',
       ];
       let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
       let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
@@ -1925,6 +1948,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           this.dataSource5 = new MatTableDataSource(
             getData.response.datadrugcheck
           );
+          this.avgTime = getData.response.average;
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
           this.nameExcel5 = `รายงานเวลาเช็คยา ${datestart}_${dateend}`;
