@@ -170,7 +170,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         );
         formData.append(
           'date2',
-          moment(this.campaignOne.value.end).format('YYYY-MM-DD')
+          moment(this.campaignOne.value.end).add(543, 'year').format('YYYYMMDD')
         );
         getData = await this.http.post('getdatapatientFloor', formData);
         // let getData2: any = await this.http.post('statusyHomc', formData);
