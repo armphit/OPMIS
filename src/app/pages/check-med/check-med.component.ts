@@ -885,6 +885,13 @@ export class CheckMedComponent implements OnInit {
       position: 'top',
     }).then(async (result) => {
       if (result.isConfirmed) {
+        if (this.dataUser.user == 'test') {
+          let formData = new FormData();
+          formData.append('device', data.device);
+          formData.append('drugCode', data.drugCode);
+          let sendled: any = await this.http.post('update_led', formData);
+        }
+
         if (this.checkprint) {
           this.sendPDF(data).then((dataPDF: any) => {
             if (dataPDF) {

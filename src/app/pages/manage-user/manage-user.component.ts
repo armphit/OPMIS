@@ -14,6 +14,7 @@ export class ManageUserComponent implements OnInit {
   displayedColumns: string[] = [];
   dataSource: any = null;
   dataUser: any = null;
+  user: any = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
   constructor(private http: HttpService) {
@@ -99,5 +100,9 @@ export class ManageUserComponent implements OnInit {
         }
       }
     });
+  }
+  deleteUser(data: any) {
+    let formData = new FormData();
+    formData.append('user', data.user);
   }
 }

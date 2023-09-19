@@ -27,8 +27,11 @@
         (click)="togglePanel()"
         ><i class="fas fa-cog"></i>&nbsp;<strong>Manage System</strong>
       </a>
+      <!-- dataUser.user.toLowerCase() === 'p07' || -->
       <a
-        *ngIf="dataUser.role == 'admin'"
+        *ngIf="
+          dataUser.role == 'admin' || dataUser.user.toLowerCase() === 'test'
+        "
         style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/manage-user']"

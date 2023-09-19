@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -161,7 +161,8 @@ export class UploadImagesComponent implements OnInit {
   }
 
   public closeImg() {
-    this.drug_code = null;
+    this.drug = null;
+    // this.drug_name = null;
     this.arrFile = [];
     this.imgResultMultiple = [];
     this.imgboxUpload = null;
@@ -170,8 +171,10 @@ export class UploadImagesComponent implements OnInit {
     this.imgResultAfterCompress = '';
   }
 
-  public drug_code: any = null;
-  public edit = async (code: any) => {
+  public drug: any = null;
+  barcode = new FormControl('');
+  public edit = async (val: any) => {
+    this.barcode.setValue(val.barCode);
     this.imgResultAfterResize = null;
     this.imgResultAfterCompress = '';
     this.imgboxUpload = null;
@@ -180,7 +183,8 @@ export class UploadImagesComponent implements OnInit {
     this.checkbox = null;
     this.checkpack = null;
     this.checktab = null;
-    this.drug_code = code;
+    this.drug = val;
+
     this.getImgcenter();
   };
 
@@ -190,7 +194,7 @@ export class UploadImagesComponent implements OnInit {
 
   public getImgcenter = async () => {
     let formData = new FormData();
-    formData.append('code', this.drug_code);
+    formData.append('code', this.drug.drugCode);
 
     let getData: any = await this.http.post('getImgcenter', formData);
 
@@ -231,42 +235,53 @@ export class UploadImagesComponent implements OnInit {
 
     this.imgboxUpload
       ? arrFile.push(
-          this.base64ToFile(this.imgboxUpload, this.drug_code + '_box')
+          this.base64ToFile(this.imgboxUpload, this.drug.drugCode + '_box')
         ) && arrtype.push('box')
       : '';
 
     this.imgpackUpload
       ? arrFile.push(
-          this.base64ToFile(this.imgpackUpload, this.drug_code + '_pack')
+          this.base64ToFile(this.imgpackUpload, this.drug.drugCode + '_pack')
         ) && arrtype.push('pack')
       : '';
 
     this.imgtabUpload
       ? arrFile.push(
-          this.base64ToFile(this.imgtabUpload, this.drug_code + '_tab')
+          this.base64ToFile(this.imgtabUpload, this.drug.drugCode + '_tab')
         ) && arrtype.push('tab')
       : '';
 
     if (arrFile.length) {
       let formData = new FormData();
-      formData.append('code', this.drug_code);
+      formData.append('code', this.drug.drugCode);
 
       arrFile.forEach((item: any, index: any) => {
         formData.append('upload[]', item);
         formData.append('type[]', arrtype[index]);
       });
-      let getData: any = await this.http.post('addImgDrugcenter', formData);
 
+      let getData: any = await this.http.post('addImgDrugcenter', formData);
+      formData.append('drugCode', this.drug.drugCode);
+      formData.append('barCode', this.barcode.value);
+      let getData2: any = await this.http.post('updateBarcode', formData);
       if (getData.connect) {
         if (getData.response.rowCount > 0) {
           this.getData();
           let win: any = window;
           win.$('#myModal').modal('hide');
-          Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'อัปโหลดรูปภาพเสร็จสิ้น',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+
           this.upload_img = null;
           this.upload_img_name = null;
 
-          this.drug_code = null;
+          this.drug = null;
+          // this.drug_name = null;
           this.img_name = null;
           this.imgboxUpload = null;
           this.imgpackUpload = null;
@@ -300,15 +315,21 @@ export class UploadImagesComponent implements OnInit {
     }).then(async (result) => {
       if (result.isConfirmed) {
         let formData = new FormData();
-        formData.append('code', this.drug_code);
+        formData.append('code', this.drug.drugCode);
         formData.append('path', result_path);
         formData.append('type', type);
         let getData: any = await this.http.post('deleteImgcenter', formData);
 
         if (getData.connect) {
           if (getData.response.result) {
-            this.edit(this.drug_code);
-            Swal.fire('ลบข้อมูลสำเร็จ', '', 'success');
+            this.edit(this.drug);
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'ลบข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
           } else {
             console.log(getData);
             Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');

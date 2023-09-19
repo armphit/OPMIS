@@ -97,7 +97,7 @@
                 data-backdrop="static"
                 data-keyboard="false"
                 data-target="#myModal"
-                (click)="edit(element.drugCode); input.value = ''"
+                (click)="edit(element); input.value = ''"
               >
                 <i class="fas fa-upload"></i>&nbsp; Upload
               </button>
@@ -169,7 +169,7 @@
       >
         <i class="fas fa-trash-alt"></i>&nbsp; Delete all Image
       </button> -->
-
+        <h2>{{ drug ? drug.drugName : "" }}</h2>
         <div class="row image-container">
           <div class="col-lg-4">
             <span class="span-text">กล่อง</span>
@@ -177,7 +177,7 @@
             <img
               [src]="
                 imgboxUpload
-                  ? imgboxUpload + mathRandom
+                  ? imgboxUpload
                   : checkbox
                   ? checkbox + mathRandom
                   : './assets/notfound.png'
@@ -207,7 +207,7 @@
             <img
               [src]="
                 imgpackUpload
-                  ? imgpackUpload + mathRandom
+                  ? imgpackUpload
                   : checkpack
                   ? checkpack + mathRandom
                   : './assets/notfound.png'
@@ -239,7 +239,7 @@
             <img
               [src]="
                 imgtabUpload
-                  ? imgtabUpload + mathRandom
+                  ? imgtabUpload
                   : checktab
                   ? checktab + mathRandom
                   : './assets/notfound.png'
@@ -263,6 +263,24 @@
               &nbsp;
               {{ !checktab ? "Click to upload file" : "Delete Image" }}
             </button>
+          </div>
+          <hr width="90%" />
+          <label class="sr-only" for="inlineFormInputGroupUsername2"
+            >Username</label
+          >
+          <div
+            class="input-group mb-2 mr-sm-2"
+            style="width: 75%; margin: 0 10px 10px 10px"
+          >
+            <div class="input-group-prepend">
+              <div class="input-group-text">BARCODE</div>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              id="inlineFormInputGroupUsername2"
+              [formControl]="barcode"
+            />
           </div>
         </div>
         <div class="modal-footer">

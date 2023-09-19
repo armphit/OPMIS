@@ -74,22 +74,30 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
           <td
             mat-cell
             *matCellDef="let element"
             style="padding-left: 20px; padding-right: 20px"
           >
             <button
+              *ngIf="user.role == 'admin'"
               type="button"
               class="{{
                 element.status == 'Y' ? 'btn btn-success' : 'btn btn-danger'
               }}"
-              style="margin-left: 20px"
+              style="margin: 0 10px 0 0"
               (click)="changeActive(element)"
             >
               <i *ngIf="element.status == 'Y'" class="fas fa-check-square"></i>
               <i *ngIf="element.status == 'N'" class="fas fa-window-close"></i>
+            </button>
+            <button
+              class="btn btn-danger"
+              type="button"
+              (click)="deleteUser(element)"
+            >
+              ลบ
             </button>
           </td>
         </ng-container>
