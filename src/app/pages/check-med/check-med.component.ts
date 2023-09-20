@@ -72,7 +72,7 @@ export class CheckMedComponent implements OnInit {
   }
   checkprint: boolean = false;
   test() {
-    this.getData('1692279');
+    this.getData('1324216');
   }
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -115,6 +115,9 @@ export class CheckMedComponent implements OnInit {
             .format('YYYYMMDD'),
           dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
           user: this.dataUser.user,
+          ipmain: this.dataUser.ip
+            ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+            : '',
         };
 
         let getData3: any = await this.http.postNodejs(
@@ -334,7 +337,10 @@ export class CheckMedComponent implements OnInit {
             let currentqty =
               Number(value.checkqty) - Number(value.HisPackageRatio);
             value.currentqty = currentqty;
-
+            value.ip = this.dataUser.ip
+              ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+              : '';
+            value.device = val.device;
             if (currentqty || !this.checkprint) {
               await this.updateCheckmed(value);
             } else {
@@ -387,6 +393,7 @@ export class CheckMedComponent implements OnInit {
       user: this.dataUser.user,
       qty: value.HisPackageRatio,
       cmp_id: value.cmp_id,
+      ip: value.ip,
     };
 
     let getData: any = await this.http.postNodejs('updatecheckmed', data_send);
@@ -885,12 +892,12 @@ export class CheckMedComponent implements OnInit {
       position: 'top',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if (this.dataUser.user == 'test') {
-          let formData = new FormData();
-          formData.append('device', data.device);
-          formData.append('drugCode', data.drugCode);
-          let sendled: any = await this.http.post('update_led', formData);
-        }
+        // if (this.dataUser.ip == 'test') {
+        //   let formData = new FormData();
+        //   formData.append('device', data.device);
+        //   formData.append('drugCode', data.drugCode);
+        //   let sendled: any = await this.http.post('update_led', formData);
+        // }
 
         if (this.checkprint) {
           this.sendPDF(data).then((dataPDF: any) => {
@@ -909,6 +916,10 @@ export class CheckMedComponent implements OnInit {
                   if (getData.response.connect === 'success') {
                     data.currentqty = 0;
                     data.HisPackageRatio = data.checkqty;
+                    data.ip = this.dataUser.ip
+                      ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+                      : '';
+
                     await this.updateCheckmed(data);
                   } else {
                     Swal.fire(

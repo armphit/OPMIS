@@ -104,5 +104,36 @@ export class ManageUserComponent implements OnInit {
   deleteUser(data: any) {
     let formData = new FormData();
     formData.append('user', data.user);
+
+    Swal.fire({
+      title: 'คุณต้องการลบผู้ใช้นี้หรือไม่?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: ' ตกลง',
+      cancelButtonText: 'ยกเลิก',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let getData: any = await this.http.post('deleteUser', formData);
+
+        if (getData.connect) {
+          if (getData.response.rowCount > 0) {
+            await this.getData();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'ลบข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire('error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      }
+    });
   }
 }

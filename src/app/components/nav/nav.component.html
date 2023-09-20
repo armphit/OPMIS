@@ -30,7 +30,9 @@
       <!-- dataUser.user.toLowerCase() === 'p07' || -->
       <a
         *ngIf="
-          dataUser.role == 'admin' || dataUser.user.toLowerCase() === 'test'
+          dataUser.role == 'admin' ||
+          dataUser.user.toLowerCase() === 'p07' ||
+          dataUser.user.toLowerCase() === 'test'
         "
         style="margin-bottom: 4px"
         mat-list-item

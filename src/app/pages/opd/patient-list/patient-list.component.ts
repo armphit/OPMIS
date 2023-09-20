@@ -639,6 +639,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     win.$('#check_error').modal('show');
   }
   public async submitInput() {
+    // Swal.fire({
+    //   title: 'คุณต้องการบันทึกข้อมูลนี้หรือไม่?',
+    //   showCancelButton: true,
+    //   confirmButtonText: ' ตกลง',
+    //   cancelButtonText: 'ยกเลิก',
+    // }).then(async (result) => {
+    //   /* Read more about isConfirmed, isDenied below */
+    //   if (result.isConfirmed) {
     this.medError.value.position === 'other'
       ? this.medError.value.position_text
         ? this.medError.value.position_text
@@ -722,6 +730,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+    //   }
+    // });
   }
   getDatatype() {
     if (this.medError.value.type === 'other') {
