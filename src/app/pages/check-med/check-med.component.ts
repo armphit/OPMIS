@@ -394,6 +394,8 @@ export class CheckMedComponent implements OnInit {
       qty: value.HisPackageRatio,
       cmp_id: value.cmp_id,
       ip: value.ip,
+      drugCode: value.drugCode,
+      device: value.device,
     };
 
     let getData: any = await this.http.postNodejs('updatecheckmed', data_send);
@@ -898,7 +900,9 @@ export class CheckMedComponent implements OnInit {
         //   formData.append('drugCode', data.drugCode);
         //   let sendled: any = await this.http.post('update_led', formData);
         // }
-
+        data.ip = this.dataUser.ip
+          ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+          : '';
         if (this.checkprint) {
           this.sendPDF(data).then((dataPDF: any) => {
             if (dataPDF) {
@@ -916,9 +920,6 @@ export class CheckMedComponent implements OnInit {
                   if (getData.response.connect === 'success') {
                     data.currentqty = 0;
                     data.HisPackageRatio = data.checkqty;
-                    data.ip = this.dataUser.ip
-                      ? '200.200.200.' + this.dataUser.ip.split('.')[3]
-                      : '';
 
                     await this.updateCheckmed(data);
                   } else {
@@ -937,6 +938,7 @@ export class CheckMedComponent implements OnInit {
         } else {
           data.currentqty = 0;
           data.HisPackageRatio = data.checkqty;
+
           await this.updateCheckmed(data);
         }
       }
