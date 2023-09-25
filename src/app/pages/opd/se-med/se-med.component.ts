@@ -333,6 +333,7 @@ export class SeMedComponent implements OnInit {
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
+    formData.append('prepack', '');
     let getData: any = await this.http.post('SEDispense', formData);
 
     if (getData.connect) {
@@ -363,6 +364,7 @@ export class SeMedComponent implements OnInit {
     let formData = new FormData();
     formData.append('startDate', this.startDate);
     formData.append('endDate', this.endDate);
+    formData.append('prepack', '');
     let getData: any = await this.http.post('SENODispense', formData);
 
     if (getData.connect) {
