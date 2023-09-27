@@ -61,18 +61,25 @@ export class CheckInComponent implements OnInit {
     let startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     let endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
 
-    let formData = new FormData();
-    formData.append('date1', startDate);
-    formData.append('date2', endDate);
+    // let formData = new FormData();
+    // formData.append('date1', startDate);
+    // formData.append('date2', endDate);
 
-    if (this.typeDevice) {
-      formData.append('type', this.typeDevice);
-    }
-    let getData: any = await this.http.post('doorReport', formData);
+    // if (this.typeDevice) {
+    //   formData.append('type', this.typeDevice);
+    // }
+    // let getData: any = await this.http.post('doorReport', formData);
+    let send = {
+      date1: startDate,
+      date2: endDate,
+      type: this.typeDevice ? this.typeDevice : '',
+      choice: 1,
+    };
+    let getData: any = await this.http.postNodejs('doorReport', send);
 
     if (getData.connect) {
-      if (getData.response.result.length) {
-        this.dataDrug = getData.response.result;
+      if (getData.response.recordset.length) {
+        this.dataDrug = getData.response.recordset;
 
         this.dataSource = new MatTableDataSource(this.dataDrug);
         this.dataSource.sort = this.sort;
@@ -104,17 +111,24 @@ export class CheckInComponent implements OnInit {
     let startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     let endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
 
-    let formData = new FormData();
-    formData.append('date1', startDate);
-    formData.append('date2', endDate);
-    if (this.typeDevice) {
-      formData.append('type', this.typeDevice);
-    }
-    let getData: any = await this.http.post('doorFreq', formData);
+    // let formData = new FormData();
+    // formData.append('date1', startDate);
+    // formData.append('date2', endDate);
+    // if (this.typeDevice) {
+    //   formData.append('type', this.typeDevice);
+    // }
+    // let getData: any = await this.http.post('doorFreq', formData);
+    let send = {
+      date1: startDate,
+      date2: endDate,
+      type: this.typeDevice ? this.typeDevice : '',
+      choice: 2,
+    };
+    let getData: any = await this.http.postNodejs('doorReport', send);
 
     if (getData.connect) {
-      if (getData.response.result.length) {
-        this.dataDrug = getData.response.result;
+      if (getData.response.recordset.length) {
+        this.dataDrug = getData.response.recordset;
         this.dataSource2 = new MatTableDataSource(this.dataDrug);
         this.dataSource2.sort = this.sort2;
         this.dataSource2.paginator = this.paginator2;
