@@ -28,10 +28,11 @@ export class CheckInComponent implements OnInit {
       new Date(new Date().setDate(new Date().getDate() - 1))
     ),
   });
-  typeDevice: string = '';
+  typeDevice: string = 'in';
   // startDate: any = null;
   dataSource: any = null;
   dataDrug: any = null;
+  dataDrug_filter: any = null;
   nameExcel: any = null;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
@@ -81,9 +82,7 @@ export class CheckInComponent implements OnInit {
       if (getData.response.recordset.length) {
         this.dataDrug = getData.response.recordset;
 
-        this.dataSource = new MatTableDataSource(this.dataDrug);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+        this.dataFilter();
         this.nameExcel = `รายงานเวลาเข้าประตู ${this.typeDevice} ${startDate}_${endDate}`;
       } else {
         this.dataDrug = null;
@@ -92,14 +91,27 @@ export class CheckInComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
+  getDept: any = null;
+  dataFilter() {
+    if (this.getDept) {
+      this.dataDrug_filter = this.dataDrug.filter(
+        (val: any) => val.DEPTNAME == this.getDept
+      );
+    } else {
+      this.dataDrug_filter = this.dataDrug;
+    }
+    this.dataSource = new MatTableDataSource(this.dataDrug_filter);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+  }
   displayedColumns2: any = null;
   dataSource2: any = null;
   public getDatafreq = async () => {
     this.displayedColumns2 = [
-      'index',
-      // 'USERID',
+      // 'index',
+      'USERID',
       'Name',
-      'deviceName',
+      'DEPTNAME',
       'time1',
       'time2',
       'time3',
@@ -129,9 +141,8 @@ export class CheckInComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.recordset.length) {
         this.dataDrug = getData.response.recordset;
-        this.dataSource2 = new MatTableDataSource(this.dataDrug);
-        this.dataSource2.sort = this.sort2;
-        this.dataSource2.paginator = this.paginator2;
+        this.dataDrug_filter = this.dataDrug;
+        this.dataFilter2();
         this.nameExcel = `รายงานความถี่การเข้างานแต่ละช่วงเวลา ${this.typeDevice} ${startDate}_${endDate}`;
       } else {
         this.dataDrug = null;
@@ -140,6 +151,18 @@ export class CheckInComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
+  dataFilter2() {
+    if (this.getDept) {
+      this.dataDrug_filter = this.dataDrug.filter(
+        (val: any) => val.DEPTNAME == this.getDept
+      );
+    } else {
+      this.dataDrug_filter = this.dataDrug;
+    }
+    this.dataSource2 = new MatTableDataSource(this.dataDrug_filter);
+    this.dataSource2.sort = this.sort;
+    this.dataSource2.paginator = this.paginator;
+  }
 
   public async startChange(event: any) {
     if (event.target.value) {

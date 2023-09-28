@@ -2,7 +2,7 @@
   <mat-tab label="รายงานเวลาเข้าประตู">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-7">
+        <div class="col-lg-4">
           <form [formGroup]="campaignOne">
             <mat-form-field class="example-form-field" [style.width.px]="200">
               <mat-date-range-input
@@ -31,14 +31,27 @@
         </div>
         <div class="col-lg-3">
           <mat-form-field>
-            <mat-label>Select Device</mat-label>
+            <mat-label>Select DEPT</mat-label>
+
+            <mat-select
+              [(ngModel)]="getDept"
+              (ngModelChange)="dataFilter(); inputT.value = ''"
+            >
+              <mat-option value="">ALL</mat-option>
+              <mat-option value="Robot">Robot</mat-option>
+              <mat-option value="Hospital">Hospital</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field>
+            <mat-label>Select TIME</mat-label>
             <mat-select
               [(ngModel)]="typeDevice"
               (ngModelChange)="doSomething(); inputT.value = ''"
             >
-              <mat-option value="">ALL</mat-option>
-              <mat-option value="MHR-OPD1">MHR-OPD1</mat-option>
-              <mat-option value="MHR-IPD6">MHR-IPD6</mat-option>
+              <mat-option value="in">เวลาเข้างาน</mat-option>
+              <mat-option value="out">เวลาออกงาน</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -61,7 +74,7 @@
             #MatSort="matSort"
             #exporter="matTableExporter"
             class="mat-elevation-z8"
-            matSortActive="datetime"
+            matSortActive="DEPTNAME"
             matSortDirection="desc"
           >
             <ng-container matColumnDef="USERID">
@@ -160,7 +173,7 @@
   <mat-tab label="รายงานความถี่การเข้างานแต่ละช่วงเวลา">
     <div class="container-fluid" style="overflow: auto">
       <div class="row">
-        <div class="col-lg-7">
+        <div class="col-lg-4">
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
@@ -187,14 +200,26 @@
         </div>
         <div class="col-lg-3">
           <mat-form-field>
-            <mat-label>Select Device</mat-label>
+            <mat-label>Select DEPT</mat-label>
+            <mat-select
+              [(ngModel)]="getDept"
+              (ngModelChange)="dataFilter2(); inputT.value = ''"
+            >
+              <mat-option value="">ALL</mat-option>
+              <mat-option value="Hospital">Hospital</mat-option>
+              <mat-option value="Robot">Robot</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field>
+            <mat-label>Select Time</mat-label>
             <mat-select
               [(ngModel)]="typeDevice"
               (ngModelChange)="doSomething2(); inputT2.value = ''"
             >
-              <mat-option value="">ALL</mat-option>
-              <mat-option value="MHR-OPD1">MHR-OPD1</mat-option>
-              <mat-option value="MHR-IPD6">MHR-IPD6</mat-option>
+              <mat-option value="in">เวลาเข้างาน</mat-option>
+              <mat-option value="out">เวลาออกงาน</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -217,11 +242,11 @@
             #MatSort2="matSort"
             #exporter2="matTableExporter"
             class="mat-elevation-z8"
-            matSortActive="datetime"
+            matSortActive="DEPTNAME"
             matSortDirection="desc"
             [hiddenColumns]="[2]"
           >
-            <ng-container matColumnDef="index">
+            <!-- <ng-container matColumnDef="index">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
               <td
                 mat-cell
@@ -231,6 +256,16 @@
                 {{
                   this.paginator2.pageIndex * this.paginator2.pageSize + i + 1
                 }}
+              </td>
+            </ng-container> -->
+            <ng-container matColumnDef="USERID">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>USERID</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.USERID }}
               </td>
             </ng-container>
 
@@ -245,22 +280,22 @@
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="deviceName">
+            <ng-container matColumnDef="DEPTNAME">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                deviceName
+                DEPTNAME
               </th>
               <td
                 mat-cell
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.deviceName }}
+                {{ element.DEPTNAME }}
               </td>
             </ng-container>
 
             <ng-container matColumnDef="time1">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                Before 07.30
+                {{ typeDevice == "in" ? "Before 07.30" : "Before 16.30" }}
               </th>
               <td
                 mat-cell
@@ -272,7 +307,7 @@
             </ng-container>
             <ng-container matColumnDef="time2">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                07.30 - 07.45
+                {{ typeDevice == "in" ? "07.30 - 07.45" : "16.30 - 16.45" }}
               </th>
               <td
                 mat-cell
@@ -284,7 +319,7 @@
             </ng-container>
             <ng-container matColumnDef="time3">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                07.45 - 08.00
+                {{ typeDevice == "in" ? "07.45 - 08.00" : "16.45 - 17.00" }}
               </th>
               <td
                 mat-cell
@@ -296,7 +331,7 @@
             </ng-container>
             <ng-container matColumnDef="time4">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                08.00 - 08.15
+                {{ typeDevice == "in" ? "08.00 - 08.15" : "17.00 - 17.15" }}
               </th>
               <td
                 mat-cell
@@ -308,7 +343,7 @@
             </ng-container>
             <ng-container matColumnDef="time5">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                08.15 - 08.30
+                {{ typeDevice == "in" ? "08.15 - 08.30" : "17.15 - 17.30" }}
               </th>
               <td
                 mat-cell
@@ -320,7 +355,7 @@
             </ng-container>
             <ng-container matColumnDef="time6">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                After 08.30
+                {{ typeDevice == "in" ? "After 08.30" : "After 17.30" }}
               </th>
               <td
                 mat-cell
