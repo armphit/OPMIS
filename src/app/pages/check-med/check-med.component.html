@@ -159,7 +159,7 @@
                         tabindex="0"
                       >
                         <div class="row" style="margin: 10px">
-                          <div class="col-lg-6">
+                          <div class="col-lg-8">
                             <!-- <button
                           mat-raised-button
                           color="primary"
@@ -184,11 +184,19 @@
                               mat-raised-button
                               color="primary"
                               (click)="dataFix(patient_drug)"
+                              style="margin-right: 10px"
                             >
                               Print All
                             </button>
+                            <button
+                              mat-raised-button
+                              color="primary"
+                              (click)="checkPrint(patient_drug)"
+                            >
+                              ยาที่ไม่ต้องจัด
+                            </button>
                           </div>
-                          <div class="col-lg-6" style="text-align: right">
+                          <div class="col-lg-4" style="text-align: right">
                             <!-- <button
                               style="margin-right: 10px"
                               mat-raised-button
@@ -206,10 +214,7 @@
                             >
                               Export Excel
                             </button> -->
-                            <mat-form-field
-                              class="example-full-width"
-                              style="float: right"
-                            >
+                            <mat-form-field style="float: right; width: 100%">
                               <input
                                 matInput
                                 (keyup)="applyFilter($event)"

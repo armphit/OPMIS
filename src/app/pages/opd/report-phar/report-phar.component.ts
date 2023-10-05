@@ -108,9 +108,13 @@ export class ReportPharComponent implements OnInit {
             let temp = getData2.response.result.find(
               (element: any) => element.staff === e.staff
             );
-            if (temp.staffName) {
-              e.staffName = temp.staffName;
+
+            if (temp) {
+              if (temp.staffName) {
+                e.staffName = temp.staffName;
+              }
             }
+
             return e;
           });
           // this.dataDrug= getData.response.result;

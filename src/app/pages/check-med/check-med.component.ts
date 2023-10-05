@@ -72,7 +72,7 @@ export class CheckMedComponent implements OnInit {
   }
   checkprint: boolean = false;
   test() {
-    this.getData('1324216');
+    this.getData('1055663');
   }
   ngOnInit(): void {}
   ngAfterViewInit() {
@@ -1004,7 +1004,7 @@ export class CheckMedComponent implements OnInit {
     if (this.checkprint) {
       Swal.fire({
         title: 'Are you sure?',
-        text: 'Do you want to print all?',
+        text: 'Do you want to print?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -1094,5 +1094,10 @@ export class CheckMedComponent implements OnInit {
     } else {
       this.sendServer(val, null);
     }
+  }
+  checkPrint(data: any) {
+    let data_filter = data.filter((val: any) => val.checkDrug || !val.qty);
+    this.dataFix(data_filter);
+    // console.log(data_filter);
   }
 }
