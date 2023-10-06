@@ -249,6 +249,9 @@
                             <td mat-cell *matCellDef="let element">
                               <div style="display: flex; text-align: center">
                                 <button
+                                  [hidden]="
+                                    !element.checkqty && element.checkstamp
+                                  "
                                   style="margin-right: 10px"
                                   type="button"
                                   matTooltip="Accept"
