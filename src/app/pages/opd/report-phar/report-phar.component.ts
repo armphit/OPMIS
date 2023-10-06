@@ -37,7 +37,7 @@ export class ReportPharComponent implements OnInit {
     'item',
   ];
 
-  public displayedColumns2: string[] = ['staff', 'staffName', 'item'];
+  public displayedColumns2: string[] = ['staff', 'staffName', 'item', 'error'];
 
   public displayedColumns3: string[] = [
     'dispenser_id',
@@ -60,6 +60,7 @@ export class ReportPharComponent implements OnInit {
   ];
 
   select = '';
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
 
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
@@ -76,6 +77,9 @@ export class ReportPharComponent implements OnInit {
     private https: HttpClient
   ) {
     this.dateAdapter.setLocale('en-GB');
+    if (this.dataUser.role === 'officer') {
+      this.numTab = 2;
+    }
     this.getData();
 
     // this.getData2();

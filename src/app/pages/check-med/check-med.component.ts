@@ -87,6 +87,7 @@ export class CheckMedComponent implements OnInit {
   patient_contract: any = null;
   Dataqandcheck: any = null;
   patient_drug: any = [];
+  data_filter: any = [];
   panelOpenState = true;
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   drug_xmed: any = [];
@@ -172,6 +173,11 @@ export class CheckMedComponent implements OnInit {
                 this.drugbar.nativeElement.focus();
               }, 100);
             }
+            this.data_filter = this.patient_drug.filter(
+              (val: any) =>
+                (val.checkDrug && !val.checkstamp) ||
+                (!val.qty && !val.checkstamp)
+            );
 
             this.dataSource = new MatTableDataSource(this.patient_drug);
             this.dataSource.sort = this.sort;
@@ -432,6 +438,10 @@ export class CheckMedComponent implements OnInit {
           .every((v: any) => {
             return v.checkqty == 0;
           });
+        this.data_filter = this.patient_drug.filter(
+          (val: any) =>
+            (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
+        );
 
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
@@ -1062,6 +1072,11 @@ export class CheckMedComponent implements OnInit {
                 .every((v: any) => {
                   return v.checkqty == 0;
                 });
+              this.data_filter = this.patient_drug.filter(
+                (val: any) =>
+                  (val.checkDrug && !val.checkstamp) ||
+                  (!val.qty && !val.checkstamp)
+              );
 
               this.dataSource = new MatTableDataSource(this.patient_drug);
               this.dataSource.sort = this.sort;
@@ -1096,8 +1111,8 @@ export class CheckMedComponent implements OnInit {
     }
   }
   checkPrint(data: any) {
-    let data_filter = data.filter((val: any) => val.checkDrug || !val.qty);
-    this.dataFix(data_filter);
-    // console.log(data_filter);
+    //   let data_filter = data.filter((val: any) => val.checkDrug || !val.qty);
+    //   this.dataFix(data_filter);
+    console.log(this.data_filter);
   }
 }

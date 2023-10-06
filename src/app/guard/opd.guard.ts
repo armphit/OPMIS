@@ -24,7 +24,8 @@ export class OpdGuard implements CanActivate {
     | UrlTree {
     if (
       JSON.parse(sessionStorage.getItem('userLogin') || '{}').role == 'opd' ||
-      JSON.parse(sessionStorage.getItem('userLogin') || '{}').role == 'admin'
+      JSON.parse(sessionStorage.getItem('userLogin') || '{}').role == 'admin' ||
+      JSON.parse(sessionStorage.getItem('userLogin') || '{}').role == 'officer'
     ) {
       return true;
     } else {

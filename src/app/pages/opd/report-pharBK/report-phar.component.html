@@ -1,4 +1,4 @@
-<mat-tab-group
+<!-- <mat-tab-group
   (selectedTabChange)="getTab($event.index)"
   [(selectedIndex)]="numTab"
 >
@@ -334,7 +334,10 @@
     </div>
   </mat-tab>
 
-  <mat-tab label="ภาระงานผู้ช่วยเภสัชประจำตู้">
+  <mat-tab
+    label="ภาระงานผู้ช่วยเภสัชประจำตู้"
+    [disabled]="dataUser.role === 'officer'"
+  >
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-8">
@@ -454,14 +457,15 @@
                 {{ element.item }}
               </td>
             </ng-container>
-            <ng-container matColumnDef="error">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Error</th>
+
+            <ng-container matColumnDef="ord" *ngIf="numTab !== 2">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
               <td
                 mat-cell
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.error }}
+                {{ element.ord }}
               </td>
             </ng-container>
 
@@ -708,4 +712,608 @@
       </div>
     </div>
   </mat-tab>
+  <mat-tab label="รายงานการพิมพ์ฉลากยา">
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg-7 d-flex">
+          <mat-form-field class="example-form-field" style="float: left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker5"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end"
+            >
+              <input
+                matStartDate
+                placeholder="วันที่เริ่มต้น"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="วันที่สิ้นสุด"
+                formControlName="end"
+                (dateChange)="endChange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker5"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker5></mat-date-range-picker>
+          </mat-form-field>
+          <span
+            *ngIf="choicecheckmed != '1'"
+            style="
+              font-size: 18px;
+              font-weight: bold;
+              margin: 20px 10px 13px 20px;
+            "
+            >เวลาเฉลี่ย : {{ avgTime }}</span
+          >
+        </div>
+        <div class="col-lg-2">
+          <mat-form-field>
+            <mat-label>เลือกรายงาน</mat-label>
+            <mat-select
+              [(ngModel)]="choicecheckmed"
+              (ngModelChange)="reportCheckmed()"
+            >
+              <mat-option value="1">รายงาน MED-Error</mat-option>
+              <mat-option value="2">รายงานเวลาเช็คยา</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter5($event)" #input5 />
+            <mat-placeholder>Search</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource5"
+      >
+        <table
+          mat-table
+          [dataSource]="dataSource5"
+          #MatSort5="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter5="matTableExporter"
+          [hiddenColumns]="
+            (dataUser.user === 'admin' ||
+              dataUser.user.toLowerCase() === 'p07' ||
+              dataUser.user.toLowerCase() === 'p54' ||
+              dataUser.user.toLowerCase() === 'test') &&
+            choicecheckmed == '1'
+              ? [0]
+              : []
+          "
+        >
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              รหัสคนไข้
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+
+          <ng-container
+            [matColumnDef]="choicecheckmed == '1' ? 'location' : 'queue'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              {{ choicecheckmed == "1" ? "ห้องยา" : "คิว" }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ choicecheckmed == "1" ? element.location : element.queue }}
+            </td>
+          </ng-container>
+
+          <ng-container
+            [matColumnDef]="
+              choicecheckmed == '1' ? 'position_text' : 'timestamp'
+            "
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              {{ choicecheckmed == "1" ? "ตำแหน่งที่ผิด" : "เวลาเช็คยา" }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{
+                choicecheckmed == "1"
+                  ? element.position_text
+                  : element.timestamp
+              }}
+            </td>
+          </ng-container>
+          <ng-container
+            [matColumnDef]="
+              choicecheckmed == '1' ? 'type_text' : 'checkComplete'
+            "
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              {{
+                choicecheckmed == "1" ? "รูปแบบความผิดพลาด" : "เวลาเช็คยาเสร็จ"
+              }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{
+                choicecheckmed == "1"
+                  ? element.type_text
+                  : element.checkComplete
+              }}
+            </td>
+          </ng-container>
+          <ng-container
+            [matColumnDef]="choicecheckmed == '1' ? 'med_wrong_name' : 'time'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              {{ choicecheckmed == "1" ? "ชื่อยาผิด" : "เวลา" }}
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{
+                choicecheckmed == "1" ? element.med_wrong_name : element.time
+              }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="med_wrong_text">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              รายละเอียดผิด
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.med_wrong_text }}
+            </td>
+          </ng-container>
+          <ng-container
+            matColumnDef="med_good_name"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              ชื่อยาถูก
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.med_good_name }}
+            </td>
+          </ng-container>
+          <ng-container
+            matColumnDef="med_good_text"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              รายละเอียดถูก
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.med_good_text }}
+            </td>
+          </ng-container>
+          <ng-container
+            matColumnDef="interceptor_name"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              ผู้ดักจับ
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.interceptor_name }}
+            </td>
+          </ng-container>
+          <ng-container
+            matColumnDef="offender_name"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              ผู้ก่อความคลาดเคลื่อน
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.offender_name }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="note" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              หมายเหตุ
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.note }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="hnDT" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              วันที่
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hnDT }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Action" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Action
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 5px; padding-right: 5px"
+            >
+              <span style="display: flex">
+
+                <button
+                  type="button"
+                  style="margin: 5px"
+                  class="btn btn-warning btn-sm"
+                  (click)="manageErrormed(element, 'edit')"
+                >
+                  แก้ไข
+                </button>
+                <button
+                  style="margin: 5px"
+                  type="button"
+                  class="btn btn-danger btn-sm"
+                  (click)="manageErrormed(element, 'delete')"
+                >
+                  ลบ
+                </button>
+
+              </span>
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns5; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns5"></tr>
+        </table>
+      </section>
+      <div [hidden]="!dataSource5">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter5.exportTable('xlsx', {
+              fileName: nameExcel5,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator5="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div></div
+  ></mat-tab>
 </mat-tab-group>
+<div class="modal fade" id="check_error" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Med Error</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form
+        [formGroup]="medError"
+        (ngSubmit)="medError.valid ? submitInput() : ''"
+      >
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <mat-form-field>
+                <mat-label>ตำแหน่งที่ผิด</mat-label>
+                <mat-select
+                  formControlName="position"
+                  (selectionChange)="getDataposition()"
+                  required
+                >
+                  <mat-option *ngFor="let item of positionE" [value]="item">
+                    {{ item === "other" ? "อื่นๆ (โปรดระบุ)" : item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                *ngIf="setText.textposition"
+              >
+                <input
+                  required
+                  matInput
+                  placeholder="ระบุข้อความ"
+                  formControlName="position_text"
+                />
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field>
+                <mat-label>รูปแบบความผิดพลาด</mat-label>
+                <mat-select
+                  required
+                  formControlName="type"
+                  (selectionChange)="getDatatype()"
+                >
+                  <mat-option *ngFor="let item of typeE" [value]="item">
+                    {{ item === "other" ? "อื่นๆ (โปรดระบุ)" : item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field
+                class="example-full-width"
+                *ngIf="setText.texttype"
+              >
+                <input
+                  required
+                  matInput
+                  placeholder="ระบุข้อความ"
+                  formControlName="type_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ชื่อยาผิด</mat-label>
+                <input
+                  required
+                  #inputwrong
+                  type="text"
+                  matInput
+                  formControlName="medWrong"
+                  [matAutocomplete]="auto2"
+                  (input)="filter_wrong()"
+                  (focus)="filter_wrong()"
+                />
+                <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataWrong"
+                    [value]="option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <input
+                  matInput
+                  placeholder="รายละเอียดผิด"
+                  formControlName="medWrong_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ชื่อยาถูก</mat-label>
+                <input
+                  required
+                  #inputgood
+                  type="text"
+                  matInput
+                  formControlName="medGood"
+                  [matAutocomplete]="auto"
+                  (input)="filter_good()"
+                  (focus)="filter_good()"
+                />
+                <mat-autocomplete requireSelection #auto="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataGood"
+                    [value]="option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <input
+                  matInput
+                  placeholder="รายละเอียดถูก"
+                  formControlName="medGood_text"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ผู้ดักจับ</mat-label>
+                <input
+                  required
+                  #inputinterceptor
+                  type="text"
+                  matInput
+                  formControlName="interceptor"
+                  [matAutocomplete]="auto3"
+                  (input)="filter_interceptor()"
+                  (focus)="filter_interceptor()"
+                />
+                <mat-autocomplete requireSelection #auto3="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataInterceptor"
+                    [value]="option.userName"
+                  >
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>ผู้ก่อความคลาดเคลื่อน</mat-label>
+                <input
+                  required
+                  #inputoffender
+                  type="text"
+                  matInput
+                  formControlName="offender"
+                  [matAutocomplete]="auto4"
+                  (input)="filter_offender()"
+                  (focus)="filter_offender()"
+                />
+
+                <mat-autocomplete requireSelection #auto4="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataOffender"
+                    [value]="option.userName"
+                  >
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width">
+                <mat-label>หมายเหตุ</mat-label>
+                <textarea matInput formControlName="note"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> -->

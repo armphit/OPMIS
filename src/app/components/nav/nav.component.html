@@ -108,14 +108,20 @@
         <mat-expansion-panel
           [expanded]="panelOpd"
           dense
-          *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
+          *ngIf="
+            dataUser.role == 'opd' ||
+            dataUser.role == 'admin' ||
+            dataUser.role == 'officer'
+          "
         >
           <mat-expansion-panel-header (click)="togglePanel3()">
             <strong> <i class="fas fa-notes-medical"></i> &nbsp; OPD</strong>
           </mat-expansion-panel-header>
           <mat-accordion>
             <mat-expansion-panel dense style="margin-top: 5px">
-              <mat-expansion-panel-header>
+              <mat-expansion-panel-header
+                *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
+              >
                 <strong
                   ><i class="fas fa-clinic-medical"></i> &nbsp; Medicine</strong
                 >
@@ -177,7 +183,9 @@
                   [routerLink]="['/opd/report-dispense']"
                   [routerLinkActive]="['active']"
                   (click)="checkinnerWidth()"
+                  *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
+                  >
                   <i class="fas fa-clinic-medical"></i>&nbsp;Report
                   &nbsp;Dispense
                 </a>
@@ -195,7 +203,9 @@
                   [routerLink]="['/opd/patient-list']"
                   [routerLinkActive]="['active']"
                   (click)="checkinnerWidth()"
+                  *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
+                  >
                   <i class="fas fa-user-injured"></i>&nbsp;Patient - List
                 </a>
                 <a
@@ -203,7 +213,9 @@
                   [routerLink]="['/opd/drug-appoint']"
                   [routerLinkActive]="['active']"
                   (click)="checkinnerWidth()"
+                  *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
+                  >
                   <i class="fas fa-notes-medical"></i>&nbsp;Drug - Appoint
                 </a>
                 <a
@@ -211,6 +223,7 @@
                   [routerLink]="['/opd/temperature-monitor']"
                   [routerLinkActive]="['active']"
                   (click)="checkinnerWidth()"
+                  *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
                   <i class="fas fa-temperature-low"></i>&nbsp;Temperature -
                   Monitor
