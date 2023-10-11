@@ -127,8 +127,12 @@ export class OtherMedComponent implements OnInit {
   ngOnInit(): void {
     this.deviceFilter.valueChanges.subscribe((device) => {
       this.filterValues.device = device;
-
-      let data = this.http.drug.filter((val: any) => val.device == device);
+      let data = null;
+      if (device) {
+        data = this.http.drug.filter((val: any) => val.device == device);
+      } else {
+        data = this.http.drug;
+      }
 
       this.dataSource = new MatTableDataSource(data);
       this.dataSource.sort = this.sort;
