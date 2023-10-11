@@ -1110,9 +1110,4 @@ export class CheckMedComponent implements OnInit {
       this.sendServer(val, null);
     }
   }
-  checkPrint(data: any) {
-    //   let data_filter = data.filter((val: any) => val.checkDrug || !val.qty);
-    //   this.dataFix(data_filter);
-    console.log(this.data_filter);
-  }
 }

@@ -122,8 +122,8 @@
               <mat-expansion-panel-header
                 *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
               >
-                <strong
-                  ><i class="fas fa-clinic-medical"></i> &nbsp; Medicine</strong
+                <strong>
+                  <i class="fas fa-clinic-medical"></i> &nbsp; Medicine</strong
                 >
               </mat-expansion-panel-header>
               <mat-nav-list dense>
@@ -185,7 +185,6 @@
                   (click)="checkinnerWidth()"
                   *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
-                  >
                   <i class="fas fa-clinic-medical"></i>&nbsp;Report
                   &nbsp;Dispense
                 </a>
@@ -205,7 +204,6 @@
                   (click)="checkinnerWidth()"
                   *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
-                  >
                   <i class="fas fa-user-injured"></i>&nbsp;Patient - List
                 </a>
                 <a
@@ -215,7 +213,6 @@
                   (click)="checkinnerWidth()"
                   *ngIf="dataUser.role == 'opd' || dataUser.role == 'admin'"
                 >
-                  >
                   <i class="fas fa-notes-medical"></i>&nbsp;Drug - Appoint
                 </a>
                 <a
