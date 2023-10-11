@@ -19,6 +19,7 @@ export class HttpService {
   public testPath: string = 'http://localhost:4000/';
   public printPath: string = 'http://192.168.185.160:5000/';
   public printTest: string = 'http://localhost:5000/';
+  public drug: any = null;
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';

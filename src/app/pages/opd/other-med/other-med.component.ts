@@ -16,8 +16,6 @@ import Swal from 'sweetalert2';
   styleUrls: ['./other-med.component.scss'],
 })
 export class OtherMedComponent implements OnInit {
-  public dataDrug: any = null;
-
   public displayedColumns: string[] = [];
 
   public dataSource: any = null;
@@ -129,7 +127,14 @@ export class OtherMedComponent implements OnInit {
   ngOnInit(): void {
     this.deviceFilter.valueChanges.subscribe((device) => {
       this.filterValues.device = device;
-      this.dataSource.filter = JSON.stringify(this.filterValues);
+
+      let data = this.http.drug.filter((val: any) => val.device == device);
+
+      this.dataSource = new MatTableDataSource(data);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.filterPredicate = this.createFilter();
+      // this.dataSource.filter = JSON.stringify(this.filterValues);
     });
     this.codeFilter.valueChanges.subscribe((drugCode) => {
       this.filterValues.drugCode = drugCode;
@@ -172,12 +177,13 @@ export class OtherMedComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         this.getHidden = 1;
-        this.dataDrug = getData.response.result;
-        this.dataSource = new MatTableDataSource(this.dataDrug);
+        this.http.drug = getData.response.result;
+
+        this.dataSource = new MatTableDataSource(this.http.drug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.dataSource.filterPredicate = this.createFilter();
-        this.location = this.dataDrug
+        this.location = this.http.drug
           .map((a: any) => a.device)
           .filter(
             (arr: any, index: any, self: any) =>
@@ -186,12 +192,12 @@ export class OtherMedComponent implements OnInit {
           .sort();
       } else {
         this.getHidden = 0;
-        this.dataDrug = null;
+        this.http.drug = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
-    this.dataDrug = null;
+    // this.http.drug = null;
 
     this.nameExcel2 = `${this.loname} ${this.startDate}_${this.endDate}`;
   }
