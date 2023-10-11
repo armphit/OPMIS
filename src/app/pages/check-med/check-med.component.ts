@@ -70,7 +70,7 @@ export class CheckMedComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB');
     // this.test();
   }
-  checkprint: boolean = false;
+  checkprint: boolean = true;
   test() {
     this.getData('1055663');
   }
