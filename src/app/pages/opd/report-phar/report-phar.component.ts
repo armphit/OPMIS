@@ -35,6 +35,7 @@ export class ReportPharComponent implements OnInit {
 
     'order',
     'item',
+    'error',
   ];
 
   public displayedColumns2: string[] = ['staff', 'staffName', 'item', 'error'];
@@ -45,6 +46,7 @@ export class ReportPharComponent implements OnInit {
 
     'order',
     'item',
+    'error',
   ];
   public displayedColumns4: string[] = [
     'patientNO',
