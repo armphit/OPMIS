@@ -1029,7 +1029,7 @@ export class CheckMedComponent implements OnInit {
 
           for (let index = 0; index < data.length; index++) {
             sendVal[index] = {
-              user: this.dataUser.name,
+              user: this.dataUser.user,
               date: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
               hn: data[index].hn,
               drugCode: data[index].drugCode.trim(),
