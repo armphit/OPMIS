@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -95,7 +95,10 @@ export class ReportPharComponent implements OnInit {
     const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
     let getData: any = null;
     let formData = new FormData();
-
+    this.campaignOne = this.formBuilder.group({
+      start: [start, Validators.required],
+      end: [end, Validators.required],
+    });
     formData.append('time1', this.starttime + ':00');
     formData.append('time2', this.endtime + ':00');
     formData.append('date1', start);
@@ -227,5 +230,75 @@ export class ReportPharComponent implements OnInit {
 
   changeFloor() {
     this.getData();
+  }
+  @ViewChild('input5') input5!: ElementRef;
+  @ViewChild('MatSort5') sort5!: MatSort;
+  @ViewChild('MatPaginator5') paginator5!: MatPaginator;
+  displayedColumns5: any = null;
+  dataSource5: any = null;
+  nameExcel5: any = null;
+  async listError(val: any) {
+    let datasend = {
+      id:
+        this.numTab == 0
+          ? val.checker_id
+          : this.numTab == 1
+          ? val.dispenser_id
+          : this.numTab == 2
+          ? val.staff
+          : '',
+      dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+      datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+      time1: this.starttime + ':00',
+      time2: this.endtime + ':00',
+      type:
+        this.numTab == 0
+          ? 'check'
+          : this.numTab == 1
+          ? 'จ่าย'
+          : this.numTab == 2
+          ? 'จัด'
+          : '',
+      choice: 1,
+    };
+    let getData: any = await this.http.postNodejs('reportcheckmed', datasend);
+    let dataDrug = getData.response.datadrugcheck;
+    this.displayedColumns5 = [
+      'hn',
+      'location',
+      'position_text',
+      'type_text',
+      'med_wrong_name',
+      'med_wrong_text',
+      'med_good_name',
+      'med_good_text',
+      'interceptor_name',
+      'offender_name',
+      'note',
+      'hnDT',
+    ];
+
+    if (getData.connect) {
+      if (dataDrug.length) {
+        this.dataSource5 = new MatTableDataSource(dataDrug);
+        this.dataSource5.sort = this.sort5;
+        this.dataSource5.paginator = this.paginator5;
+        this.nameExcel5 = `รายงาน MED-Error ${datasend.datestart}_${datasend.dateend}`;
+        // this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
+        let win: any = window;
+        win.$('#exampleModal').modal('show');
+        setTimeout(() => {
+          this.input5.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource5 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  public applyFilter5(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource5.filter = filterValue.trim().toLowerCase();
   }
 }
