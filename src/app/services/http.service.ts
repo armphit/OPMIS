@@ -158,24 +158,6 @@ export class HttpService {
     });
   };
 
-  public syncNodejs = async (path: string, data: any) => {
-    this.loading = true;
-    return new Promise((resolve) => {
-      this.http
-        .post(this.testPath + path, data)
-        // .post(this.syncPath + path, data)
-        .toPromise()
-        .then((value) => {
-          resolve({ connect: true, response: value });
-          this.loading = false;
-        })
-        .catch((reason) => {
-          resolve({ connect: false, response: reason });
-          this.loading = false;
-        });
-    });
-  };
-
   public Printjs = async (path: string, data: any) => {
     this.loading = true;
     return new Promise((resolve) => {

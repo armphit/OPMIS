@@ -1858,6 +1858,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataSource4.filter = filterValue.trim().toLowerCase();
   }
 
+  valuechange() {
+    this.reportCheckmed();
+  }
+
+  clearValue() {
+    // new Date(new Date().setDate(new Date().getDate() - 1)),
+    this.campaignOne = this.formBuilder.group({
+      start: [new Date(new Date()), Validators.required],
+      end: [new Date(new Date()), Validators.required],
+    });
+    this.starttime = '08:00';
+    this.endtime = '16:00';
+    this.reportCheckmed();
+  }
+
   nameExcel5 = '';
   dataSource5: any = null;
   displayedColumns5: any = null;
@@ -1866,6 +1881,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
   choicecheckmed = '1';
   avgTime: any = '';
+  public starttime = '08:00';
+
+  public endtime = '16:00';
   public reportCheckmed = async () => {
     this.dataSource5 = null;
     this.displayedColumns5 = [];
@@ -1921,6 +1939,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         datestart: datestart,
         dateend: dateend,
         choice: this.choicecheckmed,
+        time1: this.starttime + ':00',
+        time2: this.endtime + ':00',
       };
 
       let getData: any = await this.http.postNodejs('reportcheckmed', formData);
@@ -1955,6 +1975,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let formData = {
         datestart: datestart,
         dateend: dateend,
+        time1: this.starttime + ':00',
+        time2: this.endtime + ':00',
         choice: this.choicecheckmed,
       };
 
@@ -1968,7 +1990,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           this.avgTime = getData.response.average;
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
-          this.nameExcel5 = `รายงานเวลาเช็คยา ${datestart}_${dateend}`;
+          this.nameExcel5 = `รายงานเวลาเช็คยา ${datestart} ${this.starttime}:00_${dateend} ${this.endtime}:00`;
           setTimeout(() => {
             this.input5.nativeElement.focus();
           }, 100);
