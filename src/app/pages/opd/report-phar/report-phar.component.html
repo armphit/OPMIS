@@ -574,6 +574,14 @@
           >
             <mat-icon>check_circle</mat-icon>
           </button>
+          <button
+            (click)="clearValue()"
+            mat-icon-button
+            color="accent"
+            aria-label="Example icon button with a menu icon"
+          >
+            <mat-icon>clear</mat-icon>
+          </button>
         </div>
         <div class="col-lg-4">
           <mat-form-field class="example-full-width" style="float: right">
@@ -740,6 +748,325 @@
 
           <mat-paginator
             #MatPaginator4="matPaginator"
+            style="float: right"
+            [length]="10"
+            [pageSize]="10"
+            [pageSizeOptions]="[10, 50, 100]"
+            showFirstLastButtons
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="รายงานจ่ายยา">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-8">
+          <mat-form-field class="example-form-field" [style.width.px]="200">
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker5"
+            >
+              <input
+                matStartDate
+                placeholder="Start date"
+                formControlName="start"
+              />
+              <input matEndDate placeholder="End date" formControlName="end" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker5"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker5></mat-date-range-picker>
+          </mat-form-field>
+          &nbsp;
+          <button
+            (click)="valuechange()"
+            mat-icon-button
+            color="primary"
+            aria-label="Example icon button with a menu icon"
+          >
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button
+            (click)="clearValue()"
+            mat-icon-button
+            color="accent"
+            aria-label="Example icon button with a menu icon"
+          >
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+        <!-- <div class="col-lg-4">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter4($event)" #input4 />
+            <mat-placeholder>ค้นหา</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div> -->
+      </div>
+      <div class="table-responsive" #TABLE>
+        <table
+          mat-table
+          matTableExporter
+          [dataSource]="dataSource"
+          #MatSort6="matSort"
+          matSort
+          #exporter6="matTableExporter"
+          class="mat-elevation-z8"
+          #table
+        >
+          <tr mat-header-row *matHeaderRowDef="matHeaderRowDef1"></tr>
+          <tr mat-header-row *matHeaderRowDef="matHeaderRowDef2"></tr>
+          <tr mat-header-row *matHeaderRowDef="matHeaderRowDef3"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns6"></tr>
+          <ng-container matColumnDef="phar">
+            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">
+              เภสัชกร
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.phar }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="numHN">
+            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">
+              จำนวนครั้ง (HN)
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.numHN }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="drungCount">
+            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">
+              จำนวนรายการยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drungCount }}</td>
+            <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
+          </ng-container>
+          <ng-container matColumnDef="errorCount">
+            <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">
+              จำนวน Error
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.errorCount }}</td>
+            <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
+          </ng-container>
+          <ng-container matColumnDef="drp">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="13">DRPs</th>
+            <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
+          </ng-container>
+          <ng-container matColumnDef="it">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="2">
+              Intervention to
+            </th>
+            <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
+          </ng-container>
+          <ng-container matColumnDef="doi">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="9">
+              Detial of Intervention
+            </th>
+            <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
+          </ng-container>
+
+          <ng-container matColumnDef="roi">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="3">
+              Result of Intervention
+            </th>
+            <!-- <td mat-cell *matCellDef="let data">{{data.yourFirstDataPoint}}</td> -->
+          </ng-container>
+          <ng-container matColumnDef="drp1">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              1. Untreated indication
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp2">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              2. Improper drug selection
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp2 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="drp3">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              3. Subtherapeutic dose
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp3 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp4">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              4. Overdosage
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp4 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp5">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              5. Adverse Drug Reaction
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp5 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="drp6">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              6. Drug Interactions
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp6 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp7">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              7. Medication use without indication
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp7 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp8">
+            <th mat-header-cell [attr.colspan]="5" *matHeaderCellDef>
+              8. Failure to receive Medication
+            </th>
+            <!-- <td mat-cell *matCellDef="let data">Data 8</td> -->
+          </ng-container>
+
+          <ng-container matColumnDef="drp9">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              9. Duplicate Medication
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp9 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="it1">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>Doctor</th>
+            <td mat-cell *matCellDef="let data">{{ data.it1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="it2">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              Patient
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.it2 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi1">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              1. ให้ความรู้ผู้ป่วย
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi2">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              2. ให้หยุดยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi2 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="doi3">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              3. ลดขนาดยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi3 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi4">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              4. เพิ่มขนาดยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi4 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi5">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              5. ให้ขนาดยาเดิม
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi5 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="doi6">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              6. เปลี่ยนยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi6 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi7">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              7. ปรับเวลาบริหารยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi7 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="doi8">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              8.ปรับเทคนิคการบริหารยา
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi9 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="doi9">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              9. อื่นๆ
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.doi9 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="roi1">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              1. Accepted
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.roi1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="roi2">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              2. Partial Accept
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.roi2 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="roi3">
+            <th mat-header-cell [attr.rowspan]="2" *matHeaderCellDef>
+              3. Not Accept
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.roi3 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="drp8_1">
+            <th mat-header-cell *matHeaderCellDef>
+              8.1 Not understand the instructions
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp8_1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp8_2">
+            <th mat-header-cell *matHeaderCellDef>
+              8.2 Not the take medication
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp8_2 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="drp8_3">
+            <th mat-header-cell *matHeaderCellDef>
+              8.3 Forget the take medication
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp8_3 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp8_4">
+            <th mat-header-cell *matHeaderCellDef>8.4 Incorrect storage</th>
+            <td mat-cell *matCellDef="let data">{{ data.drp8_4 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="drp8_5">
+            <th mat-header-cell *matHeaderCellDef>
+              8.5 Incorrect administration
+            </th>
+            <td mat-cell *matCellDef="let data">{{ data.drp8_5 }}</td>
+          </ng-container>
+        </table>
+        <div>
+          <!-- <button
+            mat-raised-button
+            color="primary"
+            (click)="
+              exporter6.exportTable('xlsx', {
+                fileName: nameExcel,
+                sheet: 'sheet_name',
+                Props: { Author: 'Talha' }
+              })
+            "
+          >
+            Excel
+          </button> -->
+          <button mat-raised-button color="primary" (click)="ExportTOExcel()">
+            Excel
+          </button>
+
+          <mat-paginator
+            #MatPaginator6="matPaginator"
             style="float: right"
             [length]="10"
             [pageSize]="10"

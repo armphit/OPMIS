@@ -13,7 +13,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
-
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-report-phar',
   templateUrl: './report-phar.component.html',
@@ -185,9 +185,120 @@ export class ReportPharComponent implements OnInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
+    } else if (this.numTab == 4) {
+      this.reportDispend();
     }
   };
+  matHeaderRowDef1: string[] = [];
+  matHeaderRowDef2: string[] = [];
+  matHeaderRowDef3: string[] = [];
+  displayedColumns6: string[] = [];
+  @ViewChild('input6') input6!: ElementRef;
+  @ViewChild('MatSort6') sort6!: MatSort;
+  @ViewChild('MatPaginator6') paginator6!: MatPaginator;
+  async reportDispend() {
+    this.matHeaderRowDef1 = [
+      'phar',
+      'numHN',
+      'drungCount',
+      'errorCount',
+      'drp',
+      'it',
+      'doi',
+      'roi',
+    ];
 
+    this.matHeaderRowDef2 = [
+      'drp1',
+      'drp2',
+      'drp3',
+      'drp4',
+      'drp5',
+      'drp6',
+      'drp7',
+      'drp8',
+      'drp9',
+      'it1',
+      'it2',
+      'doi1',
+      'doi2',
+      'doi3',
+      'doi4',
+      'doi5',
+      'doi6',
+      'doi7',
+      'doi8',
+      'doi9',
+      'roi1',
+      'roi2',
+      'roi3',
+    ];
+    this.matHeaderRowDef3 = ['drp8_1', 'drp8_2', 'drp8_3', 'drp8_4', 'drp8_5'];
+    this.displayedColumns6 = [
+      'phar',
+      'numHN',
+      'drungCount',
+      'errorCount',
+      'drp1',
+      'drp2',
+      'drp3',
+      'drp4',
+      'drp5',
+      'drp6',
+      'drp7',
+      'drp8_1',
+      'drp8_2',
+      'drp8_3',
+      'drp8_4',
+      'drp8_5',
+      'drp9',
+      'it1',
+      'it2',
+      'doi1',
+      'doi2',
+      'doi3',
+      'doi4',
+      'doi5',
+      'doi6',
+      'doi7',
+      'doi8',
+      'doi9',
+      'roi1',
+      'roi2',
+      'roi3',
+    ];
+    const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
+    const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
+    let getData: any = await this.http.postNodejs('getDispend', {
+      date1: start,
+      date2: end,
+    });
+
+    if (getData.connect) {
+      if (getData.response.length) {
+        this.dataSource = new MatTableDataSource(getData.response);
+        this.dataSource.sort = this.sort6;
+        this.dataSource.paginator = this.paginator6;
+
+        this.nameExcel = `รายงานจ่ายยา(${start}  - ${end} `;
+      } else {
+        this.dataSource5 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  @ViewChild('TABLE') table!: ElementRef;
+  ExportTOExcel() {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(
+      this.table.nativeElement
+    );
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, this.nameExcel + '.xlsx');
+  }
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
