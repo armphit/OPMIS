@@ -282,7 +282,7 @@ export class ReportPharComponent implements OnInit {
 
         this.nameExcel = `รายงานจ่ายยา(${start}  - ${end} `;
       } else {
-        this.dataSource5 = null;
+        this.dataSource = null;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');

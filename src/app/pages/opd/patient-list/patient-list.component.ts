@@ -191,7 +191,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...(getData3.response[1].result.find(
               (item: { patientID: any }) =>
                 item.patientID.trim() === emp.patientNO.trim()
-            ) ?? { check: '' }),
+            ) ?? { check: '', timestamp: null }),
           };
         });
       }
@@ -238,7 +238,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   errPatientName: any = {};
   drugPatient: any = null;
   namePhar = '';
-  checkW: any = null;
+  // checkW: any = null;
   userList: any = null;
   drugList: any = null;
   listDrug = async (val: any) => {
@@ -251,8 +251,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
-    this.checkW =
-      this.select === 'W9' ? false : this.select === 'W19' ? false : true;
+    // this.checkW =
+    //   this.select === 'W9' ? false : this.select === 'W19' ? false : true;
     // this.errPatientName = val;
     if (!val.cid) {
       formData.append('hn', val.patientNO);
@@ -872,6 +872,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         formData.append('hn', this.dataP.patientNO);
         formData.append('user', this.dataUser.user);
         formData.append('name', this.dataUser.name);
+        formData.append('floor', this.select);
         let getData: any = await this.http.post('add_moph_confirm', formData);
         if (getData.connect) {
           if (getData.response.rowCount > 0) {
