@@ -104,6 +104,13 @@ export class ReportPharComponent implements OnInit {
     formData.append('date1', start);
     formData.append('date2', end);
     formData.append('site', this.select);
+    let send: any = {
+      time1: this.starttime + ':00',
+      time2: this.endtime + ':00',
+      date1: start,
+      date2: end,
+      site: this.select,
+    };
     // formData.forEach((value, key) => {
     //   console.log(key + '=' + value);
     // });
@@ -138,11 +145,13 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 0) {
-      getData = await this.http.post('checkerPhar_copy', formData);
+      // getData = await this.http.post('checkerPhar_copy', formData);
+      send.choice = 1;
+      getData = await this.http.postNodejs('onusPhar', send);
 
       if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          this.dataDrug = getData.response.result;
+        if (getData.response.length > 0) {
+          this.dataDrug = getData.response;
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort2;
           this.dataSource.paginator = this.paginator2;
@@ -154,11 +163,13 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 1) {
-      getData = await this.http.post('dispenserPhar_copy', formData);
+      send.choice = 2;
+      getData = await this.http.postNodejs('onusPhar', send);
+      // getData = await this.http.post('dispenserPhar_copy', formData);
 
       if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          this.dataDrug = getData.response.result;
+        if (getData.response.length > 0) {
+          this.dataDrug = getData.response;
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort3;
           this.dataSource.paginator = this.paginator3;
