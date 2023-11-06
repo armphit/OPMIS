@@ -38,7 +38,13 @@ export class ReportPharComponent implements OnInit {
     'error',
   ];
 
-  public displayedColumns2: string[] = ['staff', 'staffName', 'item', 'error'];
+  public displayedColumns2: string[] = [
+    'staff',
+    'staffName',
+    'order',
+    'item',
+    'error',
+  ];
 
   public displayedColumns3: string[] = [
     'dispenser_id',
