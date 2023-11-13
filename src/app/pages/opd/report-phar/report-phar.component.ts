@@ -88,6 +88,7 @@ export class ReportPharComponent implements OnInit {
     if (this.dataUser.role === 'officer') {
       this.numTab = 2;
     }
+    this.numTab = 4;
     this.getData();
 
     // this.getData2();
@@ -213,6 +214,7 @@ export class ReportPharComponent implements OnInit {
   @ViewChild('input6') input6!: ElementRef;
   @ViewChild('MatSort6') sort6!: MatSort;
   @ViewChild('MatPaginator6') paginator6!: MatPaginator;
+  selected = 'option2';
   async reportDispend() {
     this.matHeaderRowDef1 = [
       'phar',
@@ -304,6 +306,9 @@ export class ReportPharComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+  }
+  change(e: any) {
+    console.log(e);
   }
   @ViewChild('TABLE') table!: ElementRef;
   ExportTOExcel() {
@@ -426,6 +431,10 @@ export class ReportPharComponent implements OnInit {
     }
   }
   public applyFilter5(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource5.filter = filterValue.trim().toLowerCase();
+  }
+  public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource5.filter = filterValue.trim().toLowerCase();
   }

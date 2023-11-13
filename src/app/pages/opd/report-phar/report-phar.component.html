@@ -480,7 +480,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="order">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
               <td
                 mat-cell
                 *matCellDef="let element"
@@ -769,10 +769,10 @@
       </div>
     </div>
   </mat-tab>
-  <mat-tab label="รายงานจ่ายยา">
+  <mat-tab label="รายงานจ่ายยา" [disabled]="dataUser.role === 'officer'">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-4">
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
@@ -809,13 +809,23 @@
             <mat-icon>clear</mat-icon>
           </button>
         </div>
-        <!-- <div class="col-lg-4">
+        <div class="col-lg-4">
+          <mat-form-field>
+            <mat-label>Select an option</mat-label>
+            <mat-select (selectionChange)="change($event)">
+              <mat-option>None</mat-option>
+              <mat-option value="1">จำนวน DRP </mat-option>
+              <mat-option value="2">ประวัติ DRP</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4">
           <mat-form-field class="example-full-width" style="float: right">
-            <input matInput (keyup)="applyFilter4($event)" #input4 />
+            <input matInput (keyup)="applyFilter6($event)" #input6 />
             <mat-placeholder>ค้นหา</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>
-        </div> -->
+        </div>
       </div>
       <div class="table-responsive" #TABLE>
         <table
