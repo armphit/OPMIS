@@ -61,6 +61,7 @@ export class CheckMedComponent implements OnInit {
   public campaignOne = new FormGroup({
     picker: new FormControl(new Date()),
   });
+  select: string = '';
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
@@ -119,6 +120,7 @@ export class CheckMedComponent implements OnInit {
           ipmain: this.dataUser.ip
             ? '200.200.200.' + this.dataUser.ip.split('.')[3]
             : '',
+          site: this.select,
         };
 
         let getData3: any = await this.http.postNodejs(
@@ -213,6 +215,11 @@ export class CheckMedComponent implements OnInit {
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  public selectSite() {
+    setTimeout(() => {
+      this.swiper.nativeElement.focus();
+    }, 100);
   }
 
   async getDrug(val: any) {
