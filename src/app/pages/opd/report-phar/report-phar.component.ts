@@ -88,7 +88,7 @@ export class ReportPharComponent implements OnInit {
     if (this.dataUser.role === 'officer') {
       this.numTab = 2;
     }
-    this.numTab = 4;
+
     this.getData();
 
     // this.getData2();
