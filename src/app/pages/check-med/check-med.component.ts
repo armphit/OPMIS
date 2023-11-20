@@ -76,11 +76,11 @@ export class CheckMedComponent implements OnInit {
     this.getData('1055663');
   }
   ngOnInit(): void {}
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.swiper.nativeElement.focus();
-    }, 100);
-  }
+  // ngAfterViewInit() {
+  //   setTimeout(() => {
+  //     this.swiper.nativeElement.focus();
+  //   }, 100);
+  // }
   getHN(hn: any) {
     this.getData(hn);
   }
@@ -185,7 +185,7 @@ export class CheckMedComponent implements OnInit {
             this.dataSource.sort = this.sort;
             this.dataSource.paginator = this.paginator;
           } else {
-            Swal.fire('ไม่สามารถเชื่อม patient_drug ได้!', '', 'error');
+            Swal.fire('ไม่มีรายการยาจากชั้นนี้!', '', 'error');
           }
         } else {
           Swal.fire(
