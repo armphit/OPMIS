@@ -858,6 +858,23 @@
               {{ element.name }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="site">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Site
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.site }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="queue">
             <th
               mat-header-cell
@@ -872,7 +889,7 @@
               *matCellDef="let element"
               style="padding-left: 20px; padding-right: 20px"
             >
-              {{ element.queue }}
+              {{ element.queue == "null" ? "" : element.queue }}
             </td>
           </ng-container>
           <ng-container matColumnDef="hn">

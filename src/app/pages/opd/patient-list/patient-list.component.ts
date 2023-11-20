@@ -1404,6 +1404,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.displayedColumns3 = [
       'user',
       'name',
+      'site',
       'queue',
       'hn',
       'patientName',
