@@ -295,9 +295,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('floor', this.select);
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
+
     let getData3: any = await this.http.postNodejs('getCompiler', {
       hn: val.patientNO,
       date: moment(val.createdDT).format('YYYY-MM-DD'),
+      queue: val.QN ? val.QN : this.select,
     });
 
     if (getData.connect) {
