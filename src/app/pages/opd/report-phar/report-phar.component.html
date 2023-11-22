@@ -865,7 +865,7 @@
           </ng-container>
           <ng-container matColumnDef="errorCount">
             <th mat-header-cell *matHeaderCellDef [attr.rowspan]="3">
-              จำนวน Error
+              จำนวน DRP
             </th>
             <td mat-cell *matCellDef="let data">{{ data.errorCount }}</td>
             <!-- This column doesn't generate <td> items, so no need to add a definition for them -->
@@ -1317,6 +1317,75 @@
                 style="padding-left: 20px; padding-right: 20px"
               >
                 {{ element.offender_name }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="level">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                Level
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.level }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="occurrence">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                เวลาเกิดเหตุ
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.occurrence }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="source">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                แหล่งที่มา
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.source }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="error_type">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                Error Type
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.error_type }}
               </td>
             </ng-container>
             <ng-container matColumnDef="note">

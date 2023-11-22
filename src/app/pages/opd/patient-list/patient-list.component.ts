@@ -85,7 +85,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
-
+    this.getType();
     // this.getDrug();
   }
 
@@ -459,7 +459,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             }
           }
 
-          if (val.position_text === 'จ่าย') {
+          if (val.position_text === 'DE') {
             dis = this.userList.find(
               (data: any) => data.user == val.offender_id
             );
@@ -472,6 +472,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             key: dataUser.response.key,
             check: check,
             dispend: dis,
+            pe: dataUser.response.pe,
             userName: val.position_text === 'จัด' ? val.offender_id : '',
           };
         } else {
@@ -495,18 +496,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       null;
     let finePo =
       this.positionE.find((po: any) => po === val.position_text) ?? 'other';
-    await this.getDataposition();
-    await this.getDatatype();
 
-    let fineTy = this.typeE.find((ty: any) => ty === val.type_text) ?? 'other';
+    let fineTy = this.typeE.find(
+      (ty: any) => ty.name_type === val.type_text
+    ) ?? { id_type: 'n10', name_type: 'other' };
+    await this.getDataposition();
+    // await this.getDatatype();
     this.medError.patchValue({
       med: val.med,
       hn: val.hn,
       location: val.location,
       position: finePo,
-      position_text: finePo === 'other' ? val.position_text : '',
-      type: fineTy,
-      type_text: fineTy === 'other' ? val.type_text : '',
+      position_text: val.position_text,
+      type: fineTy.id_type,
+      type_text: fineTy.name_type === 'other' ? val.type_text : val.type_text,
       medWrong: med_wrong ? med_wrong.name : '',
       medWrong_text: val.med_wrong_text,
       medGood: med_good ? med_good.name : '',
@@ -517,14 +520,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       id: val.id,
       check: text,
       userLogin: this.dataUser.user,
+      level: val.level,
+      occurrence: val.occurrence,
+      source: val.source,
+      error_type: val.error_type,
     });
+
     if (text === 'edit') {
       finePo === 'other'
         ? (this.setText.textposition = true)
         : (this.setText.textposition = false);
-      fineTy === 'other'
+      fineTy.name_type === 'other'
         ? (this.setText.texttype = true)
         : (this.setText.texttype = false);
+
       let win: any = window;
       win.$('#check_error').modal('show');
     } else {
@@ -576,21 +585,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     id: new FormControl(''),
     check: new FormControl(''),
     userLogin: new FormControl(''),
+    level: new FormControl(''),
+    occurrence: new FormControl(''),
+    source: new FormControl(''),
+    error_type: new FormControl(''),
   });
   dataUsercheck: any = null;
-  positionE: string[] = ['key', 'จัด', 'check', 'จ่าย', 'other'];
-  typeE: string[] = [
-    'จำนวน',
-    'วิธีใช้',
-    'ความแรง',
-    'รูปแแบบ',
-    'ชนิด',
-    'ชื่อผู้ป่วย',
-    'ไม่ปฎิบัติ',
-    'ไม่มี Order',
-    'ผิดโครงการ',
-    'other',
-  ];
+  positionE: string[] = ['PE', 'key', 'จัด', 'check', 'DE', 'other'];
+  typeE: any = [];
+  gettypeE: any = [];
+  pe_de: any = {
+    level: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+    occurrence: ['รับรายงาน', 'เชิงรุก'],
+    source: ['ในเวลา', 'นอกเวลา'],
+    error_type: ['drug error', 'labelling error', 'issue error'],
+  };
   async reportError(val: any) {
     let dataUser: any = await this.http.postNodejs('positionError', {
       ...val.dataP,
@@ -602,12 +611,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       key: '',
       check: '',
       dispend: '',
+      pe: '',
     };
     if (dataUser.connect) {
       positionError = {
         key: dataUser.response.key,
         check: dataUser.response.check,
         dispend: dataUser.response.dispend,
+        pe: dataUser.response.pe,
       };
     }
 
@@ -628,8 +639,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         hnDT: val.dataP.createdDT,
       },
       location: this.select,
-      position: 'key',
-      type: 'จำนวน',
+      position: 'PE',
+      type: 'pe1',
       medWrong: dataDrug ? dataDrug.name : '',
       medGood: dataDrug ? dataDrug.name : '',
       interceptor: this.dataUser.user + ' ' + this.dataUser.name,
@@ -639,6 +650,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     await this.getDatatype();
     let win: any = window;
     win.$('#check_error').modal('show');
+  }
+  async getType() {
+    let getData: any = await this.http.post('getType');
+    if (getData.connect) {
+      if (getData.response.result) {
+        this.typeE = getData.response.result;
+      }
+    }
   }
   public async submitInput() {
     // Swal.fire({
@@ -657,7 +676,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           position_text: this.medError.value.position,
         });
 
-    this.medError.value.type === 'other'
+    this.medError.value.type === 'other' || this.medError.value.type === 'n10'
       ? this.medError.value.type_text
         ? this.medError.value.type_text
         : 'ไม่ระบุข้อความ'
@@ -699,6 +718,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       medWrong_text: this.medError.value.medWrong_text
         ? this.medError.value.medWrong_text
         : '',
+      level: this.medError.value.level ? this.medError.value.level : '',
+      occurrence: this.medError.value.occurrence
+        ? this.medError.value.occurrence
+        : '',
+      source: this.medError.value.source ? this.medError.value.source : '',
+      error_type: this.medError.value.error_type
+        ? this.medError.value.error_type
+        : '',
     });
 
     let win: any = window;
@@ -736,8 +763,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     // });
   }
   getDatatype() {
-    if (this.medError.value.type === 'other') {
+    if (
+      this.medError.value.type === 'other' ||
+      this.medError.value.type === 'n10'
+    ) {
       this.setText.texttype = true;
+
       this.medError.patchValue({
         type_text: '',
       });
@@ -763,6 +794,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
     } else if (this.medError.value.position === 'จัด') {
       this.setText.textposition = false;
       this.medError.patchValue({
@@ -777,6 +809,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
     } else if (this.medError.value.position === 'check') {
       this.setText.textposition = false;
       this.medError.patchValue({
@@ -794,7 +827,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
-    } else if (this.medError.value.position === 'จ่าย') {
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
+    } else if (this.medError.value.position === 'DE') {
       this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.dispend,
@@ -811,12 +845,35 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('de'));
+    } else if (this.medError.value.position === 'PE') {
+      this.setText.textposition = false;
+      this.medError.patchValue({
+        offender: this.dataUsercheck.pe,
+        position_text: this.medError.value.position,
+      });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort:
+            val.user.toLowerCase().charAt(0) != 'c' &&
+            val.user.toLowerCase().charAt(0) != 'o'
+              ? 1
+              : 2,
+        };
+      });
+
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('pe'));
     } else {
       this.setText.textposition = true;
       this.medError.patchValue({
         offender: '',
         position_text: '',
+        type: '',
       });
+
+      this.gettypeE = this.typeE;
     }
     this.userList.forEach((v: any) => {
       delete v.valSort;
@@ -1917,6 +1974,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'med_good_text',
           'interceptor_name',
           'offender_name',
+          'level',
+          'occurrence',
+          'source',
+          'error_type',
           'note',
           'hnDT',
         ];
@@ -1932,6 +1993,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'med_good_text',
           'interceptor_name',
           'offender_name',
+          'level',
+          'occurrence',
+          'source',
+          'error_type',
           'note',
           'hnDT',
         ];

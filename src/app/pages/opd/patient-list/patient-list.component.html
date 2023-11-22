@@ -1827,6 +1827,77 @@
               {{ element.offender_name }}
             </td>
           </ng-container>
+
+
+          <ng-container matColumnDef="level" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Level
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.level }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="occurrence" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              เวลาเกิดเหตุ
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.occurrence }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="source" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              แหล่งที่มา
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.source }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="error_type" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Error Type
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.error_type }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="note" *ngIf="choicecheckmed == '1'">
             <th
               mat-header-cell
@@ -1999,8 +2070,15 @@
                   formControlName="type"
                   (selectionChange)="getDatatype()"
                 >
-                  <mat-option *ngFor="let item of typeE" [value]="item">
-                    {{ item === "other" ? "อื่นๆ (โปรดระบุ)" : item }}
+                  <mat-option
+                    *ngFor="let item of gettypeE"
+                    [value]="item.id_type"
+                  >
+                    {{
+                      item.name_type === "other"
+                        ? "อื่นๆ (โปรดระบุ)"
+                        : item.name_type
+                    }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -2132,6 +2210,59 @@
                     {{ option.userName }}
                   </mat-option>
                 </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="
+              medError.value.position == 'PE' || medError.value.position == 'DE'
+            "
+          >
+            <div class="col-3">
+              <mat-form-field>
+                <mat-label>Level</mat-label>
+                <mat-select formControlName="level">
+                  <mat-option *ngFor="let item of pe_de.level" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-form-field>
+                <mat-label>แหล่งที่มา</mat-label>
+                <mat-select formControlName="occurrence">
+                  <mat-option
+                    *ngFor="let item of pe_de.occurrence"
+                    [value]="item"
+                  >
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-form-field>
+                <mat-label>เวลาเกิดเหตุ</mat-label
+                ><mat-select formControlName="source">
+                  <mat-option *ngFor="let item of pe_de.source" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-form-field>
+                <mat-label>Error Type</mat-label>
+                <mat-select formControlName="error_type">
+                  <mat-option
+                    *ngFor="let item of pe_de.error_type"
+                    [value]="item"
+                  >
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
           </div>
