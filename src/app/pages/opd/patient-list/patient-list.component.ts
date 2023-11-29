@@ -729,43 +729,71 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         ? this.medError.value.error_type
         : '',
     });
-    if (this.checkprint) {
-      if (this.medError.value.position == 'PE') {
-        this.errPDF(this.medError.value);
+
+    if (this.medError.value.position == 'PE') {
+      if (this.checkprint) {
+        this.errPDF(this.medError.value).then((dataPDF: any) => {
+          if (dataPDF) {
+            dataPDF.getBase64(async (buffer: any) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: `${this.dataP.patientNO}.pdf`,
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
+              });
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  this.insertErr();
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
+              } else {
+                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+              }
+            });
+          }
+        });
+      } else {
+        this.insertErr();
       }
+    } else {
+      this.insertErr();
     }
+  }
+  async insertErr() {
+    let win: any = window;
+    win.$('#check_error').modal('hide');
+    let getData3: any = await this.http.postNodejs(
+      this.medError.value.id ? 'manageError' : 'medError',
+      this.medError.value
+    );
 
-    // let win: any = window;
-    // win.$('#check_error').modal('hide');
+    if (getData3.connect) {
+      if (getData3.response.length) {
+        Swal.fire({
+          icon: 'success',
+          title:
+            this.medError.value.check === 'delete'
+              ? 'ลบข้อมูลสำเร็จ'
+              : 'บันทึกข้อมูลสำเร็จ',
+          showConfirmButton: false,
+          timer: 1500,
+        });
 
-    // let getData3: any = await this.http.postNodejs(
-    //   this.medError.value.id ? 'manageError' : 'medError',
-    //   this.medError.value
-    // );
-
-    // if (getData3.connect) {
-    //   if (getData3.response.length) {
-    //     Swal.fire({
-    //       icon: 'success',
-    //       title:
-    //         this.medError.value.check === 'delete'
-    //           ? 'ลบข้อมูลสำเร็จ'
-    //           : 'บันทึกข้อมูลสำเร็จ',
-    //       showConfirmButton: false,
-    //       timer: 1500,
-    //     });
-
-    //     this.medError.value.id
-    //       ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
-    //       : '';
-    //   } else {
-    //     Swal.fire('ไม่มีข้อมูล!', '', 'error');
-    //   }
-    // } else {
-    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    // }
-    //   }
-    // });
+        this.medError.value.id
+          ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
+          : '';
+      } else {
+        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', '', 'error');
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
   async errPDF(data: any) {
     let type = this.typeE.find((e: any) => e.id_type == data.type);
@@ -773,7 +801,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       // pageSize: { width: 325, height: 350 },
       pageSize: { width: 238, height: 255 },
       // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 0, 7, 80] as any,
+      pageMargins: [0, 0, 7, 65] as any,
+      // pageMargins: [0, 0, 7, 88] as any,
       header: {} as any,
 
       content: [
@@ -787,7 +816,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         {
           text: `Date ${moment(new Date())
             // .add(543, 'year')
-            .format('YYYY-MM-DD')}`,
+            .format('DD/MM/YYYY')}`,
           alignment: 'right',
 
           fontSize: 14,
@@ -829,17 +858,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           text: `ห้องยา ชั้น 1 โทร 32142-3 ชั้น 2 โทร 32200-1 ชั้น 3 โทร 32341-2`,
           alignment: 'center',
 
-          fontSize: 14,
+          fontSize: 12,
         },
       ] as any,
       defaultStyle: {
         font: 'THSarabunNew',
       },
     };
-    pdfMake.createPdf(docDefinition).open();
-    return false;
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
   }
   getDatatype() {
     if (
