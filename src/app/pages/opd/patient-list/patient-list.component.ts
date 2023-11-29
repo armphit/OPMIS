@@ -302,8 +302,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       date: moment(val.createdDT).format('YYYY-MM-DD'),
       queue: val.QN ? val.QN : this.select,
     });
-    console.log(val.QN ? val.QN : this.select);
-    console.log(getData3);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let mergeData = getData.response.result;
