@@ -86,6 +86,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
     this.getType();
+
     // this.getDrug();
   }
 
@@ -301,7 +302,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       date: moment(val.createdDT).format('YYYY-MM-DD'),
       queue: val.QN ? val.QN : this.select,
     });
-
+    console.log(val.QN ? val.QN : this.select);
+    console.log(getData3);
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let mergeData = getData.response.result;
@@ -727,40 +729,117 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         ? this.medError.value.error_type
         : '',
     });
-
-    let win: any = window;
-    win.$('#check_error').modal('hide');
-
-    if (this.medError.value.id) {
-    }
-    let getData3: any = await this.http.postNodejs(
-      this.medError.value.id ? 'manageError' : 'medError',
-      this.medError.value
-    );
-
-    if (getData3.connect) {
-      if (getData3.response.length) {
-        Swal.fire({
-          icon: 'success',
-          title:
-            this.medError.value.check === 'delete'
-              ? 'ลบข้อมูลสำเร็จ'
-              : 'บันทึกข้อมูลสำเร็จ',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-
-        this.medError.value.id
-          ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
-          : '';
-      } else {
-        Swal.fire('ไม่มีข้อมูล!', '', 'error');
+    if (this.checkprint) {
+      if (this.medError.value.position == 'PE') {
+        this.errPDF(this.medError.value);
       }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+
+    // let win: any = window;
+    // win.$('#check_error').modal('hide');
+
+    // let getData3: any = await this.http.postNodejs(
+    //   this.medError.value.id ? 'manageError' : 'medError',
+    //   this.medError.value
+    // );
+
+    // if (getData3.connect) {
+    //   if (getData3.response.length) {
+    //     Swal.fire({
+    //       icon: 'success',
+    //       title:
+    //         this.medError.value.check === 'delete'
+    //           ? 'ลบข้อมูลสำเร็จ'
+    //           : 'บันทึกข้อมูลสำเร็จ',
+    //       showConfirmButton: false,
+    //       timer: 1500,
+    //     });
+
+    //     this.medError.value.id
+    //       ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
+    //       : '';
+    //   } else {
+    //     Swal.fire('ไม่มีข้อมูล!', '', 'error');
+    //   }
+    // } else {
+    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    // }
     //   }
     // });
+  }
+  async errPDF(data: any) {
+    let type = this.typeE.find((e: any) => e.id_type == data.type);
+    var docDefinition = {
+      // pageSize: { width: 325, height: 350 },
+      pageSize: { width: 238, height: 255 },
+      // pageMargins: [5, 50, 5, 100] as any,
+      pageMargins: [0, 0, 7, 80] as any,
+      header: {} as any,
+
+      content: [
+        {
+          text: 'Message for you',
+          alignment: 'center',
+
+          fontSize: 18,
+          bold: true,
+        },
+        {
+          text: `Date ${moment(new Date())
+            // .add(543, 'year')
+            .format('YYYY-MM-DD')}`,
+          alignment: 'right',
+
+          fontSize: 14,
+        },
+        {
+          text: `เรียนแพทย์ผู้ตรวจ`,
+          fontSize: 14,
+        },
+        {
+          text: `เนื่องจากยา ${data.med.med_name} ที่ท่านสั่งนั้น`,
+          fontSize: 14,
+        },
+        {
+          text: `- ${type ? type.name_type : ''}`,
+
+          fontSize: 14,
+          margin: [5, 0, 0, 0],
+        },
+        {
+          text: `.............................................................................................`,
+          fontSize: 14,
+          margin: [5, 0, 0, 0],
+        },
+        {
+          text: `- อื่นๆ ....................................................................................`,
+          fontSize: 14,
+          margin: [5, 0, 0, 0],
+        },
+      ] as any,
+
+      footer: [
+        {
+          text: `ขอบคุณค่ะ ...${this.dataUser.name}... เภสัชกร`,
+          alignment: 'center',
+
+          fontSize: 14,
+        },
+        {
+          text: `ห้องยา ชั้น 1 โทร 32142-3 ชั้น 2 โทร 32200-1 ชั้น 3 โทร 32341-2`,
+          alignment: 'center',
+
+          fontSize: 14,
+        },
+      ] as any,
+      defaultStyle: {
+        font: 'THSarabunNew',
+      },
+    };
+    pdfMake.createPdf(docDefinition).open();
+    return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
   }
   getDatatype() {
     if (
