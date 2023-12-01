@@ -62,6 +62,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   public select: any = '';
   public checkprint: boolean = false;
+  check_site: boolean = false;
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
@@ -133,6 +134,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.input.nativeElement.focus();
     }, 300);
   }
+  queuePChanged(e: any) {
+    this.getData();
+  }
 
   public getData = async () => {
     if (this.select) {
@@ -158,9 +162,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'date2',
           moment(this.campaignOne.value.end).format('YYYY-MM-DD')
         );
+        formData.append('queuep', this.check_site ? 'Y' : 'N');
         getData = await this.http.post('listPatientQpost', formData);
+        if (this.check_site) {
+          let getData3: any = await this.http.post(
+            'checkdrugAllergyHomc',
+            formData
+          );
 
-        dataPatient = getData.response.result;
+          dataPatient = getData.response.result.map(function (emp: {
+            patientNO: any;
+          }) {
+            return {
+              ...emp,
+              ...(getData3.response[0].result.find(
+                (item: { patientNO: any }) =>
+                  item.patientNO.trim() === emp.patientNO.trim()
+              ) ?? { status: 'N' }),
+              ...(getData3.response[1].result.find(
+                (item: { patientID: any }) =>
+                  item.patientID.trim() === emp.patientNO.trim()
+              ) ?? { check: '', timestamp: null }),
+            };
+          });
+        } else {
+          dataPatient = getData.response.result;
+        }
       } else {
         formData.append('floor', this.select);
         formData.append(

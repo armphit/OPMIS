@@ -145,7 +145,7 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .get('http://192.168.185.160:2000/drugs/*')
+        .get('http://192.168.185.160:4000/drugs')
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
