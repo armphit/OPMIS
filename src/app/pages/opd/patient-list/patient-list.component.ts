@@ -62,7 +62,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   public select: any = '';
   public checkprint: boolean = false;
-  check_site: boolean = false;
+
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
@@ -152,6 +152,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let getData: any = null;
       let formData = new FormData();
       let dataPatient: any = null;
+
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
         formData.append(
@@ -162,31 +163,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'date2',
           moment(this.campaignOne.value.end).format('YYYY-MM-DD')
         );
-        formData.append('queuep', this.check_site ? 'Y' : 'N');
-        getData = await this.http.post('listPatientQpost', formData);
-        if (this.check_site) {
-          let getData3: any = await this.http.post(
-            'checkdrugAllergyHomc',
-            formData
-          );
-
-          dataPatient = getData.response.result.map(function (emp: {
-            patientNO: any;
-          }) {
-            return {
-              ...emp,
-              ...(getData3.response[0].result.find(
-                (item: { patientNO: any }) =>
-                  item.patientNO.trim() === emp.patientNO.trim()
-              ) ?? { status: 'N' }),
-              ...(getData3.response[1].result.find(
-                (item: { patientID: any }) =>
-                  item.patientID.trim() === emp.patientNO.trim()
-              ) ?? { check: '', timestamp: null }),
-            };
-          });
-        } else {
+        formData.append('queuep', 'N');
+        if (this.select == 'W18') {
+          getData = await this.http.post('listPatientQpost', formData);
           dataPatient = getData.response.result;
+        } else {
+          let data_send = {
+            date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+            date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+          };
+          getData = await this.http.postNodejs('queueP', data_send);
+          dataPatient = getData.response.gethospitalQ;
         }
       } else {
         formData.append('floor', this.select);

@@ -2,7 +2,7 @@
   <mat-tab label="รายการยา">
     <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-5">
           <mat-form-field [hidden]="!dataSource">
             <mat-label>เลือกรายการแพ้ยา</mat-label>
             <mat-select
@@ -31,7 +31,7 @@
             <i class="fas fa-sync-alt fa-lg"></i>
           </button>
         </div>
-        <div class="col-lg-5">
+        <div class="col-lg-4">
           <mat-form-field>
             <mat-label>Select Site</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
@@ -41,14 +41,6 @@
               <mat-option value="W19">ห้องยา M - Park</mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-checkbox
-            [hidden]="select !== 'W8'"
-            class="example-margin"
-            color="primary"
-            style="margin: 0px 0px 0px 30px"
-            [(ngModel)]="check_site" (ngModelChange)="queuePChanged($event)"
-            ><strong>QUEUE P</strong></mat-checkbox
-          >
         </div>
 
         <div class="col-lg-3">
