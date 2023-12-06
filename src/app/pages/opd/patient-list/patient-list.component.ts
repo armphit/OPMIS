@@ -951,7 +951,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'ยกเลิก',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.errPDF(this.medError.value).then((dataPDF: any) => {
+        this.errPDF(data).then((dataPDF: any) => {
           dataPDF.getBase64(async (buffer: any) => {
             let getData: any = await this.http.Printjs('convertbuffer', {
               data: buffer,
