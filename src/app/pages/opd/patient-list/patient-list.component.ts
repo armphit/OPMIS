@@ -560,7 +560,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         cancelButtonText: 'ยกเลิก',
       }).then((result) => {
         if (result.isConfirmed) {
-          this.submitInput();
+          this.submitInput('');
         }
       });
     }
@@ -631,6 +631,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     `ชั้น 3 โทร 32341-2`,
   ];
   async reportError(val: any) {
+    this.checkpre = false;
     let dataUser: any = await this.http.postNodejs('positionError', {
       ...val.dataP,
       ...val.item,
@@ -696,7 +697,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       note: e.value,
     });
   }
-  public async submitInput() {
+  checkpre: boolean = false;
+  public async submitInput(data: any) {
+    let old = this.medError.value;
+
     // Swal.fire({
     //   title: 'คุณต้องการบันทึกข้อมูลนี้หรือไม่?',
     //   showCancelButton: true,
@@ -770,28 +774,47 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         if (this.checkprint) {
           this.errPDF(this.medError.value).then((dataPDF: any) => {
             if (dataPDF) {
-              dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = await this.http.Printjs('convertbuffer', {
-                  data: buffer,
-                  name: `${this.dataP.patientNO}.pdf`,
-                  ip: this.dataUser.print_ip,
-                  printName: this.dataUser.print_name,
-                  hn: this.dataP.patientNO,
+              if (data === 'Preview') {
+                this.medError.patchValue({
+                  medWrong: old.medWrong,
+                  medWrong_text: old.medWrong_text,
+                  medGood: old.medGood,
+                  medGood_text: old.medGood_text,
+                  interceptor: old.interceptor,
+                  offender: old.offender,
                 });
-                if (getData.connect) {
-                  if (getData.response.connect === 'success') {
-                    this.insertErr();
+
+                this.checkpre = true;
+                dataPDF.getDataUrl((dataUrl: any) => {
+                  let targetElement: any =
+                    document.querySelector('#iframeContainer');
+
+                  targetElement.src = dataUrl;
+                });
+              } else {
+                dataPDF.getBase64(async (buffer: any) => {
+                  let getData: any = await this.http.Printjs('convertbuffer', {
+                    data: buffer,
+                    name: `${this.dataP.patientNO} medError.pdf`,
+                    ip: this.dataUser.print_ip,
+                    printName: this.dataUser.print_name,
+                    hn: this.dataP.patientNO,
+                  });
+                  if (getData.connect) {
+                    if (getData.response.connect === 'success') {
+                      this.insertErr();
+                    } else {
+                      Swal.fire(
+                        'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                        '',
+                        'error'
+                      );
+                    }
                   } else {
-                    Swal.fire(
-                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                      '',
-                      'error'
-                    );
+                    Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
                   }
-                } else {
-                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-                }
-              });
+                });
+              }
             }
           });
         } else {
@@ -919,6 +942,47 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     // return false;
     const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
     return pdfDocGenerator;
+  }
+  rePrint(data: any) {
+    Swal.fire({
+      title: 'คุณต้องการพิมพ์ข้อมูลรายการนี้หรือไม่?',
+      showCancelButton: true,
+      confirmButtonText: 'ตกลง',
+      cancelButtonText: 'ยกเลิก',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.errPDF(this.medError.value).then((dataPDF: any) => {
+          dataPDF.getBase64(async (buffer: any) => {
+            let getData: any = await this.http.Printjs('convertbuffer', {
+              data: buffer,
+              name: `${this.dataP.patientNO} medError.pdf`,
+              ip: this.dataUser.print_ip,
+              printName: this.dataUser.print_name,
+              hn: this.dataP.patientNO,
+            });
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'พิมพ์ข้อมูลสำเร็จ',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
+            } else {
+              Swal.fire('ไม่สามารถพิมพ์ข้อมูลรายการนี้ได้!', '', 'error');
+            }
+          });
+        });
+      }
+    });
   }
   getDatatype() {
     if (
@@ -2155,54 +2219,54 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       //   'countdrugCode',
       //   'time',
       // ];
-      if (
-        this.dataUser.user === 'admin' ||
-        this.dataUser.user.toLowerCase() === 'p07' ||
-        this.dataUser.user.toLowerCase() === 'p54' ||
-        this.dataUser.user.toLowerCase() === 'test' ||
-        this.dataUser.user.toLowerCase() === 'p22'
-      ) {
-        this.displayedColumns5 = [
-          'Action',
-          'hn',
-          'location',
-          'position_text',
-          'type_text',
-          'med_wrong_name',
-          'med_wrong_text',
-          'med_good_name',
-          'med_good_text',
-          'interceptor_name',
-          'offender_name',
-          'level',
-          'occurrence',
-          'source',
-          'error_type',
-          'site',
-          'note',
-          'hnDT',
-        ];
-      } else {
-        this.displayedColumns5 = [
-          'hn',
-          'location',
-          'position_text',
-          'type_text',
-          'med_wrong_name',
-          'med_wrong_text',
-          'med_good_name',
-          'med_good_text',
-          'interceptor_name',
-          'offender_name',
-          'level',
-          'occurrence',
-          'source',
-          'error_type',
-          'note',
-          'site',
-          'hnDT',
-        ];
-      }
+      // if (
+      //   this.dataUser.user === 'admin' ||
+      //   this.dataUser.user.toLowerCase() === 'p07' ||
+      //   this.dataUser.user.toLowerCase() === 'p54' ||
+      //   this.dataUser.user.toLowerCase() === 'test' ||
+      //   this.dataUser.user.toLowerCase() === 'p22'
+      // ) {
+      this.displayedColumns5 = [
+        'Action',
+        'hn',
+        'location',
+        'position_text',
+        'type_text',
+        'med_wrong_name',
+        'med_wrong_text',
+        'med_good_name',
+        'med_good_text',
+        'interceptor_name',
+        'offender_name',
+        'level',
+        'occurrence',
+        'source',
+        'error_type',
+        'site',
+        'note',
+        'hnDT',
+      ];
+      // } else {
+      // this.displayedColumns5 = [
+      //   'hn',
+      //   'location',
+      //   'position_text',
+      //   'type_text',
+      //   'med_wrong_name',
+      //   'med_wrong_text',
+      //   'med_good_name',
+      //   'med_good_text',
+      //   'interceptor_name',
+      //   'offender_name',
+      //   'level',
+      //   'occurrence',
+      //   'source',
+      //   'error_type',
+      //   'note',
+      //   'site',
+      //   'hnDT',
+      // ];
+      // }
 
       let datestart = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
       let dateend = moment(this.campaignOne.value.end).format('YYYY-MM-DD');

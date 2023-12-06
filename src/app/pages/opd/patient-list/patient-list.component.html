@@ -1607,15 +1607,6 @@
           class="mat-elevation-z8"
           matTableExporter
           #exporter5="matTableExporter"
-          [hiddenColumns]="
-            (dataUser.user === 'admin' ||
-              dataUser.user.toLowerCase() === 'p07' ||
-              dataUser.user.toLowerCase() === 'p54' ||
-              dataUser.user.toLowerCase() === 'test') &&
-            choicecheckmed == '1'
-              ? [0]
-              : []
-          "
         >
           <ng-container matColumnDef="hn">
             <th
@@ -1962,7 +1953,16 @@
               *matCellDef="let element"
               style="padding-left: 5px; padding-right: 5px"
             >
-              <span style="display: flex">
+              <span
+                style="display: flex"
+                *ngIf="
+                  dataUser.user === 'admin' ||
+                  dataUser.user.toLowerCase() === 'p07' ||
+                  dataUser.user.toLowerCase() === 'p54' ||
+                  dataUser.user.toLowerCase() === 'test' ||
+                  dataUser.user.toLowerCase() === 'p22'
+                "
+              >
                 <!-- <button
                   style="margin: 5px"
                   mat-flat-button
@@ -1996,6 +1996,42 @@
                   ลบ
                 </button> -->
               </span>
+              <button
+                *ngIf="
+                  (dataUser.user === 'admin' ||
+                    dataUser.user.toLowerCase() === 'p07' ||
+                    dataUser.user.toLowerCase() === 'p54' ||
+                    dataUser.user.toLowerCase() === 'test' ||
+                    dataUser.user.toLowerCase() === 'p22') &&
+                  element.position_text === 'PE'
+                "
+                style="margin: 0 0 0 40px"
+                matTooltip="re-print"
+                matTooltipPosition="above"
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="rePrint(element)"
+              >
+                <i class="fas fa-print"></i>
+              </button>
+              <button
+                *ngIf="
+                  dataUser.user !== 'admin' &&
+                  dataUser.user.toLowerCase() !== 'p07' &&
+                  dataUser.user.toLowerCase() !== 'p54' &&
+                  dataUser.user.toLowerCase() !== 'test' &&
+                  dataUser.user.toLowerCase() !== 'p22' &&
+                  element.position_text === 'PE'
+                "
+                style="margin: 0 0 0 20px"
+                matTooltip="re-print"
+                matTooltipPosition="above"
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="rePrint(element)"
+              >
+                <i class="fas fa-print"></i>
+              </button>
             </td>
           </ng-container>
 
@@ -2049,7 +2085,9 @@
       </div>
       <form
         [formGroup]="medError"
-        (ngSubmit)="medError.valid ? submitInput() : ''"
+        (ngSubmit)="
+          medError.valid ? submitInput($event.submitter.innerText) : ''
+        "
       >
         <div class="modal-body">
           <div class="row">
@@ -2312,8 +2350,21 @@
               </mat-form-field>
             </div>
           </div>
+
+          <hr *ngIf="checkpre" />
+
+          <div *ngIf="checkpre" style="text-align: center">
+            <iframe id="iframeContainer" style="height: 320px"></iframe>
+          </div>
         </div>
         <div class="modal-footer">
+          <button
+            *ngIf="medError.value.position == 'PE'"
+            type="submit"
+            class="btn btn-info"
+          >
+            Preview
+          </button>
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">
             Close
