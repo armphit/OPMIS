@@ -1,4 +1,3 @@
-import { stringify } from 'querystring';
 import {
   AfterViewInit,
   Component,
@@ -22,12 +21,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { includes } from 'lodash';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
@@ -538,6 +536,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       occurrence: val.occurrence,
       source: val.source,
       error_type: val.error_type,
+      site: val.site,
     });
 
     if (text === 'edit') {
@@ -603,6 +602,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     occurrence: new FormControl(''),
     source: new FormControl(''),
     error_type: new FormControl(''),
+
+    site: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = ['PE', 'key', 'จัด', 'check', 'DE', 'other'];
@@ -613,6 +614,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     occurrence: ['รับรายงาน', 'เชิงรุก'],
     source: ['ในเวลา', 'นอกเวลา'],
     error_type: ['drug error', 'labelling error', 'issue error'],
+    note: [
+      'ไม่มียานี้ในบัญชีโรงพยาบาล',
+      'อ่านชื่อยาไม่ชัดเจน',
+      'วิธีใช้ไม่ชัดเจน',
+      'กรุณาระบุจำนวนยา',
+      'กรุณาระบุความแรงยา รพ.มีขนาด',
+      'กรุณาระบุวิธีใช้ยา',
+      'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
+    ],
+    site: ['PCT', 'ห้องตรวจ'],
   };
   tel_site: string[] = [
     `ห้องยา ชั้น 1 โทร 32142-3`,
@@ -679,6 +690,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.typeE = getData.response.result;
       }
     }
+  }
+  changeText(e: any) {
+    this.medError.patchValue({
+      note: e.value,
+    });
   }
   public async submitInput() {
     // Swal.fire({
@@ -929,6 +945,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.medError.patchValue({
         offender: this.dataUsercheck.key,
         position_text: this.medError.value.position,
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
         type: 'n1',
       });
       this.userList = this.userList.map((val: any) => {
@@ -946,6 +968,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         offender: this.dataUsercheck.userName,
         position_text: this.medError.value.position,
         type: 'n1',
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
       });
 
       this.userList = this.userList.map((val: any) => {
@@ -962,6 +990,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         offender: this.dataUsercheck.check,
         position_text: this.medError.value.position,
         type: 'n1',
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -981,6 +1015,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         offender: this.dataUsercheck.dispend,
         position_text: this.medError.value.position,
         type: 'de1',
+        level: 'B',
+        occurrence: 'รับรายงาน',
+        source: 'ในเวลา',
+        error_type: 'drug error',
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -999,8 +1037,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.medError.patchValue({
         offender: this.dataUsercheck.pe,
         position_text: this.medError.value.position,
-        type: 'pe1',
+        type: 'pe3',
+        level: 'B',
+        occurrence: 'รับรายงาน',
+        source: 'ในเวลา',
+        error_type: 'drug error',
       });
+
       this.userList = this.userList.map((val: any) => {
         return {
           ...val,
@@ -1020,10 +1063,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         offender: '',
         position_text: '',
         type: '',
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
       });
 
       this.gettypeE = this.typeE;
     }
+
     this.userList.forEach((v: any) => {
       delete v.valSort;
     });
@@ -2109,7 +2159,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.dataUser.user === 'admin' ||
         this.dataUser.user.toLowerCase() === 'p07' ||
         this.dataUser.user.toLowerCase() === 'p54' ||
-        this.dataUser.user.toLowerCase() === 'test'
+        this.dataUser.user.toLowerCase() === 'test' ||
+        this.dataUser.user.toLowerCase() === 'p22'
       ) {
         this.displayedColumns5 = [
           'Action',
@@ -2127,6 +2178,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'occurrence',
           'source',
           'error_type',
+          'site',
           'note',
           'hnDT',
         ];
@@ -2147,6 +2199,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'source',
           'error_type',
           'note',
+          'site',
           'hnDT',
         ];
       }

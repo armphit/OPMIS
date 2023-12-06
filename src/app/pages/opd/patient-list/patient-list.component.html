@@ -1897,6 +1897,23 @@
               {{ element.error_type }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="site" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Site
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.site }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="note" *ngIf="choicecheckmed == '1'">
             <th
               mat-header-cell
@@ -2191,7 +2208,7 @@
               <mat-form-field class="example-full-width">
                 <mat-label>ผู้ก่อความคลาดเคลื่อน</mat-label>
                 <input
-                  required
+                  [required]="medError.value.position !== 'PE'"
                   #inputoffender
                   type="text"
                   matInput
@@ -2218,8 +2235,8 @@
               medError.value.position == 'PE' || medError.value.position == 'DE'
             "
           >
-            <div class="col-3">
-              <mat-form-field>
+            <div class="col-2">
+              <mat-form-field style="width: 100%">
                 <mat-label>Level</mat-label>
                 <mat-select formControlName="level">
                   <mat-option *ngFor="let item of pe_de.level" [value]="item">
@@ -2241,8 +2258,8 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col-3">
-              <mat-form-field>
+            <div class="col-2">
+              <mat-form-field style="width: 100%">
                 <mat-label>เวลาเกิดเหตุ</mat-label
                 ><mat-select formControlName="source">
                   <mat-option *ngFor="let item of pe_de.source" [value]="item">
@@ -2264,11 +2281,33 @@
                 </mat-select>
               </mat-form-field>
             </div>
+            <div class="col-2">
+              <mat-form-field style="width: 100%">
+                <mat-label>Site</mat-label>
+                <mat-select formControlName="site">
+                  <mat-option *ngFor="let item of pe_de.site" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </div>
           <div class="row">
             <div class="col">
               <mat-form-field class="example-full-width">
+                <mat-label>เลือกข้อความหมายเหตุ</mat-label>
+                <mat-select
+                  (selectionChange)="changeText($event); note_change.value = ''"
+                  #note_change
+                >
+                  <mat-option *ngFor="let item of pe_de.note" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="example-full-width">
                 <mat-label>หมายเหตุ</mat-label>
+
                 <textarea matInput formControlName="note"></textarea>
               </mat-form-field>
             </div>
