@@ -5,7 +5,7 @@
   <mat-tab label="ภาระงานเภสัชตรวจยา" [disabled]="dataUser.role === 'officer'">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
@@ -54,9 +54,9 @@
             </button>
           </span>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           <mat-form-field>
-            <mat-label>Select floor</mat-label>
+            <mat-label>Select Site</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
               <mat-option value="">All</mat-option>
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
@@ -190,7 +190,7 @@
   <mat-tab label="ภาระงานเภสัชจ่ายยา" [disabled]="dataUser.role === 'officer'">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
@@ -239,9 +239,9 @@
             </button>
           </span>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-2">
           <mat-form-field>
-            <mat-label>Select floor</mat-label>
+            <mat-label>Select Site</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
@@ -250,7 +250,7 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter($event)" #input />
             <mat-placeholder>ค้นหา</mat-placeholder>
@@ -373,7 +373,7 @@
   <mat-tab label="ภาระงานผู้ช่วยเภสัชประจำตู้">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
           <mat-form-field class="example-form-field" [style.width.px]="200">
             <mat-date-range-input
               [formGroup]="campaignOne"
@@ -422,9 +422,9 @@
             </button>
           </span>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
           <mat-form-field>
-            <mat-label>Select floor</mat-label>
+            <mat-label>Select Site</mat-label>
             <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
@@ -1390,7 +1390,7 @@
                 mat-sort-header
                 style="padding-left: 10px"
               >
-                Error Type
+                Error Error Type
               </th>
               <td
                 mat-cell
@@ -1398,6 +1398,23 @@
                 style="padding-left: 20px; padding-right: 20px"
               >
                 {{ element.error_type }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="site">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                Site
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.site }}
               </td>
             </ng-container>
             <ng-container matColumnDef="note">

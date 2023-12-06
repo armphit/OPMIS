@@ -411,6 +411,7 @@ export class ReportPharComponent implements OnInit {
       'occurrence',
       'source',
       'error_type',
+      'site',
       'note',
       'hnDT',
     ];
