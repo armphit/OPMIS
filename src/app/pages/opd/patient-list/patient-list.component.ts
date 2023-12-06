@@ -795,7 +795,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 dataPDF.getBase64(async (buffer: any) => {
                   let getData: any = await this.http.Printjs('convertbuffer', {
                     data: buffer,
-                    name: `${data.hn} ${data.position_text} medError.pdf`,
+                    name: `${this.dataP.patientNO} ${this.medError.value.position_text} medError.pdf`,
                     ip: this.dataUser.print_ip,
                     printName: this.dataUser.print_name,
                     hn: this.dataP.patientNO,
