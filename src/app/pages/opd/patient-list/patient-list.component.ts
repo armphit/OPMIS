@@ -936,7 +936,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       footer: [
         {
-          text: `ขอบคุณค่ะ ...${this.dataUser.name}... เภสัชกร`,
+          text: `ขอบคุณค่ะ ...${
+            data.interceptor_name
+              ? data.interceptor_name
+              : data.interceptor
+              ? data.interceptor.name
+              : ''
+          }... เภสัชกร`,
           alignment: 'center',
 
           fontSize: 14,
@@ -959,18 +965,26 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         font: 'THSarabunNew',
       },
     };
-    pdfMake.createPdf(docDefinition).open();
-    return false;
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
   }
-  async rePrint(data: any) {
+  async rePrint(val: any) {
+    let data = { ...val };
+
+    data.med = {
+      med_name: data.med,
+    };
+
     let t = this.typeE.find((e: any) => e.name_type == data.type_text) ?? null;
-    let getData: any = await this.http.serchDrug();
     let n: any = null;
+
+    let getData: any = await this.http.serchDrug();
+
     if (getData.connect) {
       n = getData.response.data.find(
-        (e: any) => e.orderitemcode.trim() == data.med.trim()
+        (e: any) => e.orderitemcode.trim() == data.med.med_name
       );
     }
 
