@@ -910,12 +910,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           text: `เนื่องจากยา ${data.med.med_name} ที่ท่านสั่งนั้น`,
           fontSize: 14,
         },
-        {
-          text: `- ${type ? type.name_type : ''}`,
+        type
+          ? {
+              text: `- ${type ? type.name_type : ''}`,
 
-          fontSize: 14,
-          margin: [5, 0, 0, 0],
-        },
+              fontSize: 14,
+              margin: [5, 0, 0, 0],
+            }
+          : ``,
         {
           text: data.medGood_text
             ? data.medGood_text
@@ -957,12 +959,26 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         font: 'THSarabunNew',
       },
     };
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
   }
-  rePrint(data: any) {
+  async rePrint(data: any) {
+    let t = this.typeE.find((e: any) => e.name_type == data.type_text) ?? null;
+    let getData: any = await this.http.serchDrug();
+    let n: any = null;
+    if (getData.connect) {
+      n = getData.response.data.find(
+        (e: any) => e.orderitemcode.trim() == data.med.trim()
+      );
+    }
+
+    data.type = t ? t.id_type : '';
+    data.med = {
+      med_name: n ? n.genericname.trim() : '',
+    };
+
     Swal.fire({
       title: 'คุณต้องการพิมพ์ข้อมูลรายการนี้หรือไม่?',
       showCancelButton: true,
@@ -971,34 +987,36 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.errPDF(data).then((dataPDF: any) => {
-          dataPDF.getBase64(async (buffer: any) => {
-            let getData: any = await this.http.Printjs('convertbuffer', {
-              data: buffer,
-              name: `${data.hn} ${data.position_text} medError.pdf`,
-              ip: this.dataUser.print_ip,
-              printName: this.dataUser.print_name,
-              hn: this.dataP.patientNO,
-            });
-            if (getData.connect) {
-              if (getData.response.connect === 'success') {
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'พิมพ์ข้อมูลสำเร็จ',
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
+          if (dataPDF) {
+            dataPDF.getBase64(async (buffer: any) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: `${data.hn} ${data.position_text} medError.pdf`,
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
+              });
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'พิมพ์ข้อมูลสำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
               } else {
-                Swal.fire(
-                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                  '',
-                  'error'
-                );
+                Swal.fire('ไม่สามารถพิมพ์ข้อมูลรายการนี้ได้!', '', 'error');
               }
-            } else {
-              Swal.fire('ไม่สามารถพิมพ์ข้อมูลรายการนี้ได้!', '', 'error');
-            }
-          });
+            });
+          }
         });
       }
     });
