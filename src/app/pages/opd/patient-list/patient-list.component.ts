@@ -749,9 +749,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       offender: this.userList.find(
         (val: any) => val.userName === this.medError.value.offender
       ) ?? {
-        name: this.medError.value.offender,
-        user: this.medError.value.offender,
-        userName: this.medError.value.offender,
+        name: this.medError.value.offender ? this.medError.value.offender : '',
+        user: this.medError.value.offender ? this.medError.value.offender : '',
+        userName: this.medError.value.offender
+          ? this.medError.value.offender
+          : '',
       },
       medGood: this.drugList.find(
         (val: any) => val.name.trim() === this.medError.value.medGood
