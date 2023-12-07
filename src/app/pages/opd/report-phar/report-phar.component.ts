@@ -412,6 +412,7 @@ export class ReportPharComponent implements OnInit {
       'source',
       'error_type',
       'site',
+      'type_pre',
       'note',
       'hnDT',
     ];

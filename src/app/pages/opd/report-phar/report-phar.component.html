@@ -1390,7 +1390,7 @@
                 mat-sort-header
                 style="padding-left: 10px"
               >
-                Error Error Type
+                Error Type
               </th>
               <td
                 mat-cell
@@ -1407,7 +1407,7 @@
                 mat-sort-header
                 style="padding-left: 10px"
               >
-                Site
+                PCT / ห้องตรวจ
               </th>
               <td
                 mat-cell
@@ -1415,6 +1415,23 @@
                 style="padding-left: 20px; padding-right: 20px"
               >
                 {{ element.site }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="type_pre">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                ชนิดใบสั่งยา
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.type_pre }}
               </td>
             </ng-container>
             <ng-container matColumnDef="note">

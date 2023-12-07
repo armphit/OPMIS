@@ -602,8 +602,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     occurrence: new FormControl(''),
     source: new FormControl(''),
     error_type: new FormControl(''),
-
     site: new FormControl(''),
+    type_pre: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = ['PE', 'key', 'จัด', 'check', 'DE', 'other'];
@@ -623,7 +623,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'กรุณาระบุวิธีใช้ยา',
       'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
     ],
-    site: ['PCT', 'ห้องตรวจ'],
+    site: [
+      'PCT ศัลย์',
+      'PCT เด็ก',
+      'PCT สูติฯ',
+      'PCT ตา',
+      'PCT ทันตกรรม',
+      'PCT MED',
+      'PCT Ortho',
+      'PCT ENT',
+      'PCT จิตเวช',
+      'PCT กายภาพ',
+      'PCT ER',
+    ],
+    type_pre: ['nonCPOE', 'CPOE'],
   };
   tel_site: string[] = [
     `ห้องยา ชั้น 1 โทร 32142-3`,
@@ -766,6 +779,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       source: this.medError.value.source ? this.medError.value.source : '',
       error_type: this.medError.value.error_type
         ? this.medError.value.error_type
+        : '',
+      site: this.medError.value.site ? this.medError.value.site : '',
+      type_pre: this.medError.value.type_pre
+        ? this.medError.value.type_pre
         : '',
     });
 
@@ -1016,6 +1033,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         site: '',
         type: 'n1',
+        type_pre: '',
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -1038,6 +1056,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         error_type: '',
 
         site: '',
+        type_pre: '',
       });
 
       this.userList = this.userList.map((val: any) => {
@@ -1060,6 +1079,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         error_type: '',
 
         site: '',
+        type_pre: '',
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -1083,6 +1103,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         occurrence: 'รับรายงาน',
         source: 'ในเวลา',
         error_type: 'drug error',
+        type_pre: '',
       });
       this.userList = this.userList.map((val: any) => {
         return {
@@ -1101,11 +1122,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.medError.patchValue({
         offender: this.dataUsercheck.pe,
         position_text: this.medError.value.position,
-        type: 'pe3',
+        type: '',
         level: 'B',
         occurrence: 'รับรายงาน',
         source: 'ในเวลา',
         error_type: 'drug error',
+
+        type_pre: 'nonCPOE',
       });
 
       this.userList = this.userList.map((val: any) => {
@@ -1133,6 +1156,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         error_type: '',
 
         site: '',
+        type_pre: '',
       });
 
       this.gettypeE = this.typeE;
@@ -2243,6 +2267,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'source',
         'error_type',
         'site',
+        'type_pre',
         'note',
         'hnDT',
       ];

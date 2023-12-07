@@ -1895,7 +1895,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              Site
+              PCT / ห้องตรวจ
             </th>
             <td
               mat-cell
@@ -1903,6 +1903,23 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.site }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="type_pre" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              ชนิดใบสั่งยา
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.type_pre }}
             </td>
           </ng-container>
           <ng-container matColumnDef="note" *ngIf="choicecheckmed == '1'">
@@ -2120,7 +2137,7 @@
               <mat-form-field>
                 <mat-label>รูปแบบความผิดพลาด</mat-label>
                 <mat-select
-                  required
+                  [required]="medError.value.position !== 'PE'"
                   formControlName="type"
                   (selectionChange)="getDatatype()"
                 >
@@ -2321,9 +2338,22 @@
             </div>
             <div class="col-2">
               <mat-form-field style="width: 100%">
-                <mat-label>Site</mat-label>
+                <mat-label>PCT / ห้องตรวจ</mat-label>
                 <mat-select formControlName="site">
                   <mat-option *ngFor="let item of pe_de.site" [value]="item">
+                    {{ item }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-2">
+              <mat-form-field style="width: 100%">
+                <mat-label>ชนิดใบสั่ง</mat-label>
+                <mat-select formControlName="type_pre">
+                  <mat-option
+                    *ngFor="let item of pe_de.type_pre"
+                    [value]="item"
+                  >
                     {{ item }}
                   </mat-option>
                 </mat-select>
