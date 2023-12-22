@@ -86,6 +86,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.getData();
     this.getType();
 
+    fetch('./assets/data.json')
+      .then((res) => res.json())
+      .then((jsonData) => {
+        console.log(jsonData);
+      });
     // this.getDrug();
   }
 
@@ -569,10 +574,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   // dataSelect: any = null;
   dataGood: any;
   dataWrong: any;
+  dataAllergic: any;
   dataInterceptor: any;
   dataOffender: any;
   @ViewChild('inputgood') inputgood!: ElementRef<HTMLInputElement>;
   @ViewChild('inputwrong') inputwrong!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputallergic') inputallergic!: ElementRef<HTMLInputElement>;
   @ViewChild('inputinterceptor')
   inputinterceptor!: ElementRef<HTMLInputElement>;
   @ViewChild('inputoffender') inputoffender!: ElementRef<HTMLInputElement>;
@@ -604,6 +611,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     error_type: new FormControl(''),
     site: new FormControl(''),
     type_pre: new FormControl(''),
+    medcode_err: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = ['PE', 'key', 'จัด', 'check', 'DE', 'other'];
@@ -622,6 +630,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'กรุณาระบุความแรงยา รพ.มีขนาด',
       'กรุณาระบุวิธีใช้ยา',
       'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
+      'ขอใบ NED / DUE / จ2 / ยส.5 / เฉพาะราย',
     ],
     site: [
       'PCT ศัลย์',
@@ -713,7 +722,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   checkpre: boolean = false;
   public async submitInput(data: any) {
     let old = this.medError.value;
-
     // Swal.fire({
     //   title: 'คุณต้องการบันทึกข้อมูลนี้หรือไม่?',
     //   showCancelButton: true,
@@ -786,8 +794,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       type_pre: this.medError.value.type_pre
         ? this.medError.value.type_pre
         : '',
+      med:
+        this.medError.value.type == 'pe7' ||
+        this.medError.value.type == 'pe8' ||
+        this.medError.value.type == 'pe9'
+          ? this.dataAllergic.length
+            ? {
+                code: this.dataAllergic[0].code,
+                med_name: this.dataAllergic[0].name,
+              }
+            : this.medError.value.med
+          : this.medError.value.med,
     });
-
     if (!this.medError.value.id) {
       if (this.medError.value.position == 'PE') {
         if (this.checkprint) {
@@ -942,7 +960,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               : data.interceptor
               ? data.interceptor.name
               : ''
-          }... เภสัชกร`,
+          }... ${
+            this.dataUser.user.toUpperCase().includes('C')
+              ? 'เจ้าพนักงานเภสัชกรรม'
+              : 'เภสัชกร'
+          }`,
           alignment: 'center',
 
           fontSize: 14,
@@ -963,6 +985,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ] as any,
       defaultStyle: {
         font: 'THSarabunNew',
+        bold: true,
       },
     };
     // pdfMake.createPdf(docDefinition).open();
@@ -1161,7 +1184,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         occurrence: 'รับรายงาน',
         source: 'ในเวลา',
         error_type: 'drug error',
-
+        site: 'PCT MED',
         type_pre: 'nonCPOE',
       });
 
@@ -1212,6 +1235,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputwrong.nativeElement.value.toLowerCase();
 
     this.dataWrong = this.drugList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
+    );
+  }
+
+  filter_allergic(): void {
+    const filterValue = this.inputallergic.nativeElement.value.toLowerCase();
+
+    this.dataAllergic = this.drugList.filter((o: any) =>
       o.name.trim().toLowerCase().includes(filterValue)
     );
   }

@@ -39,6 +39,7 @@
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
               <mat-option value="W18">ห้องยาชั้น 3</mat-option>
               <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W4">ห้องยา ER</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -1010,7 +1011,7 @@
         </div>
         <div class="col-lg-4">
           <mat-form-field>
-            <mat-label>Select floor</mat-label>
+            <mat-label>Select Site</mat-label>
             <mat-select
               [(ngModel)]="select"
               (ngModelChange)="changeFloorReport()"
@@ -1019,7 +1020,8 @@
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
               <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-              <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option
+              ><mat-option value="W4">ห้องยา ER</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -1344,7 +1346,7 @@
         </div>
         <div class="col-lg-4">
           <mat-form-field>
-            <mat-label>Select floor</mat-label>
+            <mat-label>Select Site</mat-label>
             <mat-select
               [(ngModel)]="select"
               (ngModelChange)="changeFloorReport()"
@@ -1353,7 +1355,8 @@
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
               <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-              <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option
+              ><mat-option value="W4">ห้องยา ER</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -2166,7 +2169,43 @@
               </mat-form-field>
             </div>
           </div>
-
+          <div class="row">
+            <div
+              class="col"
+              *ngIf="
+                medError.value.type == 'pe7' ||
+                medError.value.type == 'pe8' ||
+                medError.value.type == 'pe9'
+              "
+            >
+              <mat-form-field class="example-full-width">
+                <mat-label>ชื่อยาที่แพ้</mat-label>
+                <input
+                  required
+                  [required]="
+                    medError.value.type !== 'pe7' ||
+                    medError.value.type !== 'pe8' ||
+                    medError.value.type !== 'pe9'
+                  "
+                  #inputallergic
+                  type="text"
+                  matInput
+                  formControlName="medcode_err"
+                  [matAutocomplete]="auto2"
+                  (input)="filter_allergic()"
+                  (focus)="filter_allergic()"
+                />
+                <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataAllergic"
+                    [value]="option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
           <div class="row">
             <div class="col">
               <mat-form-field class="example-full-width">
