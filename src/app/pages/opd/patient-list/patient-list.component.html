@@ -39,7 +39,7 @@
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
               <mat-option value="W18">ห้องยาชั้น 3</mat-option>
               <mat-option value="W19">ห้องยา M - Park</mat-option>
-              <mat-option value="W4">ห้องยา ER</mat-option>
+              <mat-option value="W20">ห้องยา ER</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -1605,7 +1605,7 @@
           [dataSource]="dataSource5"
           #MatSort5="matSort"
           matSort
-          matSortActive="hnDT"
+          matSortActive="createDT"
           matSortDirection="desc"
           class="mat-elevation-z8"
           matTableExporter
@@ -1949,7 +1949,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              วันที่
+              เวลาลงข้อมูลคนไข้
             </th>
             <td
               mat-cell
@@ -1957,6 +1957,23 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.hnDT }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createDT" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              เวลาลงข้อมูล Error
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.createDT }}
             </td>
           </ng-container>
           <ng-container matColumnDef="Action" *ngIf="choicecheckmed == '1'">

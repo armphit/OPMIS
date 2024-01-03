@@ -2335,6 +2335,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'type_pre',
         'note',
         'hnDT',
+        'createDT',
       ];
       // } else {
       // this.displayedColumns5 = [
