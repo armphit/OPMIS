@@ -220,7 +220,8 @@ export class ReportPharComponent implements OnInit {
       'phar',
       'numHN',
       'drungCount',
-      'errorCount',
+      'num_drp',
+      'num_doi',
       'drp',
       'it',
       'doi',
@@ -257,7 +258,8 @@ export class ReportPharComponent implements OnInit {
       'phar',
       'numHN',
       'drungCount',
-      'errorCount',
+      'num_drp',
+      'num_doi',
       'drp1',
       'drp2',
       'drp3',
@@ -442,6 +444,6 @@ export class ReportPharComponent implements OnInit {
   }
   public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource5.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

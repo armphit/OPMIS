@@ -86,12 +86,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.getData();
     this.getType();
 
-    fetch('./assets/data.json')
-      .then((res) => res.json())
-      .then((jsonData) => {
-        console.log(jsonData);
-      });
-    // this.getDrug();
+    // fetch('./assets/data.json')
+    //   .then((res) => res.json())
+    //   .then((jsonData) => {});
+    // // this.getDrug();
   }
 
   ngAfterViewInit() {
