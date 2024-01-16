@@ -4,7 +4,6 @@
       <div class="row">
         <div class="col-lg">
           <button
-            *ngIf="dataUser.role == 'admin'"
             type="button"
             class="btn btn-warning"
             data-toggle="modal"
@@ -103,7 +102,6 @@
               >
                 <div style="display: flex">
                   <button
-                    *ngIf="dataUser.role == 'admin'"
                     type="button"
                     class="btn btn-warning"
                     data-toggle="modal"
@@ -114,7 +112,7 @@
                   >
                     Action
                   </button>
-                  <button
+                  <!-- <button
                     type="button"
                     class="btn btn-primary"
                     matTooltip="Print"
@@ -126,7 +124,7 @@
                     (click)="printSticker(element)"
                   >
                     <i class="fas fa-print"></i>
-                  </button>
+                  </button> -->
                 </div>
               </td>
             </ng-container>
@@ -148,7 +146,7 @@
   </mat-tab>
 
   <mat-tab label="PrePack">
-    <div [hidden]="dataUser.role !== 'admin'">
+    <div>
       <div class="container-fluid pt-2">
         <mat-grid-list cols="2" rowHeight="5em">
           <mat-grid-tile>
