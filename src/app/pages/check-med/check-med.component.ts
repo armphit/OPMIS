@@ -16,6 +16,8 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as moment from 'moment';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
+import { interval } from 'rxjs';
+
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -61,28 +63,39 @@ export class CheckMedComponent implements OnInit {
   public campaignOne = new FormGroup({
     picker: new FormControl(new Date()),
   });
-  select: string = '';
+  select: string = 'W8';
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
     public gallery: Gallery,
     private dateAdapter: DateAdapter<Date>
   ) {
+    this.getIP();
     this.dateAdapter.setLocale('en-GB');
+
     // this.test();
   }
   checkprint: boolean = true;
   test() {
-    this.getData('1055663');
+    // this.getData('1055663');
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    interval(10000).subscribe(() => {
+      this.getDrugL();
+    });
+  }
+
   // ngAfterViewInit() {
-  //   setTimeout(() => {
-  //     this.swiper.nativeElement.focus();
-  //   }, 100);
+  //   this.http.loading = false;
   // }
   getHN(hn: any) {
-    this.getData(hn);
+    this.getData(hn, null);
+  }
+  ip: any = null;
+  async getIP() {
+    const response = await fetch('./assets/data.json');
+    this.ip = await response.json();
+    this.ip = this.ip.data.ip;
   }
 
   patient_contract: any = null;
@@ -93,7 +106,11 @@ export class CheckMedComponent implements OnInit {
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   drug_xmed: any = [];
   mathRandom: any = '?lastmod=' + Math.random();
-  async getData(hn: any) {
+  async getData(hn: any, check: any) {
+    if (check) {
+      let win: any = window;
+      win.$('#drugModal').modal('hide');
+    }
     this.countcheck = 0;
     let formData = new FormData();
     formData.append('hn', hn.trim());
@@ -121,6 +138,7 @@ export class CheckMedComponent implements OnInit {
             ? '200.200.200.' + this.dataUser.ip.split('.')[3]
             : '',
           site: this.select,
+          check: check,
         };
 
         let getData3: any = await this.http.postNodejs(
@@ -131,8 +149,13 @@ export class CheckMedComponent implements OnInit {
         if (getData3.connect) {
           if (getData3.response.datadrugpatient.length > 0) {
             this.patient_drug = getData3.response.datadrugpatient;
-            this.patient_contract = getData.response.result[0];
-
+            if (check) {
+              this.patient_drug = getData3.response.datadrugpatient.filter(
+                (val: any) => val.device.includes('M2')
+              );
+            } else {
+              this.patient_drug = getData3.response.datadrugpatient;
+            }
             // this.Dataqandcheck = getData2.response.result[0];
             this.drug_xmed = getData3.response.patientDrug;
 
@@ -1006,7 +1029,7 @@ export class CheckMedComponent implements OnInit {
             showConfirmButton: false,
             timer: 1500,
           });
-          await this.getData(String(e.hn));
+          await this.getData(String(e.hn), null);
         } else {
           console.log(getData);
           Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
@@ -1116,5 +1139,25 @@ export class CheckMedComponent implements OnInit {
     } else {
       this.sendServer(val, null);
     }
+  }
+  drugL: any = [];
+  async getDrugL() {
+    if (this.ip === this.dataUser.ip) {
+      let getData: any = await this.http.post('getdrugL');
+      if (getData.connect) {
+        if (getData.response.result) {
+          this.drugL = getData.response.result;
+        } else {
+          this.drugL = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  }
+  async manageDrugL() {
+    this.getDrugL();
+    let win: any = window;
+    win.$('#drugModal').modal('show');
   }
 }
