@@ -591,7 +591,7 @@ export class CheckMedComponent implements OnInit {
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 0, 7, 70] as any,
+      pageMargins: [0, 45, 7, 40] as any,
       header: {} as any,
 
       content: [
@@ -748,10 +748,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
   }
 
   data_allergic: any = null;
