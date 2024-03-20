@@ -234,7 +234,10 @@ export class SearchDrugComponent implements OnInit {
         };
         let drugDict = { drug: drug };
 
-        let getDataSoap: any = await this.http.postNodejs('soapDIH', drugDict);
+        let getDataSoap: any = await this.http.postNodejs160(
+          'soapDIH',
+          drugDict
+        );
 
         if (getDataSoap.connect) {
           if (getDataSoap.response.status == 'success') {

@@ -1822,6 +1822,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let formData = new FormData();
     formData.append('start', datestart);
     formData.append('end', dateend);
+    formData.append('time1', this.starttime + ':00');
+    formData.append('time2', this.endtime + ':00');
 
     let getData: any = await this.http.post('get_moph_report', formData);
 
@@ -2270,7 +2272,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   valuechange() {
-    this.reportCheckmed();
+    if (this.getTab == 1) {
+      this.getMoph();
+    } else {
+      this.reportCheckmed();
+    }
   }
 
   clearValue() {
@@ -2281,7 +2287,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     });
     this.starttime = '08:00';
     this.endtime = '16:00';
-    this.reportCheckmed();
+    if (this.getTab == 1) {
+      this.getMoph();
+    } else {
+      this.reportCheckmed();
+    }
   }
 
   nameExcel5 = '';
@@ -2295,6 +2305,34 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public starttime = '08:00';
 
   public endtime = '16:00';
+  datareportCheckmed: any;
+  datareportCheckmedFilter: any;
+  filterType: any = '';
+  filter_type() {
+    if (this.filterType == 'pe') {
+      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+        (val: any) => val.position_text == 'PE'
+      );
+    } else if (this.filterType == 'de') {
+      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+        (val: any) => val.position_text == 'DE'
+      );
+    } else if (this.filterType == 'predis') {
+      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+        (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+      );
+    } else {
+      this.datareportCheckmedFilter = this.datareportCheckmed;
+    }
+
+    this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
+    this.dataSource5.sort = this.sort5;
+    this.dataSource5.paginator = this.paginator5;
+
+    setTimeout(() => {
+      this.input5.nativeElement.focus();
+    }, 100);
+  }
   public reportCheckmed = async () => {
     this.dataSource5 = null;
     this.displayedColumns5 = [];
@@ -2372,7 +2410,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (getData.connect) {
         if (dataDrug.length) {
-          this.dataSource5 = new MatTableDataSource(dataDrug);
+          this.datareportCheckmed = dataDrug;
+          this.dataSource5 = new MatTableDataSource(this.datareportCheckmed);
           this.dataSource5.sort = this.sort5;
           this.dataSource5.paginator = this.paginator5;
           this.nameExcel5 = `รายงาน MED-Error ${datestart}_${dateend}`;

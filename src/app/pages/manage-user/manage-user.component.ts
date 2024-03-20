@@ -33,7 +33,7 @@ export class ManageUserComponent implements OnInit {
       'status',
     ];
 
-    let getData: any = await this.http.get('dataUser');
+    let getData: any = await this.http.postNodejs('getUser', null);
 
     if (getData.connect) {
       if (getData.response.result.length) {

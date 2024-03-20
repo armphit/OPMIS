@@ -15,9 +15,10 @@ export class HttpService {
   public rootPath: string = 'http://192.168.185.160:88/api/index.php/';
   public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
-  public syncPath: string = 'http://192.168.185.160:4000/';
+  public syncPath: string = 'http://192.168.185.162:4000/';
+  public syncPath160: string = 'http://192.168.185.160:4000/';
   public testPath: string = 'http://localhost:4000/';
-  public printPath: string = 'http://192.168.185.160:5000/';
+  public printPath: string = 'http://192.168.185.162:5000/';
   public printPath162: string = 'http://192.168.185.162:5000/';
   public printTest: string = 'http://localhost:5000/';
   public drug: any = null;
@@ -108,6 +109,26 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .post(this.syncPath + path, data)
+        // .post(this.testPath + path, data)
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+    // return this.http
+    //   .post<any>(this.nodePath + path, data)
+    //   .pipe(catchError(this.errorHandler));
+  };
+  public postNodejs160 = async (path: string, data: any) => {
+    this.loading = true;
+    return new Promise((resolve) => {
+      this.http
+        .post(this.syncPath160 + path, data)
         // .post(this.testPath + path, data)
         .toPromise()
         .then((value) => {

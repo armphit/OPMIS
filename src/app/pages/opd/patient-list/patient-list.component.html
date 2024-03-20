@@ -330,11 +330,18 @@
                       <th style="padding-right: 50px; border-right: 0px">
                         ชื่อยา
                       </th>
-                      <th style="padding-right: 50px; border-right: 0px">
-                        รหัสยา
-                      </th>
+
                       <th style="padding-right: 50px; border-right: 0px">
                         โรงพยาบาล
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        typedx
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        ระดับแพ้ยา
+                      </th>
+                      <th style="padding-right: 50px; border-right: 0px">
+                        รหัสยา
                       </th>
                       <th style="padding-right: 50px; border-right: 0px">
                         วันที่
@@ -346,30 +353,31 @@
                       <td style="border-right: 0px; vertical-align: middle">
                         <div style="width: 10px">{{ x + 1 }}</div>
                       </td>
-                      <!-- <td
+
+                      <td style="border-right: 0px; vertical-align: middle">
+                        {{ i.drugname }}
+                      </td>
+
+                      <td style="border-right: 0px; vertical-align: middle">
+                        {{ i.NAME }}
+                      </td>
+                      <td
                         style="
                           border-right: 0px;
                           vertical-align: middle;
                           white-space: nowrap;
                         "
                       >
-                        <button
-                          *ngIf="i.status_cancle !== 'Y'"
-                          button
-                          mat-raised-button
-                          style="background-color: #ffc107"
-                          type="button"
-                          class="butt-sm"
-                          (click)="cancleAllergy(x, i, dataP.cid)"
-                        >
-                          ยกเลิกแพ้ยา
-                        </button>
-                        <strong *ngIf="i.status_cancle === 'Y'"
-                          >** <i>ยกเลิกแพ้ยาแล้ว</i> **</strong
-                        >
-                      </td> -->
-                      <td style="border-right: 0px; vertical-align: middle">
-                        {{ i.drugname }}
+                        {{ i.typedx }}
+                      </td>
+                      <td
+                        style="
+                          border-right: 0px;
+                          vertical-align: middle;
+                          white-space: nowrap;
+                        "
+                      >
+                        {{ i.allerglevelcode }}
                       </td>
                       <td
                         style="
@@ -380,9 +388,7 @@
                       >
                         {{ i.drugcode }}
                       </td>
-                      <td style="border-right: 0px; vertical-align: middle">
-                        {{ i.hospcode }}
-                      </td>
+
                       <td
                         style="
                           border-right: 0px;
@@ -799,6 +805,34 @@
             ></mat-datepicker-toggle>
             <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
           </mat-form-field>
+          <span style="display: inline-block">
+            <mat-form-field [style.width.px]="70">
+              <mat-label>Start time</mat-label>
+              <input type="time" matInput [(ngModel)]="starttime" />
+            </mat-form-field>
+            -
+            <mat-form-field [style.width.px]="70">
+              <mat-label>End time</mat-label>
+              <input type="time" matInput [(ngModel)]="endtime" />
+            </mat-form-field>
+            &nbsp;
+            <button
+              (click)="valuechange()"
+              mat-icon-button
+              color="primary"
+              aria-label="Example icon button with a menu icon"
+            >
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button
+              (click)="clearValue()"
+              mat-icon-button
+              color="accent"
+              aria-label="Example icon button with a menu icon"
+            >
+              <mat-icon>clear</mat-icon>
+            </button>
+          </span>
         </div>
 
         <div class="col-lg-3">
@@ -1577,7 +1611,7 @@
           >
         </div>
         <div class="col-lg-2">
-          <mat-form-field>
+          <!-- <mat-form-field>
             <mat-label>เลือกรายงาน</mat-label>
             <mat-select
               [(ngModel)]="choicecheckmed"
@@ -1585,6 +1619,18 @@
             >
               <mat-option value="1">รายงาน MED-Error</mat-option>
               <mat-option value="2">รายงานเวลาเช็คยา</mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <mat-form-field>
+            <mat-label>เลือกตำหน่งที่ผิด</mat-label>
+            <mat-select
+              [(ngModel)]="filterType"
+              (ngModelChange)="filter_type()"
+            >
+              <mat-option selected value="">All</mat-option>
+              <mat-option value="pe">pe</mat-option>
+              <mat-option value="de">de</mat-option>
+              <mat-option value="predis">predis</mat-option>
             </mat-select>
           </mat-form-field>
         </div>

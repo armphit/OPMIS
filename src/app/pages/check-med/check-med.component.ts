@@ -63,7 +63,7 @@ export class CheckMedComponent implements OnInit {
   public campaignOne = new FormGroup({
     picker: new FormControl(new Date()),
   });
-  select: string = 'W8';
+  select: string = '';
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
@@ -80,9 +80,9 @@ export class CheckMedComponent implements OnInit {
     // this.getData('1055663');
   }
   ngOnInit(): void {
-    interval(10000).subscribe(() => {
-      this.getDrugL();
-    });
+    // interval(10000).subscribe(() => {
+    //   this.getDrugL();
+    // });
   }
 
   // ngAfterViewInit() {
@@ -124,7 +124,7 @@ export class CheckMedComponent implements OnInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         // let getData2: any = await this.http.post('Datacheckdrug', formData);
-
+        this.patient_contract = getData.response.result[0];
         // if (getData2.connect) {
         //   if (getData2.response.rowCount > 0) {
         let data_send = {
@@ -383,7 +383,7 @@ export class CheckMedComponent implements OnInit {
               this.sendPDF(value).then((dataPDF: any) => {
                 if (dataPDF) {
                   dataPDF.getBase64(async (buffer: any) => {
-                    let pdf: any = await this.http.Printjs('convertbuffer', {
+                    let pdf: any = await this.http.Printjs162('convertbuffer', {
                       data: buffer,
                       name: value.hn + ' ' + value.drugCode + '.pdf',
                       ip: this.dataUser.print_ip,
@@ -591,7 +591,7 @@ export class CheckMedComponent implements OnInit {
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 45, 7, 40] as any,
+      pageMargins: [0, 37, 7, 35] as any,
       header: {} as any,
 
       content: [
@@ -748,10 +748,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
-    pdfMake.createPdf(docDefinition).open();
-    return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
   }
 
   data_allergic: any = null;
@@ -816,7 +816,7 @@ export class CheckMedComponent implements OnInit {
       this.sendPDF(data).then((dataPDF: any) => {
         if (dataPDF) {
           dataPDF.getBase64(async (buffer: any) => {
-            let getData: any = await this.http.Printjs('convertbuffer', {
+            let getData: any = await this.http.Printjs162('convertbuffer', {
               data: buffer,
               name: data.hn + ' ' + data.drugCode + '.pdf',
               ip: this.dataUser.print_ip,
@@ -947,7 +947,7 @@ export class CheckMedComponent implements OnInit {
           this.sendPDF(data).then((dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = await this.http.Printjs('convertbuffer', {
+                let getData: any = await this.http.Printjs162('convertbuffer', {
                   data: buffer,
                   name: data.hn + ' ' + data.drugCode + '.pdf',
                   ip: this.dataUser.print_ip,
@@ -1068,7 +1068,10 @@ export class CheckMedComponent implements OnInit {
             };
           }
 
-          let getData: any = await this.http.Printjs('dataCheckmed', sendVal);
+          let getData: any = await this.http.Printjs162(
+            'dataCheckmed',
+            sendVal
+          );
 
           if (getData.connect) {
             if (getData.response.length) {
