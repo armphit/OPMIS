@@ -175,6 +175,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           };
           getData = await this.http.postNodejs('queueP', data_send);
           dataPatient = getData.response.gethospitalQ;
+     
+          
         }
       } else {
         formData.append('floor', this.select);
@@ -257,6 +259,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   // checkW: any = null;
   userList: any = null;
   drugList: any = null;
+  dataDrug2:any=[]
   listDrug = async (val: any) => {
     let formData = new FormData();
     this.hncut = null;
@@ -286,13 +289,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataP = val;
     if (this.dataP) {
       formData.append('cid', val.cid);
-      let drug_allergic: any = await this.http.post('drug_allergic', formData);
-
+      formData.append('hn', val.patientNO);
+      let drug_allergic: any = await this.http.post('drug_allergic_fix', formData);
+    
+      
       if (drug_allergic.connect) {
-        if (drug_allergic.response.rowCount > 0) {
-          this.dataDrug = drug_allergic.response.result;
+        if (drug_allergic.response[1].rowCount > 0) {
+          this.dataDrug = drug_allergic.response[1].result;
         } else {
           this.dataDrug = [];
+        }
+        if (drug_allergic.response[0].rowCount > 0) {
+          this.dataDrug2 = drug_allergic.response[0].result;
+        } else {
+          this.dataDrug2 = [];
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');

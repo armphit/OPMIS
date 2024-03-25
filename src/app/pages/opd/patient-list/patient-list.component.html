@@ -421,7 +421,34 @@
               </p>
               <hr />
             </div>
+            <div [hidden]="dataDrug2.length === 0">
+              <p style="font-weight: bold; color: #f40000">รายการแพ้ยาโรงพยาบาลมหาราชนครราชสีมา</p>
+              <div class="table-responsive" style="max-height: 200px">
+                <table class="table table-danger">
+                  <thead>
+                    <tr>
+                      <th style="padding-right: 50px; border-right: 0px">#</th>
+                      <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
+                      <th style="padding-right: 50px; border-right: 0px">
+                        ชื่อยา
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let i of dataDrug2; let x = index">
+                      <td style="border-right: 0px; vertical-align: middle">
+                        <div style="width: 10px">{{ x + 1 }}</div>
+                      </td>
 
+                      <td style="border-right: 0px; vertical-align: middle">
+                        {{ i.drugName }}
+                      </td>
+                     
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
             <p style="font-weight: bold; display: inline">รายการยา</p>
 
             <div
