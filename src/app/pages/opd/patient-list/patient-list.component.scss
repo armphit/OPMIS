@@ -41,6 +41,22 @@ label {
 .col {
   display: grid;
 }
+.sticky-col {
+  position: sticky;
+  right: 0;
+  z-index: 99999;
+  background-color: #f5c6cb;
+  
+ /* Optional: change background color for the sticky column */
+}
+
+.st-th {
+  background-color: #EDD6D9;
+}
+
+.st-td:hover{
+  background-color: #e7e4e4;
+}
 
 // p {
 //   font-size: larger !important;

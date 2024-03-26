@@ -319,89 +319,129 @@
               เลชบัตรประชาชน :
               {{ dataP ? dataP.cid : "" }}
             </p>
-            <div [hidden]="dataDrug.length === 0">
-              <p style="font-weight: bold; color: #f40000">รายการแพ้ยา</p>
-              <div class="table-responsive" style="max-height: 200px">
-                <table class="table table-danger">
-                  <thead>
-                    <tr>
-                      <th style="padding-right: 50px; border-right: 0px">#</th>
-                      <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
-                      <th style="padding-right: 50px; border-right: 0px">
-                        ชื่อยา
-                      </th>
+            <div>
+              <div class="row">
+                <div  [hidden]="dataDrug.length === 0" class="col-8">
+                  <span style="font-weight: bold; color: #f40000">รายการแพ้ยา</span>
+                  <div class="table-responsive" style="max-height: 200px">
+                    <table class="table table-danger">
+                      <thead>
+                        <tr>
+                          <!-- <th style="padding-right: 50px; border-right: 0px">
+                            #
+                          </th> -->
+                          <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
+                         
 
-                      <th style="padding-right: 50px; border-right: 0px">
-                        โรงพยาบาล
-                      </th>
-                      <th style="padding-right: 50px; border-right: 0px">
-                        typedx
-                      </th>
-                      <th style="padding-right: 50px; border-right: 0px">
-                        ระดับแพ้ยา
-                      </th>
-                      <th style="padding-right: 50px; border-right: 0px">
-                        รหัสยา
-                      </th>
-                      <th style="padding-right: 50px; border-right: 0px">
-                        วันที่
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let i of dataDrug; let x = index">
-                      <td style="border-right: 0px; vertical-align: middle">
-                        <div style="width: 10px">{{ x + 1 }}</div>
-                      </td>
+                          <th style="padding-right: 50px; border-right: 0px">
+                            โรงพยาบาล
+                          </th>
+                          <th style="padding-right: 50px; border-right: 0px">
+                            typedx
+                          </th>
+                          <th  style="padding-right: 50px; border-right: 0px">
+                            ระดับแพ้ยา
+                          </th>
+                          <!-- <th style="padding-right: 50px; border-right: 0px">
+                            รหัสยา
+                          </th> -->
+                          <!-- <th style="padding-right: 50px; border-right: 0px">
+                            วันที่
+                          </th> -->
+                          <th class="sticky-col st-th " style="padding-right: 50px; border-right: 0px">
+                            ชื่อยา
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let i of dataDrug; let x = index">
+                          <!-- <td style="border-right: 0px; vertical-align: middle">
+                            <div style="width: 10px">{{ x + 1 }}</div>
+                          </td> -->
 
-                      <td style="border-right: 0px; vertical-align: middle">
-                        {{ i.drugname }}
-                      </td>
+                         
 
-                      <td style="border-right: 0px; vertical-align: middle">
-                        {{ i.NAME }}
-                      </td>
-                      <td
-                        style="
-                          border-right: 0px;
-                          vertical-align: middle;
-                          white-space: nowrap;
-                        "
-                      >
-                        {{ i.typedx }}
-                      </td>
-                      <td
-                        style="
-                          border-right: 0px;
-                          vertical-align: middle;
-                          white-space: nowrap;
-                        "
-                      >
-                        {{ i.allerglevelcode }}
-                      </td>
-                      <td
-                        style="
-                          border-right: 0px;
-                          vertical-align: middle;
-                          white-space: nowrap;
-                        "
-                      >
-                        {{ i.drugcode }}
-                      </td>
+                          <td style="border-right: 0px; vertical-align: middle">
+                            {{ i.NAME }}
+                          </td>
+                          <td
+                            style="
+                              border-right: 0px;
+                              vertical-align: middle;
+                              white-space: nowrap;
+                            "
+                          >
+                            {{ i.typedx }}
+                          </td>
+                          <td
+                            style="
+                              border-right: 0px;
+                              vertical-align: middle;
+                              white-space: nowrap;
+                            "
+                          >
+                            {{ i.allerglevelcode }}
+                          </td>
+                          <!-- <td
+                            style="
+                              border-right: 0px;
+                              vertical-align: middle;
+                              white-space: nowrap;
+                            "
+                          >
+                            {{ i.drugcode }}
+                          </td> -->
 
-                      <td
-                        style="
-                          border-right: 0px;
-                          vertical-align: middle;
-                          white-space: nowrap;
-                        "
-                      >
-                        {{ i.daterecord }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                          <!-- <td
+                            style="
+                              border-right: 0px;
+                              vertical-align: middle;
+                              white-space: nowrap;
+                            "
+                          >
+                            {{ i.daterecord }}
+                          </td> -->
+                          <td class="sticky-col st-td" style="border-right: 0px; vertical-align: middle">
+                            {{ i.drugname }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div  [hidden]="dataDrug2.length === 0" class="col-4">
+                  <span style="font-weight: bold; color: #f40000">
+                    รายการแพ้ยาโรงพยาบาลมหาราชนครราชสีมา
+                  </span>
+                  <div class="table-responsive" style="max-height: 200px">
+                    <table class="table table-danger">
+                      <thead>
+                        <tr>
+                          <!-- <th style="padding-right: 50px; border-right: 0px">
+                            #
+                          </th> -->
+                          <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
+                          <th style="padding-right: 50px; border-right: 0px">
+                            ชื่อยา
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let i of dataDrug2; let x = index">
+                          <!-- <td style="border-right: 0px; vertical-align: middle">
+                            <div style="width: 10px">{{ x + 1 }}</div>
+                          </td> -->
+
+                          <td style="border-right: 0px; vertical-align: middle">
+                            {{ i.drugName }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
+
               <p style="font-weight: bold" *ngIf="datatime">
                 สถานะ :
                 <i
@@ -421,34 +461,7 @@
               </p>
               <hr />
             </div>
-            <div [hidden]="dataDrug2.length === 0">
-              <p style="font-weight: bold; color: #f40000">รายการแพ้ยาโรงพยาบาลมหาราชนครราชสีมา</p>
-              <div class="table-responsive" style="max-height: 200px">
-                <table class="table table-danger">
-                  <thead>
-                    <tr>
-                      <th style="padding-right: 50px; border-right: 0px">#</th>
-                      <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
-                      <th style="padding-right: 50px; border-right: 0px">
-                        ชื่อยา
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let i of dataDrug2; let x = index">
-                      <td style="border-right: 0px; vertical-align: middle">
-                        <div style="width: 10px">{{ x + 1 }}</div>
-                      </td>
-
-                      <td style="border-right: 0px; vertical-align: middle">
-                        {{ i.drugName }}
-                      </td>
-                     
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+           
             <p style="font-weight: bold; display: inline">รายการยา</p>
 
             <div
@@ -1569,7 +1582,7 @@
         </mat-paginator>
       </div></div
   ></mat-tab>
-  <mat-tab label="รายงานการพิมพ์ฉลากยา">
+  <mat-tab label="รายงาน Med Error">
     <div class="container-fluid pt-2">
       <div class="row">
         <div class="col-lg-7 d-flex">
