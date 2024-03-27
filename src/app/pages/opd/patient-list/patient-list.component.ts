@@ -175,8 +175,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           };
           getData = await this.http.postNodejs('queueP', data_send);
           dataPatient = getData.response.gethospitalQ;
-     
-          
         }
       } else {
         formData.append('floor', this.select);
@@ -259,7 +257,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   // checkW: any = null;
   userList: any = null;
   drugList: any = null;
-  dataDrug2:any=[]
+  dataDrug2: any = [];
   listDrug = async (val: any) => {
     let formData = new FormData();
     this.hncut = null;
@@ -290,9 +288,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (this.dataP) {
       formData.append('cid', val.cid);
       formData.append('hn', val.patientNO);
-      let drug_allergic: any = await this.http.post('drug_allergic_fix', formData);
-    
-      
+      let drug_allergic: any = await this.http.post(
+        'drug_allergic_fix',
+        formData
+      );
+
       if (drug_allergic.connect) {
         if (drug_allergic.response[1].rowCount > 0) {
           this.dataDrug = drug_allergic.response[1].result;
@@ -2318,16 +2318,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   datareportCheckmed: any;
   datareportCheckmedFilter: any;
   filterType: any = '';
-   numError:any = {}
+  numError: any = {};
   filter_type() {
-
-    if(this.select){
-      this.datareportCheckmedFilter  = this.datareportCheckmed.filter(
+    if (this.select) {
+      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
         (val: any) => val.location == this.select
-    )} else {
+      );
+    } else {
       this.datareportCheckmedFilter = this.datareportCheckmed;
     }
-
 
     if (this.filterType == 'pe') {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
@@ -2344,22 +2343,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter;
     }
-    if(this.datareportCheckmedFilter.length){
-      this.numError.all = this.datareportCheckmedFilter.length
-      this.numError.pe = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text == 'PE'
-      ).length
-      this.numError.de = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text == 'DE'
-      ).length
 
-      this.numError.predis = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
-      ).length
-    }
-    
-    console.log(this.numError);
-    
+    this.numError.all = this.datareportCheckmedFilter.length;
+    this.numError.pe = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text == 'PE'
+    ).length;
+    this.numError.de = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text == 'DE'
+    ).length;
+
+    this.numError.predis = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+    ).length;
+
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
     this.dataSource5.sort = this.sort5;
     this.dataSource5.paginator = this.paginator5;
@@ -2446,7 +2442,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (getData.connect) {
         if (dataDrug.length) {
           this.datareportCheckmed = dataDrug;
-          await this.filter_type()
+          await this.filter_type();
           // this.dataSource5 = new MatTableDataSource(this.datareportCheckmed);
           // this.dataSource5.sort = this.sort5;
           // this.dataSource5.paginator = this.paginator5;
