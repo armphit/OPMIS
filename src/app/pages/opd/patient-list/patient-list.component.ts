@@ -2319,21 +2319,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   datareportCheckmedFilter: any;
   filterType: any = '';
   filter_type() {
+
+    if(this.select){
+      this.datareportCheckmedFilter  = this.datareportCheckmed.filter(
+        (val: any) => val.location == this.select
+    )} else {
+      this.datareportCheckmedFilter = this.datareportCheckmed;
+    }
+
+
     if (this.filterType == 'pe') {
-      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+      this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
         (val: any) => val.position_text == 'PE'
       );
     } else if (this.filterType == 'de') {
-      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+      this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
         (val: any) => val.position_text == 'DE'
       );
     } else if (this.filterType == 'predis') {
-      this.datareportCheckmedFilter = this.datareportCheckmed.filter(
+      this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
         (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
       );
     } else {
-      this.datareportCheckmedFilter = this.datareportCheckmed;
+      this.datareportCheckmedFilter = this.datareportCheckmedFilter;
     }
+
+
 
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
     this.dataSource5.sort = this.sort5;
@@ -2421,9 +2432,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (getData.connect) {
         if (dataDrug.length) {
           this.datareportCheckmed = dataDrug;
-          this.dataSource5 = new MatTableDataSource(this.datareportCheckmed);
-          this.dataSource5.sort = this.sort5;
-          this.dataSource5.paginator = this.paginator5;
+          await this.filter_type()
+          // this.dataSource5 = new MatTableDataSource(this.datareportCheckmed);
+          // this.dataSource5.sort = this.sort5;
+          // this.dataSource5.paginator = this.paginator5;
           this.nameExcel5 = `รายงาน MED-Error ${datestart}_${dateend}`;
           // this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
           setTimeout(() => {
