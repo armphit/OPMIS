@@ -2318,6 +2318,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   datareportCheckmed: any;
   datareportCheckmedFilter: any;
   filterType: any = '';
+   numError:any = {}
   filter_type() {
 
     if(this.select){
@@ -2343,9 +2344,22 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter;
     }
+    if(this.datareportCheckmedFilter.length){
+      this.numError.all = this.datareportCheckmedFilter.length
+      this.numError.pe = this.datareportCheckmedFilter.filter(
+        (val: any) => val.position_text == 'PE'
+      ).length
+      this.numError.de = this.datareportCheckmedFilter.filter(
+        (val: any) => val.position_text == 'DE'
+      ).length
 
-
-
+      this.numError.predis = this.datareportCheckmedFilter.filter(
+        (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+      ).length
+    }
+    
+    console.log(this.numError);
+    
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
     this.dataSource5.sort = this.sort5;
     this.dataSource5.paginator = this.paginator5;
