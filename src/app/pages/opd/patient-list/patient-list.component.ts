@@ -173,7 +173,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
             date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
           };
-          getData = await this.http.postNodejs('queueP', data_send);
+          getData = await this.http.postNodejsTest('queueP', data_send);
           dataPatient = getData.response.gethospitalQ;
         }
       } else {
@@ -322,7 +322,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let getData: any = await this.http.post('getdrugHomcFloor', formData);
     let getData2: any = await this.http.post('get_moph_confirm', formData);
 
-    let getData3: any = await this.http.postNodejs('getCompiler', {
+    let getData3: any = await this.http.postNodejsTest('getCompiler', {
       hn: val.patientNO,
       date: moment(val.createdDT).format('YYYY-MM-DD'),
       queue: val.QN ? val.QN : this.select,
@@ -445,7 +445,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.medError.reset();
 
     val.date = moment(val.hnDT).format('YYYY-MM-DD');
-    let getData3: any = await this.http.postNodejs('getCompiler', {
+    let getData3: any = await this.http.postNodejsTest('getCompiler', {
       hn: val.hn,
       date: moment(val.createdDT).format('YYYY-MM-DD'),
     });
@@ -469,7 +469,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           val.patientNO = val.hn;
           val.drugCode = val.med;
 
-          let dataUser: any = await this.http.postNodejs('positionError', {
+          let dataUser: any = await this.http.postNodejsTest('positionError', {
             ...val,
             site: val.location,
           });
@@ -662,7 +662,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   ];
   async reportError(val: any) {
     this.checkpre = false;
-    let dataUser: any = await this.http.postNodejs('positionError', {
+    let dataUser: any = await this.http.postNodejsTest('positionError', {
       ...val.dataP,
       ...val.item,
       site: this.select,
@@ -875,7 +875,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   async insertErr() {
     let win: any = window;
     win.$('#check_error').modal('hide');
-    let getData3: any = await this.http.postNodejs(
+    let getData3: any = await this.http.postNodejsTest(
       this.medError.value.id ? 'manageError' : 'medError',
       this.medError.value
     );
@@ -2436,7 +2436,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         time2: this.endtime + ':00',
       };
 
-      let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+      let getData: any = await this.http.postNodejsTest('reportcheckmed', formData);
       let dataDrug = getData.response.datadrugcheck;
 
       if (getData.connect) {
@@ -2475,7 +2475,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         choice: this.choicecheckmed,
       };
 
-      let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+      let getData: any = await this.http.postNodejsTest('reportcheckmed', formData);
 
       if (getData.connect) {
         if (getData.response.datadrugcheck.length) {

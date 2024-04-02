@@ -22,6 +22,7 @@ export class HttpService {
   public printPath162: string = 'http://192.168.185.162:5000/';
   public printTest: string = 'http://localhost:5000/';
   public drug: any = null;
+  public patientPath: string = 'http://localhost:1000/';
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
@@ -108,8 +109,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.syncPath + path, data)
-        // .post(this.testPath + path, data)
+        // .post(this.syncPath + path, data)
+        .post(this.testPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -120,10 +121,34 @@ export class HttpService {
           this.loading = false;
         });
     });
+    
     // return this.http
     //   .post<any>(this.nodePath + path, data)
     //   .pipe(catchError(this.errorHandler));
   };
+
+  public postNodejsTest = async (path: string, data: any) => {
+    this.loading = true;
+    return new Promise((resolve) => {
+      this.http
+        // .post(this.syncPath + path, data)
+        .post(this.patientPath + path, data)
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+    
+    // return this.http
+    //   .post<any>(this.nodePath + path, data)
+    //   .pipe(catchError(this.errorHandler));
+  };
+  
   public postNodejs160 = async (path: string, data: any) => {
     this.loading = true;
     return new Promise((resolve) => {
