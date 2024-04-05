@@ -222,13 +222,19 @@ export class HttpService {
         });
     });
   };
+  dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   public Printjs162 = async (path: string, data: any) => {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
         // .post(this.printTest + path, data)
         // .post(this.printPath162 + path, data)
-        .post(this.printPath + path, data)
+        .post(
+          (this.dataUser.ip == '192.168.185.172'
+            ? this.printPath162
+            : this.printPath) + path,
+          data
+        )
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

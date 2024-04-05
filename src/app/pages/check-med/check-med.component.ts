@@ -589,10 +589,11 @@ export class CheckMedComponent implements OnInit {
       freetext1[0] ? freetext1[0] : ''
     }`;
 
+    let fix =
+      this.dataUser.ip == '192.168.185.172' ? [0, 37, 7, 35] : [0, 0, 10, 70];
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      // pageMargins: [0, 37, 7, 35] as any,
-      pageMargins: [0, 0, 10, 70] as any,
+      pageMargins: fix as any,
       header: {} as any,
 
       content: [
