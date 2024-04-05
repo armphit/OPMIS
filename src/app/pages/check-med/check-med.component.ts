@@ -591,7 +591,8 @@ export class CheckMedComponent implements OnInit {
 
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
-      pageMargins: [0, 37, 7, 35] as any,
+      // pageMargins: [0, 37, 7, 35] as any,
+      pageMargins: [0, 0, 10, 70] as any,
       header: {} as any,
 
       content: [
