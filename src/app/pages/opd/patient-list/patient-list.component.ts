@@ -659,6 +659,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     `ห้องยา ชั้น 1 โทร 32142-3`,
     `ชั้น 2 โทร 32200-1`,
     `ชั้น 3 โทร 32341-2`,
+    `M-Park โทร 044235055`,
   ];
   async reportError(val: any) {
     this.checkpre = false;
@@ -838,13 +839,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 });
               } else {
                 dataPDF.getBase64(async (buffer: any) => {
-                  let getData: any = await this.http.Printjs('convertbuffer', {
-                    data: buffer,
-                    name: `${this.dataP.patientNO} ${this.medError.value.position_text} medError.pdf`,
-                    ip: this.dataUser.print_ip,
-                    printName: this.dataUser.print_name,
-                    hn: this.dataP.patientNO,
-                  });
+                  let getData: any = await this.http.Printjs162(
+                    'convertbuffer',
+                    {
+                      data: buffer,
+                      name: `${this.dataP.patientNO} ${this.medError.value.position_text} medError.pdf`,
+                      ip: this.dataUser.print_ip,
+                      printName: this.dataUser.print_name,
+                      hn: this.dataP.patientNO,
+                    }
+                  );
                   if (getData.connect) {
                     if (getData.response.connect === 'success') {
                       this.insertErr();
@@ -907,9 +911,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     var docDefinition = {
       // pageSize: { width: 325, height: 350 },
       pageSize: { width: 238, height: 255 },
-      // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 0, 7, 65] as any,
-      // pageMargins: [0, 0, 7, 88] as any,
+      pageMargins: [5, 50, 5, 100] as any,
+      // pageMargins: [0, 0, 7, 65] as any,
+
       header: {} as any,
 
       content: [
@@ -985,6 +989,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               ? this.tel_site[1]
               : this.select === 'W18'
               ? this.tel_site[2]
+              : this.select === 'W19'
+              ? this.tel_site[3]
               : `ห้องยา ชั้น 1 โทร 32142-3 ชั้น 2 โทร 32200-1 ชั้น 3 โทร 32341-2`,
           alignment: 'center',
 
@@ -1034,7 +1040,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.errPDF(data).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
-              let getData: any = await this.http.Printjs('convertbuffer', {
+              let getData: any = await this.http.Printjs162('convertbuffer', {
                 data: buffer,
                 name: `${data.hn} ${data.position_text} medError.pdf`,
                 ip: this.dataUser.print_ip,
@@ -1100,6 +1106,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         type: 'n1',
         type_pre: '',
       });
+
       this.userList = this.userList.map((val: any) => {
         return {
           ...val,
@@ -1350,7 +1357,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.printPDF(dataprint).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
-              let getData: any = await this.http.Printjs('convertbuffer', {
+              let getData: any = await this.http.Printjs162('convertbuffer', {
                 data: buffer,
                 name: `${this.dataP.patientNO}.pdf`,
                 ip: this.dataUser.print_ip,
@@ -1531,7 +1538,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           this.printPDF(dataprint).then(async (dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = await this.http.Printjs('convertbuffer', {
+                let getData: any = await this.http.Printjs162('convertbuffer', {
                   data: buffer,
                   name: `${this.dataP.patientNO}.pdf`,
                   ip: this.dataUser.print_ip,
@@ -1733,6 +1740,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.reportCheckmed();
       } else if (this.getTab == 0 || this.getTab == null) {
         this.getData();
+      } else if (this.getTab == 5) {
+        this.reportTimeDispend();
       }
     }
   }
@@ -1753,7 +1762,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? this.getReport()
       : this.getTab === 3
       ? this.reportDispend()
-      : this.reportCheckmed();
+      : this.getTab === 4
+      ? this.reportCheckmed()
+      : this.getTab === 5
+      ? this.reportTimeDispend()
+      : '';
   }
 
   async deleteCutowe(dcc_id: any, val: any, amount: any) {
@@ -2047,8 +2060,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         var docDefinition = {
           // pageSize: { width: 325, height: 350 },
           pageSize: { width: 238, height: 255 },
-          // pageMargins: [5, 50, 5, 100] as any,
-          pageMargins: [0, 0, 7, 88] as any,
+          pageMargins: [5, 50, 5, 100] as any,
+          // pageMargins: [0, 0, 7, 88] as any,
           header: {} as any,
 
           content: [
@@ -2210,7 +2223,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.printPDF(val).then((dataPDF: any) => {
       if (dataPDF) {
         dataPDF.getBase64(async (buffer: any) => {
-          let getData: any = await this.http.Printjs('convertbuffer', {
+          let getData: any = await this.http.Printjs162('convertbuffer', {
             data: buffer,
             name: `${this.dataP.patientNO}.pdf`,
             ip: this.dataUser.print_ip,
@@ -2501,5 +2514,53 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public applyFilter5(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource5.filter = filterValue.trim().toLowerCase();
+  }
+
+  nameExcel6 = '';
+  dataSource6: any = null;
+  displayedColumns6: any = null;
+  timeavg: any = '';
+  @ViewChild('input6') input6!: ElementRef;
+  @ViewChild('MatSort6') sort6!: MatSort;
+  @ViewChild('MatPaginator6') paginator6!: MatPaginator;
+  public reportTimeDispend = async () => {
+    this.displayedColumns6 = [
+      'hn',
+      'patientname',
+      'starttime',
+      'endtime',
+      'time',
+    ];
+
+    let formData = {
+      datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+      dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+    };
+
+    let getData: any = await this.http.postNodejs(
+      'getTimedispenddrug',
+      formData
+    );
+
+    if (getData.connect) {
+      if (getData.response.gettime.length > 0) {
+        this.timeavg = getData.response.averageTime;
+        this.dataSource6 = new MatTableDataSource(getData.response.gettime);
+        this.dataSource6.sort = this.sort6;
+        this.dataSource6.paginator = this.paginator6;
+        this.nameExcel6 = `รายงานเวลาจ่ายยา ${formData.datestart}_${formData.dateend}`;
+        setTimeout(() => {
+          this.input6.nativeElement.focus();
+        }, 100);
+      } else {
+        this.dataSource6 = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  };
+  public applyFilter6(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource6.filter = filterValue.trim().toLowerCase();
   }
 }
