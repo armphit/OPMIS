@@ -603,8 +603,8 @@ export class CheckMedComponent implements OnInit {
     }`;
     // let fix =
     // this.dataUser.ip == '192.168.185.139' ? [0, 37, 7, 35] : [0, 0, 10, 70];
-    let fix = [0, 0, 10, 70];
-    // let fix = [0, 37, 7, 35];
+    // let fix = [0, 0, 10, 70];
+    let fix = [0, 37, 7, 35];
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
       pageMargins: fix as any,
