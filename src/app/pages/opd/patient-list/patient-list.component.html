@@ -1658,21 +1658,18 @@
             >เวลาเฉลี่ย : {{ avgTime }}</span
           > -->
           <!-- <div class="col-lg-4"> -->
-            <mat-form-field>
-              <mat-label>Select Site</mat-label>
-              <mat-select
-                [(ngModel)]="select"
-                (ngModelChange)="filter_type()"
-              >
-                <mat-option value="">All</mat-option>
-                <mat-option value="W9">ห้องยาชั้น 1</mat-option>
-                <mat-option value="W8">ห้องยาชั้น 2</mat-option>
-                <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-                <mat-option value="W19">ห้องยา M - Park</mat-option>
-                <mat-option value="W20">ห้องยา ER</mat-option>
-                <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
-              </mat-select>
-            </mat-form-field>
+          <mat-form-field>
+            <mat-label>Select Site</mat-label>
+            <mat-select [(ngModel)]="select" (ngModelChange)="filter_type()">
+              <mat-option value="">All</mat-option>
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W20">ห้องยา ER</mat-option>
+              <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+            </mat-select>
+          </mat-form-field>
           <!-- </div> -->
         </div>
         <div class="col-lg-2">
@@ -2217,6 +2214,203 @@
         <mat-paginator
           style="float: right"
           #MatPaginator5="matPaginator"
+          [length]="10"
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 50, 100]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div></div
+  ></mat-tab>
+  <mat-tab label="รายงานเวลาจ่ายยา">
+    <div class="container-fluid pt-2">
+      <div class="row">
+        <div class="col-lg-5">
+          <mat-form-field class="example-form-field" style="float: left">
+            <mat-label>เลือกวันที่</mat-label>
+            <mat-date-range-input
+              [formGroup]="campaignOne"
+              [rangePicker]="campaignOnePicker6"
+              [comparisonStart]="campaignOne.value.start"
+              [comparisonEnd]="campaignOne.value.end"
+            >
+              <input
+                matStartDate
+                placeholder="วันที่เริ่มต้น"
+                formControlName="start"
+              />
+              <input
+                matEndDate
+                placeholder="วันที่สิ้นสุด"
+                formControlName="end"
+                (dateChange)="endChange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="campaignOnePicker6"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #campaignOnePicker6></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-4" style="margin-top: 20px">
+          <div style="font-size: 25px; font-weight: bold">
+            {{ "เวลาเฉลี่ย : " + timeavg }}
+          </div>
+
+          <!-- <mat-form-field>
+            <mat-label>Select Site</mat-label>
+            <mat-select
+              [(ngModel)]="select"
+              (ngModelChange)="changeFloorReport()"
+            >
+              <mat-option value="">All</mat-option>
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W20">ห้องยา ER</mat-option>
+              <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+            </mat-select>
+          </mat-form-field> -->
+        </div>
+        <div class="col-lg-3">
+          <mat-form-field class="example-full-width" style="float: right">
+            <input matInput (keyup)="applyFilter6($event)" #input6 />
+            <mat-placeholder>Search</mat-placeholder>
+            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        [hidden]="!dataSource6"
+      >
+        <table
+          mat-table
+          [dataSource]="dataSource6"
+          #MatSort6="matSort"
+          matSort
+          class="mat-elevation-z8"
+          matTableExporter
+          #exporter6="matTableExporter"
+          [hiddenColumns]=""
+        >
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              hn
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="patientname">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              patientname
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientname }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="starttime">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              starttime
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.starttime }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="endtime">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              endtime
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.endtime }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="time">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              time
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.time }}
+            </td>
+          </ng-container>
+
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns6; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns6"></tr>
+        </table>
+      </section>
+      <div [hidden]="!dataSource6">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="
+            exporter6.exportTable('xlsx', {
+              fileName: nameExcel6,
+              sheet: 'sheet_name',
+              Props: { Author: 'Talha' }
+            })
+          "
+        >
+          Export Excel
+        </button>
+        <mat-paginator
+          style="float: right"
+          #MatPaginator6="matPaginator"
           [length]="10"
           [pageSize]="10"
           [pageSizeOptions]="[10, 50, 100]"
