@@ -385,7 +385,7 @@ export class CheckMedComponent implements OnInit {
                 if (dataPDF) {
                   dataPDF.getBase64(async (buffer: any) => {
                     let pdf: any = !this.checked
-                      ? await this.http.Printjs('convertbuffer', {
+                      ? await this.http.Printjs162('convertbuffer', {
                           data: buffer,
                           name: value.hn + ' ' + value.drugCode + '.pdf',
                           ip: this.dataUser.print_ip,
@@ -833,7 +833,7 @@ export class CheckMedComponent implements OnInit {
         if (dataPDF) {
           dataPDF.getBase64(async (buffer: any) => {
             let getData: any = !this.checked
-              ? await this.http.Printjs('convertbuffer', {
+              ? await this.http.Printjs162('convertbuffer', {
                   data: buffer,
                   name: data.hn + ' ' + data.drugCode + '.pdf',
                   ip: this.dataUser.print_ip,
@@ -973,7 +973,7 @@ export class CheckMedComponent implements OnInit {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
                 let getData: any = !this.checked
-                  ? await this.http.Printjs('convertbuffer', {
+                  ? await this.http.Printjs162('convertbuffer', {
                       data: buffer,
                       name: data.hn + ' ' + data.drugCode + '.pdf',
                       ip: this.dataUser.print_ip,
@@ -1103,7 +1103,7 @@ export class CheckMedComponent implements OnInit {
           }
 
           let getData: any = !this.checked
-            ? await this.http.Printjs('dataCheckmed', sendVal)
+            ? await this.http.Printjs162('dataCheckmed', sendVal)
             : await this.http.PrintjsLocalhost('dataCheckmed', sendVal);
 
           if (getData.connect) {
