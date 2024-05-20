@@ -64,6 +64,7 @@ export class CheckMedComponent implements OnInit {
     picker: new FormControl(new Date()),
   });
   select: string = '';
+  checked: boolean = false;
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
@@ -383,14 +384,23 @@ export class CheckMedComponent implements OnInit {
               this.sendPDF(value).then((dataPDF: any) => {
                 if (dataPDF) {
                   dataPDF.getBase64(async (buffer: any) => {
-                    let pdf: any = await this.http.Printjs162('convertbuffer', {
-                      data: buffer,
-                      name: value.hn + ' ' + value.drugCode + '.pdf',
-                      ip: this.dataUser.print_ip,
+                    let pdf: any = !this.checked
+                      ? await this.http.Printjs('convertbuffer', {
+                          data: buffer,
+                          name: value.hn + ' ' + value.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                      printName: this.dataUser.print_name,
-                      hn: value.hn + ' ' + value.drugName,
-                    });
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        })
+                      : await this.http.PrintjsLocalhost('convertbuffer', {
+                          data: buffer,
+                          name: value.hn + ' ' + value.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
+
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        });
                     if (pdf.connect) {
                       if (pdf.response.connect === 'success') {
                         await this.updateCheckmed(value);
@@ -588,9 +598,9 @@ export class CheckMedComponent implements OnInit {
     let textProbrem = `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
       freetext1[0] ? freetext1[0] : ''
     }`;
-
-    let fix =
-      this.dataUser.ip == '192.168.185.172' ? [0, 37, 7, 35] : [0, 0, 10, 70];
+    // let fix =
+    // this.dataUser.ip == '192.168.185.139' ? [0, 37, 7, 35] : [0, 0, 10, 70];
+    let fix = [0, 0, 10, 70];
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
       pageMargins: fix as any,
@@ -818,14 +828,23 @@ export class CheckMedComponent implements OnInit {
       this.sendPDF(data).then((dataPDF: any) => {
         if (dataPDF) {
           dataPDF.getBase64(async (buffer: any) => {
-            let getData: any = await this.http.Printjs162('convertbuffer', {
-              data: buffer,
-              name: data.hn + ' ' + data.drugCode + '.pdf',
-              ip: this.dataUser.print_ip,
-              // ip: '192.168.184.163',
-              printName: this.dataUser.print_name,
-              hn: data.hn + ' ' + data.drugName,
-            });
+            let getData: any = this.checked
+              ? await this.http.Printjs('convertbuffer', {
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                })
+              : await this.http.PrintjsLocalhost('convertbuffer', {
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                });
 
             if (getData.connect) {
               if (getData.response.connect === 'success') {
@@ -949,14 +968,23 @@ export class CheckMedComponent implements OnInit {
           this.sendPDF(data).then((dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = await this.http.Printjs162('convertbuffer', {
-                  data: buffer,
-                  name: data.hn + ' ' + data.drugCode + '.pdf',
-                  ip: this.dataUser.print_ip,
+                let getData: any = this.checked
+                  ? await this.http.Printjs('convertbuffer', {
+                      data: buffer,
+                      name: data.hn + ' ' + data.drugCode + '.pdf',
+                      ip: this.dataUser.print_ip,
 
-                  printName: this.dataUser.print_name,
-                  hn: data.hn + ' ' + data.drugName,
-                });
+                      printName: this.dataUser.print_name,
+                      hn: data.hn + ' ' + data.drugName,
+                    })
+                  : await this.http.PrintjsLocalhost('convertbuffer', {
+                      data: buffer,
+                      name: data.hn + ' ' + data.drugCode + '.pdf',
+                      ip: this.dataUser.print_ip,
+                      // ip: '192.168.184.163',
+                      printName: this.dataUser.print_name,
+                      hn: data.hn + ' ' + data.drugName,
+                    });
 
                 if (getData.connect) {
                   if (getData.response.connect === 'success') {
@@ -1070,10 +1098,9 @@ export class CheckMedComponent implements OnInit {
             };
           }
 
-          let getData: any = await this.http.Printjs162(
-            'dataCheckmed',
-            sendVal
-          );
+          let getData: any = this.checked
+            ? await this.http.Printjs('dataCheckmed', sendVal)
+            : await this.http.PrintjsLocalhost('dataCheckmed', sendVal);
 
           if (getData.connect) {
             if (getData.response.length) {
