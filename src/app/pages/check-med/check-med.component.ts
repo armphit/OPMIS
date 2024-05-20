@@ -583,6 +583,9 @@ export class CheckMedComponent implements OnInit {
           } else if (data.dosage.trim() == '3.5') {
             data.dosage = 'สามเม็ดครึ่ง';
             freetext_lang = '';
+          } else if (data.dosage.trim() == '1.25') {
+            data.dosage = '1 เม็ด หนึ่งส่วนสี่';
+            freetext_lang = '';
           }
         } else {
           data.dosage = '';
@@ -829,7 +832,7 @@ export class CheckMedComponent implements OnInit {
       this.sendPDF(data).then((dataPDF: any) => {
         if (dataPDF) {
           dataPDF.getBase64(async (buffer: any) => {
-            let getData: any = this.checked
+            let getData: any = !this.checked
               ? await this.http.Printjs('convertbuffer', {
                   data: buffer,
                   name: data.hn + ' ' + data.drugCode + '.pdf',
@@ -969,7 +972,7 @@ export class CheckMedComponent implements OnInit {
           this.sendPDF(data).then((dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = this.checked
+                let getData: any = !this.checked
                   ? await this.http.Printjs('convertbuffer', {
                       data: buffer,
                       name: data.hn + ' ' + data.drugCode + '.pdf',
@@ -1099,7 +1102,7 @@ export class CheckMedComponent implements OnInit {
             };
           }
 
-          let getData: any = this.checked
+          let getData: any = !this.checked
             ? await this.http.Printjs('dataCheckmed', sendVal)
             : await this.http.PrintjsLocalhost('dataCheckmed', sendVal);
 

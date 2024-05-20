@@ -839,16 +839,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 });
               } else {
                 dataPDF.getBase64(async (buffer: any) => {
-                  let getData: any = await this.http.Printjs162(
-                    'convertbuffer',
-                    {
-                      data: buffer,
-                      name: `${this.dataP.patientNO} ${this.medError.value.position_text} medError.pdf`,
-                      ip: this.dataUser.print_ip,
-                      printName: this.dataUser.print_name,
-                      hn: this.dataP.patientNO,
-                    }
-                  );
+                  let getData: any = await this.http.Printjs('convertbuffer', {
+                    data: buffer,
+                    name: `${this.dataP.patientNO} ${this.medError.value.position_text} medError.pdf`,
+                    ip: this.dataUser.print_ip,
+                    printName: this.dataUser.print_name,
+                    hn: this.dataP.patientNO,
+                  });
                   if (getData.connect) {
                     if (getData.response.connect === 'success') {
                       this.insertErr();
@@ -1040,7 +1037,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.errPDF(data).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
-              let getData: any = await this.http.Printjs162('convertbuffer', {
+              let getData: any = await this.http.Printjs('convertbuffer', {
                 data: buffer,
                 name: `${data.hn} ${data.position_text} medError.pdf`,
                 ip: this.dataUser.print_ip,
@@ -1357,7 +1354,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         this.printPDF(dataprint).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
-              let getData: any = await this.http.Printjs162('convertbuffer', {
+              let getData: any = await this.http.Printjs('convertbuffer', {
                 data: buffer,
                 name: `${this.dataP.patientNO}.pdf`,
                 ip: this.dataUser.print_ip,
@@ -1538,7 +1535,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           this.printPDF(dataprint).then(async (dataPDF: any) => {
             if (dataPDF) {
               dataPDF.getBase64(async (buffer: any) => {
-                let getData: any = await this.http.Printjs162('convertbuffer', {
+                let getData: any = await this.http.Printjs('convertbuffer', {
                   data: buffer,
                   name: `${this.dataP.patientNO}.pdf`,
                   ip: this.dataUser.print_ip,
@@ -2003,6 +2000,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               } else if (lamed.dosage.trim() == '3.5') {
                 lamed.dosage = 'สามเม็ดครึ่ง';
                 freetext_lang = '';
+              } else if (lamed.dosage.trim() == '1.25') {
+                lamed.dosage = '1 เม็ด หนึ่งส่วนสี่';
+                freetext_lang = '';
               }
             } else {
               lamed.dosage = '';
@@ -2223,7 +2223,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.printPDF(val).then((dataPDF: any) => {
       if (dataPDF) {
         dataPDF.getBase64(async (buffer: any) => {
-          let getData: any = await this.http.Printjs162('convertbuffer', {
+          let getData: any = await this.http.Printjs('convertbuffer', {
             data: buffer,
             name: `${this.dataP.patientNO}.pdf`,
             ip: this.dataUser.print_ip,
