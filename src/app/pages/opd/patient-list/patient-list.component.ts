@@ -71,6 +71,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     patientNO: '',
     check: '',
   };
+  checkAllergy: any = {
+    percen: '0',
+    num: '0',
+    len: '0',
+  };
 
   // date1 = new FormControl(new Date());
   // @ViewChild('swiper') swiper!: ElementRef;
@@ -83,7 +88,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     public lightbox: Lightbox
   ) {
     this.dateAdapter.setLocale('en-GB');
-    this.getData();
+    // this.getData();
+    this.onTabChange(0);
     this.getType();
 
     // fetch('./assets/data.json')
@@ -99,11 +105,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.updateSubscription = interval(300000).subscribe((val) => {
-      this.getData();
-      this.nameFilter.setValue('');
-      this.idFilter.setValue('');
-    });
+    if (this.getTab == 0) {
+      this.updateSubscription = interval(300000).subscribe((val) => {
+        this.getData();
+        this.nameFilter.setValue('');
+        this.idFilter.setValue('');
+      });
+    }
     // setTimeout(() => {
 
     this.idFilter.valueChanges.subscribe((patientNO) => {
@@ -140,6 +148,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   public getData = async () => {
+    let date1 =
+      moment(this.campaignOne.value.start).format('YYYY-MM-DD') +
+      ' ' +
+      this.starttime +
+      ':00';
+    let date2 =
+      moment(this.campaignOne.value.end).format('YYYY-MM-DD') +
+      ' ' +
+      this.endtime +
+      ':00';
+
     if (this.select) {
       this.displayedColumns = [
         'patientNO',
@@ -156,23 +175,38 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
-        formData.append(
-          'date1',
-          moment(this.campaignOne.value.start).format('YYYY-MM-DD')
-        );
-        formData.append(
-          'date2',
-          moment(this.campaignOne.value.end).format('YYYY-MM-DD')
-        );
+        // formData.append(
+        //   'date1',
+        //   moment(this.campaignOne.value.start).format('YYYY-MM-DD')
+        // );
+        // formData.append(
+        //   'date2',
+        //   moment(this.campaignOne.value.end).format('YYYY-MM-DD')
+        // );
+        formData.append('date1', date1);
+        formData.append('date2', date2);
         formData.append('queuep', 'N');
+        formData.append('time1', this.starttime + ':00');
+        formData.append('time2', this.endtime + ':00');
         if (this.select == 'W18') {
           getData = await this.http.post('listPatientQpost', formData);
           dataPatient = getData.response.result;
+          let check = dataPatient.filter((val: any) => val.checkAllergy);
+
+          this.checkAllergy = {
+            percen: ((check.length / dataPatient.length) * 100).toFixed(2),
+            num: check.length,
+            len: dataPatient.length,
+          };
         } else {
           let data_send = {
-            date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
-            date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+            date1: date1,
+            date2: date2,
           };
+          // let data_send = {
+          //   date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+          //   date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+          // };
           getData = await this.http.postNodejsTest('queueP', data_send);
           dataPatient = getData.response.gethospitalQ;
         }
@@ -188,8 +222,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'date2',
           moment(this.campaignOne.value.end).add(543, 'year').format('YYYYMMDD')
         );
+        formData.append(
+          'datestart',
+          moment(this.campaignOne.value.start).format('YYYY-MM-DD')
+        );
+        formData.append(
+          'dateend',
+          moment(this.campaignOne.value.end).format('YYYY-MM-DD')
+        );
+        formData.append('time1', this.starttime);
+        formData.append('time2', this.endtime);
         getData = await this.http.post('getdatapatientFloor', formData);
-        // let getData2: any = await this.http.post('statusyHomc', formData);
+        let getData2: any = await this.http.post('checkAllergy', formData);
         let getData3: any = await this.http.post(
           'checkdrugAllergyHomc',
           formData
@@ -208,8 +252,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               (item: { patientID: any }) =>
                 item.patientID.trim() === emp.patientNO.trim()
             ) ?? { check: '', timestamp: null }),
+            ...(getData2.response.result.find(
+              (item: { checkAllergy: any }) =>
+                item.checkAllergy.trim() === emp.patientNO.trim()
+            ) ?? { checkAllergy: null }),
           };
         });
+        let check = dataPatient.filter((val: any) => val.checkAllergy);
+
+        this.checkAllergy = {
+          percen: ((check.length / dataPatient.length) * 100).toFixed(2),
+          num: check.length,
+          len: dataPatient.length,
+        };
       }
 
       if (getData.connect) {
@@ -908,8 +963,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     var docDefinition = {
       // pageSize: { width: 325, height: 350 },
       pageSize: { width: 238, height: 255 },
-      pageMargins: [5, 50, 5, 100] as any,
-      // pageMargins: [0, 0, 7, 65] as any,
+      // pageMargins: [5, 50, 5, 100] as any,
+      pageMargins: [0, 0, 7, 65] as any,
 
       header: {} as any,
 
@@ -1310,6 +1365,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             });
             this.dataDrug = [];
             this.dataP = null;
+            await this.getData();
             this.nameFilter.setValue('');
             this.idFilter.setValue('');
             this.setFocus();
@@ -1729,15 +1785,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (event.value) {
       if (this.getTab == 2) {
         this.getReport();
-      } else if (this.getTab == 1) {
-        this.getMoph();
-      } else if (this.getTab == 3) {
+      }
+      // else if (this.getTab == 1) {
+      //   this.getMoph();
+      // }
+      else if (this.getTab == 3) {
         this.reportDispend();
-      } else if (this.getTab == 4) {
-        this.reportCheckmed();
-      } else if (this.getTab == 0 || this.getTab == null) {
-        this.getData();
-      } else if (this.getTab == 5) {
+      }
+      //   else if (this.getTab == 4) {
+      //     this.reportCheckmed();
+      //  }
+      // else if (this.getTab == 0 || this.getTab == null) {
+      //   this.getData();
+      // }
+      else if (this.getTab == 5) {
         this.reportTimeDispend();
       }
     }
@@ -1750,9 +1811,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   getTab: any = null;
 
   onTabChange(e: any) {
+    this.starttime = '08:00';
+    this.endtime = '16:00';
     this.getTab = e;
     this.getTab === 0
-      ? this.getData()
+      ? (this.getData(), (this.starttime = '00:00'), (this.endtime = '23:59'))
       : this.getTab === 1
       ? this.getMoph()
       : this.getTab === 2
@@ -1908,10 +1971,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.getData();
   }
   changeFloorReport() {
+    this.timeavg = '';
     if (this.getTab === 2) {
       this.getReport();
     } else if (this.getTab === 3) {
       this.reportDispend();
+    } else if (this.getTab === 5) {
+      this.reportTimeDispend();
     }
   }
 
@@ -2060,8 +2126,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         var docDefinition = {
           // pageSize: { width: 325, height: 350 },
           pageSize: { width: 238, height: 255 },
-          pageMargins: [5, 50, 5, 100] as any,
-          // pageMargins: [0, 0, 7, 88] as any,
+          // pageMargins: [5, 50, 5, 100] as any,
+          pageMargins: [0, 0, 7, 88] as any,
           header: {} as any,
 
           content: [
@@ -2297,7 +2363,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   valuechange() {
     if (this.getTab == 1) {
       this.getMoph();
-    } else {
+    } else if (this.getTab == 0) {
+      this.getData();
+    } else if (this.getTab == 4) {
       this.reportCheckmed();
     }
   }
@@ -2312,7 +2380,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.endtime = '16:00';
     if (this.getTab == 1) {
       this.getMoph();
-    } else {
+    } else if (this.getTab == 0) {
+      this.starttime = '00:00';
+      this.endtime = '23:59';
+      this.getData();
+    } else if (this.getTab == 4) {
       this.reportCheckmed();
     }
   }
@@ -2325,9 +2397,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('MatPaginator5') paginator5!: MatPaginator;
   choicecheckmed = '1';
   avgTime: any = '';
-  public starttime = '08:00';
+  public starttime = '';
 
-  public endtime = '16:00';
+  public endtime = '';
   datareportCheckmed: any;
   datareportCheckmedFilter: any;
   filterType: any = '';
@@ -2367,6 +2439,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.numError.predis = this.datareportCheckmedFilter.filter(
       (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+    ).length;
+    this.numError.key = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text == 'key'
+    ).length;
+    this.numError.set = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text == 'จัด'
+    ).length;
+    this.numError.check = this.datareportCheckmedFilter.filter(
+      (val: any) => val.position_text == 'check'
+    ).length;
+    this.numError.etc = this.datareportCheckmedFilter.filter(
+      (val: any) =>
+        val.position_text != 'PE' &&
+        val.position_text != 'DE' &&
+        val.position_text != 'key' &&
+        val.position_text != 'จัด' &&
+        val.position_text != 'check'
     ).length;
 
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
@@ -2414,6 +2503,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'site',
         'type_pre',
         'note',
+        'cause',
         'hnDT',
         'createDT',
       ];
@@ -2450,6 +2540,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       };
 
       let getData: any = await this.http.postNodejs('reportcheckmed', formData);
+
       let dataDrug = getData.response.datadrugcheck;
 
       if (getData.connect) {
@@ -2531,32 +2622,36 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'endtime',
       'time',
     ];
+    if (this.select) {
+      let formData = {
+        datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+        dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+        site: this.select,
+      };
 
-    let formData = {
-      datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
-      dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
-    };
+      let getData: any = await this.http.postNodejs(
+        'getTimedispenddrug',
+        formData
+      );
 
-    let getData: any = await this.http.postNodejs(
-      'getTimedispenddrug',
-      formData
-    );
-
-    if (getData.connect) {
-      if (getData.response.gettime.length > 0) {
-        this.timeavg = getData.response.averageTime;
-        this.dataSource6 = new MatTableDataSource(getData.response.gettime);
-        this.dataSource6.sort = this.sort6;
-        this.dataSource6.paginator = this.paginator6;
-        this.nameExcel6 = `รายงานเวลาจ่ายยา ${formData.datestart}_${formData.dateend}`;
-        setTimeout(() => {
-          this.input6.nativeElement.focus();
-        }, 100);
+      if (getData.connect) {
+        if (getData.response.gettime.length > 0) {
+          this.timeavg = getData.response.averageTime;
+          this.dataSource6 = new MatTableDataSource(getData.response.gettime);
+          this.dataSource6.sort = this.sort6;
+          this.dataSource6.paginator = this.paginator6;
+          this.nameExcel6 = `${this.select} เวลาในการจัดยา ${formData.datestart}_${formData.dateend}`;
+          setTimeout(() => {
+            this.input6.nativeElement.focus();
+          }, 100);
+        } else {
+          this.dataSource6 = null;
+        }
       } else {
-        this.dataSource6 = null;
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      this.dataSource6 = null;
     }
   };
   public applyFilter6(event: Event) {

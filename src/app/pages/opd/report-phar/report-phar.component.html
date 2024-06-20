@@ -1125,7 +1125,6 @@
 <div
   class="modal fade"
   id="exampleModal"
-  tabindex="-1"
   role="dialog"
   aria-labelledby="exampleModalLabel"
   aria-hidden="true"
@@ -1460,6 +1459,49 @@
                 style="padding-left: 20px; padding-right: 20px"
               >
                 {{ element.note }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="cause">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+                สาเหตุ
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.cause }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              ></th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                <button
+                  *ngIf="
+                    dataUser.user == dataErr.checker_id ||
+                    dataUser.user == dataErr.dispenser_id ||
+                    dataUser.user == dataErr.staff
+                  "
+                  type="button"
+                  (click)="updateCause(element)"
+                  class="btn btn-warning btn-sm"
+                >
+                  สาเหตุ
+                </button>
               </td>
             </ng-container>
             <ng-container matColumnDef="hnDT">

@@ -601,10 +601,12 @@ export class CheckMedComponent implements OnInit {
     let textProbrem = `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
       freetext1[0] ? freetext1[0] : ''
     }`;
-    // let fix =
-    // this.dataUser.ip == '192.168.185.139' ? [0, 37, 7, 35] : [0, 0, 10, 70];
+    let fix =
+      this.dataUser.print_ip == '192.168.124.94'
+        ? [0, 10, 10, 70]
+        : [0, 37, 7, 35];
     // let fix = [0, 0, 10, 70];
-    let fix = [0, 37, 7, 35];
+    // let fix = [0, 37, 7, 35];
     var docDefinition = {
       pageSize: { width: 238, height: 255 },
       pageMargins: fix as any,

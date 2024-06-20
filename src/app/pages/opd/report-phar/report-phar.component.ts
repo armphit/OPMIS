@@ -372,7 +372,11 @@ export class ReportPharComponent implements OnInit {
   displayedColumns5: any = null;
   dataSource5: any = null;
   nameExcel5: any = null;
+  dataErr: any = null;
   async listError(val: any) {
+    this.dataErr = null;
+    this.dataErr = val;
+
     let datasend = {
       id:
         this.numTab == 0
@@ -416,6 +420,8 @@ export class ReportPharComponent implements OnInit {
       'site',
       'type_pre',
       'note',
+      'cause',
+      'action',
       'hnDT',
     ];
 
@@ -428,6 +434,7 @@ export class ReportPharComponent implements OnInit {
         // this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
         let win: any = window;
         win.$('#exampleModal').modal('show');
+
         setTimeout(() => {
           this.input5.nativeElement.focus();
         }, 100);
@@ -445,5 +452,40 @@ export class ReportPharComponent implements OnInit {
   public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  public async updateCause(e: any) {
+    const { value: formValues } = await Swal.fire({
+      title: 'inputs',
+      html: `
+        <input id="swal-input1"  value="${e.cause}" class="swal2-input">
+
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return (document.getElementById('swal-input1') as HTMLInputElement)
+          .value;
+      },
+    });
+
+    let formData = new FormData();
+    formData.append('id', e.id);
+    formData.append('cause', formValues ? formValues : '');
+    let getData: any = await this.http.post('update_cause', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+        await this.listError(this.dataErr);
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'บันทกข้อมูลสำเร็จ',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      } else {
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
 }
