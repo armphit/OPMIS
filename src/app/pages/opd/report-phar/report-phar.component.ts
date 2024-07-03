@@ -85,8 +85,11 @@ export class ReportPharComponent implements OnInit {
     private https: HttpClient
   ) {
     this.dateAdapter.setLocale('en-GB');
+
     if (this.dataUser.role === 'officer') {
       this.numTab = 2;
+    } else if (this.dataUser.user.includes('C')) {
+      this.numTab = 3;
     }
 
     this.getData();
@@ -188,6 +191,25 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 3) {
+      this.displayedColumns7 = ['staff', 'staffName', 'order', 'item', 'error'];
+      // send.choice = 3;
+      getData = await this.http.post('onusKey', formData);
+      // getData = await this.http.post('dispenserPhar_copy', formData);
+
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.dataDrug = getData.response.result;
+          this.dataSource = new MatTableDataSource(this.dataDrug);
+          this.dataSource.sort = this.sort7;
+          this.dataSource.paginator = this.paginator7;
+          this.nameExcel = `ภาระงานเภสัชจ่ายยา(${this.select}) ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
+        } else {
+          this.dataDrug = null;
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    } else if (this.numTab == 4) {
       getData = await this.http.post('reportPharCheckandDispend', formData);
 
       if (getData.connect) {
@@ -203,7 +225,7 @@ export class ReportPharComponent implements OnInit {
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
-    } else if (this.numTab == 4) {
+    } else if (this.numTab == 5) {
       this.reportDispend();
     }
   };
@@ -214,6 +236,10 @@ export class ReportPharComponent implements OnInit {
   @ViewChild('input6') input6!: ElementRef;
   @ViewChild('MatSort6') sort6!: MatSort;
   @ViewChild('MatPaginator6') paginator6!: MatPaginator;
+  displayedColumns7: string[] = [];
+  @ViewChild('input7') input7!: ElementRef;
+  @ViewChild('MatSort7') sort7!: MatSort;
+  @ViewChild('MatPaginator7') paginator7!: MatPaginator;
   selected = 'option2';
   async reportDispend() {
     this.matHeaderRowDef1 = [
@@ -383,7 +409,7 @@ export class ReportPharComponent implements OnInit {
           ? val.checker_id
           : this.numTab == 1
           ? val.dispenser_id
-          : this.numTab == 2
+          : this.numTab == 2 || this.numTab == 3
           ? val.staff
           : '',
       dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
@@ -397,9 +423,12 @@ export class ReportPharComponent implements OnInit {
           ? 'จ่าย'
           : this.numTab == 2
           ? 'จัด'
+          : this.numTab == 3
+          ? 'key'
           : '',
       choice: 1,
     };
+
     let getData: any = await this.http.postNodejs('reportcheckmed', datasend);
     let dataDrug = getData.response.datadrugcheck;
     this.displayedColumns5 = [
@@ -450,6 +479,10 @@ export class ReportPharComponent implements OnInit {
     this.dataSource5.filter = filterValue.trim().toLowerCase();
   }
   public applyFilter6(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  public applyFilter7(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }

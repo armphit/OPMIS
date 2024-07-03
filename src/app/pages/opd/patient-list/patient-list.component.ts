@@ -192,11 +192,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           getData = await this.http.post('listPatientQpost', formData);
           dataPatient = getData.response.result;
           let check = dataPatient.filter((val: any) => val.checkAllergy);
+          let check2 = dataPatient.filter((val: any) => val.checkComplete);
 
           this.checkAllergy = {
             percen: ((check.length / dataPatient.length) * 100).toFixed(2),
             num: check.length,
             len: dataPatient.length,
+            percen2: ((check2.length / dataPatient.length) * 100).toFixed(2),
+            num2: check2.length,
           };
         } else {
           let data_send = {
@@ -234,6 +237,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         formData.append('time2', this.endtime);
         getData = await this.http.post('getdatapatientFloor', formData);
         let getData2: any = await this.http.post('checkAllergy', formData);
+
         let getData3: any = await this.http.post(
           'checkdrugAllergyHomc',
           formData
@@ -255,15 +259,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...(getData2.response.result.find(
               (item: { checkAllergy: any }) =>
                 item.checkAllergy.trim() === emp.patientNO.trim()
-            ) ?? { checkAllergy: null }),
+            ) ?? { checkAllergy: null, checkComplete: null }),
           };
         });
         let check = dataPatient.filter((val: any) => val.checkAllergy);
-
+        let check2 = dataPatient.filter((val: any) => val.checkComplete);
         this.checkAllergy = {
           percen: ((check.length / dataPatient.length) * 100).toFixed(2),
           num: check.length,
           len: dataPatient.length,
+          percen2: ((check2.length / dataPatient.length) * 100).toFixed(2),
+          num2: check2.length,
         };
       }
 
@@ -320,7 +326,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dataDrug = [];
     this.datatime = null;
     this.checkdrug = null;
-
+    this.drugAdd = '';
     this.datatime = val.timestamp;
     this.checkdrug = val.check;
     // this.checkW =
@@ -637,9 +643,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   // dataSelect: any = null;
   dataGood: any;
   dataWrong: any;
+  dataAdd: any;
   dataAllergic: any;
   dataInterceptor: any;
   dataOffender: any;
+  @ViewChild('inputadd') inputadd!: ElementRef<HTMLInputElement>;
   @ViewChild('inputgood') inputgood!: ElementRef<HTMLInputElement>;
   @ViewChild('inputwrong') inputwrong!: ElementRef<HTMLInputElement>;
   @ViewChild('inputallergic') inputallergic!: ElementRef<HTMLInputElement>;
@@ -1290,7 +1298,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       delete v.valSort;
     });
   }
+  filter_add(): void {
+    const filterValue = this.inputadd.nativeElement.value.toLowerCase();
 
+    this.dataAdd = this.drugList.filter((o: any) =>
+      o.name.trim().toLowerCase().includes(filterValue)
+    );
+  }
   filter_good(): void {
     const filterValue = this.inputgood.nativeElement.value.toLowerCase();
 
@@ -2657,5 +2671,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public applyFilter6(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource6.filter = filterValue.trim().toLowerCase();
+  }
+  drugAdd: any = '';
+  getPosts(e: any) {
+    this.dataAdd = e;
+  }
+  async addError() {
+    if (this.drugAdd) {
+      let drugSplit = this.drugAdd.split('&&');
+      drugSplit = {
+        drugCode: drugSplit[0],
+        drugName: drugSplit[1],
+        qty: '0',
+        unit: '',
+        lastmodified: '',
+        lamed_name: '',
+        dosage: '',
+        freetext0: '',
+        freetext1: '',
+        checkLength: '0',
+        nameCheck: '',
+        userName: '',
+      };
+      await this.reportError({ dataP: this.dataP, item: drugSplit });
+      drugSplit = null;
+    } else {
+      Swal.fire('กรุณาเลือกยา!', '', 'error');
+    }
   }
 }

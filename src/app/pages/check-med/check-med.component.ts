@@ -160,6 +160,9 @@ export class CheckMedComponent implements OnInit {
             // this.Dataqandcheck = getData2.response.result[0];
             this.drug_xmed = getData3.response.patientDrug;
 
+            this.patient_drug = this.patient_drug.filter(
+              (val: any) => val.departmentcode.trim() == this.select
+            );
             this.patient_drug.forEach((v: any) => {
               if (!v.checkstamp) {
                 v.isSort = 2;
@@ -247,14 +250,13 @@ export class CheckMedComponent implements OnInit {
   }
 
   async getDrug(val: any) {
-    // let founddrug: any = null;
-    // let checkcode: any = '';
     let value: any = [];
     let formData = new FormData();
     formData.append('barcode', val);
     let getBarcode: any = null;
 
-    getBarcode = await this.http.post('drugBarcode2', formData);
+    // getBarcode = await this.http.post('drugBarcode2', formData);
+    getBarcode = await this.http.postNodejs('cutqty', { barcode: val });
 
     if (getBarcode.connect) {
       if (getBarcode.response[0].rowCount > 0 && !value.length) {

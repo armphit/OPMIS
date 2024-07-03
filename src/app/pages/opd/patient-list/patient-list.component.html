@@ -153,6 +153,18 @@
             <mat-datepicker #picker1></mat-datepicker>
           </mat-form-field> -->
         </div>
+
+        <div
+          class="col-lg-3"
+          *ngIf="select !== ''"
+          [hidden]="!dataSource || select == 'W8'"
+          style="display: inline; margin-left: 50px; margin-top: 20px"
+        >
+          <span style="font-size: 25px; font-weight: bold"
+            >เช็คยา : {{ checkAllergy.percen2 + "% " }}</span
+          >
+          <span>{{ checkAllergy.num2 + "/" + checkAllergy.len }}</span>
+        </div>
       </div>
       <section
         class="example-container mat-elevation-z8"
@@ -508,8 +520,47 @@
               <hr />
             </div>
 
-            <p style="font-weight: bold; display: inline">รายการยา</p>
+            <div>
+              <p style="font-weight: bold; display: inline">รายการยา</p>
+            </div>
+            <div style="display: inline">
+              <mat-form-field
+                class="example-full-width"
+                style="margin-right: 5px"
+              >
+                <mat-label>รายการยา</mat-label>
+                <input
+                  required
+                  #inputadd
+                  type="text"
+                  matInput
+                  [matAutocomplete]="auto"
+                  (input)="filter_add()"
+                  (focus)="filter_add()"
+                  [(ngModel)]="drugAdd"
+                />
+                <mat-autocomplete requireSelection #auto="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataAdd"
+                    [value]="option.code.trim() + '&&' + option.name.trim()"
+                  >
+                    {{ option.name.trim() }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
 
+            <button
+              button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="butt-sm"
+              (click)="addError()"
+            >
+              <i class="fas fa-plus-circle"></i
+              ><span style="margin: 5px">รายงานข้อผิดพลาด</span>
+            </button>
             <div
               class="table-responsive"
               style="max-height: 200px"
