@@ -93,10 +93,25 @@ export class CheckMedComponent implements OnInit {
     this.getData(hn, null);
   }
   ip: any = null;
+  dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   async getIP() {
-    const response = await fetch('./assets/data.json');
-    this.ip = await response.json();
-    this.ip = this.ip.data.ip;
+    // const response = await fetch('./assets/data.json');
+    // this.ip = await response.json();
+    // this.ip = this.ip.data.ip;
+    // console.log();
+    let formData = new FormData();
+    formData.append('ip', this.dataUser.ip);
+    let getData: any = await this.http.post('getprintIP', formData);
+
+    if (getData.connect) {
+      if (getData.response.rowCount) {
+        this.checked = true;
+      } else {
+        this.checked = false;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
 
   patient_contract: any = null;
@@ -104,7 +119,7 @@ export class CheckMedComponent implements OnInit {
   patient_drug: any = [];
   data_filter: any = [];
   panelOpenState = true;
-  dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+
   drug_xmed: any = [];
   mathRandom: any = '?lastmod=' + Math.random();
   async getData(hn: any, check: any) {
@@ -255,8 +270,8 @@ export class CheckMedComponent implements OnInit {
     formData.append('barcode', val);
     let getBarcode: any = null;
 
-    // getBarcode = await this.http.post('drugBarcode2', formData);
-    getBarcode = await this.http.postNodejs('cutqty', { barcode: val });
+    getBarcode = await this.http.post('drugBarcode2', formData);
+    // getBarcode = await this.http.postNodejs('cutqty', { barcode: val });
 
     if (getBarcode.connect) {
       if (getBarcode.response[0].rowCount > 0 && !value.length) {

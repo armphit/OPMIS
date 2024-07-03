@@ -16,7 +16,7 @@ export class AppComponent {
   title = 'opmis';
   private unsubscribe$: Subject<void> = new Subject<void>();
   private timer: any;
-  private readonly TIMEOUT_DURATION: number = 5000; // 5 seconds
+  private readonly TIMEOUT_DURATION: number = 900000; // 5 seconds
   private isMouseMoving: boolean = false;
   constructor(public http: HttpService, private location: Location) {}
   ngOnInit() {}
