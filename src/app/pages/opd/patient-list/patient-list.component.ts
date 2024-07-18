@@ -388,6 +388,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       date: moment(val.createdDT).format('YYYY-MM-DD'),
       queue: val.QN ? val.QN : this.select,
     });
+
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         let mergeData = getData.response.result;
@@ -702,6 +703,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'กรุณาระบุวิธีใช้ยา',
       'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
       'ขอใบ NED / DUE / จ2 / ยส.5 / เฉพาะราย',
+      'เพิ่มอื่นๆ ไม่ปฏิบัติตามนโยบาย DUE / RDU',
     ],
     site: [
       'PCT ศัลย์',
@@ -2043,6 +2045,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         // }
 
         // let freetext2 = lamed.freetext2 ? lamed.freetext2.split(',') : '';
+
         let freetext1 = lamed.freetext1.split(',');
         let free_under = freetext1.slice(1);
         lamed.freetext2 =

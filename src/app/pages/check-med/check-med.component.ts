@@ -104,6 +104,9 @@ export class CheckMedComponent implements OnInit {
     let getData: any = await this.http.post('getprintIP', formData);
 
     if (getData.connect) {
+      formData.append('num', '1');
+      let getData2: any = await this.http.post('drugCut', formData);
+
       if (getData.response.rowCount) {
         this.checked = true;
       } else {
@@ -418,6 +421,79 @@ export class CheckMedComponent implements OnInit {
                           printName: this.dataUser.print_name,
                           hn: value.hn + ' ' + value.drugName,
                         });
+                    if (value.cur_qty && this.select == 'W8') {
+                      if (value.cur_qty < value.qty) {
+                        this.printPDF(value).then((dataPDF: any) => {
+                          if (dataPDF) {
+                            dataPDF.getBase64(async (buffer: any) => {
+                              !this.checked
+                                ? await this.http.Printjs162('convertbuffer', {
+                                    data: buffer,
+                                    name:
+                                      value.hn + ' ' + value.drugCode + '.pdf',
+                                    ip: this.dataUser.print_ip,
+
+                                    printName: this.dataUser.print_name,
+                                    hn: value.hn + ' ' + value.drugName,
+                                  })
+                                : await this.http.PrintjsLocalhost(
+                                    'convertbuffer',
+                                    {
+                                      data: buffer,
+                                      name:
+                                        value.hn +
+                                        ' ' +
+                                        value.drugCode +
+                                        '_drugcut.pdf',
+                                      ip: this.dataUser.print_ip,
+                                      // ip: '192.168.184.163',
+                                      printName: this.dataUser.print_name,
+                                      hn: value.hn + ' ' + value.drugName,
+                                    }
+                                  );
+                              let formData: any = new FormData();
+                              formData.append('drugcode', value.drugCode);
+                              formData.append('drugname', value.drugName);
+                              formData.append('phar', this.dataUser.user);
+                              formData.append('hn', value.hn);
+                              formData.append('cutamount', value.cur_qty);
+                              formData.append('realamount', value.qty);
+                              formData.append(
+                                'balanceamount',
+                                value.qty - value.cur_qty
+                              );
+                              formData.append('departmentcode', this.select);
+                              formData.append(
+                                'date',
+                                moment(value.lastmodified).format(
+                                  'YYYY-MM-DD HH:mm:ss'
+                                )
+                              );
+                              await this.http.post(
+                                'insertCutDispendDrug',
+                                formData
+                              );
+                              formData = null;
+                              // if (getData.connect) {
+                              //   if (getData.response.rowCount > 0) {
+                              //     Swal.fire({
+                              //       icon: 'success',
+                              //       title: `ตัดจ่ายยา ${data.drugName}\n เสร็จสิ้น`,
+                              //       showConfirmButton: false,
+                              //       timer: 2000,
+                              //     });
+                              //     this.getData();
+                              //   } else {
+                              //     Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
+                              //   }
+                              // } else {
+                              //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+                              // }
+                            });
+                          }
+                        });
+                      }
+                    }
                     if (pdf.connect) {
                       if (pdf.response.connect === 'success') {
                         await this.updateCheckmed(value);
@@ -459,6 +535,7 @@ export class CheckMedComponent implements OnInit {
       ip: value.ip,
       drugCode: value.drugCode,
       device: value.device,
+      site: this.select,
     };
 
     let getData: any = await this.http.postNodejs('updatecheckmed', data_send);
@@ -868,6 +945,34 @@ export class CheckMedComponent implements OnInit {
                   printName: this.dataUser.print_name,
                   hn: data.hn + ' ' + data.drugName,
                 });
+            if (data.cur_qty && this.select == 'W8') {
+              if (data.cur_qty < data.qty) {
+                this.printPDF(data).then((dataPDF: any) => {
+                  if (dataPDF) {
+                    dataPDF.getBase64(async (buffer: any) => {
+                      !this.checked
+                        ? await this.http.Printjs162('convertbuffer', {
+                            data: buffer,
+                            name: data.hn + ' ' + data.drugCode + '.pdf',
+                            ip: this.dataUser.print_ip,
+
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          })
+                        : await this.http.PrintjsLocalhost('convertbuffer', {
+                            data: buffer,
+                            name:
+                              data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                            ip: this.dataUser.print_ip,
+                            // ip: '192.168.184.163',
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          });
+                    });
+                  }
+                });
+              }
+            }
 
             if (getData.connect) {
               if (getData.response.connect === 'success') {
@@ -1009,6 +1114,64 @@ export class CheckMedComponent implements OnInit {
                       hn: data.hn + ' ' + data.drugName,
                     });
 
+                if (data.cur_qty && this.select == 'W8') {
+                  if (data.cur_qty < data.qty) {
+                    this.printPDF(data).then((dataPDF: any) => {
+                      if (dataPDF) {
+                        dataPDF.getBase64(async (buffer: any) => {
+                          !this.checked
+                            ? await this.http.Printjs162('convertbuffer', {
+                                data: buffer,
+                                name: data.hn + ' ' + data.drugCode + '.pdf',
+                                ip: this.dataUser.print_ip,
+
+                                printName: this.dataUser.print_name,
+                                hn: data.hn + ' ' + data.drugName,
+                              })
+                            : await this.http.PrintjsLocalhost(
+                                'convertbuffer',
+                                {
+                                  data: buffer,
+                                  name:
+                                    data.hn +
+                                    ' ' +
+                                    data.drugCode +
+                                    '_drugcut.pdf',
+                                  ip: this.dataUser.print_ip,
+                                  // ip: '192.168.184.163',
+                                  printName: this.dataUser.print_name,
+                                  hn: data.hn + ' ' + data.drugName,
+                                }
+                              );
+                          let formData: any = new FormData();
+                          formData.append('drugcode', data.drugCode);
+                          formData.append('drugname', data.drugName);
+                          formData.append('phar', this.dataUser.user);
+                          formData.append('hn', data.hn);
+                          formData.append('cutamount', data.cur_qty);
+                          formData.append('realamount', data.qty);
+                          formData.append(
+                            'balanceamount',
+                            data.qty - data.cur_qty
+                          );
+                          formData.append('departmentcode', this.select);
+                          formData.append(
+                            'date',
+                            moment(data.lastmodified).format(
+                              'YYYY-MM-DD HH:mm:ss'
+                            )
+                          );
+                          await this.http.post(
+                            'insertCutDispendDrug',
+                            formData
+                          );
+                          formData = null;
+                        });
+                      }
+                    });
+                  }
+                }
+
                 if (getData.connect) {
                   if (getData.response.connect === 'success') {
                     data.currentqty = 0;
@@ -1029,6 +1192,21 @@ export class CheckMedComponent implements OnInit {
             }
           });
         } else {
+          let formData: any = new FormData();
+          formData.append('drugcode', data.drugCode);
+          formData.append('drugname', data.drugName);
+          formData.append('phar', this.dataUser.user);
+          formData.append('hn', data.hn);
+          formData.append('cutamount', data.cur_qty);
+          formData.append('realamount', data.qty);
+          formData.append('balanceamount', data.qty - data.cur_qty);
+          formData.append('departmentcode', this.select);
+          formData.append(
+            'date',
+            moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
+          );
+          await this.http.post('insertCutDispendDrug', formData);
+          formData = null;
           data.currentqty = 0;
           data.HisPackageRatio = data.checkqty;
 
@@ -1214,5 +1392,261 @@ export class CheckMedComponent implements OnInit {
     this.getDrugL();
     let win: any = window;
     win.$('#drugModal').modal('show');
+  }
+  async printPDF(data: any) {
+    let numHN = data.patientNO ? data.patientNO : String(data.hn);
+
+    let data_send = {
+      hn: numHN.trim(),
+      date: moment(data.createdDT).format('YYYY-MM-DD'),
+      floor: this.select,
+      code: data.drugcode
+        ? data.drugcode.trim()
+        : data.drugCode
+        ? data.drugCode.trim()
+        : '',
+    };
+
+    let getDataprint: any = await this.http.postNodejs(
+      'prinsticker',
+      data_send
+    );
+
+    let lamed = data;
+
+    let freetext1 = lamed.freetext1 ? lamed.freetext1.split(',') : '';
+    let free_under = freetext1.slice(1);
+    lamed.freetext2 =
+      lamed.freetext2.charAt(0) === ','
+        ? lamed.freetext2.substring(1)
+        : lamed.freetext2;
+    let freetext2 = lamed.freetext2.split(',');
+    let freetext_lang = lamed.freetext0 ? lamed.freetext0.trim() : '';
+    let nameHn = data.patientname + '   HN ' + numHN.trim();
+
+    if (lamed.freetext0) {
+      if (lamed.freetext0.trim() == 'เม็ด') {
+        if (lamed.dosage) {
+          if (lamed.dosage.trim() == '0') {
+            lamed.dosage = '';
+            freetext_lang = '';
+          } else if (lamed.dosage.trim() == '0.5') {
+            lamed.dosage = 'ครึ่ง';
+          } else if (
+            lamed.dosage.trim() == '0.25' ||
+            lamed.dosage.trim() == '1/4'
+          ) {
+            lamed.dosage = 'หนึ่งส่วนสี่';
+          } else if (
+            lamed.dosage.trim() == '0.75' ||
+            lamed.dosage.trim() == '3/4'
+          ) {
+            lamed.dosage = 'สามส่วนสี่';
+          } else if (lamed.dosage.trim() == '1.5') {
+            lamed.dosage = 'หนึ่งเม็ดครึ่ง';
+            freetext_lang = '';
+          } else if (lamed.dosage.trim() == '2.5') {
+            lamed.dosage = 'สองเม็ดครึ่ง';
+            freetext_lang = '';
+          } else if (lamed.dosage.trim() == '3.5') {
+            lamed.dosage = 'สามเม็ดครึ่ง';
+            freetext_lang = '';
+          } else if (lamed.dosage.trim() == '1.25') {
+            lamed.dosage = '1 เม็ด หนึ่งส่วนสี่';
+            freetext_lang = '';
+          }
+        } else {
+          lamed.dosage = '';
+        }
+      } else {
+        if (lamed.dosage) {
+          if (lamed.dosage.trim() == '0') {
+            lamed.dosage = '';
+          }
+        } else {
+          lamed.dosage = '';
+        }
+      }
+    } else {
+      lamed.dosage = lamed.dosage
+        ? lamed.dosage.trim() == '0'
+          ? ''
+          : lamed.dosage.trim()
+        : '';
+    }
+    let lamedName = lamed.lamedName ? lamed.lamedName.trim() : '';
+    let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${
+      freetext1[0] ? freetext1[0] : ''
+    }`;
+
+    let nameDrug = data.drugName
+      ? data.drugName.trim()
+      : data.drugname
+      ? data.drugname.trim()
+      : '';
+    let drugCode = data.drugcode
+      ? data.drugcode.trim()
+      : data.drugCode
+      ? data.drugCode.trim()
+      : '';
+
+    if (drugCode === 'SOFOS8') {
+      nameDrug = nameDrug.substring(0, 36);
+      nameDrug = nameDrug + '...';
+    }
+
+    let date = '';
+    if (data.datecut) {
+      date = data.datecut;
+    } else if (data.createdDT) {
+      date = moment(data.createdDT)
+        .add(543, 'year')
+        .format('DD/MM/YYYY HH:mm:ss');
+    } else {
+      date = moment(new Date()).add(543, 'year').format('DD/MM/YYYY HH:mm:ss');
+    }
+
+    var docDefinition = {
+      // pageSize: { width: 325, height: 350 },
+      pageSize: { width: 238, height: 255 },
+      // pageMargins: [5, 50, 5, 100] as any,
+      pageMargins: [0, 37, 7, 45] as any,
+      header: {} as any,
+
+      content: [
+        {
+          text: 'ค้างจ่ายยา',
+          alignment: 'center',
+          decoration: 'underline',
+          fontSize: 16,
+          bold: true,
+        },
+        {
+          text: nameHn,
+          noWrap: true,
+          fontSize: 16,
+          bold: true,
+        },
+        {
+          canvas: [
+            { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
+          ],
+        },
+        {
+          columns: [
+            {
+              width: 150,
+              text: nameDrug,
+              bold: true,
+              fontSize: data.checkLength ? 13 : 14,
+              noWrap: true,
+            },
+            {
+              width: '*',
+              text: `#${
+                data.cur_qty +
+                ' ' +
+                (data.unit
+                  ? data.unit.trim()
+                  : data.miniUnit
+                  ? data.miniUnit.trim()
+                  : '')
+              }`,
+              alignment: 'right',
+            },
+          ],
+          fontSize: 14,
+          bold: true,
+          // margin: [0, 5, 0, 0],
+        },
+        {
+          text: lamed.itemidentify ? lamed.itemidentify.trim() : ``,
+
+          fontSize: 13,
+        },
+        {
+          text: textProbrem,
+          bold: true,
+          fontSize: textProbrem.length > 57 ? 14 : 15,
+          noWrap: true,
+          alignment: 'center',
+        },
+        {
+          text: free_under ? free_under.join(', ') : '',
+          bold: true,
+          fontSize: 15,
+          alignment: 'center',
+        },
+        // free_under
+        //   ? free_under.map(function (item: any) {
+        //       return {
+        //         text: item.trim(),
+        //         alignment: 'center',
+        //         bold: true,
+        //         fontSize: 15,
+        //       };
+        //     })
+        //   : '',
+        freetext2
+          ? lamed.drugCode.trim() === 'MIRTA' ||
+            lamed.drugCode.trim() === 'ALEND'
+            ? {
+                text: lamed.freetext2.trim(),
+                alignment: 'center',
+                fontSize: 13,
+                bold: true,
+              }
+            : freetext2.map(function (item: any) {
+                return {
+                  text: item.trim(),
+                  alignment: 'center',
+                  fontSize: item.trim().length >= 80 ? 12 : 13,
+                  bold: true,
+                };
+              })
+          : '',
+      ] as any,
+
+      footer: [
+        {
+          canvas: [
+            { type: 'line', x1: 0, y1: 0, x2: 250, y2: 0, lineWidth: 1 },
+          ],
+        },
+        {
+          text: `รับยาที่ ${
+            getDataprint.response.datasite[0].site_name
+              ? getDataprint.response.datasite[0].site_name.trim()
+              : ''
+          }`,
+
+          fontSize: 14,
+          bold: true,
+        },
+        {
+          text: `โทร ${
+            getDataprint.response.datasite[0].site_tel
+              ? getDataprint.response.datasite[0].site_tel
+              : ''
+          }`,
+
+          fontSize: 14,
+          bold: true,
+        },
+
+        {
+          text: `วันที่ค้างยา ${date} น.`,
+
+          fontSize: 12,
+        },
+      ] as any,
+      defaultStyle: {
+        font: 'THSarabunNew',
+      },
+    };
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
   }
 }

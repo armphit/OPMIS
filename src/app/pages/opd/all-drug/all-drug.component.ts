@@ -68,81 +68,96 @@ export class AllDrugComponent implements OnInit {
   ngOnInit(): void {}
 
   public rowspan: any = null;
-  public getData = async () => {
-    if (this.dataUser == 'admin') {
-      this.displayedColumns = [
-        'drugCode',
-        'drugName',
-        'miniUnit',
-        'deviceName',
-        'positionID',
-        'barCode',
-        'LOT_NO',
-        'EXP_Date',
-        'qty',
-        'img',
-      ];
-    } else {
-      this.displayedColumns = [
-        'drugCode',
-        'drugName',
-        'miniUnit',
-        'deviceName',
-        'positionID',
-        'barCode',
-        'LOT_NO',
-        'EXP_Date',
-        'qty',
-        'img',
-      ];
-    }
 
+  public getData = async () => {
+    // if (this.dataUser == 'admin') {
+    //   this.displayedColumns = [
+    //     'drugCode',
+    //     'drugName',
+    //     'miniUnit',
+    //     'deviceName',
+    //     'positionID',
+    //     'barCode',
+    //     'LOT_NO',
+    //     'EXP_Date',
+    //     'qty',
+    //     'img',
+    //   ];
+    // } else {
+    //   this.displayedColumns = [
+    //     'drugCode',
+    //     'drugName',
+    //     'miniUnit',
+    //     'deviceName',
+    //     'positionID',
+    //     'barCode',
+    //     'LOT_NO',
+    //     'EXP_Date',
+    //     'qty',
+    //     'img',
+    //   ];
+    // }
+
+    this.displayedColumns = [
+      'drugCode',
+      'drugName',
+      'miniUnit',
+      'deviceName',
+      'positionID',
+      'barCode',
+      // 'LOT_NO',
+      // 'EXP_Date',
+      // 'qty',
+      'img',
+      'action',
+    ];
     this.nameExcel = 'All_Drug_OPD';
     let getData: any = await this.http.get('getAlldrug');
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
-        let getDrugOnHand: any = await this.http.get('getDrugOnHand');
+        // let getDrugOnHand: any = await this.http.get('getDrugOnHand');
 
-        const result = Array.from(
-          new Set(
-            getDrugOnHand.response.result.map(
-              (s: { drugCode: any }) => s.drugCode
-            )
-          )
-        ).map((lab) => {
-          return {
-            drugCode: lab,
-            LOT_NO: getDrugOnHand.response.result
-              .filter((s: { drugCode: any }) => s.drugCode === lab)
-              .map((edition: { LOT_NO: any }) => edition.LOT_NO),
-            EXP_Date: getDrugOnHand.response.result
-              .filter((s: { drugCode: any }) => s.drugCode === lab)
-              .map((edition: { EXP_Date: any }) => edition.EXP_Date),
-            qty: getDrugOnHand.response.result
-              .filter((s: { drugCode: any }) => s.drugCode === lab)
-              .map((edition: { amount: any }) => edition.amount),
-          };
-        });
+        // const result = Array.from(
+        //   new Set(
+        //     getDrugOnHand.response.result.map(
+        //       (s: { drugCode: any }) => s.drugCode
+        //     )
+        //   )
+        // ).map((lab) => {
+        //   return {
+        //     drugCode: lab,
+        //     LOT_NO: getDrugOnHand.response.result
+        //       .filter((s: { drugCode: any }) => s.drugCode === lab)
+        //       .map((edition: { LOT_NO: any }) => edition.LOT_NO),
+        //     EXP_Date: getDrugOnHand.response.result
+        //       .filter((s: { drugCode: any }) => s.drugCode === lab)
+        //       .map((edition: { EXP_Date: any }) => edition.EXP_Date),
+        //     qty: getDrugOnHand.response.result
+        //       .filter((s: { drugCode: any }) => s.drugCode === lab)
+        //       .map((edition: { amount: any }) => edition.amount),
+        //   };
+        // });
 
-        this.dataDrug = getData.response.result.map(function (emp: {
-          drugCode: any;
-        }) {
-          return {
-            ...emp,
-            ...(result.find(
-              (item: { drugCode: any }) => item.drugCode === emp.drugCode
-            ) ?? { LOT_NO: [''], EXP_Date: [''], qty: [''] }),
-          };
-        });
+        // this.dataDrug = getData.response.result.map(function (emp: {
+        //   drugCode: any;
+        // }) {
+        //   return {
+        //     ...emp,
+        //     ...(result.find(
+        //       (item: { drugCode: any }) => item.drugCode === emp.drugCode
+        //     ) ?? { LOT_NO: [''], EXP_Date: [''], qty: [''] }),
+        //   };
+        // });
 
-        this.dataDrug.forEach((element: any) => {
-          if (element.EXP_Date.length > 1) {
-            element.EXP_Date.sort((a: any, b: any) =>
-              a < b ? 1 : a > b ? -1 : 0
-            );
-          }
-        });
+        // this.dataDrug.forEach((element: any) => {
+        //   if (element.EXP_Date.length > 1) {
+        //     element.EXP_Date.sort((a: any, b: any) =>
+        //       a < b ? 1 : a > b ? -1 : 0
+        //     );
+        //   }
+        // });
+        this.dataDrug = getData.response.result;
         this.dataDrug.map((item: any) => {
           if (item.pathImg) {
             item.pathImg = item.pathImg.split(',');
@@ -178,11 +193,56 @@ export class AllDrugComponent implements OnInit {
   //   this.imgResultAfterCompress = '';
   // }
 
-  // public drug_code: any = null;
-  // public edit = async (code: any) => {
-  //   this.imgResultAfterCompress = '';
-  //   this.drug_code = code;
-  // };
+  public drug_code: any = null;
+  public edit = async (val: any) => {
+    // this.imgResultAfterCompress = '';
+    // this.drug_code = code;
+    const { value: formValues } = await Swal.fire({
+      title: 'จำนวนตัดจ่าย',
+      input: 'text',
+      inputAttributes: {
+        input: 'number',
+      },
+      inputValue: val.qty_cut,
+      showCancelButton: true,
+      preConfirm: (value) => {
+        if (value) {
+          return [value];
+        } else {
+          Swal.showValidationMessage('Invalid number');
+          return undefined;
+        }
+      },
+    });
+    if (formValues) {
+      let formData = new FormData();
+      formData.append('code', val.drugCode);
+      formData.append('num', '2');
+      formData.append('qty', formValues[0]);
+      let getData: any = await this.http.post('drugCut', formData);
+
+      if (getData.connect) {
+        if (getData.response.result) {
+          await this.getData();
+          this.dataSource.filter = this.input.nativeElement.value
+            .trim()
+            .toLowerCase();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          console.log(getData);
+          Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+        }
+      } else {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    }
+  };
 
   // public sendImage = async () => {
   //   if (this.arrFile) {
