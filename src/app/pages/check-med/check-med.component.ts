@@ -1192,21 +1192,6 @@ export class CheckMedComponent implements OnInit {
             }
           });
         } else {
-          let formData: any = new FormData();
-          formData.append('drugcode', data.drugCode);
-          formData.append('drugname', data.drugName);
-          formData.append('phar', this.dataUser.user);
-          formData.append('hn', data.hn);
-          formData.append('cutamount', data.cur_qty);
-          formData.append('realamount', data.qty);
-          formData.append('balanceamount', data.qty - data.cur_qty);
-          formData.append('departmentcode', this.select);
-          formData.append(
-            'date',
-            moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
-          );
-          await this.http.post('insertCutDispendDrug', formData);
-          formData = null;
           data.currentqty = 0;
           data.HisPackageRatio = data.checkqty;
 
