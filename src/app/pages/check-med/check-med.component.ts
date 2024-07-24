@@ -422,7 +422,7 @@ export class CheckMedComponent implements OnInit {
                           hn: value.hn + ' ' + value.drugName,
                         });
                     if (value.cur_qty && this.select == 'W8') {
-                      if (value.cur_qty < value.qty) {
+                      if (value.qty_real > value.qty_cut) {
                         this.printPDF(value).then((dataPDF: any) => {
                           if (dataPDF) {
                             dataPDF.getBase64(async (buffer: any) => {
@@ -456,11 +456,11 @@ export class CheckMedComponent implements OnInit {
                               formData.append('drugname', value.drugName);
                               formData.append('phar', this.dataUser.user);
                               formData.append('hn', value.hn);
-                              formData.append('cutamount', value.cur_qty);
-                              formData.append('realamount', value.qty);
+                              formData.append('cutamount', value.qty_cut);
+                              formData.append('realamount', value.qty_real);
                               formData.append(
                                 'balanceamount',
-                                value.qty - value.cur_qty
+                                value.qty_real - value.qty_cut
                               );
                               formData.append('departmentcode', this.select);
                               formData.append(
@@ -945,8 +945,9 @@ export class CheckMedComponent implements OnInit {
                   printName: this.dataUser.print_name,
                   hn: data.hn + ' ' + data.drugName,
                 });
+
             if (data.cur_qty && this.select == 'W8') {
-              if (data.cur_qty < data.qty) {
+              if (data.qty_real > data.qty_cut) {
                 this.printPDF(data).then((dataPDF: any) => {
                   if (dataPDF) {
                     dataPDF.getBase64(async (buffer: any) => {
@@ -1115,7 +1116,7 @@ export class CheckMedComponent implements OnInit {
                     });
 
                 if (data.cur_qty && this.select == 'W8') {
-                  if (data.cur_qty < data.qty) {
+                  if (data.qty_real > data.qty_cut) {
                     this.printPDF(data).then((dataPDF: any) => {
                       if (dataPDF) {
                         dataPDF.getBase64(async (buffer: any) => {
@@ -1148,11 +1149,11 @@ export class CheckMedComponent implements OnInit {
                           formData.append('drugname', data.drugName);
                           formData.append('phar', this.dataUser.user);
                           formData.append('hn', data.hn);
-                          formData.append('cutamount', data.cur_qty);
-                          formData.append('realamount', data.qty);
+                          formData.append('cutamount', data.qty_cut);
+                          formData.append('realamount', data.qty_real);
                           formData.append(
                             'balanceamount',
-                            data.qty - data.cur_qty
+                            data.qty_real - data.qty_cut
                           );
                           formData.append('departmentcode', this.select);
                           formData.append(
@@ -1495,7 +1496,7 @@ export class CheckMedComponent implements OnInit {
       // pageSize: { width: 325, height: 350 },
       pageSize: { width: 238, height: 255 },
       // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 37, 7, 45] as any,
+      pageMargins: [0, 37, 7, 55] as any,
       header: {} as any,
 
       content: [
@@ -1535,6 +1536,8 @@ export class CheckMedComponent implements OnInit {
                   ? data.unit.trim()
                   : data.miniUnit
                   ? data.miniUnit.trim()
+                  : data.unitCode
+                  ? data.unitCode.trim()
                   : '')
               }`,
               alignment: 'right',

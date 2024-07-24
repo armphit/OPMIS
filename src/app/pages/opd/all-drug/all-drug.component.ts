@@ -205,6 +205,10 @@ export class AllDrugComponent implements OnInit {
       },
       inputValue: val.qty_cut,
       showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Delete`,
+      showDenyButton: true,
+
       preConfirm: (value) => {
         if (value) {
           return [value];
@@ -214,9 +218,17 @@ export class AllDrugComponent implements OnInit {
         }
       },
     });
+
+    // if (result.isConfirmed) {
+    //   Swal.fire("Saved!", "", "success");
+    // } else if (result.isDenied) {
+    //   Swal.fire("Changes are not saved", "", "info");
+    // }
+
+    let formData = new FormData();
+    formData.append('code', val.drugCode);
+
     if (formValues) {
-      let formData = new FormData();
-      formData.append('code', val.drugCode);
       formData.append('num', '2');
       formData.append('qty', formValues[0]);
       let getData: any = await this.http.post('drugCut', formData);
@@ -240,6 +252,42 @@ export class AllDrugComponent implements OnInit {
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      }
+    } else {
+      if (formValues == false) {
+        if (val.qty_cut) {
+          formData.append('num', '3');
+          let getData: any = await this.http.post('drugCut', formData);
+
+          if (getData.connect) {
+            if (getData.response.result && getData.response.isQuery) {
+              await this.getData();
+              this.dataSource.filter = this.input.nativeElement.value
+                .trim()
+                .toLowerCase();
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            } else {
+              console.log(getData);
+              Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+            }
+          } else {
+            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'ไม่มีข้อมูล',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
       }
     }
   };

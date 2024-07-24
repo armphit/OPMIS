@@ -703,7 +703,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'กรุณาระบุวิธีใช้ยา',
       'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
       'ขอใบ NED / DUE / จ2 / ยส.5 / เฉพาะราย',
-      'เพิ่มอื่นๆ ไม่ปฏิบัติตามนโยบาย DUE / RDU',
+      'ไม่ปฏิบัติตามนโยบาย DUE / RDU',
     ],
     site: [
       'PCT ศัลย์',
