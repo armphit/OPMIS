@@ -105,7 +105,6 @@ export class CheckMedComponent implements OnInit {
 
     if (getData.connect) {
       formData.append('num', '1');
-      let getData2: any = await this.http.post('drugCut', formData);
 
       if (getData.response.rowCount) {
         this.checked = true;
@@ -138,124 +137,117 @@ export class CheckMedComponent implements OnInit {
     //   moment(this.campaignOne.value.picker).add(543, 'year').format('YYYYMMDD')
     // );
 
-    let getData: any = await this.http.post('patient_contract', formData);
+    // let getData: any = await this.http.post('patient_contract', formData);
 
-    if (getData.connect) {
-      if (getData.response.rowCount > 0) {
-        // let getData2: any = await this.http.post('Datacheckdrug', formData);
-        this.patient_contract = getData.response.result[0];
-        // if (getData2.connect) {
-        //   if (getData2.response.rowCount > 0) {
-        let data_send = {
-          hn: hn.trim(),
-          date: moment(this.campaignOne.value.picker)
-            .add(543, 'year')
-            .format('YYYYMMDD'),
-          dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
-          user: this.dataUser.user,
-          ipmain: this.dataUser.ip
-            ? '200.200.200.' + this.dataUser.ip.split('.')[3]
-            : '',
-          site: this.select,
-          check: check,
-        };
+    // if (getData.connect) {
+    //   if (getData.response.rowCount > 0) {
+    // let getData2: any = await this.http.post('Datacheckdrug', formData);
+    // this.patient_contract = getData.response.result[0];
+    // if (getData2.connect) {
+    //   if (getData2.response.rowCount > 0) {
+    let data_send = {
+      hn: hn.trim(),
+      date: moment(this.campaignOne.value.picker)
+        .add(543, 'year')
+        .format('YYYYMMDD'),
+      dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
+      user: this.dataUser.user,
+      ipmain: this.dataUser.ip
+        ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+        : '',
+      site: this.select,
+      check: check,
+    };
 
-        let getData3: any = await this.http.postNodejs(
-          'checkpatient',
-          data_send
+    let getData3: any = await this.http.postNodejs('checkpatient', data_send);
+
+    if (getData3.connect) {
+      if (getData3.response.datadrugpatient.length > 0) {
+        this.patient_contract = getData3.response.datadrugpatient[0];
+        this.patient_drug = getData3.response.datadrugpatient;
+        if (check) {
+          this.patient_drug = getData3.response.datadrugpatient.filter(
+            (val: any) => val.device.includes('M2')
+          );
+        } else {
+          this.patient_drug = getData3.response.datadrugpatient;
+        }
+        // this.Dataqandcheck = getData2.response.result[0];
+        this.drug_xmed = getData3.response.patientDrug;
+
+        this.patient_drug = this.patient_drug.filter(
+          (val: any) => val.departmentcode.trim() == this.select
+        );
+        this.patient_drug.forEach((v: any) => {
+          if (!v.checkstamp) {
+            v.isSort = 2;
+          } else if (v.checkstamp && v.checkqty) {
+            v.isSort = 1;
+          } else if (v.checkstamp && !v.checkqty) {
+            v.isSort = 3;
+          }
+        });
+
+        this.countcheck = this.patient_drug.filter(function (item: any) {
+          if (item.checkstamp && !item.checkqty) {
+            return true;
+          } else {
+            return false;
+          }
+        }).length;
+
+        this.sumcheck = this.patient_drug
+          .filter(function (item: any) {
+            if (item.checkstamp && !item.checkqty) {
+              return true;
+            } else {
+              return false;
+            }
+          })
+          .every((v: any) => {
+            return v.checkqty == 0;
+          });
+
+        if (this.sumcheck && this.countcheck === this.patient_drug.length) {
+          setTimeout(() => {
+            this.swiper.nativeElement.focus();
+          }, 100);
+        } else {
+          setTimeout(() => {
+            this.drugbar.nativeElement.focus();
+          }, 100);
+        }
+        this.data_filter = this.patient_drug.filter(
+          (val: any) =>
+            (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
 
-        if (getData3.connect) {
-          if (getData3.response.datadrugpatient.length > 0) {
-            this.patient_drug = getData3.response.datadrugpatient;
-            if (check) {
-              this.patient_drug = getData3.response.datadrugpatient.filter(
-                (val: any) => val.device.includes('M2')
-              );
-            } else {
-              this.patient_drug = getData3.response.datadrugpatient;
-            }
-            // this.Dataqandcheck = getData2.response.result[0];
-            this.drug_xmed = getData3.response.patientDrug;
-
-            this.patient_drug = this.patient_drug.filter(
-              (val: any) => val.departmentcode.trim() == this.select
-            );
-            this.patient_drug.forEach((v: any) => {
-              if (!v.checkstamp) {
-                v.isSort = 2;
-              } else if (v.checkstamp && v.checkqty) {
-                v.isSort = 1;
-              } else if (v.checkstamp && !v.checkqty) {
-                v.isSort = 3;
-              }
-            });
-
-            this.countcheck = this.patient_drug.filter(function (item: any) {
-              if (item.checkstamp && !item.checkqty) {
-                return true;
-              } else {
-                return false;
-              }
-            }).length;
-
-            this.sumcheck = this.patient_drug
-              .filter(function (item: any) {
-                if (item.checkstamp && !item.checkqty) {
-                  return true;
-                } else {
-                  return false;
-                }
-              })
-              .every((v: any) => {
-                return v.checkqty == 0;
-              });
-
-            if (this.sumcheck && this.countcheck === this.patient_drug.length) {
-              setTimeout(() => {
-                this.swiper.nativeElement.focus();
-              }, 100);
-            } else {
-              setTimeout(() => {
-                this.drugbar.nativeElement.focus();
-              }, 100);
-            }
-            this.data_filter = this.patient_drug.filter(
-              (val: any) =>
-                (val.checkDrug && !val.checkstamp) ||
-                (!val.qty && !val.checkstamp)
-            );
-
-            this.dataSource = new MatTableDataSource(this.patient_drug);
-            this.dataSource.sort = this.sort;
-            this.dataSource.paginator = this.paginator;
-          } else {
-            Swal.fire('ไม่มีรายการยาจากชั้นนี้!', '', 'error');
-          }
-        } else {
-          Swal.fire(
-            'patient_drugไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
-            '',
-            'error'
-          );
-        }
-        //   } else {
-        //     // this.data_drug = null;
-        //     Swal.fire('ไม่สามารถเชื่อม dataQ ได้!', '', 'error');
-        //   }
-        // } else {
-        //   Swal.fire('dataQไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        // }
+        this.dataSource = new MatTableDataSource(this.patient_drug);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
       } else {
-        Swal.fire('ไม่สามารถเชื่อม patient_contract ได้!', '', 'error');
+        Swal.fire('ไม่มีรายการยาจากชั้นนี้!', '', 'error');
       }
     } else {
-      Swal.fire(
-        'patient_contractไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
-        '',
-        'error'
-      );
+      Swal.fire('patient_drugไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+    //   } else {
+    //     // this.data_drug = null;
+    //     Swal.fire('ไม่สามารถเชื่อม dataQ ได้!', '', 'error');
+    //   }
+    // } else {
+    //   Swal.fire('dataQไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    // }
+    //   } else {
+    //     Swal.fire('ไม่สามารถเชื่อม patient_contract ได้!', '', 'error');
+    //   }
+    // } else {
+    //   Swal.fire(
+    //     'patient_contractไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!',
+    //     '',
+    //     'error'
+    //   );
+    // }
   }
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -421,7 +413,7 @@ export class CheckMedComponent implements OnInit {
                           printName: this.dataUser.print_name,
                           hn: value.hn + ' ' + value.drugName,
                         });
-                    if (value.cur_qty && this.select == 'W8') {
+                    if (value.cur_qty) {
                       if (value.qty_real > value.qty_cut) {
                         this.printPDF(value).then((dataPDF: any) => {
                           if (dataPDF) {
@@ -623,8 +615,7 @@ export class CheckMedComponent implements OnInit {
 
   async sendPDF(data: any) {
     let namePatient = '';
-    namePatient =
-      this.patient_contract.patientName + '   HN ' + this.patient_contract.hn;
+    namePatient = data.patientname + '   HN ' + data.hn;
 
     let nameDrug = data.drugName.trim();
     if (data.drugCode.trim() === 'SOFOS8') {
@@ -645,7 +636,7 @@ export class CheckMedComponent implements OnInit {
     let lang = /[\u0E00-\u0E7F]/;
     let lamed = '';
     let freetext_lang = '';
-    if (!lang.test(this.patient_contract.patientName)) {
+    if (!lang.test(data.patientname)) {
       lamed = data.lamedEng ? data.lamedEng.trim() : '';
       freetext_lang = data.freetext1Eng ? data.freetext1Eng.trim() : '';
     } else {
@@ -946,7 +937,7 @@ export class CheckMedComponent implements OnInit {
                   hn: data.hn + ' ' + data.drugName,
                 });
 
-            if (data.cur_qty && this.select == 'W8') {
+            if (data.cur_qty) {
               if (data.qty_real > data.qty_cut) {
                 this.printPDF(data).then((dataPDF: any) => {
                   if (dataPDF) {
@@ -1115,7 +1106,7 @@ export class CheckMedComponent implements OnInit {
                       hn: data.hn + ' ' + data.drugName,
                     });
 
-                if (data.cur_qty && this.select == 'W8') {
+                if (data.cur_qty) {
                   if (data.qty_real > data.qty_cut) {
                     this.printPDF(data).then((dataPDF: any) => {
                       if (dataPDF) {

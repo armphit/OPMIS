@@ -535,12 +535,12 @@
                   #inputadd
                   type="text"
                   matInput
-                  [matAutocomplete]="auto"
+                  [matAutocomplete]="auto6"
                   (input)="filter_add()"
                   (focus)="filter_add()"
                   [(ngModel)]="drugAdd"
                 />
-                <mat-autocomplete requireSelection #auto="matAutocomplete">
+                <mat-autocomplete requireSelection #auto6="matAutocomplete">
                   <mat-option
                     *ngFor="let option of dataAdd"
                     [value]="option.code.trim() + '&&' + option.name.trim()"
@@ -2665,11 +2665,11 @@
                   type="text"
                   matInput
                   formControlName="medcode_err"
-                  [matAutocomplete]="auto2"
+                  [matAutocomplete]="auto5"
                   (input)="filter_allergic()"
                   (focus)="filter_allergic()"
                 />
-                <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                <mat-autocomplete requireSelection #auto5="matAutocomplete">
                   <mat-option
                     *ngFor="let option of dataAllergic"
                     [value]="option.name.trim()"

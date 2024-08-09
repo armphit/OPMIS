@@ -175,14 +175,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
-        // formData.append(
-        //   'date1',
-        //   moment(this.campaignOne.value.start).format('YYYY-MM-DD')
-        // );
-        // formData.append(
-        //   'date2',
-        //   moment(this.campaignOne.value.end).format('YYYY-MM-DD')
-        // );
+
         formData.append('date1', date1);
         formData.append('date2', date2);
         formData.append('queuep', 'N');
@@ -880,6 +873,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             : this.medError.value.med
           : this.medError.value.med,
     });
+
     if (!this.medError.value.id) {
       if (this.medError.value.position == 'PE') {
         if (this.checkprint) {
@@ -941,6 +935,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   async insertErr() {
     let win: any = window;
     win.$('#check_error').modal('hide');
+
     let getData3: any = await this.http.postNodejs(
       this.medError.value.id ? 'manageError' : 'medError',
       this.medError.value
@@ -962,7 +957,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ? ((this.input5.nativeElement.value = ''), this.reportCheckmed())
           : '';
       } else {
-        Swal.fire('บันทึกข้อมูลไม่สำเร็จ!', '', 'error');
+        Swal.fire('บันทึกข้อมูลซ้ำ!', '', 'error');
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -2422,12 +2417,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   filterType: any = '';
   numError: any = {};
   filter_type() {
+    let datareport = null;
     if (this.select) {
       this.datareportCheckmedFilter = this.datareportCheckmed.filter(
         (val: any) => val.location == this.select
       );
     } else {
-      this.datareportCheckmedFilter = this.datareportCheckmed;
+      datareport = this.datareportCheckmed.filter(
+        (val: any) => val.location != 'W21'
+      );
+      this.datareportCheckmedFilter = datareport;
     }
 
     if (this.filterType == 'pe') {
