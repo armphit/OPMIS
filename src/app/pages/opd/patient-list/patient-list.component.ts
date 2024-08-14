@@ -173,6 +173,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let formData = new FormData();
       let dataPatient: any = null;
 
+      // if (this.select == 'W100') {
       if (this.select == 'W8' || this.select == 'W18') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
 
@@ -1741,7 +1742,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'drugname',
       'realamount',
       'cutamount',
-
+      'balanceamount',
       'createdDT',
       'relativePhone',
       'relativeAddress',

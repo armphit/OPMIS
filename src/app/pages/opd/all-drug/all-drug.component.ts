@@ -109,10 +109,11 @@ export class AllDrugComponent implements OnInit {
       // 'EXP_Date',
       // 'qty',
       'img',
-      'action',
+      'qty_cut',
     ];
     this.nameExcel = 'All_Drug_OPD';
     let getData: any = await this.http.get('getAlldrug');
+    console.log(getData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {

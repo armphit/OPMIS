@@ -1369,7 +1369,23 @@
               {{ element.cutamount }}
             </td>
           </ng-container>
-
+          <ng-container matColumnDef="balanceamount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Balance
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.balanceamount }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="createdDT">
             <th
               mat-header-cell
