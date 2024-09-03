@@ -620,7 +620,7 @@
                         color="primary"
                         type="button"
                         class="butt-sm"
-                        (click)="cutDispend(item)"
+                        (click)="cutDispendModal(item)"
                         style="margin-right: 10px"
                       >
                         ตัดจ่ายยา
@@ -1582,6 +1582,40 @@
           matSortDirection="desc"
           [hiddenColumns]=""
         >
+          <ng-container matColumnDef="hn">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              HN
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.hn }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="patientName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              patientName
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.patientName }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="pharmacist">
             <th
               mat-header-cell
@@ -2163,6 +2197,26 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.type_pre }}
+            </td>
+          </ng-container>
+          <ng-container
+            matColumnDef="drugAllergy"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              แพ้ยา
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.drugAllergy }}
             </td>
           </ng-container>
           <ng-container matColumnDef="note" *ngIf="choicecheckmed == '1'">
@@ -2930,6 +2984,123 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="cut_dispend"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">ตัดจ่ายยา</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <!-- <button style="text-align: right;" class="btn btn-primary"></button> -->
+          <div style="text-align: right; margin: 10px">
+            <a
+              class="btn btn-primary"
+              (click)="
+                checkcoladress == true
+                  ? (checkcoladress = false)
+                  : (checkcoladress = true)
+              "
+              role="button"
+              aria-expanded="false"
+              aria-controls="collapseExample"
+            >
+              พิมพ์ที่อยู่
+            </a>
+          </div>
+
+          <div *ngIf="checkcoladress">
+            <div class="card card-body">
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">ที่อยู่</label>
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="3"
+                  [(ngModel)]="address"
+                ></textarea>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="state" class="form-label">โทร.</label>
+                  <input [(ngModel)]="phone" type="text" class="form-control" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="state" class="form-label">EMS</label>
+                  <input [(ngModel)]="ems" type="text" class="form-control" />
+                </div>
+              </div>
+              <div *ngIf="checkadress" style="text-align: center">
+                <hr />
+                <iframe id="iframeContainer2"></iframe>
+                <hr />
+              </div>
+
+              <div style="justify-content: flex-end; display: flex">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  style="margin-right: 4px"
+                  (click)="printAdress('Preview')"
+                >
+                  Preview
+                </button>
+                <button
+                  data-toggle="collapse"
+                  href="#collapseExample"
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="printAdress('Print'); checkcoladress = false"
+                >
+                  Print
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="state" class="form-label">จำนวนตัดจ่าย</label>
+              <input
+                [(ngModel)]="balanceamountValue"
+                type="number"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          ยกเลิก
+        </button>
+        <button
+          type="button"
+          (click)="submitCutdispend()"
+          class="btn btn-primary"
+        >
+          บันทึก
+        </button>
+      </div>
     </div>
   </div>
 </div>

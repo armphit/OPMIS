@@ -88,14 +88,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     public lightbox: Lightbox
   ) {
     this.dateAdapter.setLocale('en-GB');
-    // this.getData();
+
     this.onTabChange(0);
     this.getType();
-
-    // fetch('./assets/data.json')
-    //   .then((res) => res.json())
-    //   .then((jsonData) => {});
-    // // this.getDrug();
   }
 
   ngAfterViewInit() {
@@ -813,8 +808,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       : this.medError.patchValue({
           type_text: this.medError.value.type,
         });
-
-    this.medError.patchValue({
+    let drugaller = this.medError.patchValue({
       interceptor: this.userList.find(
         (val: any) => val.userName === this.medError.value.interceptor
       ) ?? {
@@ -873,6 +867,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               }
             : this.medError.value.med
           : this.medError.value.med,
+      medcode_err: this.medError.value.medcode_err
+        ? this.drugList.find(
+            (val: any) => val.name.trim() === this.medError.value.medcode_err
+          ).code ?? this.medError.value.medcode_err
+        : this.medError.value.medcode_err,
     });
 
     if (!this.medError.value.id) {
@@ -1390,7 +1389,294 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       }
     });
   }
+  address: any;
+  phone: any;
+  checkadress: boolean = false;
+  checkcoladress: boolean = false;
+  dataAdress: any = null;
+  ems: any;
+  balanceamountValue: any;
+  async printAdress(data: any) {
+    this.dataAdress = {
+      ...this.dataP,
+      phone: this.phone ? this.phone : '',
+      address: this.address ? this.address : '',
+      ems: this.ems ? this.ems : '',
+    };
 
+    this.printPDFAdress(this.dataAdress).then(async (dataPDF: any) => {
+      if (dataPDF) {
+        if (data === 'Preview') {
+          if (this.checkadress) {
+            this.checkadress = false;
+          } else {
+            this.checkadress = true;
+            dataPDF.getDataUrl((dataUrl: any) => {
+              let targetElement: any =
+                document.querySelector('#iframeContainer2');
+
+              targetElement.src = dataUrl;
+            });
+          }
+        } else {
+          // console.log(this.dataAdress);
+          this.checkadress = false;
+          dataPDF.getBase64(async (buffer: any) => {
+            let getData: any = await this.http.Printjs('convertbuffer', {
+              data: buffer,
+              name: `${this.dataP.patientNO} พิมพ์ที่อยู่.pdf`,
+              ip: this.dataUser.print_ip,
+              printName: this.dataUser.print_name,
+              hn: this.dataP.patientNO,
+            });
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                let formData = new FormData();
+
+                formData.append(
+                  'hn',
+                  this.dataAdress.hn ? this.dataAdress.hn : ''
+                );
+                formData.append(
+                  'patientname',
+                  this.dataAdress.patientName ? this.dataAdress.patientName : ''
+                );
+                formData.append(
+                  'pat_address',
+                  this.dataAdress.address ? this.dataAdress.address : ''
+                );
+                formData.append(
+                  'pat_phone',
+                  this.dataAdress.phone ? this.dataAdress.phone : ''
+                );
+                formData.append(
+                  'pat_ems',
+                  this.dataAdress.ems ? this.dataAdress.ems : ''
+                );
+                let getData2: any = await this.http.post(
+                  'insertAddress',
+                  formData
+                );
+                if (getData2.connect) {
+                  if (getData2.response.rowCount > 0) {
+                    Swal.fire({
+                      icon: 'success',
+                      title: `พิมพ์ที่อยู่ เสร็จสิ้น`,
+                      showConfirmButton: false,
+                      timer: 2000,
+                    });
+                  }
+                } else {
+                  Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+                }
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
+            } else {
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+            }
+          });
+        }
+      }
+    });
+  }
+  async printPDFAdress(data: any) {
+    var docDefinition = {
+      // pageSize: { width: 325, height: 350 },
+      pageSize: { width: 238, height: 255 },
+      // pageMargins: [5, 50, 5, 100] as any,
+      pageMargins: [10, 20] as any,
+      header: {} as any,
+
+      // content: [
+      //   `HN ${data.patientNO}`,
+      //   `${data.patientName}`,
+      //   `${data.address ? data.address.trim() : ''}`,
+      //   `โทร. ${data.phone ? data.phone.trim() : ''}`,
+
+      //   // {
+      //   //   style: 'tableExample',
+      //   //   // margin: [20, 10, 20, 0],
+      //   //   arguments: 'center',
+      //   //   table: {
+      //   //     headerRows: 0,
+      //   //     // dontBreakRows: true,
+      //   //     // keepWithHeaderRows: 1,
+      //   //     body: [
+      //   //       [
+      //   //         `HN ${data.patientNO}\n
+      //   //                   ${data.patientName}\n
+      //   //                   ${data.address ? data.address.trim() : ''}\n
+      //   //                   โทร. ${data.phone ? data.phone.trim() : ''}`,
+      //   //       ],
+      //   //       [
+      //   //         `HN ${data.patientNO}\n
+      //   //                   ${data.patientName}\n
+      //   //                   ${data.address ? data.address.trim() : ''}\n
+      //   //                   โทร. ${data.phone ? data.phone.trim() : ''}`,
+      //   //       ],
+      //   //     ],
+      //   //   },
+      //   //   // margin: ['auto', 200, 'auto', 0],
+      //   // },
+      // ] as any,
+      content: [
+        {
+          table: {
+            widths: ['*'],
+            body: [
+              [
+                {
+                  text: [
+                    `HN ${data.patientNO}\n`,
+                    `${data.patientName}\n`,
+                    `${data.address ? data.address.trim() : ''}\n`,
+                    `โทร. ${data.phone ? data.phone.trim() : ''}`,
+                  ],
+                  margin: [10, 10, 10, 10],
+                  // text: [
+                  //   { text: `HN ${data.patientNO}`, margin: [10, 0, 10, 0] },
+                  //   { text: `${data.patientName}`, margin: [10, 0, 10, 0] },
+                  //   {
+                  //     text: `${data.address ? data.address.trim() : ''}\n`,
+                  //     margin: [10, 0, 10, 0],
+                  //   },
+                  //   {
+                  //     text: `โทร. ${data.phone ? data.phone.trim() : ''}`,
+                  //     margin: [10, 0, 10, 0],
+                  //   },
+                  // ],
+                },
+              ],
+            ],
+          },
+          layout: {
+            hLineColor: function (i: any, node: any) {
+              return 'black';
+            },
+            vLineColor: function (i: any, node: any) {
+              return 'black';
+            },
+            hLineWidth: function (i: any, node: any) {
+              return 1;
+            },
+            vLineWidth: function (i: any, node: any) {
+              return 1;
+            },
+            paddingLeft: function (i: any, node: any) {
+              return 0;
+            },
+            paddingRight: function (i: any, node: any) {
+              return 0;
+            },
+            paddingTop: function (i: any, node: any) {
+              return 0;
+            },
+            paddingBottom: function (i: any, node: any) {
+              return 0;
+            },
+          },
+        },
+      ],
+
+      defaultStyle: {
+        font: 'THSarabunNew',
+        fontSize: 16,
+        bold: true,
+      },
+    } as any;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+  }
+  async submitCutdispend() {
+    if (
+      Number(this.balanceamountValue) < Number(this.dataAdress.qty) &&
+      Number(this.balanceamountValue) >= 0
+    ) {
+      let balanceamount =
+        Number(this.dataAdress.qty) - Number(this.balanceamountValue);
+      this.dataAdress.balanceamount = balanceamount;
+      this.dataAdress.formValues = this.balanceamountValue;
+      if (this.checkprint) {
+        this.dataAdress.datecut = moment(new Date())
+          .add(543, 'year')
+          .format('DD/MM/YYYY HH:mm:ss');
+        this.printPDF(this.dataAdress).then((dataPDF: any) => {
+          if (dataPDF) {
+            dataPDF.getBase64(async (buffer: any) => {
+              let getData: any = await this.http.Printjs('convertbuffer', {
+                data: buffer,
+                name: `${this.dataP.patientNO} cutdis.pdf`,
+                ip: this.dataUser.print_ip,
+                printName: this.dataUser.print_name,
+                hn: this.dataP.patientNO,
+              });
+              if (getData.connect) {
+                if (getData.response.connect === 'success') {
+                  await this.insertCutdispend(this.dataAdress);
+                } else {
+                  Swal.fire(
+                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                    '',
+                    'error'
+                  );
+                }
+              } else {
+                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+              }
+            });
+          }
+        });
+      } else {
+        await this.insertCutdispend(this.dataAdress);
+      }
+
+      let win: any = window;
+      win.$('#cut_dispend').modal('hide');
+    } else {
+      Swal.fire('Invalid number!', '', 'error');
+    }
+  }
+  async cutDispendModal(val: any) {
+    this.address = null;
+    this.phone = null;
+    this.dataAdress = null;
+    this.balanceamountValue = null;
+    this.checkadress = false;
+    this.checkcoladress = false;
+    let formData = new FormData();
+
+    let nameArray = [this.dataP.patientNO.trim()];
+    formData.append('data', JSON.stringify(nameArray));
+    let getData2: any = await this.http.post('getCutTelHomc', formData);
+
+    if (getData2.connect) {
+      if (getData2.response.rowCount > 0) {
+        this.address = getData2.response.result[0].relativeAddress
+          ? getData2.response.result[0].relativeAddress.trim()
+          : '';
+        this.phone = getData2.response.result[0].relativePhone
+          ? getData2.response.result[0].relativePhone.trim()
+          : '';
+        this.dataAdress = {
+          ...val,
+          ...this.dataP,
+          ...getData2.response.result[0],
+        };
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+
+    let win: any = window;
+    win.$('#cut_dispend').modal('show');
+  }
   async cutDispend(val: any) {
     const { value: formValues } = await Swal.fire({
       title: 'จำนวนตัดจ่าย',
@@ -2338,6 +2624,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('MatPaginator4') paginator4!: MatPaginator;
   public reportDispend = async () => {
     this.displayedColumns4 = [
+      'hn',
+      'patientName',
       'pharmacist',
       'departmentcode',
       'drugname',
@@ -2425,7 +2713,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       );
     } else {
       datareport = this.datareportCheckmed.filter(
-        (val: any) => val.location != 'W21'
+        (val: any) =>
+          val.location == 'W9' ||
+          val.location == 'W8' ||
+          val.location == 'W18' ||
+          val.location == 'W19' ||
+          val.location == 'W20' ||
+          val.location == 'W13' ||
+          val.location == 'W11'
       );
       this.datareportCheckmedFilter = datareport;
     }
@@ -2519,6 +2814,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'error_type',
         'site',
         'type_pre',
+        'drugAllergy',
         'note',
         'cause',
         'hnDT',

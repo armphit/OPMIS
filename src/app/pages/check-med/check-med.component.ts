@@ -1273,6 +1273,7 @@ export class CheckMedComponent implements OnInit {
               drugCode: data[index].drugCode.trim(),
               led: this.dataUser.ip,
               check: 1,
+              select: this.select,
             };
           }
 
