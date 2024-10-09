@@ -113,7 +113,6 @@ export class AllDrugComponent implements OnInit {
     ];
     this.nameExcel = 'All_Drug_OPD';
     let getData: any = await this.http.get('getAlldrug');
-    console.log(getData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
@@ -158,6 +157,7 @@ export class AllDrugComponent implements OnInit {
         //     );
         //   }
         // });
+
         this.dataDrug = getData.response.result;
         this.dataDrug.map((item: any) => {
           if (item.pathImg) {
@@ -195,84 +195,52 @@ export class AllDrugComponent implements OnInit {
   // }
 
   public drug_code: any = null;
-  public edit = async (val: any) => {
-    // this.imgResultAfterCompress = '';
-    // this.drug_code = code;
-    const { value: formValues } = await Swal.fire({
-      title: 'จำนวนตัดจ่าย',
-      input: 'text',
-      inputAttributes: {
-        input: 'number',
-      },
-      inputValue: val.qty_cut,
-      showCancelButton: true,
-      confirmButtonText: 'Save',
-      denyButtonText: `Delete`,
-      showDenyButton: true,
-
-      preConfirm: (value) => {
-        if (value) {
-          return [value];
-        } else {
-          Swal.showValidationMessage('Invalid number');
-          return undefined;
-        }
-      },
-    });
-
-    // if (result.isConfirmed) {
-    //   Swal.fire("Saved!", "", "success");
-    // } else if (result.isDenied) {
-    //   Swal.fire("Changes are not saved", "", "info");
-    // }
-
+  public dataCut: any = {
+    data: null,
+  };
+  public formValues: any = null;
+  async submitInput(num: any) {
     let formData = new FormData();
-    formData.append('code', val.drugCode);
+    formData.append('code', this.dataCut.drugCode);
+    if (num == 2) {
+      if (this.formValues >= 0) {
+        if (this.formValues) {
+          formData.append('num', '2');
+          formData.append('qty', this.formValues);
 
-    if (formValues) {
-      formData.append('num', '2');
-      formData.append('qty', formValues[0]);
-      let getData: any = await this.http.post('drugCut', formData);
-
-      if (getData.connect) {
-        if (getData.response.result) {
-          await this.getData();
-          this.dataSource.filter = this.input.nativeElement.value
-            .trim()
-            .toLowerCase();
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'บันทึกข้อมูลสำเร็จ',
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        } else {
-          console.log(getData);
-          Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
-        }
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-      }
-    } else {
-      if (formValues == false) {
-        if (val.qty_cut) {
-          formData.append('num', '3');
           let getData: any = await this.http.post('drugCut', formData);
+          let user = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
 
           if (getData.connect) {
-            if (getData.response.result && getData.response.isQuery) {
-              await this.getData();
-              this.dataSource.filter = this.input.nativeElement.value
-                .trim()
-                .toLowerCase();
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'บันทึกข้อมูลสำเร็จ',
-                showConfirmButton: false,
-                timer: 1500,
-              });
+            if (getData.response.rowCount) {
+              formData.append('user', user.user);
+              formData.append('userName', user.name);
+              let getData2: any = await this.http.post(
+                'adddrugcutLog',
+                formData
+              );
+
+              if (getData2.connect) {
+                if (getData2.response.result) {
+                  await this.getData();
+                  this.dataSource.filter = this.input.nativeElement.value
+                    .trim()
+                    .toLowerCase();
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  let win: any = window;
+                  win.$('#usercut').modal('hide');
+                } else {
+                  Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+                }
+              } else {
+                Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+              }
             } else {
               console.log(getData);
               Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
@@ -281,16 +249,68 @@ export class AllDrugComponent implements OnInit {
             Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           }
         } else {
-          Swal.fire({
-            position: 'center',
-            icon: 'error',
-            title: 'ไม่มีข้อมูล',
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          Swal.fire('Invalid number!', '', 'error');
         }
+      } else {
+        Swal.fire('Invalid number!', '', 'error');
+      }
+    } else {
+      if (this.dataCut.qty_cut) {
+        formData.append('num', '3');
+        let getData: any = await this.http.post('drugCut', formData);
+
+        if (getData.connect) {
+          if (getData.response.result && getData.response.isQuery) {
+            await this.getData();
+            this.dataSource.filter = this.input.nativeElement.value
+              .trim()
+              .toLowerCase();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'ลบข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            let win: any = window;
+            win.$('#usercut').modal('hide');
+          } else {
+            console.log(getData);
+            Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
+      } else {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'ไม่มีข้อมูล',
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     }
+  }
+  public edit = async (val: any) => {
+    this.dataCut.data = null;
+    this.dataCut = val;
+    this.formValues = val.qty_cut;
+    let formData = new FormData();
+
+    formData.append('code', val.drugCode);
+    let getData: any = await this.http.post('getuserCut', formData);
+
+    if (getData.connect) {
+      this.dataCut.data = getData.response.result.length
+        ? getData.response.result
+        : null;
+    } else {
+      this.dataCut.data = null;
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+    let win: any = window;
+    win.$('#usercut').modal('show');
   };
 
   // public sendImage = async () => {

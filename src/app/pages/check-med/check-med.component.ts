@@ -266,6 +266,7 @@ export class CheckMedComponent implements OnInit {
     let getBarcode: any = null;
 
     getBarcode = await this.http.post('drugBarcode2', formData);
+
     // getBarcode = await this.http.postNodejs('cutqty', { barcode: val });
 
     if (getBarcode.connect) {
@@ -284,8 +285,7 @@ export class CheckMedComponent implements OnInit {
                 item.checkqty != 0
             ),
           }));
-      }
-      if (getBarcode.response[1].rowCount && !value.length) {
+      } else if (getBarcode.response[1].rowCount && !value.length) {
         let data = getBarcode.response[1].result[0];
         value = await this.patient_drug
           .filter(
@@ -312,8 +312,8 @@ export class CheckMedComponent implements OnInit {
               ...data,
             }));
         }
-      }
-      if (getBarcode.response[2].rowCount > 0 && !value.length) {
+      } else if (getBarcode.response[2].rowCount > 0 && !value.length) {
+
         value = this.drug_xmed
           .filter((o1: any) => {
             return getBarcode.response[2].result.some(function (o2: any) {
@@ -328,9 +328,21 @@ export class CheckMedComponent implements OnInit {
                 item.checkqty != 0
             ),
           }));
-      }
 
-      if (val.includes(';') && !value.length) {
+        if (!value.length) {
+          value = this.patient_drug.filter(
+            (item: any) =>
+              item.drugCode.trim() ===
+              getBarcode.response[2].result[0].drugCode.trim()
+          );
+
+
+          if (value.length) {
+            value[0].HisPackageRatio =   getBarcode.response[2].result[0].pack;
+          }
+
+        }
+      } else if (val.includes(';') && !value.length) {
         let textSpilt = val.split(';');
 
         value = this.patient_drug.filter(

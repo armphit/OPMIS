@@ -577,7 +577,8 @@
                     <th>จำนวน</th>
                     <th>หน่วย</th>
                     <th>ผู้จัด</th>
-                    <th>วันที่</th>
+                    <th>เวลาคีย์ยา</th>
+                    <th>เวลาเช็คยา</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -609,6 +610,12 @@
                       class="text-nowrap"
                     >
                       {{ item.lastmodified }}
+                    </td>
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
+                      {{ item.checkDT }}
                     </td>
                     <td
                       style="border-right: 0px; vertical-align: middle"
@@ -748,7 +755,7 @@
                             color="primary"
                             type="button"
                             class="butt-sm"
-                            (click)="dispendDrug(item)"
+                            (click)="cutDispendModal(item)"
                           >
                             จ่ายยา
                           </button>
@@ -1510,7 +1517,7 @@
   <mat-tab label="รายงานจ่ายยาตัดจ่ายยา">
     <div class="container-fluid pt-2">
       <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-4">
           <mat-form-field class="example-form-field" style="float: left">
             <mat-label>เลือกวันที่</mat-label>
             <mat-date-range-input
@@ -1538,7 +1545,7 @@
             <mat-date-range-picker #campaignOnePicker2></mat-date-range-picker>
           </mat-form-field>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
           <mat-form-field>
             <mat-label>Select Site</mat-label>
             <mat-select
@@ -1554,6 +1561,15 @@
               <mat-option value="W21">ห้องยา ER IPD</mat-option>
               <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
               <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+          <mat-form-field>
+            <mat-label>Select Report</mat-label>
+            <mat-select [(ngModel)]="choice" (ngModelChange)="reportDispend()">
+              <mat-option value="1">จ่ายยาตัดจ่ายยา</mat-option>
+              <mat-option value="2">ข้อมูลที่อยู่จัดส่ง</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -1578,9 +1594,8 @@
           class="mat-elevation-z8"
           matTableExporter
           #exporter4="matTableExporter"
-          matSortActive="createdDT"
+          matSortActive="createDT"
           matSortDirection="desc"
-          [hiddenColumns]=""
         >
           <ng-container matColumnDef="hn">
             <th
@@ -1616,7 +1631,7 @@
               {{ element.patientName }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="pharmacist">
+          <ng-container *ngIf="choice == '1'" matColumnDef="pharmacist">
             <th
               mat-header-cell
               *matHeaderCellDef
@@ -1641,7 +1656,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              Departmentcode
+              {{ choice == "2" ? "Address" : "Departmentcode" }}
             </th>
             <td
               mat-cell
@@ -1659,7 +1674,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              Drugname
+              {{ choice == "2" ? "Tel." : "Drugname" }}
             </th>
             <td
               mat-cell
@@ -1677,7 +1692,7 @@
               mat-sort-header
               style="padding-left: 10px"
             >
-              Amount
+              {{ choice == "2" ? "EMS" : "Amount" }}
             </th>
             <td
               mat-cell
@@ -2197,6 +2212,23 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.type_pre }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="screening" *ngIf="choicecheckmed == '1'">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Screening
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.screening }}
             </td>
           </ng-container>
           <ng-container
@@ -2896,6 +2928,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
+
             <div class="col-2">
               <mat-form-field style="width: 100%">
                 <mat-label>เวลาเกิดเหตุ</mat-label
@@ -2943,6 +2976,7 @@
               </mat-form-field>
             </div>
           </div>
+
           <div class="row">
             <div class="col">
               <mat-form-field class="example-full-width">
@@ -2998,7 +3032,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">ตัดจ่ายยา</h5>
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{ drugcut ? "จ่ายยา" : "ตัดจ่ายยา" }}
+        </h5>
         <button
           type="button"
           class="close"
@@ -3011,7 +3047,7 @@
       <div class="modal-body">
         <div class="container">
           <!-- <button style="text-align: right;" class="btn btn-primary"></button> -->
-          <div style="text-align: right; margin: 10px">
+          <div *ngIf="drugcut" style="text-align: right; margin: 10px">
             <a
               class="btn btn-primary"
               (click)="
@@ -3079,7 +3115,9 @@
           </div>
           <div class="row">
             <div class="col-md-12 mb-3">
-              <label for="state" class="form-label">จำนวนตัดจ่าย</label>
+              <label for="state" class="form-label">{{
+                drugcut ? "จำนวนจ่ายยา" : "จำนวนตัดจ่าย"
+              }}</label>
               <input
                 [(ngModel)]="balanceamountValue"
                 type="number"

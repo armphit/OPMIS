@@ -448,6 +448,7 @@ export class ReportPharComponent implements OnInit {
       'error_type',
       'site',
       'type_pre',
+      // 'screening',
       'note',
       'cause',
       'action',
@@ -520,5 +521,8 @@ export class ReportPharComponent implements OnInit {
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+  }
+  substrT(text:string){
+    return text.substring(1)
   }
 }

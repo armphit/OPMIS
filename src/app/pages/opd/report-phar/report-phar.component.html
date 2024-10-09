@@ -1640,6 +1640,23 @@
                 {{ element.type_pre }}
               </td>
             </ng-container>
+            <ng-container matColumnDef="screening">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                style="padding-left: 10px"
+              >
+              Screening
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.screening }}
+              </td>
+            </ng-container>
             <ng-container matColumnDef="note">
               <th
                 mat-header-cell
@@ -1688,9 +1705,11 @@
               >
                 <button
                   *ngIf="
-                    dataUser.user == dataErr.checker_id ||
+                    (dataUser.user == dataErr.checker_id ||
                     dataUser.user == dataErr.dispenser_id ||
-                    dataUser.user == dataErr.staff
+                    dataUser.user == dataErr.staff)|| (substrT(dataUser.user) == dataErr.checker_id ||
+                    substrT(dataUser.user) == dataErr.dispenser_id ||
+                    substrT(dataUser.user) == dataErr.staff)
                   "
                   type="button"
                   (click)="updateCause(element)"
