@@ -200,21 +200,23 @@ export class AllDrugComponent implements OnInit {
   };
   public formValues: any = null;
   async submitInput(num: any) {
+    let user = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
     let formData = new FormData();
     formData.append('code', this.dataCut.drugCode);
+    formData.append('user', user.user);
+    formData.append('userName', user.name);
+    formData.append('qty', this.formValues);
+
     if (num == 2) {
       if (this.formValues >= 0) {
         if (this.formValues) {
           formData.append('num', '2');
-          formData.append('qty', this.formValues);
 
           let getData: any = await this.http.post('drugCut', formData);
-          let user = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
 
           if (getData.connect) {
             if (getData.response.rowCount) {
-              formData.append('user', user.user);
-              formData.append('userName', user.name);
+              formData.append('status', 'เพิ่ม');
               let getData2: any = await this.http.post(
                 'adddrugcutLog',
                 formData
@@ -261,19 +263,30 @@ export class AllDrugComponent implements OnInit {
 
         if (getData.connect) {
           if (getData.response.result && getData.response.isQuery) {
-            await this.getData();
-            this.dataSource.filter = this.input.nativeElement.value
-              .trim()
-              .toLowerCase();
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'ลบข้อมูลสำเร็จ',
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            let win: any = window;
-            win.$('#usercut').modal('hide');
+            formData.append('status', 'ลบ');
+            let getData2: any = await this.http.post('adddrugcutLog', formData);
+
+            if (getData2.connect) {
+              if (getData2.response.result) {
+                await this.getData();
+                this.dataSource.filter = this.input.nativeElement.value
+                  .trim()
+                  .toLowerCase();
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'ลบข้อมูลสำเร็จ',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                let win: any = window;
+                win.$('#usercut').modal('hide');
+              } else {
+                Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
           } else {
             console.log(getData);
             Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');

@@ -12,7 +12,7 @@ export class OpdComponent implements OnInit {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
   private timer: any;
-  private readonly TIMEOUT_DURATION: number = 1800000; // 5 seconds
+  private readonly TIMEOUT_DURATION: number = 3600000; // 5 seconds
   private isMouseMoving: boolean = false;
   ngOnInit() {}
   onMouseMove() {

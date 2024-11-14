@@ -22,7 +22,7 @@
             style="margin-left: 30px"
             class="btn btn-outline-primary btn-circle btn-md"
             (click)="
-              getData();
+              getData(null);
               nameFilter.setValue('');
               idFilter.setValue('');
               setFocus()
@@ -63,7 +63,12 @@
             style="float: right"
             [hidden]="!dataSource"
           >
-            <input matInput [formControl]="idFilter" #input />
+            <input
+              matInput
+              (keyup.enter)="changeHn(input.value)"
+              [formControl]="idFilter"
+              #input
+            />
             <mat-placeholder>HN</mat-placeholder>
             <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
           </mat-form-field>
@@ -2716,7 +2721,7 @@
               <mat-form-field>
                 <mat-label>รูปแบบความผิดพลาด</mat-label>
                 <mat-select
-                  [required]="medError.value.position !== 'PE'"
+                  required
                   formControlName="type"
                   (selectionChange)="getDatatype()"
                 >

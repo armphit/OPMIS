@@ -331,6 +331,7 @@
                 <tr>
                   <th scope="col">ชื่อ</th>
                   <th scope="col">จำนวน</th>
+                  <th scope="col">สถานะ</th>
                   <th scope="col">วันที่</th>
                 </tr>
               </thead>
@@ -338,6 +339,7 @@
                 <tr *ngFor="let item of dataCut.data">
                   <td>{{ item.user_name ? item.user_name : "" }}</td>
                   <td>{{ item.qty_cut ? item.qty_cut : "" }}</td>
+                  <td>{{ item.status_cut ? item.status_cut : "" }}</td>
                   <td>{{ item.createDT ? item.createDT : "" }}</td>
                 </tr>
               </tbody>

@@ -100,13 +100,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.getTab == 0) {
-      this.updateSubscription = interval(300000).subscribe((val) => {
-        this.getData();
-        this.nameFilter.setValue('');
-        this.idFilter.setValue('');
-      });
-    }
+    // if (this.getTab == 0) {
+    // this.updateSubscription = interval(300000).subscribe((val) => {
+    //   this.getData(null);
+    //   this.nameFilter.setValue('');
+    //   this.idFilter.setValue('');
+    // });
+    // }
     // setTimeout(() => {
 
     this.idFilter.valueChanges.subscribe((patientNO) => {
@@ -129,20 +129,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     // }, 500);
   }
 
-  ngOnDestroy() {
-    this.updateSubscription.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.updateSubscription.unsubscribe();
+  // }
 
   setFocus() {
     setTimeout(() => {
       this.input.nativeElement.focus();
     }, 300);
   }
-  queuePChanged(e: any) {
-    this.getData();
-  }
 
-  public getData = async () => {
+  public getData = async (num: any) => {
     let date1 =
       moment(this.campaignOne.value.start).format('YYYY-MM-DD') +
       ' ' +
@@ -272,9 +269,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           setTimeout(() => {
             this.input.nativeElement.focus();
           }, 100);
-          this.nameFilter.setValue('');
-          this.idFilter.setValue('');
-          this.setFocus();
+          if (num) {
+            this.nameFilter.setValue('');
+            this.idFilter.setValue(`${num}`);
+            this.setFocus();
+          } else {
+            this.nameFilter.setValue('');
+            this.idFilter.setValue('');
+            this.setFocus();
+          }
         } else {
           this.dataSource = null;
         }
@@ -285,6 +288,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     // }
   };
+  changeHn(val: any) {
+    this.getData(val);
+  }
 
   createFilter(): (data: any, filter: string) => boolean {
     let filterFunction = function (data: any, filter: any): boolean {
@@ -392,6 +398,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 nameCheck: elm.name,
                 userName: elm.user + ' ' + elm.name,
               }));
+              getData3.response.get_compiler =
+                getData3.response.get_compiler.map((val: any) => {
+                  return {
+                    ...val,
+                    drugCode: val.drugCode ? val.drugCode.trim() : val.drugCode,
+                  };
+                });
 
               mergeData = getData.response.result
                 .map((emp: any) => {
@@ -399,7 +412,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     ...emp,
                     ...(getData3.response.get_compiler.find(
                       (item: { drugCode: any }) =>
-                        item.drugCode.trim() === emp.drugCode
+                        item.drugCode === emp.drugCode
                     ) ??
                       (this.select == 'W9'
                         ? { userCheck: 'จนท ชั้น1', checkDT: '' }
@@ -1390,7 +1403,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let getData: any = await this.http.post('add_moph_confirm', formData);
         if (getData.connect) {
           if (getData.response.rowCount > 0) {
-            this.getData();
+            this.getData(null);
             let win: any = window;
             win.$('#exampleModal').modal('hide');
             Swal.fire({
@@ -1401,7 +1414,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             });
             this.dataDrug = [];
             this.dataP = null;
-            await this.getData();
+            await this.getData(null);
             this.nameFilter.setValue('');
             this.idFilter.setValue('');
             this.setFocus();
@@ -1702,7 +1715,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             this.dataAdress,
             this.balanceamountValue
           );
-          await this.getData();
+          await this.getData(null);
 
           this.nameFilter.setValue('');
           this.idFilter.setValue('');
@@ -1933,7 +1946,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           showConfirmButton: false,
           timer: 2000,
         });
-        this.getData();
+        this.getData(null);
       } else {
         Swal.fire('ไม่สามารถตัดจ่ายยาได้!', '', 'error');
       }
@@ -2051,7 +2064,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
   //   //   if (data.balanceamount === 0) {
   //   //     await this.updatedispendDrug(data, formValues);
-  //   //     await this.getData();
+  //   //     await this.getData(null);
   //   //     let win: any = window;
   //   //     this.nameFilter.setValue('');
   //   //     this.idFilter.setValue('');
@@ -2161,7 +2174,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         if (getData2.connect) {
           if (getData2.response.rowCount > 0) {
-            this.getData();
+            this.getData(null);
             let win: any = window;
             win.$('#modal_owe').modal('hide');
             Swal.fire({
@@ -2268,7 +2281,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       //     this.reportCheckmed();
       //  }
       // else if (this.getTab == 0 || this.getTab == null) {
-      //   this.getData();
+      //   this.getData(null);
       // }
       else if (this.getTab == 5) {
         this.reportTimeDispend();
@@ -2287,7 +2300,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.endtime = '16:00';
     this.getTab = e;
     this.getTab === 0
-      ? (this.getData(), (this.starttime = '00:00'), (this.endtime = '23:59'))
+      ? (this.getData(null),
+        (this.starttime = '00:00'),
+        (this.endtime = '23:59'))
       : this.getTab === 1
       ? this.getMoph()
       : this.getTab === 2
@@ -2440,7 +2455,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   changeFloor() {
-    this.getData();
+    this.getData(null);
   }
   changeFloorReport() {
     this.timeavg = '';
@@ -2480,7 +2495,6 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let lamed = getDataprint.response.intruction[0]
           ? getDataprint.response.intruction[0]
           : [];
-
 
         // let freetext1 = [];
         // let freetextany = '';
@@ -2792,7 +2806,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   public async startChange() {
-    this.getData();
+    this.getData(null);
   }
   nameExcel4 = '';
   dataSource4: any = null;
@@ -2873,7 +2887,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (this.getTab == 1) {
       this.getMoph();
     } else if (this.getTab == 0) {
-      this.getData();
+      this.getData(null);
     } else if (this.getTab == 4) {
       this.reportCheckmed();
     }
@@ -2892,7 +2906,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     } else if (this.getTab == 0) {
       this.starttime = '00:00';
       this.endtime = '23:59';
-      this.getData();
+      this.getData(null);
     } else if (this.getTab == 4) {
       this.reportCheckmed();
     }
