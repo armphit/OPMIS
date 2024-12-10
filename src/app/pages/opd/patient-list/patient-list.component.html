@@ -577,7 +577,7 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>รหัสยา</th>
+                    <!-- <th>รหัสยา</th> -->
                     <th>ชื่อยา</th>
                     <th>จำนวน</th>
                     <th>หน่วย</th>
@@ -592,9 +592,9 @@
                     <td style="border-right: 0px; vertical-align: middle">
                       {{ i + 1 }}
                     </td>
-                    <td style="border-right: 0px; vertical-align: middle">
+                    <!-- <td style="border-right: 0px; vertical-align: middle">
                       {{ item.drugCode }}
-                    </td>
+                    </td> -->
                     <td style="border-right: 0px; vertical-align: middle">
                       {{ item.drugName }}
                     </td>
@@ -629,20 +629,6 @@
                       <button
                         button
                         mat-raised-button
-                        color="accent"
-                        type="button"
-                        class="butt-sm"
-                        (click)="returnDrugModal(item)"
-                        style="
-                          margin-right: 10px;
-                          background-color: darkmagenta;
-                        "
-                      >
-                        คืนยา
-                      </button>
-                      <button
-                        button
-                        mat-raised-button
                         color="primary"
                         type="button"
                         class="butt-sm"
@@ -652,6 +638,7 @@
                         ตัดจ่ายยา
                       </button>
                       <button
+                        style="margin-right: 10px"
                         button
                         mat-raised-button
                         color="warn"
@@ -660,6 +647,17 @@
                         (click)="reportError({ dataP: dataP, item: item })"
                       >
                         รายงานข้อผิดพลาด
+                      </button>
+                      <button
+                        button
+                        mat-raised-button
+                        color="accent"
+                        type="button"
+                        class="butt-sm"
+                        (click)="returnDrugModal(item)"
+                        style="background-color: darkmagenta"
+                      >
+                        คืนยา
                       </button>
                     </td>
                   </tr>
@@ -2721,6 +2719,7 @@
               (ngModelChange)="changeFloorReport()"
             >
               <mat-option value="">All</mat-option>
+              <mat-option value="R93">ROOM 93</mat-option>
               <mat-option value="W9">ห้องยาชั้น 1</mat-option>
               <mat-option value="W8">ห้องยาชั้น 2</mat-option>
               <mat-option value="W18">ห้องยาชั้น 3</mat-option>
@@ -2790,6 +2789,23 @@
               {{ element.patientName }}
             </td>
           </ng-container>
+          <ng-container matColumnDef="pharMaker">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              pharMaker
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.phar }}
+            </td>
+          </ng-container>
           <ng-container matColumnDef="drugName">
             <th
               mat-header-cell
@@ -2841,6 +2857,57 @@
               style="padding-left: 20px; padding-right: 20px"
             >
               {{ element.drugPrice }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="location">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Location
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.location }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="source">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Source
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.source }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="cause">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              Cause
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.cause }}
             </td>
           </ng-container>
 
@@ -3364,13 +3431,20 @@
             </div>
           </div>
 
-          <mat-form-field *ngIf="checkmodalpatient">
+          <mat-form-field style="margin-right: 5px" *ngIf="checkmodalpatient">
             <mat-label>สาเหตุคืนยา</mat-label>
             <mat-select [(ngModel)]="causeReturn">
               <mat-option *ngFor="let item of listcauseReturn" [value]="item">
                 {{ item }}
               </mat-option>
             </mat-select>
+          </mat-form-field>
+          <mat-form-field
+            [hidden]="causeReturn !== 'อื่นๆ'"
+            class="example-full-width"
+          >
+            <mat-label>โปรดระบุ</mat-label>
+            <input matInput [(ngModel)]="etc" />
           </mat-form-field>
           <div class="row">
             <div class="col-md-12 mb-3">

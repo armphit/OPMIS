@@ -987,13 +987,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             returnamount:
               parseInt(this.medError.value.medWrong_text) -
               parseInt(this.medError.value.medGood_text),
-            cause: this.causeReturn,
+            cause: this.causeReturn == 'อื่นๆ' ? this.etc : this.causeReturn,
             location: this.select,
             choice: 1,
             userphar: this.dataUser.user,
             drugCode: this.medError.value.med.code,
             drugName: this.medError.value.med.med_name,
             unit: this.medError.value.med.unit,
+            source: 'PE',
           };
 
           let getData: any = await this.http.postNodejs('returndrug', send);
@@ -1824,10 +1825,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           let send = {
             ...this.dataAdress,
             returnamount: this.balanceamountValue,
-            cause: this.causeReturn,
+            cause: this.causeReturn == 'อื่นๆ' ? this.etc : this.causeReturn,
             location: this.select,
             choice: 1,
             userphar: this.dataUser.user,
+            source: 'งานบริการ',
           };
 
           let getData: any = await this.http.postNodejs('returndrug', send);
@@ -3311,13 +3313,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         if (getData.connect) {
           if (getData.response.data.length > 0) {
             caldrug =
-              getData.response.data.find((val: any) =>
-                this.medError.value.med.code
-                  ? this.medError.value.med.code.trim()
-                  : this.medError.value.med.code == val.orderitemcode
-                  ? val.orderitemcode.trim()
-                  : val.orderitemcode
+              getData.response.data.find(
+                (val: any) =>
+                  (this.medError.value.med.code
+                    ? this.medError.value.med.code.trim()
+                    : this.medError.value.med.code) ==
+                  (val.orderitemcode
+                    ? val.orderitemcode.trim()
+                    : val.orderitemcode)
               ) ?? null;
+            console.log(caldrug);
             if (caldrug) {
               if (caldrug.OPDprice) {
                 this.medError.controls['note'].setValue(
@@ -3346,8 +3351,18 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   }
   choice: string = '1';
-  listcauseReturn = [1, 2, 3, 4, 5];
+  listcauseReturn = [
+    'ได้รับยามากเกินวันนัด',
+    'ลืมใช้ยา',
+    'ใช้ยาไม่ถูกตามแพทย์สั่ง',
+    'เกิดอาการไม่พึงประสงค์',
+    'การเปลี่ยนแปลงการรักษา',
+    'ไม่อยากใช้ยา',
+    'อื่นๆ',
+  ];
   causeReturn: string = '';
+  etc: string = '';
+
   async returnDrugModal(val: any) {
     this.checkmodalpatient = true;
     this.dataAdress = null;
@@ -3357,7 +3372,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ...this.dataP,
       ...val,
     };
-
+    this.etc = '';
     let win: any = window;
     win.$('#cut_dispend').modal('show');
   }
@@ -3372,9 +3387,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.displayedColumns7 = [
       'patientNo',
       'patientName',
+      'pharMaker',
       'drugName',
       'returnQty',
       'drugPrice',
+      'location',
+      'source',
+      'cause',
       'createDT',
     ];
 
