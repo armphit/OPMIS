@@ -1812,14 +1812,57 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           }
         }
         win.$('#cut_dispend').modal('hide');
+        this.drugAdd = '';
       } else {
         Swal.fire('Invalid number!', '', 'error');
       }
     } else {
       if (
         Number(this.balanceamountValue) <= Number(this.dataAdress.qty) &&
-        Number(this.balanceamountValue) >= 0
+        Number(this.balanceamountValue) >= 0 &&
+        !this.checkmodalpatient
       ) {
+        let balanceamount =
+          Number(this.dataAdress.qty) - Number(this.balanceamountValue);
+        this.dataAdress.balanceamount = balanceamount;
+        this.dataAdress.formValues = this.balanceamountValue;
+        if (this.checkprint) {
+          this.dataAdress.datecut = moment(new Date())
+            .add(543, 'year')
+            .format('DD/MM/YYYY HH:mm:ss');
+          this.printPDF(this.dataAdress).then((dataPDF: any) => {
+            if (dataPDF) {
+              dataPDF.getBase64(async (buffer: any) => {
+                let getData: any = await this.http.Printjs('convertbuffer', {
+                  data: buffer,
+                  name: `${this.dataP.patientNO} cutdis.pdf`,
+                  ip: this.dataUser.print_ip,
+                  printName: this.dataUser.print_name,
+                  hn: this.dataP.patientNO,
+                });
+                if (getData.connect) {
+                  if (getData.response.connect === 'success') {
+                    await this.insertCutdispend(this.dataAdress);
+                  } else {
+                    Swal.fire(
+                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                      '',
+                      'error'
+                    );
+                  }
+                } else {
+                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+                }
+              });
+            }
+          });
+        } else {
+          await this.insertCutdispend(this.dataAdress);
+        }
+
+        let win: any = window;
+        win.$('#cut_dispend').modal('hide');
+      } else {
         if (this.checkmodalpatient) {
           this.dataAdress.location;
           let send = {
@@ -1842,6 +1885,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 showConfirmButton: false,
                 timer: 1500,
               });
+              let win: any = window;
+              win.$('#cut_dispend').modal('hide');
             } else {
               Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
             }
@@ -1849,49 +1894,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           }
         } else {
-          let balanceamount =
-            Number(this.dataAdress.qty) - Number(this.balanceamountValue);
-          this.dataAdress.balanceamount = balanceamount;
-          this.dataAdress.formValues = this.balanceamountValue;
-          if (this.checkprint) {
-            this.dataAdress.datecut = moment(new Date())
-              .add(543, 'year')
-              .format('DD/MM/YYYY HH:mm:ss');
-            this.printPDF(this.dataAdress).then((dataPDF: any) => {
-              if (dataPDF) {
-                dataPDF.getBase64(async (buffer: any) => {
-                  let getData: any = await this.http.Printjs('convertbuffer', {
-                    data: buffer,
-                    name: `${this.dataP.patientNO} cutdis.pdf`,
-                    ip: this.dataUser.print_ip,
-                    printName: this.dataUser.print_name,
-                    hn: this.dataP.patientNO,
-                  });
-                  if (getData.connect) {
-                    if (getData.response.connect === 'success') {
-                      await this.insertCutdispend(this.dataAdress);
-                    } else {
-                      Swal.fire(
-                        'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                        '',
-                        'error'
-                      );
-                    }
-                  } else {
-                    Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-                  }
-                });
-              }
-            });
-          } else {
-            await this.insertCutdispend(this.dataAdress);
-          }
+          Swal.fire('Invalid number!', '', 'error');
         }
-
-        let win: any = window;
-        win.$('#cut_dispend').modal('hide');
-      } else {
-        Swal.fire('Invalid number!', '', 'error');
       }
     }
   }
@@ -3301,6 +3305,27 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('กรุณาเลือกยา!', '', 'error');
     }
   }
+  addReturndrug() {
+    let drugSplit = this.drugAdd.split('&&');
+
+    let unitFind = this.drugList.find((val: any) => val.code == drugSplit[0]);
+
+    drugSplit = {
+      drugCode: drugSplit[0],
+      drugName: drugSplit[1],
+      qty: 0,
+      unit: unitFind ? unitFind.unit : '',
+      lastmodified: '',
+      lamed_name: '',
+      dosage: '',
+      freetext0: null,
+      freetext1: null,
+      checkLength: 0,
+      nameCheck: '',
+      userName: '',
+    };
+    this.returnDrugModal(drugSplit);
+  }
   async calCost() {
     let caldrug = null;
 
@@ -3322,7 +3347,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     ? val.orderitemcode.trim()
                     : val.orderitemcode)
               ) ?? null;
-            console.log(caldrug);
+
             if (caldrug) {
               if (caldrug.OPDprice) {
                 this.medError.controls['note'].setValue(
@@ -3372,6 +3397,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ...this.dataP,
       ...val,
     };
+
     this.etc = '';
     let win: any = window;
     win.$('#cut_dispend').modal('show');

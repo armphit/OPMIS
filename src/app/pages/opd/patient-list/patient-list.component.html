@@ -568,6 +568,19 @@
               <i class="fas fa-plus-circle"></i
               ><span style="margin: 5px">รายงานข้อผิดพลาด</span>
             </button>
+            <button
+              style="margin-left: 5px; background-color: darkmagenta"
+              [disabled]="!drugAdd"
+              button
+              mat-raised-button
+              color="primary"
+              type="button"
+              class="butt-sm"
+              (click)="addReturndrug()"
+            >
+              <i class="fas fa-plus-circle"></i
+              ><span style="margin: 5px">คืนยา</span>
+            </button>
             <div
               class="table-responsive"
               style="max-height: 200px"
