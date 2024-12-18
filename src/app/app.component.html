@@ -1,12 +1,20 @@
-<div style="position: relative; width: 100vw; height: 100vh; overflow: hidden">
+<!-- <div style="position: relative; width: 100vw; height: 100vh; overflow: hidden">
   <router-outlet></router-outlet>
-  <ngx-loading [show]="http.loading"></ngx-loading>
+
+
 </div>
-<!-- <div
-  (mousemove)="onMouseMove()"
-  (mouseleave)="onMouseLeave()"
-  style="position: relative; width: 100vw; height: 100vh; overflow: hidden"
->
-  <router-outlet></router-outlet>
-  <ngx-loading [show]="http.loading"></ngx-loading>
+<div class="footer">
+  <h2>footer</h2>
 </div> -->
+<div class="testcontainer">
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="footer">
+    <span
+      >ระบบ MHR นี้เป็นลิขสิทธิ์ของบริษัทจีดีโฟร์
+      และโรงพยาบาลมหาราชนครราชสีมาเท่านั้น</span
+    >
+  </div>
+</div>
+<ngx-loading style="z-index: 9999" [show]="http.loading"></ngx-loading>
