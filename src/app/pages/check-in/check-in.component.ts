@@ -56,7 +56,8 @@ export class CheckInComponent implements OnInit {
       'Name',
       'DEPTNAME',
       'deviceName',
-      'datetime',
+      'check_in',
+      'check_out',
     ];
 
     let startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');

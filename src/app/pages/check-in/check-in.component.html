@@ -125,9 +125,9 @@
               </td>
             </ng-container>
 
-            <ng-container matColumnDef="datetime">
+            <ng-container matColumnDef="check_in">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                Datetimestamp
+                Check In
               </th>
               <td
                 mat-cell
@@ -138,6 +138,18 @@
               </td>
             </ng-container>
 
+            <ng-container matColumnDef="check_out">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Check Out
+              </th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                style="padding-left: 20px; padding-right: 20px"
+              >
+                {{ element.datetime }}
+              </td>
+            </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
