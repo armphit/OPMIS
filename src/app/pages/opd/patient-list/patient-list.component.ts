@@ -2781,7 +2781,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             //   : '',
             freetext2
               ? lamed.invCode.trim() === 'MIRTA' ||
-                lamed.invCode.trim() === 'ALEND'
+                lamed.invCode.trim() === 'ALEND' ||
+                lamed.invCode.trim() === 'INSUG2'
                 ? {
                     text: lamed.freetext2.trim(),
                     alignment: 'center',
@@ -3354,7 +3355,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   `มูลค่ายา ${
                     (parseInt(this.medError.value.medWrong_text) -
                       parseInt(this.medError.value.medGood_text)) *
-                    parseInt(caldrug.OPDprice.trim())
+                    parseFloat(caldrug.OPDprice.trim())
                   } บาท`
                 );
                 this.checkCost = true;
@@ -3383,6 +3384,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     'เกิดอาการไม่พึงประสงค์',
     'การเปลี่ยนแปลงการรักษา',
     'ไม่อยากใช้ยา',
+    'มียาเดิมเพียงพอ',
     'อื่นๆ',
   ];
   causeReturn: string = '';

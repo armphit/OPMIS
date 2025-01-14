@@ -313,7 +313,6 @@ export class CheckMedComponent implements OnInit {
             }));
         }
       } else if (getBarcode.response[2].rowCount > 0 && !value.length) {
-
         value = this.drug_xmed
           .filter((o1: any) => {
             return getBarcode.response[2].result.some(function (o2: any) {
@@ -336,11 +335,9 @@ export class CheckMedComponent implements OnInit {
               getBarcode.response[2].result[0].drugCode.trim()
           );
 
-
           if (value.length) {
-            value[0].HisPackageRatio =   getBarcode.response[2].result[0].pack;
+            value[0].HisPackageRatio = getBarcode.response[2].result[0].pack;
           }
-
         }
       } else if (val.includes(';') && !value.length) {
         let textSpilt = val.split(';');
@@ -810,7 +807,9 @@ export class CheckMedComponent implements OnInit {
         //     })
         //   : '',
         freetext2
-          ? data.drugCode.trim() === 'MIRTA' || data.drugCode.trim() === 'ALEND'
+          ? data.drugCode.trim() === 'MIRTA' ||
+            data.drugCode.trim() === 'ALEND' ||
+            data.drugCode.trim() === 'INSUG2'
             ? {
                 text: data.freetext2.trim(),
                 alignment: 'center',
@@ -1581,7 +1580,8 @@ export class CheckMedComponent implements OnInit {
         //   : '',
         freetext2
           ? lamed.drugCode.trim() === 'MIRTA' ||
-            lamed.drugCode.trim() === 'ALEND'
+            lamed.drugCode.trim() === 'ALEND' ||
+            data.drugCode.trim() === 'INSUG2'
             ? {
                 text: lamed.freetext2.trim(),
                 alignment: 'center',

@@ -2,7 +2,7 @@
   <mat-tab label="รายงานเวลาเข้าประตู">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-10">
           <form [formGroup]="campaignOne">
             <mat-form-field class="example-form-field" [style.width.px]="200">
               <mat-date-range-input
@@ -29,7 +29,7 @@
             </mat-form-field>
           </form>
         </div>
-        <div class="col-lg-3">
+        <!-- <div class="col-lg-3">
           <mat-form-field>
             <mat-label>Select DEPT</mat-label>
 
@@ -42,8 +42,8 @@
               <mat-option value="Hospital">Hospital</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
-        <div class="col-lg-3">
+        </div> -->
+        <!-- <div class="col-lg-3">
           <mat-form-field>
             <mat-label>Select TIME</mat-label>
             <mat-select
@@ -54,7 +54,7 @@
               <mat-option value="out">เวลาออกงาน</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
+        </div> -->
         <div class="col-lg-2">
           <mat-form-field class="example-full-width" style="float: right">
             <input matInput (keyup)="applyFilter($event)" #inputT />
@@ -134,7 +134,7 @@
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.datetime }}
+                {{ element.check_in }}
               </td>
             </ng-container>
 
@@ -147,7 +147,7 @@
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.datetime }}
+                {{ element.check_out }}
               </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
