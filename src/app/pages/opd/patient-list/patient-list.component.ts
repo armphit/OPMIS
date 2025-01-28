@@ -3352,11 +3352,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             if (caldrug) {
               if (caldrug.OPDprice) {
                 this.medError.controls['note'].setValue(
-                  `มูลค่ายา ${
-                    (parseInt(this.medError.value.medWrong_text) -
-                      parseInt(this.medError.value.medGood_text)) *
+                  (parseInt(this.medError.value.medWrong_text) -
+                    parseInt(this.medError.value.medGood_text)) *
                     parseFloat(caldrug.OPDprice.trim())
-                  } บาท`
                 );
                 this.checkCost = true;
               } else {
