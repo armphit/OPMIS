@@ -1008,7 +1008,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 timer: 1500,
               });
             } else {
-              Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+              if (getData.response.massege) {
+                Swal.fire(getData.response.massege, '', 'error');
+              } else {
+                Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+              }
             }
           } else {
             Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -1876,6 +1880,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           };
 
           let getData: any = await this.http.postNodejs('returndrug', send);
+          let win: any = window;
 
           if (getData.connect) {
             if (getData.response.data) {
@@ -1885,10 +1890,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 showConfirmButton: false,
                 timer: 1500,
               });
-              let win: any = window;
+
               win.$('#cut_dispend').modal('hide');
             } else {
-              Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+              if (getData.response.massege) {
+                Swal.fire(getData.response.massege, '', 'error');
+                win.$('#cut_dispend').modal('hide');
+              } else {
+                Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+              }
             }
           } else {
             Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
