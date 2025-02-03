@@ -663,7 +663,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   dataGood: any;
   dataWrong: any;
   dataAdd: any;
-  dataAllergic: any;
+  dataAllergic: any = [];
   dataInterceptor: any;
   dataOffender: any;
   @ViewChild('inputadd') inputadd!: ElementRef<HTMLInputElement>;
@@ -840,6 +840,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       : this.medError.patchValue({
           type_text: this.medError.value.type,
         });
+
     let drugaller = this.medError.patchValue({
       interceptor: this.userList.find(
         (val: any) => val.userName === this.medError.value.interceptor
@@ -905,7 +906,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       medcode_err: this.medError.value.medcode_err
         ? this.drugList.find(
             (val: any) => val.name.trim() === this.medError.value.medcode_err
-          ).code ?? this.medError.value.medcode_err
+          )
+          ? this.drugList.find(
+              (val: any) => val.name.trim() === this.medError.value.medcode_err
+            ).code
+          : this.medError.value.medcode_err
         : this.medError.value.medcode_err,
     });
 
