@@ -712,7 +712,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     level: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
     occurrence: ['รับรายงาน', 'Screening', 'เชิงรุก'],
     source: ['ในเวลา', 'นอกเวลา'],
-    error_type: ['drug error', 'labelling error', 'issue error'],
+    error_type: [
+      'drug error',
+      'labelling error',
+      'issue error',
+      'drug error & labelling error',
+    ],
     note: [
       'ไม่มียานี้ในบัญชีโรงพยาบาล',
       'อ่านชื่อยาไม่ชัดเจน',
@@ -736,6 +741,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'PCT จิตเวช',
       'PCT กายภาพ',
       'PCT ER',
+      'PCT รังสี',
     ],
     type_pre: ['nonCPOE', 'CPOE'],
     screening: ['รับรายงาน', 'Screening', 'เชิงรุก'],
