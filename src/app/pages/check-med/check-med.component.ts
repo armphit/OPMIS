@@ -361,6 +361,14 @@ export class CheckMedComponent implements OnInit {
           }
           // value[0].HisPackageRatio = textSpilt[1];
         }
+      } else if (this.select == 'W18') {
+        value = this.patient_drug.filter(
+          (item: any) => item.drugCode.trim() === val.trim()
+        );
+        if (value.length) {
+          value[0].HisPackageRatio = value[0].qty;
+          // value[0].HisPackageRatio = textSpilt[1];
+        }
       }
 
       // const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');

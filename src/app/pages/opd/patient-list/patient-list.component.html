@@ -380,7 +380,7 @@
             </p>
             <div>
               <div class="row">
-                <div [hidden]="dataDrug.length === 0" class="col-8">
+                <div [hidden]="dataDrug.length === 0" class="col-7">
                   <span style="font-weight: bold; color: #f40000"
                     >รายการแพ้ยา</span
                   >
@@ -473,7 +473,7 @@
                     </table>
                   </div>
                 </div>
-                <div [hidden]="dataDrug2.length === 0" class="col-4">
+                <div [hidden]="dataDrug2.length === 0" class="col-5">
                   <span style="font-weight: bold; color: #f40000">
                     รายการแพ้ยาโรงพยาบาลมหาราชนครราชสีมา
                   </span>
@@ -488,6 +488,15 @@
                           <th style="padding-right: 50px; border-right: 0px">
                             ชื่อยา
                           </th>
+                          <th style="padding-right: 50px; border-right: 0px">
+                            แหล่งที่มา
+                          </th>
+                          <th style="padding-right: 50px; border-right: 0px">
+                            ประเภทแพ้ยา
+                          </th>
+                          <th style="padding-right: 50px; border-right: 0px">
+                            สาเหตุ
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -498,6 +507,15 @@
 
                           <td style="border-right: 0px; vertical-align: middle">
                             {{ i.drugName }}
+                          </td>
+                          <td style="border-right: 0px; vertical-align: middle">
+                            {{ i.ward_id }}
+                          </td>
+                          <td style="border-right: 0px; vertical-align: middle">
+                            {{ i.alergyType }}
+                          </td>
+                          <td style="border-right: 0px; vertical-align: middle">
+                            {{ i.causality }}
                           </td>
                         </tr>
                       </tbody>
