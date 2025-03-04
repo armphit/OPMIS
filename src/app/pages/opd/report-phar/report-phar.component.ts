@@ -427,6 +427,7 @@ export class ReportPharComponent implements OnInit {
           ? 'key'
           : '',
       choice: 1,
+      site: this.select,
     };
 
     let getData: any = await this.http.postNodejs('reportcheckmed', datasend);
@@ -522,7 +523,7 @@ export class ReportPharComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-  substrT(text:string){
-    return text.substring(1)
+  substrT(text: string) {
+    return text.substring(1);
   }
 }
