@@ -705,7 +705,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     screening: new FormControl(''),
   });
   dataUsercheck: any = null;
-  positionE: string[] = ['PE', 'key', 'จัด', 'check', 'DE', 'other'];
+  positionE: string[] = [
+    'PE',
+    'key',
+    'จัด',
+    'check',
+    'DE',
+    'Key&Check',
+    'จัด&Check',
+    'other',
+  ];
   typeE: any = [];
   gettypeE: any = [];
   pe_de: any = {
@@ -1366,6 +1375,59 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('pe'));
+    } else if (this.medError.value.position === 'จัด&Check') {
+      this.setText.textposition = false;
+      this.medError.patchValue({
+        offender: this.dataUsercheck.check,
+        position_text: this.medError.value.position,
+        type: 'n1',
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
+        type_pre: '',
+        screening: '',
+      });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort:
+            val.user.toLowerCase().charAt(0) != 'c' &&
+            val.user.toLowerCase().charAt(0) != 'o'
+              ? 1
+              : 2,
+        };
+      });
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
+    } else if (this.medError.value.position === 'Key&Check') {
+      this.setText.textposition = false;
+
+      this.medError.patchValue({
+        offender: this.dataUsercheck.key,
+        position_text: this.medError.value.position,
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
+        type: 'n1',
+        type_pre: '',
+        screening: '',
+      });
+
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
+        };
+      });
+
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
     } else {
       this.setText.textposition = true;
       this.medError.patchValue({
@@ -1889,30 +1951,33 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             userphar: this.dataUser.user,
             source: 'งานบริการ',
           };
+          if (this.balanceamountValue) {
+            let getData: any = await this.http.postNodejs('returndrug', send);
+            let win: any = window;
 
-          let getData: any = await this.http.postNodejs('returndrug', send);
-          let win: any = window;
+            if (getData.connect) {
+              if (getData.response.data) {
+                Swal.fire({
+                  icon: 'success',
+                  title: `เพิ่มข้อมูลคืนยาสำเร็จ`,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
 
-          if (getData.connect) {
-            if (getData.response.data) {
-              Swal.fire({
-                icon: 'success',
-                title: `เพิ่มข้อมูลคืนยาสำเร็จ`,
-                showConfirmButton: false,
-                timer: 1500,
-              });
-
-              win.$('#cut_dispend').modal('hide');
-            } else {
-              if (getData.response.massege) {
-                Swal.fire(getData.response.massege, '', 'error');
                 win.$('#cut_dispend').modal('hide');
               } else {
-                Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+                if (getData.response.massege) {
+                  Swal.fire(getData.response.massege, '', 'error');
+                  win.$('#cut_dispend').modal('hide');
+                } else {
+                  Swal.fire('เพิ่มข้อมูลไม่สำเร็จ!', '', 'error');
+                }
               }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
             }
           } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            Swal.fire('Invalid number!', '', 'error');
           }
         } else {
           Swal.fire('Invalid number!', '', 'error');
