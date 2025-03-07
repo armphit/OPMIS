@@ -86,9 +86,23 @@ export class CheckMedComponent implements OnInit {
     // });
   }
 
-  // ngAfterViewInit() {
-  //   this.http.loading = false;
+  // ngOnInit() {
+  //   const socket = new WebSocket('ws://localhost:8080');
+
+  //   socket.onmessage = (event) => {
+  //     console.log('Received from Node.js:', event.data);
+  //     this.message = event.data;
+  //   };
+
+  //   socket.onerror = (error) => {
+  //     console.error('WebSocket Error:', error);
+  //   };
+
+  //   socket.onclose = () => {
+  //     console.log('WebSocket Disconnected');
+  //   };
   // }
+
   getHN(hn: any) {
     this.getData(hn, null);
   }
