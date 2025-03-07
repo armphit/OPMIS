@@ -1647,7 +1647,7 @@
                 mat-sort-header
                 style="padding-left: 10px"
               >
-              Screening
+                Screening
               </th>
               <td
                 mat-cell
@@ -1705,11 +1705,13 @@
               >
                 <button
                   *ngIf="
-                    (dataUser.user == dataErr.checker_id ||
+                    dataUser.user == dataErr.checker_id ||
                     dataUser.user == dataErr.dispenser_id ||
-                    dataUser.user == dataErr.staff)|| (substrT(dataUser.user) == dataErr.checker_id ||
+                    dataUser.user == dataErr.staff ||
+                    substrT(dataUser.user) == dataErr.checker_id ||
                     substrT(dataUser.user) == dataErr.dispenser_id ||
-                    substrT(dataUser.user) == dataErr.staff)
+                    substrT(dataUser.user) == dataErr.staff ||
+                    dataUser.user == 'admin'
                   "
                   type="button"
                   (click)="updateCause(element)"
@@ -1774,6 +1776,52 @@
           Close
         </button>
       </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="modal_cause"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <form (ngSubmit)="updateSend()">
+        <div class="modal-header">
+          <span
+            class="modal-title"
+            id="exampleModalLabel"
+            style="font-weight: bold; font-size: 18px"
+            >สาเหตุ</span
+          >
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="dataCause.cause"
+            />
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-center">
+          <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button> -->
+          <button type="submit" class="btn btn-primary">บันทึก</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

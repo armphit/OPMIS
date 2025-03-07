@@ -489,40 +489,46 @@ export class ReportPharComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   public async updateCause(e: any) {
-    const { value: formValues } = await Swal.fire({
-      title: 'inputs',
-      html: `
-        <input id="swal-input1"  value="${e.cause}" class="swal2-input">
-
-      `,
-      focusConfirm: false,
-      preConfirm: () => {
-        return (document.getElementById('swal-input1') as HTMLInputElement)
-          .value;
-      },
-    });
-
+    this.dataCause = {
+      id: null,
+      cause: '',
+    };
+    this.dataCause.cause = e.cause;
+    this.dataCause.id = e.id;
+    let win: any = window;
+    win.$('#modal_cause').modal('show');
+  }
+  dataCause: any = {
+    id: null,
+    cause: '',
+  };
+  public async updateSend() {
     let formData = new FormData();
-    formData.append('id', e.id);
-    formData.append('cause', formValues ? formValues : '');
+    formData.append('id', this.dataCause.id);
+    formData.append('cause', this.dataCause.cause ? this.dataCause.cause : '');
     let getData: any = await this.http.post('update_cause', formData);
 
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         await this.listError(this.dataErr);
+        let win: any = window;
+        win.$('#modal_cause').modal('hide');
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'บันทกข้อมูลสำเร็จ',
+          title: 'บันทึกข้อมูลสำเร็จ',
           showConfirmButton: false,
           timer: 2000,
         });
       } else {
+        let win: any = window;
+        win.$('#modal_cause').modal('hide');
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
+
   substrT(text: string) {
     return text.substring(1);
   }
