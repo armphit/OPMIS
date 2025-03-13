@@ -1375,7 +1375,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('pe'));
-    } else if (this.medError.value.position === 'จัด&Check') {
+    } else if (
+      this.medError.value.position === 'จัด&Check' ||
+      this.medError.value.position === 'Key&Check'
+    ) {
       this.setText.textposition = false;
       this.medError.patchValue({
         offender: this.dataUsercheck.check,
@@ -1393,42 +1396,44 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.userList = this.userList.map((val: any) => {
         return {
           ...val,
-          valSort:
-            val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
-              ? 1
-              : 2,
+          // valSort:
+          //   val.user.toLowerCase().charAt(0) != 'c' &&
+          //   val.user.toLowerCase().charAt(0) != 'o'
+          //     ? 1
+          //     : 2,
         };
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
-    } else if (this.medError.value.position === 'Key&Check') {
-      this.setText.textposition = false;
+    }
+    // else if (this.medError.value.position === 'Key&Check') {
+    //   this.setText.textposition = false;
 
-      this.medError.patchValue({
-        offender: this.dataUsercheck.key,
-        position_text: this.medError.value.position,
-        level: '',
-        occurrence: '',
-        source: '',
-        error_type: '',
+    //   this.medError.patchValue({
+    //     offender: this.dataUsercheck.key,
+    //     position_text: this.medError.value.position,
+    //     level: '',
+    //     occurrence: '',
+    //     source: '',
+    //     error_type: '',
 
-        site: '',
-        type: 'n1',
-        type_pre: '',
-        screening: '',
-      });
+    //     site: '',
+    //     type: 'n1',
+    //     type_pre: '',
+    //     screening: '',
+    //   });
 
-      this.userList = this.userList.map((val: any) => {
-        return {
-          ...val,
-          valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
-        };
-      });
+    //   this.userList = this.userList.map((val: any) => {
+    //     return {
+    //       ...val,
+    //       valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
+    //     };
+    //   });
 
-      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
-      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
-    } else {
+    //   this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+    //   this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
+    // }
+    else {
       this.setText.textposition = true;
       this.medError.patchValue({
         offender: '',
