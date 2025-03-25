@@ -101,12 +101,10 @@
 
                   <p>
                     <strong style="color: #f40000">แพ้ยา : </strong
-                    ><i *ngIf="this.Dataqandcheck?.drugAllergy === 'N'"
-                      >** ไม่มีแพ้ยา **</i
-                    >
+                    ><i *ngIf="!this.Dataqandcheck">** ไม่มีแพ้ยา **</i>
 
                     <button
-                      *ngIf="this.Dataqandcheck?.drugAllergy === 'Y'"
+                      *ngIf="this.Dataqandcheck"
                       type="button"
                       class="btn btn-danger btn-sm"
                       (click)="showAllergic(this.patient_contract.cid)"
@@ -436,7 +434,7 @@
             class="modal-title"
             id="exampleModalLabel"
           >
-            รายการยา
+            รายการแพ้ยา
           </p>
 
           <button
@@ -449,7 +447,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <table class="table table-danger">
+          <!-- <table class="table table-danger">
             <thead>
               <tr>
                 <th style="padding-right: 50px; border-right: 0px">#</th>
@@ -499,7 +497,93 @@
                 </td>
               </tr>
             </tbody>
-          </table>
+          </table> -->
+          <div class="table-responsive" style="max-height: 400px">
+            <table class="table table-danger">
+              <thead>
+                <tr>
+                  <!-- <th style="padding-right: 50px; border-right: 0px">
+                    #
+                  </th> -->
+                  <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
+
+                  <th style="padding-right: 50px; border-right: 0px">
+                    โรงพยาบาล
+                  </th>
+                  <th style="padding-right: 50px; border-right: 0px">typedx</th>
+                  <th style="padding-right: 50px; border-right: 0px">
+                    ระดับแพ้ยา
+                  </th>
+                  <!-- <th style="padding-right: 50px; border-right: 0px">
+                    รหัสยา
+                  </th> -->
+                  <!-- <th style="padding-right: 50px; border-right: 0px">
+                    วันที่
+                  </th> -->
+                  <th
+                    class="sticky-col st-th"
+                    style="padding-right: 50px; border-right: 0px"
+                  >
+                    ชื่อยา
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let i of data_allergic; let x = index">
+                  <!-- <td style="border-right: 0px; vertical-align: middle">
+                    <div style="width: 10px">{{ x + 1 }}</div>
+                  </td> -->
+
+                  <td style="border-right: 0px; vertical-align: middle">
+                    {{ i.NAME }}
+                  </td>
+                  <td
+                    style="
+                      border-right: 0px;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    "
+                  >
+                    {{ i.typedx }}
+                  </td>
+                  <td
+                    style="
+                      border-right: 0px;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    "
+                  >
+                    {{ i.allerglevelcode }}
+                  </td>
+                  <!-- <td
+                    style="
+                      border-right: 0px;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    "
+                  >
+                    {{ i.drugcode }}
+                  </td> -->
+
+                  <!-- <td
+                    style="
+                      border-right: 0px;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    "
+                  >
+                    {{ i.daterecord }}
+                  </td> -->
+                  <td
+                    class="sticky-col st-td"
+                    style="border-right: 0px; vertical-align: middle"
+                  >
+                    {{ i.drugname }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="modal-footer">

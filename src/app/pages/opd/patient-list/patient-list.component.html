@@ -613,8 +613,11 @@
                     <th>จำนวน</th>
                     <th>หน่วย</th>
                     <th>ผู้จัด</th>
+                    <th>ที่ตั้งยา</th>
+                    <th>สถานะเช็คยา</th>
                     <th>เวลาคีย์ยา</th>
                     <th>เวลาเช็คยา</th>
+
                     <th></th>
                   </tr>
                 </thead>
@@ -640,6 +643,18 @@
                       class="text-nowrap"
                     >
                       {{ item.nameCheck ? item.nameCheck : "" }}
+                    </td>
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
+                      {{ item.location }}
+                    </td>
+                    <td
+                      style="border-right: 0px; vertical-align: middle"
+                      class="text-nowrap"
+                    >
+                      {{ item.checkAccept }}
                     </td>
                     <td
                       style="border-right: 0px; vertical-align: middle"

@@ -1,7 +1,7 @@
 <div class="container-fluid" style="overflow: auto" [hidden]="!dataDrug">
   <div class="row">
-    <div class="col-lg-5">
-      <!-- <mat-form-field class="example-form-field">
+    <!-- <div class="col-lg-5"> -->
+    <!-- <mat-form-field class="example-form-field">
         <mat-label>Enter EXP Date</mat-label>
         <mat-date-range-input
           [formGroup]="campaignOne"
@@ -37,8 +37,8 @@
       >
         <mat-icon>clear</mat-icon>
       </button> -->
-    </div>
-    <!-- <div class="col-lg-4" style="padding-top: 7px">
+    <!-- </div> -->
+    <div class="col-lg-5" style="padding-top: 7px">
       <button
         *ngIf="dataUser == 'admin'"
         mat-raised-button
@@ -47,7 +47,7 @@
       >
         <i class="fas fa-upload"></i>&nbsp; Upload Image with Drug Code
       </button>
-    </div> -->
+    </div>
     <div class="col-lg-7">
       <mat-form-field class="example-full-width" style="float: right">
         <input matInput (keyup)="applyFilter($event)" #input />
