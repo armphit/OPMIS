@@ -593,6 +593,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ) ?? null;
     let offender =
       this.userList.find((user: any) => user.user === val.offender_id) ?? null;
+    let offender2 =
+      this.userList.find(
+        (user: any) => user.user === val.another_offender_id
+      ) ?? null;
     let interceptor =
       this.userList.find((user: any) => user.user === val.interceptor_id) ??
       null;
@@ -618,6 +622,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       medGood_text: val.med_good_text,
       interceptor: interceptor ? interceptor.userName : val.interceptor_name,
       offender: offender ? offender.userName : val.offender_name,
+      offender2: offender2 ? offender2.userName : val.another_offender_name,
       note: val.note,
       id: val.id,
       check: text,
@@ -666,6 +671,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   dataAllergic: any = [];
   dataInterceptor: any;
   dataOffender: any;
+  dataOffender2: any;
   @ViewChild('inputadd') inputadd!: ElementRef<HTMLInputElement>;
   @ViewChild('inputgood') inputgood!: ElementRef<HTMLInputElement>;
   @ViewChild('inputwrong') inputwrong!: ElementRef<HTMLInputElement>;
@@ -673,6 +679,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('inputinterceptor')
   inputinterceptor!: ElementRef<HTMLInputElement>;
   @ViewChild('inputoffender') inputoffender!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputoffender2') inputoffender2!: ElementRef<HTMLInputElement>;
   setText = {
     textposition: false,
     texttype: false,
@@ -703,13 +710,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     type_pre: new FormControl(''),
     medcode_err: new FormControl(''),
     screening: new FormControl(''),
+    offender2: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = [
     'PE',
     'key',
     'จัด',
-    'check',
+
     'DE',
     'Key&Check',
     'จัด&Check',
@@ -871,6 +879,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         user: this.medError.value.offender ? this.medError.value.offender : '',
         userName: this.medError.value.offender
           ? this.medError.value.offender
+          : '',
+      },
+      offender2: this.userList.find(
+        (val: any) => val.userName === this.medError.value.offender2
+      ) ?? {
+        name: this.medError.value.offender2
+          ? this.medError.value.offender2
+          : '',
+        user: this.medError.value.offender2
+          ? this.medError.value.offender2
+          : '',
+        userName: this.medError.value.offender2
+          ? this.medError.value.offender2
           : '',
       },
       medGood: this.drugList.find(
@@ -1375,13 +1396,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('pe'));
-    } else if (
-      this.medError.value.position === 'จัด&Check' ||
-      this.medError.value.position === 'Key&Check'
-    ) {
+    } else if (this.medError.value.position === 'Key&Check') {
       this.setText.textposition = false;
       this.medError.patchValue({
-        offender: this.dataUsercheck.check,
+        offender: this.dataUsercheck.key,
+        offender2: this.dataUsercheck.check,
         position_text: this.medError.value.position,
         type: 'n1',
         level: '',
@@ -1393,6 +1412,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         type_pre: '',
         screening: '',
       });
+
       this.userList = this.userList.map((val: any) => {
         return {
           ...val,
@@ -1405,38 +1425,38 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       });
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
-    }
-    // else if (this.medError.value.position === 'Key&Check') {
-    //   this.setText.textposition = false;
+    } else if (this.medError.value.position === 'จัด&Check') {
+      this.setText.textposition = false;
 
-    //   this.medError.patchValue({
-    //     offender: this.dataUsercheck.key,
-    //     position_text: this.medError.value.position,
-    //     level: '',
-    //     occurrence: '',
-    //     source: '',
-    //     error_type: '',
+      this.medError.patchValue({
+        offender: this.dataUsercheck.userName,
+        offender2: this.dataUsercheck.check,
+        position_text: this.medError.value.position,
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
 
-    //     site: '',
-    //     type: 'n1',
-    //     type_pre: '',
-    //     screening: '',
-    //   });
+        site: '',
+        type: 'n1',
+        type_pre: '',
+        screening: '',
+      });
 
-    //   this.userList = this.userList.map((val: any) => {
-    //     return {
-    //       ...val,
-    //       valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
-    //     };
-    //   });
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
+        };
+      });
 
-    //   this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
-    //   this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
-    // }
-    else {
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
+    } else {
       this.setText.textposition = true;
       this.medError.patchValue({
         offender: '',
+        offender2: '',
         position_text: '',
         type: '',
         level: '',
@@ -1498,6 +1518,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputoffender.nativeElement.value.toLowerCase();
 
     this.dataOffender = this.userList.filter((o: any) =>
+      o.userName.trim().toLowerCase().includes(filterValue)
+    );
+  }
+  filter_offender2(): void {
+    const filterValue = this.inputoffender2.nativeElement.value.toLowerCase();
+
+    this.dataOffender2 = this.userList.filter((o: any) =>
       o.userName.trim().toLowerCase().includes(filterValue)
     );
   }
@@ -3165,7 +3192,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         val.position_text != 'DE' &&
         val.position_text != 'key' &&
         val.position_text != 'จัด' &&
-        val.position_text != 'check'
+        val.position_text != 'check' &&
+        val.position_text != 'key&check' &&
+        val.position_text != 'จัด&check'
     ).length;
 
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
@@ -3207,6 +3236,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'med_good_text',
         'interceptor_name',
         'offender_name',
+        'another_offender_name',
         'level',
         'occurrence',
         'source',

@@ -2173,6 +2173,27 @@
               {{ element.offender_name }}
             </td>
           </ng-container>
+          <ng-container
+            matColumnDef="another_offender_name"
+            *ngIf="choicecheckmed == '1'"
+          >
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              style="padding-left: 10px"
+            >
+              ผู้ก่อความคลาดเคลื่อนคนที่ 2
+            </th>
+            <td
+              class="text-nowrap"
+              mat-cell
+              *matCellDef="let element"
+              style="padding-left: 20px; padding-right: 20px"
+            >
+              {{ element.another_offender_name }}
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="level" *ngIf="choicecheckmed == '1'">
             <th
@@ -3236,6 +3257,34 @@
                 <mat-autocomplete requireSelection #auto4="matAutocomplete">
                   <mat-option
                     *ngFor="let option of dataOffender"
+                    [value]="option.userName"
+                  >
+                    {{ option.userName }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field
+                *ngIf="
+                  medError.value.position === 'Key&Check' ||
+                  medError.value.position === 'จัด&Check'
+                "
+                class="example-full-width"
+              >
+                <mat-label>ผู้ก่อความคลาดเคลื่อนเช็ค</mat-label>
+                <input
+                  [required]="medError.value.position !== 'PE'"
+                  #inputoffender2
+                  type="text"
+                  matInput
+                  formControlName="offender2"
+                  [matAutocomplete]="auto4"
+                  (input)="filter_offender2()"
+                  (focus)="filter_offender2()"
+                />
+
+                <mat-autocomplete requireSelection #auto4="matAutocomplete">
+                  <mat-option
+                    *ngFor="let option of dataOffender2"
                     [value]="option.userName"
                   >
                     {{ option.userName }}
