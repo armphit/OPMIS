@@ -1,10 +1,10 @@
 {
-  "name": "opmis",
+  "name": "opmis2",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot --open",
-    "build": "ng build --build-optimizer --output-hashing=all --prod --base-href=/opmis/",
+    "build": "ng build --build-optimizer --output-hashing=all --prod --base-href=/opmis2/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
