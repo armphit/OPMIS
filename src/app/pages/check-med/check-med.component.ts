@@ -1297,7 +1297,11 @@ export class CheckMedComponent implements OnInit {
     });
   }
   sendAccept(data: any, evt: any) {
-    if (!data.checkAccept || !data.qty || !data.barCode) {
+    if (
+      (!data.checkAccept && !data.qty && !data.barCode) ||
+      !data.qty ||
+      !data.checkAccept
+    ) {
       data.dataCheck = 2;
       Swal.fire({
         // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
