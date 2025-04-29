@@ -381,64 +381,74 @@ export class CheckMedComponent implements OnInit {
           }
           // value[0].HisPackageRatio = textSpilt[1];
         }
-      } else if (
-        // this.patient_drug.filter(
-        //   (item: any) => item.drugCode.trim() === val.trim()
-        // ).length ||
-        this.patient_drug.filter((item: any) =>
-          item.device ? item.device.includes(val.trim()) : []
-        ).length
-      ) {
-        // if (
-        //   this.patient_drug.filter(
-        //     (item: any) => item.drugCode.trim() === val.trim()
-        //   ).length
-        // ) {
-        //   value = this.patient_drug.filter(
-        //     (item: any) => item.drugCode.trim() === val.trim()
-        //   );
-        // } else {
-        value = this.patient_drug.filter((item: any) =>
-          item.device ? item.device.includes(val.trim()) : []
-        );
+      } else {
+        if (
+          this.patient_drug.filter((item: any) =>
+            item.device ? item.device.includes(val.trim()) && item.checkqty : []
+          ).length
+        ) {
+          value = this.patient_drug.filter((item: any) =>
+            item.device ? item.device.includes(val.trim()) && item.checkqty : []
+          );
 
-        if (value.length) {
-          value[0].HisPackageRatio = value[0].qty + 1;
-          value[0].checkqrcode = 'Y';
-          // value[0].HisPackageRatio = textSpilt[1];
-        }
-      } else if (
-        this.patient_drug.filter(
-          (item: any) => item.drugCode.trim() === val.trim()
-        )
-      ) {
-        value = this.patient_drug.filter(
-          (item: any) => item.drugCode.trim() === val.trim()
-        );
-        if (value.length) {
-          value[0].HisPackageRatio = value[0].qty + 1;
-          value[0].checkqrcode = 'Y';
-          // value[0].HisPackageRatio = textSpilt[1];
+          if (value.length) {
+            value[0].HisPackageRatio = value[0].qty + 1;
+            value[0].checkqrcode = 'Y';
+            // value[0].HisPackageRatio = textSpilt[1];
+          }
+        } else if (
+          this.patient_drug.filter(
+            (item: any) => item.drugCode.trim() === val.trim() && item.checkqty
+          ).length
+        ) {
+          value = this.patient_drug.filter(
+            (item: any) => item.drugCode.trim() === val.trim() && item.checkqty
+          );
+          if (value.length) {
+            value[0].HisPackageRatio = value[0].qty + 1;
+            value[0].checkqrcode = 'Y';
+            // value[0].HisPackageRatio = textSpilt[1];
+          }
         }
       }
+      // else if (
+      //   // this.patient_drug.filter(
+      //   //   (item: any) => item.drugCode.trim() === val.trim()
+      //   // ).length ||
+      //   this.patient_drug.filter((item: any) =>
+      //     item.device ? item.device.includes(val.trim()) : []
+      //   ).length
+      // ) {
+      //   // if (
+      //   //   this.patient_drug.filter(
+      //   //     (item: any) => item.drugCode.trim() === val.trim()
+      //   //   ).length
+      //   // ) {
+      //   //   value = this.patient_drug.filter(
+      //   //     (item: any) => item.drugCode.trim() === val.trim()
+      //   //   );
+      //   // } else {
+      //   value = this.patient_drug.filter((item: any) =>
+      //     item.device ? item.device.includes(val.trim()) : []
+      //   );
 
-      // const decryptedDataBase64 = CryptoJS.AES.decrypt(val, '****');
-      // const decryptedDataBase64InUtf = decryptedDataBase64.toString(
-      //   CryptoJS.enc.Utf8
-      // );
-
-      // if (decryptedDataBase64InUtf) {
-      //   try {
-      //     let dataQr = JSON.parse(decryptedDataBase64InUtf);
-
-      //     value = this.patient_drug.filter(
-      //       (item: any) => item.drugCode.trim() === dataQr.drug.trim()
-      //     );
-      //     if (value.length) {
-      //       value[0].HisPackageRatio = dataQr.qty;
-      //     }
-      //   } catch (error) {
-      //     console.log(error);
+      //   if (value.length) {
+      //     value[0].HisPackageRatio = value[0].qty + 1;
+      //     value[0].checkqrcode = 'Y';
+      //     // value[0].HisPackageRatio = textSpilt[1];
+      //   }
+      // } else if (
+      //   this.patient_drug.filter(
+      //     (item: any) => item.drugCode.trim() === val.trim()
+      //   )
+      // ) {
+      //   value = this.patient_drug.filter(
+      //     (item: any) => item.drugCode.trim() === val.trim()
+      //   );
+      //   if (value.length) {
+      //     value[0].HisPackageRatio = value[0].qty + 1;
+      //     value[0].checkqrcode = 'Y';
+      //     // value[0].HisPackageRatio = textSpilt[1];
       //   }
       // }
     } else {
