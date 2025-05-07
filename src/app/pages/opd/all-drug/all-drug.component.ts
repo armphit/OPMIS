@@ -182,17 +182,17 @@ export class AllDrugComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  // public upload_img: any = null;
-  // public upload_img_name: any = null;
-  // public img_name: any = null;
+  public upload_img: any = null;
+  public upload_img_name: any = null;
+  public img_name: any = null;
 
-  // public closeImg() {
-  //   this.drug_code = null;
-  //   this.arrFile = [];
-  //   this.imgResultMultiple = [];
+  public closeImg() {
+    this.drug_code = null;
+    this.arrFile = [];
+    this.imgResultMultiple = [];
 
-  //   this.imgResultAfterCompress = '';
-  // }
+    this.imgResultAfterCompress = '';
+  }
 
   public drug_code: any = null;
   public dataCut: any = {
@@ -326,77 +326,77 @@ export class AllDrugComponent implements OnInit {
     win.$('#usercut').modal('show');
   };
 
-  // public sendImage = async () => {
-  //   if (this.arrFile) {
-  //     let formData = new FormData();
-  //     formData.append('code', this.drug_code);
+  public sendImage = async () => {
+    if (this.arrFile) {
+      let formData = new FormData();
+      formData.append('code', this.drug_code);
 
-  //     this.arrFile.forEach((item: any) => {
-  //       formData.append('upload[]', item);
-  //     });
-  //     let getData: any = await this.http.post('addImgDrug', formData);
+      this.arrFile.forEach((item: any) => {
+        formData.append('upload[]', item);
+      });
+      let getData: any = await this.http.post('addImgDrug', formData);
 
-  //     if (getData.connect) {
-  //       if (getData.response.rowCount > 0) {
-  //         this.getData();
-  //         let win: any = window;
-  //         win.$('#myModal').modal('hide');
-  //         Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
-  //         this.upload_img = null;
-  //         this.upload_img_name = null;
+      if (getData.connect) {
+        if (getData.response.rowCount > 0) {
+          this.getData();
+          let win: any = window;
+          win.$('#myModal').modal('hide');
+          Swal.fire('อัปโหลดรูปภาพเสร็จสิ้น', '', 'success');
+          this.upload_img = null;
+          this.upload_img_name = null;
 
-  //         this.drug_code = null;
-  //         this.img_name = null;
-  //         this.arrFile = [];
-  //         this.imgResultMultiple = [];
-  //         this.imgResultAfterCompress = '';
-  //       } else {
-  //         console.log(getData);
-  //         Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
-  //       }
-  //     } else {
-  //       alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
-  //     }
-  //   } else {
-  //     Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
-  //   }
-  // };
+          this.drug_code = null;
+          this.img_name = null;
+          this.arrFile = [];
+          this.imgResultMultiple = [];
+          this.imgResultAfterCompress = '';
+        } else {
+          console.log(getData);
+          Swal.fire('อัปโหลดรูปภาพไม่สำเร็จ', '', 'error');
+        }
+      } else {
+        alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+      }
+    } else {
+      Swal.fire('', 'โปรดเลือกรูปภาพ', 'error');
+    }
+  };
 
-  // imgResultBeforeCompress: DataUrl = '';
-  // imgResultAfterCompress: DataUrl = '';
-  // imgResultMultiple: UploadResponse[] = [];
-  // test: UploadResponse[] = [];
-  // imgResultAfterResize: any = '';
-  // public arrFile: any = [];
-  // public async uploadMultipleFiles() {
-  //   const multipleOrientedFiles =
-  //     await this.imageCompress.uploadMultipleFiles();
+  imgResultBeforeCompress: DataUrl = '';
+  imgResultAfterCompress: DataUrl = '';
+  imgResultMultiple: UploadResponse[] = [];
+  test: UploadResponse[] = [];
+  imgResultAfterResize: any = '';
+  public arrFile: any = [];
+  public async uploadMultipleFiles() {
+    const multipleOrientedFiles =
+      await this.imageCompress.uploadMultipleFiles();
 
-  //   this.imgResultMultiple = multipleOrientedFiles;
+    this.imgResultMultiple = multipleOrientedFiles;
 
-  //   let imgResize = [];
-  //   for (let index = 0; index < this.imgResultMultiple.length; index++) {
-  //     imgResize[index] = await this.imageCompress.compressFile(
-  //       this.imgResultMultiple[index].image,
-  //       this.imgResultMultiple[index].orientation,
-  //       50,
-  //       50
-  //     );
-  //   }
+    let imgResize = [];
+    for (let index = 0; index < this.imgResultMultiple.length; index++) {
+      imgResize[index] = await this.imageCompress.compressFile(
+        this.imgResultMultiple[index].image,
+        this.imgResultMultiple[index].orientation,
+        50,
+        50
+      );
+    }
 
-  //   imgResize.forEach((element: any, index: any) => {
-  //     this.arrFile.push(
-  //       this.base64ToFile(
-  //         element,
-  //         this.drug_code +
-  //           '_' +
-  //           moment(new Date()).format('DDMMYYYYHHmmss') +
-  //           '_' +
-  //           (index + 1)
-  //       )
-  //     );
-  //   });
-  // }
+    imgResize.forEach((element: any, index: any) => {
+      this.arrFile.push(
+        this.base64ToFile(
+          element,
+          this.drug_code +
+            '_' +
+            moment(new Date()).format('DDMMYYYYHHmmss') +
+            '_' +
+            (index + 1)
+        )
+      );
+    });
+  }
 
   base64ToFile(data: any, filename: any) {
     const arr = data.split(',');
@@ -610,7 +610,9 @@ export class AllDrugComponent implements OnInit {
         formData.append('code[]', item.name);
         formData.append('type[]', item.type);
       });
-
+      // formData.forEach((value, key) => {
+      //   console.log(`${key}:`, value);
+      // });
       let getData: any = await this.http.post('addImgWithDrugCode', formData);
 
       if (getData.connect) {

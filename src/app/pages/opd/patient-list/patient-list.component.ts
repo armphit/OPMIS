@@ -540,6 +540,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...val,
             site: val.location,
           });
+          this.pe_de.note = dataUser.response.note;
           let check: any = '';
           let dis: any = '';
           if (val.position_text === 'check') {
@@ -711,6 +712,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     medcode_err: new FormControl(''),
     screening: new FormControl(''),
     offender2: new FormControl(''),
+    note_code: new FormControl(''),
   });
   dataUsercheck: any = null;
   positionE: string[] = [
@@ -736,15 +738,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'drug error & labelling error',
     ],
     note: [
-      'ไม่มียานี้ในบัญชีโรงพยาบาล',
-      'อ่านชื่อยาไม่ชัดเจน',
-      'วิธีใช้ไม่ชัดเจน',
-      'กรุณาระบุจำนวนยา',
-      'กรุณาระบุความแรงยา รพ.มีขนาด',
-      'กรุณาระบุวิธีใช้ยา',
-      'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
-      'ขอใบ NED / DUE / จ2 / ยส.5 / เฉพาะราย',
-      'ไม่ปฏิบัติตามนโยบาย DUE / RDU',
+      // 'ไม่มียานี้ในบัญชีโรงพยาบาล',
+      // 'อ่านชื่อยาไม่ชัดเจน',
+      // 'วิธีใช้ไม่ชัดเจน',
+      // 'กรุณาระบุจำนวนยา',
+      // 'กรุณาระบุความแรงยา รพ.มีขนาด',
+      // 'กรุณาระบุวิธีใช้ยา',
+      // 'ขอใบเฉพาะกิจ / มูลค่ายาเกินหมื่น / กรณีสั่ง Alprazolam',
+      // 'ขอใบ NED / DUE / จ2 / ยส.5 / เฉพาะราย',
+      // 'ไม่ปฏิบัติตามนโยบาย DUE / RDU',
     ],
     site: [
       'PCT ศัลย์',
@@ -776,6 +778,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ...val.item,
       site: this.select,
     });
+
+    this.pe_de.note = dataUser.response.note;
 
     let positionError = {
       key: '',
@@ -833,10 +837,29 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   }
   changeText(e: any) {
+    const result = this.findGroupWithNoteText(
+      e.value,
+      this.pe_de.note.groupedNotes
+    );
+
     this.medError.patchValue({
       note: e.value,
+      note_code: result,
     });
   }
+  findGroupWithNoteText(targetText: string, groupedNotes: any): string | null {
+    for (const group in groupedNotes) {
+      if (
+        groupedNotes[group].some((note: any) =>
+          note.note_text.includes(targetText)
+        )
+      ) {
+        return group;
+      }
+    }
+    return null;
+  }
+
   checkpre: boolean = false;
   public async submitInput(data: any) {
     let old = this.medError.value;

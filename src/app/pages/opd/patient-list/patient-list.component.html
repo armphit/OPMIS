@@ -3379,11 +3379,31 @@
                   (selectionChange)="changeText($event); note_change.value = ''"
                   #note_change
                 >
+                  <mat-optgroup
+                    *ngFor="let code of pe_de.note.noteCodes"
+                    [label]="code"
+                  >
+                    <mat-option
+                      *ngFor="let note of pe_de.note.groupedNotes[code]"
+                      [value]="note.note_text"
+                    >
+
+                      {{ note.note_text }}
+                    </mat-option>
+                  </mat-optgroup>
+                </mat-select>
+              </mat-form-field>
+              <!-- <mat-form-field class="example-full-width">
+                <mat-label>เลือกข้อความหมายเหตุ</mat-label>
+                <mat-select
+                  (selectionChange)="changeText($event); note_change.value = ''"
+                  #note_change
+                >
                   <mat-option *ngFor="let item of pe_de.note" [value]="item">
                     {{ item }}
                   </mat-option>
                 </mat-select>
-              </mat-form-field>
+              </mat-form-field> -->
               <button
                 style="margin: 5px"
                 type="button"

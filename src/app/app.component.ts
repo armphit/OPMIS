@@ -13,7 +13,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'opmis2';
+  title = 'opmis';
   private unsubscribe$: Subject<void> = new Subject<void>();
   private timer: any;
   private readonly TIMEOUT_DURATION: number = 900000; // 5 seconds
