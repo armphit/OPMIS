@@ -3255,6 +3255,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'type_text',
         'med_wrong_name',
         'med_wrong_text',
+        'drugAllergy',
         'med_good_name',
         'med_good_text',
         'interceptor_name',
@@ -3266,9 +3267,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'error_type',
         'site',
         'type_pre',
-        'drugAllergy',
         'note',
         'cause',
+        'another_offender_cause',
         'hnDT',
         'createDT',
       ];

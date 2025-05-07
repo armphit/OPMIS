@@ -506,6 +506,7 @@ export class ReportPharComponent implements OnInit {
     let formData = new FormData();
     formData.append('id', this.dataCause.id);
     formData.append('cause', this.dataCause.cause ? this.dataCause.cause : '');
+    formData.append('num', String(this.numTab));
     let getData: any = await this.http.post('update_cause', formData);
 
     if (getData.connect) {
