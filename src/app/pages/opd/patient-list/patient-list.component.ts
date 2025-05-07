@@ -3268,7 +3268,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'site',
         'type_pre',
         'note',
+        'cause_code',
         'cause',
+
         'another_offender_cause',
         'hnDT',
         'createDT',
