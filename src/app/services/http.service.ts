@@ -23,6 +23,7 @@ export class HttpService {
   public printTest: string = 'http://localhost:5000/';
   public drug: any = null;
   public patientPath: string = 'http://192.168.185.162:1000/';
+  public idenPath: string = 'http://192.168.185.160:88/';
   // _url = 'http:// + environment.API_SERVER + :3000';
   public sendPath: string =
     'http://192.168.185.102:8788/axis2/services/DIHPMPFWebservice?wsdl';
@@ -48,7 +49,23 @@ export class HttpService {
         });
     });
   };
-
+  public postIden = async (path: string, formdata: any = null) => {
+    this.loading = true;
+    // let delayres = await this.delay(500);
+    return new Promise((resolve) => {
+      this.http
+        .post(this.idenPath + path, formdata)
+        .toPromise()
+        .then((value) => {
+          resolve({ connect: true, response: value });
+          this.loading = false;
+        })
+        .catch((reason) => {
+          resolve({ connect: false, response: reason });
+          this.loading = false;
+        });
+    });
+  };
   public get = async (path: string) => {
     this.loading = true;
     // let delayres = await this.delay(500);

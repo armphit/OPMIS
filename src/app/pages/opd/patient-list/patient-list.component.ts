@@ -497,6 +497,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         let win: any = window;
         win.$('#exampleModal').modal('show');
+        await this.shoppingDrug(val.patientNO, this.drugPatient);
       } else {
         this.drugPatient = null;
         // let win: any = window;
@@ -507,7 +508,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   };
+  itemsShoping: any = [];
 
+  public shoppingDrug = async (hn: any, data: any) => {
+    let formData = new FormData();
+    formData.append('hn', hn);
+    let getData: any = await this.http.postIden(
+      'API_drugiden/index.php/DrugIden/drug_shopping',
+      formData
+    );
+
+    this.itemsShoping = getData.response.result.filter((aItem: any) =>
+      data.some((bItem: any) => bItem.drugCode.trim() === aItem.drugCode.trim())
+    );
+
+    let win: any = window;
+    win.$('#shopping').modal('show');
+  };
   public manageErrormed = async (val: any, text: any) => {
     this.medError.reset();
 
