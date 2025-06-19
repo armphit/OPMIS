@@ -383,20 +383,6 @@ export class CheckMedComponent implements OnInit {
         }
       } else {
         if (
-          this.patient_drug.filter((item: any) =>
-            item.device ? item.device.includes(val.trim()) && item.checkqty : []
-          ).length
-        ) {
-          value = this.patient_drug.filter((item: any) =>
-            item.device ? item.device.includes(val.trim()) && item.checkqty : []
-          );
-
-          if (value.length) {
-            value[0].HisPackageRatio = value[0].qty + 1;
-            value[0].checkqrcode = 'Y';
-            // value[0].HisPackageRatio = textSpilt[1];
-          }
-        } else if (
           this.patient_drug.filter(
             (item: any) => item.drugCode.trim() === val.trim() && item.checkqty
           ).length
@@ -408,6 +394,24 @@ export class CheckMedComponent implements OnInit {
             value[0].HisPackageRatio = value[0].qty + 1;
             value[0].checkqrcode = 'Y';
             // value[0].HisPackageRatio = textSpilt[1];
+          }
+        } else {
+          let setdrug = this.patient_drug.filter((item: any) => item.device);
+
+          if (
+            setdrug.filter(
+              (item: any) => item.device.includes(val.trim()) && item.checkqty
+            ).length
+          ) {
+            value = setdrug.filter(
+              (item: any) => item.device.includes(val.trim()) && item.checkqty
+            );
+
+            if (value.length) {
+              value[0].HisPackageRatio = value[0].qty + 1;
+              value[0].checkqrcode = 'Y';
+              // value[0].HisPackageRatio = textSpilt[1];
+            }
           }
         }
       }
