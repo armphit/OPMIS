@@ -497,7 +497,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         let win: any = window;
         win.$('#exampleModal').modal('show');
-        await this.shoppingDrug(val.patientNO, this.drugPatient);
+        // await this.shoppingDrug(val.patientNO, this.drugPatient);
       } else {
         this.drugPatient = null;
         // let win: any = window;
@@ -510,21 +510,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
   itemsShoping: any = [];
 
-  public shoppingDrug = async (hn: any, data: any) => {
-    let formData = new FormData();
-    formData.append('hn', hn);
-    let getData: any = await this.http.postIden(
-      'API_drugiden/index.php/DrugIden/drug_shopping',
-      formData
-    );
+  // public shoppingDrug = async (hn: any, data: any) => {
+  //   let formData = new FormData();
+  //   formData.append('hn', hn);
+  //   let getData: any = await this.http.postIden(
+  //     'API_drugiden/index.php/DrugIden/drug_shopping',
+  //     formData
+  //   );
 
-    this.itemsShoping = getData.response.result.filter((aItem: any) =>
-      data.some((bItem: any) => bItem.drugCode.trim() === aItem.drugCode.trim())
-    );
+  //   this.itemsShoping = getData.response.result.filter((aItem: any) =>
+  //     data.some((bItem: any) => bItem.drugCode.trim() === aItem.drugCode.trim())
+  //   );
 
-    let win: any = window;
-    win.$('#shopping').modal('show');
-  };
+  //   let win: any = window;
+  //   win.$('#shopping').modal('show');
+  // };
   public manageErrormed = async (val: any, text: any) => {
     this.medError.reset();
 
@@ -557,7 +557,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...val,
             site: val.location,
           });
-          this.pe_de.note = dataUser.response.note;
+          // this.pe_de.note = dataUser.response.note;
+          this.pe_de.note = dataUser.response.note.groupedNotes.อื่นๆ;
           let check: any = '';
           let dis: any = '';
           if (val.position_text === 'check') {
@@ -796,8 +797,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       site: this.select,
     });
 
-    this.pe_de.note = dataUser.response.note;
+    this.pe_de.note = dataUser.response.note.groupedNotes.อื่นๆ;
 
+    //     console.log(this.pe_de.note.groupedNotes);
+    // console.log(this.pe_de.note.groupedNotes.อื่นๆ);
     let positionError = {
       key: '',
       check: '',
@@ -854,14 +857,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
   }
   changeText(e: any) {
-    const result = this.findGroupWithNoteText(
-      e.value,
-      this.pe_de.note.groupedNotes
-    );
+    // const result = this.findGroupWithNoteText(
+    //   e.value,
+    //   this.pe_de.note.groupedNotes
+    // );
 
     this.medError.patchValue({
       note: e.value,
-      note_code: result,
+      note_code: '',
     });
   }
   findGroupWithNoteText(targetText: string, groupedNotes: any): string | null {
@@ -3285,7 +3288,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'site',
         'type_pre',
         'note',
-        'cause_code',
+        // 'cause_code',
         'cause',
 
         'another_offender_cause',
@@ -3547,6 +3550,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     'การเปลี่ยนแปลงการรักษา',
     'ไม่อยากใช้ยา',
     'มียาเดิมเพียงพอ',
+    'Round Up',
     'อื่นๆ',
   ];
   causeReturn: string = '';

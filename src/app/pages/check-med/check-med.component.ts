@@ -1088,7 +1088,7 @@ export class CheckMedComponent implements OnInit {
               text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
                 data.indication
               }`,
-              fontSize: 12,
+              fontSize: `${data.drugCode.trim() === 'EMPAG' ? '10' : '12'}`,
               bold: true,
             },
             ...(data.qrCode

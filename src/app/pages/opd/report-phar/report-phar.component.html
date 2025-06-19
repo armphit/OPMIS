@@ -1806,6 +1806,22 @@
           </button>
         </div>
         <div class="modal-body">
+          <mat-form-field class="example-full-width">
+            <mat-label>เลือกข้อความหมายเหตุ</mat-label>
+            <mat-select
+              (selectionChange)="changeText($event); note_change.value = ''"
+              #note_change
+            >
+              <mat-optgroup *ngFor="let code of note.noteCodes" [label]="code">
+                <mat-option
+                  *ngFor="let note of note.groupedNotes[code]"
+                  [value]="note.note_text"
+                >
+                  {{ note.note_text }}
+                </mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
           <div class="form-group">
             <input
               type="text"

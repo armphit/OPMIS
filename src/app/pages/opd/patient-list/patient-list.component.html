@@ -2369,7 +2369,7 @@
               {{ element.cause }}
             </td>
           </ng-container>
-          <ng-container matColumnDef="cause_code" *ngIf="choicecheckmed == '1'">
+          <!-- <ng-container matColumnDef="cause_code" *ngIf="choicecheckmed == '1'">
             <th
               mat-header-cell
               *matHeaderCellDef
@@ -2385,7 +2385,7 @@
             >
               {{ element.cause_code }}
             </td>
-          </ng-container>
+          </ng-container> -->
 
           <ng-container
             matColumnDef="another_offender_cause"
@@ -3417,7 +3417,7 @@
                   (selectionChange)="changeText($event); note_change.value = ''"
                   #note_change
                 >
-                  <mat-optgroup
+                  <!-- <mat-optgroup
                     *ngFor="let code of pe_de.note.noteCodes"
                     [label]="code"
                   >
@@ -3427,7 +3427,13 @@
                     >
                       {{ note.note_text }}
                     </mat-option>
-                  </mat-optgroup>
+                  </mat-optgroup> -->
+                  <mat-option
+                    *ngFor="let note of pe_de.note"
+                    [value]="note.note_text"
+                  >
+                    {{ note.note_text }}
+                  </mat-option>
                 </mat-select>
               </mat-form-field>
               <!-- <mat-form-field class="example-full-width">

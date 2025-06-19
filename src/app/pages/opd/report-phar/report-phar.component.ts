@@ -100,6 +100,15 @@ export class ReportPharComponent implements OnInit {
   ngOnInit(): void {}
   public nameExcel = '';
   public getData = async () => {
+    let dataUser: any = await this.http.postNodejsTest('positionError', {
+      createdDT: '2025-01-01 08:00:00',
+      patientNO: '0000',
+      date: '2025-01-01',
+      site: 'W99',
+      drugCode: '',
+    });
+    this.note = dataUser.response.note;
+    delete this.note.groupedNotes.อื่นๆ;
     this.dataDrug = null;
     const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
@@ -488,6 +497,7 @@ export class ReportPharComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+  note: any = null;
   public async updateCause(e: any) {
     this.dataCause = {
       id: null,
@@ -495,8 +505,27 @@ export class ReportPharComponent implements OnInit {
     };
     this.dataCause.cause = e.cause;
     this.dataCause.id = e.id;
+
     let win: any = window;
     win.$('#modal_cause').modal('show');
+  }
+  changeText(e: any) {
+    const result = this.findGroupWithNoteText(e.value, this.note.groupedNotes);
+
+    this.dataCause.cause = e.value;
+    this.dataCause.cause_code = result;
+  }
+  findGroupWithNoteText(targetText: string, groupedNotes: any): string | null {
+    for (const group in groupedNotes) {
+      if (
+        groupedNotes[group].some((note: any) =>
+          note.note_text.includes(targetText)
+        )
+      ) {
+        return group;
+      }
+    }
+    return null;
   }
   dataCause: any = {
     id: null,
@@ -507,6 +536,10 @@ export class ReportPharComponent implements OnInit {
     formData.append('id', this.dataCause.id);
     formData.append('cause', this.dataCause.cause ? this.dataCause.cause : '');
     formData.append('num', String(this.numTab));
+    formData.append(
+      'cause_code',
+      this.dataCause.cause_code ? this.dataCause.cause_code : ''
+    );
     let getData: any = await this.http.post('update_cause', formData);
 
     if (getData.connect) {
