@@ -365,11 +365,11 @@ export class CheckMedComponent implements OnInit {
         value = this.patient_drug.filter(
           (item: any) => item.drugCode.trim() === textSpilt[0].trim()
         );
+        let formData = new FormData();
+        formData.append('code', textSpilt[0].trim());
+        let getBot: any = null;
         if (value.length) {
-          let formData = new FormData();
-          formData.append('code', textSpilt[0].trim());
-
-          let getBot: any = await this.http.post('getDrubot', formData);
+          getBot = await this.http.post('getDrubot', formData);
           if (getBot.connect) {
             if (getBot.response.rowCount > 0) {
               value[0].HisPackageRatio = 1;
@@ -380,6 +380,24 @@ export class CheckMedComponent implements OnInit {
             Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           }
           // value[0].HisPackageRatio = textSpilt[1];
+        } else {
+          formData.append('pack', textSpilt[1].trim());
+          getBot = await this.http.post('getFixqr', formData);
+
+          if (getBot.connect) {
+            if (getBot.response.rowCount > 0) {
+              value = this.patient_drug.filter(
+                (item: any) =>
+                  item.drugCode.trim() ===
+                  getBot.response.result[0].drugCode.trim()
+              );
+              if (value.length) {
+                value[0].HisPackageRatio = 1;
+              }
+            }
+          } else {
+            Swal.fire('getBotไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
         }
       } else {
         if (
@@ -1086,26 +1104,48 @@ export class CheckMedComponent implements OnInit {
           ],
         },
         {
-          columns: [
-            {
-              width: 195,
-              text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
-                data.indication
-              }`,
-              fontSize: `${data.drugCode.trim() === 'EMPAG' ? '10' : '12'}`,
-              bold: true,
-            },
-            ...(data.qrCode
-              ? [
-                  {
-                    width: '*',
-                    qr: `${data.qrCode}`,
-                    fit: '45',
-                    margin: [0, 5, 0, 0],
-                  },
-                ]
-              : []),
-          ],
+          columns: data.checkIndication
+            ? [
+                {
+                  width: '*',
+                  text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
+                    data.indication
+                  }`,
+                  fontSize: 12,
+                  bold: true,
+                },
+                // ,
+                // ...(data.qrCode
+                //   ? [
+                //       {
+                //         width: '*',
+                //         qr: `${data.qrCode}`,
+                //         fit: '45',
+                //         margin: [0, 5, 0, 0],
+                //       },
+                //     ]
+                //   : []),
+              ]
+            : [
+                {
+                  width: 195,
+                  text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
+                    data.indication
+                  }`,
+                  fontSize: 12,
+                  bold: true,
+                },
+                ...(data.qrCode
+                  ? [
+                      {
+                        width: '*',
+                        qr: `${data.qrCode}`,
+                        fit: '45',
+                        margin: [0, 5, 0, 0],
+                      },
+                    ]
+                  : []),
+              ],
         },
       ] as any,
 
