@@ -1534,7 +1534,11 @@
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.offender_name }}
+                {{
+                  numTab == 0
+                    ? element.another_offender_name
+                    : element.offender_name
+                }}
               </td>
             </ng-container>
             <ng-container matColumnDef="level">
@@ -1688,7 +1692,9 @@
                 *matCellDef="let element"
                 style="padding-left: 20px; padding-right: 20px"
               >
-                {{ element.cause }}
+                {{
+                  numTab == 0 ? element.another_offender_cause : element.cause
+                }}
               </td>
             </ng-container>
             <ng-container matColumnDef="action">

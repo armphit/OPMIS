@@ -452,6 +452,8 @@ export class ReportPharComponent implements OnInit {
       'med_good_text',
       'interceptor_name',
       'offender_name',
+      'cause',
+      'action',
       'level',
       'occurrence',
       'source',
@@ -460,8 +462,7 @@ export class ReportPharComponent implements OnInit {
       'type_pre',
       // 'screening',
       'note',
-      'cause',
-      'action',
+
       'hnDT',
     ];
 
