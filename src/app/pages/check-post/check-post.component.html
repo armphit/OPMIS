@@ -1,0 +1,183 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="input-group" style="margin: 5px; width: 300px">
+        <div class="custom-file">
+          <input
+            accept=".xlsx,.xls"
+            type="file"
+            class="custom-file-input"
+            id="inputGroupFile01"
+            aria-describedby="inputGroupFileAddon01"
+            (change)="onFileChange($event)"
+          />
+          <label class="custom-file-label" for="inputGroupFile01">
+            {{ fileName || "Choose file" }}
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div [hidden]="!dataSource.data.length" style="text-align: right">
+        <mat-form-field>
+          <mat-label>ค้นหา</mat-label>
+          <input
+            #swiper
+            matInput
+            (keyup)="applyFilter($event)"
+            (keyup.enter)="getRecord(swiper.value); swiper.value = ''"
+            placeholder="พิมพ์คำค้น..."
+          />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="responsive-table" [hidden]="!dataSource.data.length">
+    <!-- ช่องค้นหา -->
+
+    <section class="example-container mat-elevation-z8" tabindex="0">
+      <table
+        matTableExporter
+        #exporter1="matTableExporter"
+        mat-table
+        matSort
+        #MatSort="matSort"
+        [dataSource]="dataSource"
+        class="mat-elevation-z8"
+        style="min-width: 1200px"
+        [hiddenColumns]="[displayedColumns.length - 1]"
+      >
+        <!-- <ng-container
+          *ngFor="let column of displayedColumns"
+          [matColumnDef]="column"
+        >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ column }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="column === 'Action'; else normalCell">
+              <button
+                type="button"
+                data-toggle="modal"
+                data-target="#exampleModal"
+                (click)="getRow(element)"
+                class="btn btn-primary btn-sm"
+              >
+                Action
+              </button>
+            </ng-container>
+            <ng-template #normalCell>
+              {{ element[column] }}
+            </ng-template>
+          </td>
+        </ng-container> -->
+
+        <ng-container
+          *ngFor="let column of displayedColumns"
+          [matColumnDef]="column"
+        >
+          <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+          <td mat-cell *matCellDef="let element">
+            <!-- ปุ่ม Action -->
+            <ng-container *ngIf="column === 'Action'; else normalCell">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="toggleEdit(element)"
+                [ngClass]="element.isEditing ? 'btn-success' : 'btn-primary'"
+              >
+                {{ element.isEditing ? "Save" : "Action" }}
+              </button>
+            </ng-container>
+
+            <!-- cell ปกติ -->
+            <ng-template #normalCell>
+              <!-- ถ้าเป็นโหมดแก้ไข แสดง input -->
+              <ng-container *ngIf="element.isEditing; else viewMode">
+                <input
+                  [(ngModel)]="element[column]"
+                  class="form-control form-control-sm"
+                />
+              </ng-container>
+
+              <!-- ถ้าไม่แก้ไข แสดงข้อความ -->
+              <ng-template #viewMode>
+                {{ element[column] }}
+              </ng-template>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          [ngClass]="{
+            highlightTableColor: row['สถานะ conference'] == 'สำเร็จ'
+          }"
+          *matRowDef="let row; columns: displayedColumns"
+        ></tr>
+      </table>
+    </section>
+    <div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="
+          exporter1.exportTable('xlsx', {
+            fileName: xlsxName,
+            sheet: 'sheet_name',
+            Props: { Author: 'Talha' }
+          })
+        "
+      >
+        Export Excel
+      </button>
+      <!-- <button mat-raised-button color="primary" (click)="exporter.exportTable('csv')">Csv</button>
+          <button mat-raised-button color="primary" (click)="exporter.exportTable('json')">Json</button>
+          <button mat-raised-button color="primary" (click)="exporter.exportTable('txt')">Txt</button> -->
+
+      <mat-paginator
+        style="float: right"
+        MatPaginator
+        #paginator2="matPaginator"
+        [length]="10"
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons
+      >
+      </mat-paginator>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">...</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

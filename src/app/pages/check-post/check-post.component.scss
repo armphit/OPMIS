@@ -1,0 +1,12 @@
+table.mat-table td,
+table.mat-table th {
+  white-space: nowrap;
+  padding: 15px;
+}
+.example-container {
+  max-width: 100%;
+  overflow: auto;
+}
+.highlightTableColor {
+  background-color: #77dd77;
+}

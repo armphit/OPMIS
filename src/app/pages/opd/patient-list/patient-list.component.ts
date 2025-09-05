@@ -2863,7 +2863,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           // pageSize: { width: 325, height: 350 },
           pageSize: { width: 238, height: 255 },
           // pageMargins: [5, 50, 5, 100] as any,
-          pageMargins: [0, 0, 7, 88] as any,
+          pageMargins: [0, 0, 7, 83] as any,
           header: {} as any,
 
           content: [
@@ -2974,7 +2974,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   : ''
               }`,
 
-              fontSize: 14,
+              fontSize: 12,
               bold: true,
             },
             {
@@ -2984,7 +2984,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   : ''
               }`,
 
-              fontSize: 14,
+              fontSize: 12,
               bold: true,
             },
             // {

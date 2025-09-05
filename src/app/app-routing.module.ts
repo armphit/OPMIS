@@ -13,6 +13,7 @@ import { ManageSystemComponent } from './pages/manage-system/manage-system.compo
 import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 import { CheckMedComponent } from './pages/check-med/check-med.component';
+import { CheckPostComponent } from './pages/check-post/check-post.component';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
       {
         path: 'check-med',
         component: CheckMedComponent,
+      },
+      {
+        path: 'check-post',
+        component: CheckPostComponent,
       },
       {
         path: '',

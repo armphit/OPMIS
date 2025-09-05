@@ -30,6 +30,7 @@ import { ManageUserComponent } from './pages/manage-user/manage-user.component';
 import { UploadImagesComponent } from './pages/upload-images/upload-images.component';
 import { LightboxModule } from 'ng-gallery/lightbox';
 import { CheckMedComponent } from './pages/check-med/check-med.component';
+import { CheckPostComponent } from './pages/check-post/check-post.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { CheckMedComponent } from './pages/check-med/check-med.component';
     ManageUserComponent,
     UploadImagesComponent,
     CheckMedComponent,
+    CheckPostComponent,
   ],
   imports: [
     BrowserModule,

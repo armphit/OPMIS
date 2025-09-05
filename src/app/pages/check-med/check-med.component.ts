@@ -1803,7 +1803,7 @@ export class CheckMedComponent implements OnInit {
       // pageSize: { width: 325, height: 350 },
       pageSize: { width: 238, height: 255 },
       // pageMargins: [5, 50, 5, 100] as any,
-      pageMargins: [0, 37, 7, 55] as any,
+      pageMargins: [0, 37, 7, 50] as any,
       header: {} as any,
 
       content: [
@@ -1916,7 +1916,7 @@ export class CheckMedComponent implements OnInit {
               : ''
           }`,
 
-          fontSize: 14,
+          fontSize: 12,
           bold: true,
         },
         {
@@ -1926,7 +1926,7 @@ export class CheckMedComponent implements OnInit {
               : ''
           }`,
 
-          fontSize: 14,
+          fontSize: 12,
           bold: true,
         },
 
