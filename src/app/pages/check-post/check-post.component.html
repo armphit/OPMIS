@@ -1,10 +1,17 @@
 <div class="container-fluid">
+  <!-- <button
+    type="button"
+    class="btn btn-primary btn-sm"
+    (click)="onCheckPostClick()"
+  >
+    test
+  </button> -->
   <div class="row">
     <div class="col">
       <div class="input-group" style="margin: 5px; width: 300px">
         <div class="custom-file">
           <input
-            accept=".xlsx,.xls"
+            accept=".xlsx,.xls,.csv"
             type="file"
             class="custom-file-input"
             id="inputGroupFile01"
@@ -77,28 +84,36 @@
           *ngFor="let column of displayedColumns"
           [matColumnDef]="column"
         >
-          <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            {{ column }}
+          </th>
           <td mat-cell *matCellDef="let element">
             <!-- ปุ่ม Action -->
-            <ng-container *ngIf="column === 'Action'; else normalCell">
+            <ng-container
+              *ngIf="
+                column === 'Action' && element.isEditing === false;
+                else normalCell
+              "
+            >
               <button
+                n
                 type="button"
                 class="btn btn-primary btn-sm"
                 (click)="toggleEdit(element)"
-                [ngClass]="element.isEditing ? 'btn-success' : 'btn-primary'"
               >
-                {{ element.isEditing ? "Save" : "Action" }}
+                Accept
               </button>
             </ng-container>
-
+            <ng-container
+              *ngIf="column === 'Action' && element.isEditing === true"
+            >
+              <strong><i>เช็คข้อมูลแล้ว***</i></strong>
+            </ng-container>
             <!-- cell ปกติ -->
             <ng-template #normalCell>
               <!-- ถ้าเป็นโหมดแก้ไข แสดง input -->
               <ng-container *ngIf="element.isEditing; else viewMode">
-                <input
-                  [(ngModel)]="element[column]"
-                  class="form-control form-control-sm"
-                />
+                {{ element[column] }}
               </ng-container>
 
               <!-- ถ้าไม่แก้ไข แสดงข้อความ -->
@@ -109,11 +124,26 @@
           </td>
         </ng-container>
 
+        <!-- <ng-template #normalCell>
+
+              <ng-container *ngIf="element.isEditing; else viewMode">
+                <input
+                  [(ngModel)]="element[column]"
+                  class="form-control form-control-sm"
+                />
+              </ng-container>
+
+
+              <ng-template #viewMode>
+                {{ element[column] }}
+              </ng-template>
+            </ng-template> -->
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr
           mat-row
           [ngClass]="{
-            highlightTableColor: row['สถานะ conference'] == 'สำเร็จ'
+            highlightTableColor: row['isEditing'] == true
           }"
           *matRowDef="let row; columns: displayedColumns"
         ></tr>
