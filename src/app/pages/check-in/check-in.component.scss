@@ -1,9 +1,14 @@
 ::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
-::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(
+    .mat-tab-disabled
+  ) {
   color: #3f51b5;
   font-weight: bold;
 }
 
 .mat-column-Name {
   white-space: nowrap;
+}
+::ng-deep.mat-form-field-infix {
+  display: contents !important;
 }

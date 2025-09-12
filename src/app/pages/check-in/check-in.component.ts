@@ -49,15 +49,26 @@ export class CheckInComponent implements OnInit {
   }
 
   ngOnInit(): void {}
-
+  typeleave: Array<string> = [
+    '',
+    'ลาป่วย',
+    'ลากิจ',
+    'ลาพักร้อน',
+    'ขาดงาน',
+    'มาสาย',
+  ];
+  timeleave: Array<string> = ['', 'เต็มเวลา', 'ครึ่งเช้า', 'ครึ่งบ่าย'];
   public getData = async () => {
     this.displayedColumns = [
       'USERID',
-      'Name',
-      'DEPTNAME',
-      'deviceName',
+      'userName',
+      'datestamp',
       'check_in',
       'check_out',
+      'type_leave',
+      'leave_time',
+      'leave_note',
+      'Action',
     ];
 
     let startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
@@ -207,6 +218,24 @@ export class CheckInComponent implements OnInit {
       this.getData();
     } else if (e === 1) {
       this.getDatafreq();
+    }
+  }
+  startdate: any = new Date();
+  enddate: any = new Date();
+  openModal(element: any) {
+    this.startdate = new Date();
+    this.enddate = new Date();
+    // Open the modal and pass the selected element data
+    console.log('Open modal for element:', element);
+  }
+  toggleEdit(element: any) {
+    if (!element.isEditing) {
+      // เริ่มแก้ไข
+      element.isEditing = true;
+    } else {
+      // บันทึกข้อมูลใหม่
+      console.log('New Data:', element);
+      element.isEditing = false; // กลับสู่โหมดปกติ
     }
   }
 }
