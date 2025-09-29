@@ -16,7 +16,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as moment from 'moment';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
-import { interval } from 'rxjs';
+import { Http2Service } from 'src/app/services/http2.service';
 
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
@@ -65,11 +65,13 @@ export class CheckMedComponent implements OnInit {
   });
   select: string = '';
   checked: boolean = false;
+
   constructor(
     private http: HttpService,
     public lightbox: Lightbox,
     public gallery: Gallery,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    private sseService: Http2Service
   ) {
     this.getIP();
     this.dateAdapter.setLocale('en-GB');
@@ -80,7 +82,14 @@ export class CheckMedComponent implements OnInit {
   test() {
     // this.getData('1055663');
   }
+  messages: any[] = [];
   ngOnInit(): void {
+    this.sseService
+      .getServerSentEvent('http://localhost:4000/events')
+      .subscribe({
+        next: (data) => this.getdataButton(data),
+        error: (err) => console.error('SSE Error:', err),
+      });
     // interval(10000).subscribe(() => {
     //   this.getDrugL();
     // });
@@ -909,6 +918,7 @@ export class CheckMedComponent implements OnInit {
         ? data.freetext2.substring(1)
         : data.freetext2;
     let freetext2 = data.freetext2.split(',');
+
     let right = data.righttext1.includes(' ')
       ? data.righttext1.replace(' ', ' - ')
       : data.righttext1;
@@ -968,7 +978,7 @@ export class CheckMedComponent implements OnInit {
     let fix =
       this.dataUser.print_ip == '192.168.124.94'
         ? [0, 10, 10, 70]
-        : [0, 37, 7, 35];
+        : [0, 37, 7, 42];
     // let fix = [0, 0, 10, 70];
     // let fix = [0, 37, 7, 35];
     var docDefinition = {
@@ -1077,24 +1087,30 @@ export class CheckMedComponent implements OnInit {
         //     })
         //   : '',
         freetext2
-          ? data.drugCode.trim() === 'MIRTA' ||
-            data.drugCode.trim() === 'ALEND' ||
-            data.drugCode.trim() === 'INSUG2'
-            ? {
-                text: data.freetext2.trim(),
+          ? freetext2.map(function (item: any) {
+              return {
+                text: item.trim(),
                 alignment: 'center',
-                fontSize: 13,
+                fontSize: 12,
                 bold: true,
-              }
-            : freetext2.map(function (item: any) {
-                return {
-                  text: item.trim(),
-                  alignment: 'center',
-                  fontSize: item.trim().length >= 80 ? 12 : 13,
-                  bold: true,
-                };
-              })
-          : '',
+              };
+            })
+          : // ? data.drugCode.trim() === 'MIRTA' || data.drugCode.trim() === 'ALEND'
+            //   ? {
+            //       text: data.freetext2.trim(),
+            //       alignment: 'center',
+            //       fontSize: 13,
+            //       bold: true,
+            //     }
+            //   : freetext2.map(function (item: any) {
+            //       return {
+            //         text: item.trim(),
+            //         alignment: 'center',
+            //         fontSize: item.trim().length >= 80 ? 12 : 13,
+            //         bold: true,
+            //       };
+            //     })
+            '',
       ] as any,
 
       footer: [
@@ -1154,10 +1170,15 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
     // pdfMake.createPdf(docDefinition).open();
-    // return false;
+    pdfMake.createPdf(docDefinition).getBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank'); // ต้องอยู่ใน click event
+    });
+
+    return false;
   }
 
   data_allergic: any = null;
@@ -1351,6 +1372,7 @@ export class CheckMedComponent implements OnInit {
     });
   }
   sendAccept(data: any, evt: any) {
+    console.log(data);
     // if (
     //   (!data.checkAccept && !data.qty && !data.barCode) ||
     //   !data.qty ||
@@ -1944,5 +1966,172 @@ export class CheckMedComponent implements OnInit {
     // return false;
     const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
     return pdfDocGenerator;
+  }
+  async getdataButton(data: any) {
+    data = {
+      countDrug: 3,
+      checkLength: 0,
+      id: '1e6da7ba-9470-11f0-bc57-2cea7f768d4f',
+      cmp_id: '1dfc0eea-9470-11f0-bc57-2cea7f768d4f',
+      rowNum: '3',
+      prescriptionno: '6800896571',
+      seq: 3,
+      hn: 2316717,
+      patientname: 'น.ส. นิลาวัลย์ วงรีย์',
+      sex: 'F',
+      patientdob: '25440305',
+      drugCode: 'METRO1         ',
+      drugName:
+        'FLAGYL(METRONIDAZOLE)200 MG/TAB [ร]*                                                                ',
+      drugNameTh: 'เมโทรนิดาโซล',
+      qty: 42,
+      unitCode: 'TAB   ',
+      departmentcode: 'W20',
+      righttext1: 'บัตรทอง',
+      righttext2: 'ed  ',
+      righttext3: 'ป  ',
+      lamedName:
+        'รับประทานครั้งละ                                                                                                                                      ',
+      dosage: '2     ',
+      freetext0:
+        'เม็ด                                                                                                                                                  ',
+      freetext1: 'วันละ 3 ครั้ง,หลังอาหารเช้า กลางวัน เย็น',
+      freetext2:
+        'รับประทานยาติดต่อทุกวันจนยาหมด,งดดื่มแอลกอฮอล์ขณะทานยา ถึง 24ชั่วโมงหลังทานยา                                                                         ',
+      itemidentify: '( เม็ดกลมสีส้ม มีบากกลาง )',
+      indication: 'ยาฆ่าเชื้อ ',
+      qrCode: '',
+      ordercreatedate: '2025-09-18 15:11:27',
+      lastmodified: '2025-09-18 15:11:27',
+      lamedEng:
+        'take                                                                                                                                                  ',
+      freetext1Eng:
+        'tablet                                                                                                                                                ',
+      checkstamp: null,
+      checkqty: 42,
+      scantimestamp: '2025-09-18T09:19:12.000Z',
+      sortOrder: 27,
+      pathImage: [
+        '/assets/drug-imagecenter/METRO1/METRO1_box.jpg',
+        '/assets/drug-imagecenter/METRO1/METRO1_tab.jpeg',
+      ],
+      typeNum: ['box', 'tab'],
+      barCode: null,
+      device: '',
+      checkDrug: null,
+      cur_qty: 0,
+      qty_cut: null,
+      qty_real: 42,
+      checkAccept: '',
+      deviceCheck: '',
+      checkIndication: 0,
+      isSort: 2,
+      dataCheck: 2,
+    };
+    console.log(data);
+
+    // if (this.dataUser.ip == 'test') {
+    //   let formData = new FormData();
+    //   formData.append('device', data.device);
+    //   formData.append('drugCode', data.drugCode);
+    //   let sendled: any = await this.http.post('update_led', formData);
+    // }
+    data.ip = this.dataUser.ip
+      ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+      : '';
+    if (this.checkprint) {
+      this.sendPDF(data).then((dataPDF: any) => {
+        if (dataPDF) {
+          dataPDF.getBase64(async (buffer: any) => {
+            let getData: any = !this.checked
+              ? await this.http.Printjs162('convertbuffer', {
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                })
+              : await this.http.PrintjsLocalhost('convertbuffer', {
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                });
+
+            if (data.cur_qty) {
+              if (data.qty_real > data.qty_cut) {
+                this.printPDF(data).then((dataPDF: any) => {
+                  if (dataPDF) {
+                    dataPDF.getBase64(async (buffer: any) => {
+                      !this.checked
+                        ? await this.http.Printjs162('convertbuffer', {
+                            data: buffer,
+                            name: data.hn + ' ' + data.drugCode + '.pdf',
+                            ip: this.dataUser.print_ip,
+
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          })
+                        : await this.http.PrintjsLocalhost('convertbuffer', {
+                            data: buffer,
+                            name:
+                              data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                            ip: this.dataUser.print_ip,
+                            // ip: '192.168.184.163',
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          });
+                      let formData: any = new FormData();
+                      formData.append('drugcode', data.drugCode);
+                      formData.append('drugname', data.drugName);
+                      formData.append('phar', this.dataUser.user);
+                      formData.append('hn', data.hn);
+                      formData.append('cutamount', data.qty_cut);
+                      formData.append('realamount', data.qty_real);
+                      formData.append(
+                        'balanceamount',
+                        data.qty_real - data.qty_cut
+                      );
+                      formData.append('departmentcode', this.select);
+                      formData.append(
+                        'date',
+                        moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
+                      );
+                      await this.http.post('insertCutDispendDrug', formData);
+                      formData = null;
+                    });
+                  }
+                });
+              }
+            }
+
+            if (getData.connect) {
+              if (getData.response.connect === 'success') {
+                data.currentqty = 0;
+                data.HisPackageRatio = data.checkqty;
+
+                await this.updateCheckmed(data);
+              } else {
+                Swal.fire(
+                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                  '',
+                  'error'
+                );
+              }
+            } else {
+              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
+            }
+          });
+        }
+      });
+    } else {
+      data.currentqty = 0;
+      data.HisPackageRatio = data.checkqty;
+
+      await this.updateCheckmed(data);
+    }
   }
 }

@@ -9,6 +9,62 @@
 .mat-column-Name {
   white-space: nowrap;
 }
-::ng-deep.mat-form-field-infix {
+::ng-deep .custom-field .mat-form-field-infix {
   display: contents !important;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #999;
+  text-align: center;
+  padding: 6px 8px;
+  align-content: center;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+.hover-cell {
+  transition: background-color 0.05s;
+  cursor: pointer;
+}
+
+.hover-cell:hover {
+  background-color: #3f51b5; // สีตอน hover
+}
+::ng-deep .bootstrap-size.mat-form-field {
+  width: 100%;
+}
+
+::ng-deep
+  .bootstrap-size.mat-form-field-appearance-outline
+  .mat-form-field-flex {
+  height: calc(2em + 0.75rem + 2px); /* เท่า select bootstrap */
+}
+
+::ng-deep
+  .bootstrap-size.mat-form-field-appearance-outline
+  .mat-form-field-infix {
+  padding: 0 !important; /* ตัด padding ด้านบนล่าง */
+  border-top: 0 !important; /* กันไม่ให้ outline ดันขึ้น */
+}
+
+::ng-deep .bootstrap-size .mat-input-element {
+  height: 100%;
+  padding: 10px 0 0 0; /* ให้เว้นขอบซ้ายขวาเหมือน bootstrap */
+  box-sizing: border-box;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-flex {
+  padding: 0.25em 0.75em 0 0.75em !important;
+  margin-top: -0.25em;
+  position: relative;
+}
+
+:host ::ng-deep .bootstrap-size .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
 }

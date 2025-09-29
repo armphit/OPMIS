@@ -8,7 +8,6 @@
             class="btn btn-primary"
             data-toggle="modal"
             data-target="#exampleModal"
-            (click)="openModal(null)"
             style="margin: 10px"
           >
             เพิ่มการลา
@@ -76,6 +75,7 @@
             #MatSort="matSort"
             #exporter="matTableExporter"
             class="mat-elevation-z8"
+            [hiddenColumns]="[8]"
           >
             <ng-container matColumnDef="USERID">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>USERID</th>
@@ -239,232 +239,116 @@
     </div>
   </mat-tab>
   <mat-tab label="รายงานความถี่การเข้างานแต่ละช่วงเวลา">
-    <div class="container-fluid" style="overflow: auto">
-      <div class="row">
-        <div class="col-lg-4">
-          <mat-form-field class="example-form-field" [style.width.px]="200">
-            <mat-date-range-input
-              [formGroup]="campaignOne"
-              [rangePicker]="campaignOnePickerr"
-            >
-              <input
-                matStartDate
-                placeholder="Start date"
-                formControlName="start"
-              />
-              <input
-                matEndDate
-                placeholder="End date"
-                formControlName="end"
-                (dateChange)="startChange2($event); inputT2.value = ''"
-              />
-            </mat-date-range-input>
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="campaignOnePickerr"
-            ></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePickerr></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        <div class="col-lg-3">
-          <mat-form-field>
-            <mat-label>Select DEPT</mat-label>
-            <mat-select
-              [(ngModel)]="getDept"
-              (ngModelChange)="dataFilter2(); inputT.value = ''"
-            >
-              <mat-option value="">ALL</mat-option>
-              <mat-option value="Hospital">Hospital</mat-option>
-              <mat-option value="Robot">Robot</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col-lg-3">
-          <mat-form-field>
-            <mat-label>Select Time</mat-label>
-            <mat-select
-              [(ngModel)]="typeDevice"
-              (ngModelChange)="doSomething2(); inputT2.value = ''"
-            >
-              <mat-option value="in">เวลาเข้างาน</mat-option>
-              <mat-option value="out">เวลาออกงาน</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col-lg-2">
-          <mat-form-field class="example-full-width" style="float: right">
-            <input matInput (keyup)="applyFilter2($event)" #inputT2 />
-            <mat-placeholder>ค้นหา</mat-placeholder>
-            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-          </mat-form-field>
-        </div>
+    <div class="container-fluid">
+      <div>
+        <mat-form-field>
+          <input
+            matInput
+            [matDatepicker]="startPicker"
+            placeholder="เริ่มต้นเดือน"
+            [value]="startMonth"
+            readonly
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="startPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker
+            #startPicker
+            startView="year"
+            (monthSelected)="chooseMonth($event, startPicker)"
+            [startAt]="defaultYear"
+          >
+          </mat-datepicker>
+        </mat-form-field>
+        &nbsp;-&nbsp;
+        <mat-form-field>
+          <input
+            matInput
+            [matDatepicker]="endPicker"
+            placeholder="สิ้นสุดเดือน"
+            [value]="endMonth"
+            readonly
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="endPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker
+            #endPicker
+            startView="year"
+            (monthSelected)="chooseMonth2($event, endPicker)"
+            [startAt]="defaultYear"
+          >
+          </mat-datepicker>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="getRange()"
+          style="margin: 10px"
+        >
+          Get Date Range
+        </button>
       </div>
 
-      <div class="responsive-table" [hidden]="!dataDrug">
-        <section class="example-container mat-elevation-z8" tabindex="0">
-          <table
-            mat-table
-            matTableExporter
-            [dataSource]="dataSource2"
-            matSort
-            #MatSort2="matSort"
-            #exporter2="matTableExporter"
-            class="mat-elevation-z8"
-            matSortActive="DEPTNAME"
-            matSortDirection="desc"
-            [hiddenColumns]="[2]"
-          >
-            <!-- <ng-container matColumnDef="index">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
-              <td
-                mat-cell
-                *matCellDef="let element; let i = index"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{
-                  this.paginator2.pageIndex * this.paginator2.pageSize + i + 1
-                }}
-              </td>
-            </ng-container> -->
-            <ng-container matColumnDef="USERID">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>USERID</th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.USERID }}
-              </td>
+      <table class="mat-elevation-z8">
+        <!-- Header -->
+        <thead>
+          <tr>
+            <th rowspan="2">ชื่อ</th>
+            <th [attr.colspan]="leaveTypes.length">รวม</th>
+            <th
+              *ngFor="let m of months | slice : monthStart - 1 : monthEnd"
+              [attr.colspan]="leaveTypes.length"
+            >
+              {{ m.name }}
+            </th>
+          </tr>
+          <tr>
+            <th class="text-nowrap" *ngFor="let t of leaveTypes">{{ t }}</th>
+            <ng-container
+              *ngFor="let m of months | slice : monthStart - 1 : monthEnd"
+            >
+              <th class="text-nowrap" *ngFor="let t of leaveTypes">{{ t }}</th>
             </ng-container>
+          </tr>
+        </thead>
 
-            <ng-container matColumnDef="Name" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.Name }}
-              </td>
-            </ng-container>
+        <tbody>
+          <tr *ngFor="let emp of dataSource2">
+            <td class="text-nowrap">
+              {{ emp.fullName }}
+            </td>
 
-            <ng-container matColumnDef="DEPTNAME">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                DEPTNAME
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.DEPTNAME }}
-              </td>
-            </ng-container>
+            <td
+              *ngFor="let t of leaveTypes"
+              (click)="onCellClick(emp, 'total', t, emp.total[t])"
+              [ngClass]="{ 'hover-cell': true }"
+            >
+              {{ emp.total[t] }}
+            </td>
 
-            <ng-container matColumnDef="time1">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "Before 07.30" : "Before 16.30" }}
-              </th>
+            <ng-container
+              *ngFor="let m of months | slice : monthStart - 1 : monthEnd"
+            >
               <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
+                *ngFor="let t of leaveTypes"
+                (click)="onCellClick(emp, m.value, t, emp.months[m.value][t])"
+                [ngClass]="{ 'hover-cell': true }"
               >
-                {{ element.time1 }}
+                {{ emp.months[m.value][t] }}
               </td>
             </ng-container>
-            <ng-container matColumnDef="time2">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "07.30 - 07.45" : "16.30 - 16.45" }}
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.time2 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="time3">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "07.45 - 08.00" : "16.45 - 17.00" }}
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.time3 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="time4">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "08.00 - 08.15" : "17.00 - 17.15" }}
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.time4 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="time5">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "08.15 - 08.30" : "17.15 - 17.30" }}
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.time5 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="time6">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                {{ typeDevice == "in" ? "After 08.30" : "After 17.30" }}
-              </th>
-              <td
-                mat-cell
-                *matCellDef="let element"
-                style="padding-left: 20px; padding-right: 20px"
-              >
-                {{ element.time6 }}
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
-          </table>
-        </section>
-        <div>
-          <button
-            mat-raised-button
-            color="primary"
-            (click)="
-              exporter2.exportTable('xlsx', {
-                fileName: nameExcel,
-                sheet: 'sheet_name',
-                Props: { Author: 'Talha' }
-              })
-            "
-          >
-            Excel
-          </button>
-
-          <mat-paginator
-            #MatPaginator2="matPaginator"
-            style="float: right"
-            [length]="10"
-            [pageSize]="10"
-            [pageSizeOptions]="[10, 50, 100]"
-            showFirstLastButtons
-          >
-          </mat-paginator>
-        </div>
-      </div></div
-  ></mat-tab>
+          </tr>
+        </tbody>
+      </table>
+      <button mat-raised-button color="primary" (click)="exportToExcel()">
+        Export Excel
+      </button>
+    </div>
+  </mat-tab>
 </mat-tab-group>
 <!-- Modal -->
 <div
@@ -489,30 +373,128 @@
       </div>
       <div class="modal-body">
         <div>
-          <mat-form-field>
-            <mat-label>Enter a date range</mat-label>
-            <mat-date-range-input [rangePicker]="picker">
-              <input
-                [ngModel]="startdate"
-                matStartDate
-                placeholder="Start date"
-              />
-              <input [ngModel]="enddate" matEndDate placeholder="End date" />
-            </mat-date-range-input>
-            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="picker"
-            ></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-          </mat-form-field>
+          <div class="container mt-3">
+            <button class="btn btn-primary mb-3 mr-2" (click)="showOrAddRow()">
+              Add Data
+            </button>
+
+            <table class="table table-bordered" *ngIf="tableRows.length > 0">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>ลำดับ</th>
+                  <th>ชื่อ-สกุล</th>
+                  <th>วันที่ลา</th>
+                  <th>ประเภทการลา</th>
+                  <th>เวลาที่ลา</th>
+                  <th>หมายเหตุ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of tableRows; let i = index">
+                  <td (click)="removeRow(i)" class="text-center">
+                    <i
+                      style="font-size: 1.5em; color: #ef3a25; cursor: pointer"
+                      (click)="test222()"
+                      class="fas fa-trash-alt"
+                    ></i>
+                  </td>
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <mat-form-field class="bootstrap-size" appearance="outline">
+                      <mat-label>เลือก user</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        [formControl]="row.control"
+                        [matAutocomplete]="auto"
+                        placeholder="เลือก user"
+                      />
+                      <mat-autocomplete
+                        #auto="matAutocomplete"
+                        [displayWith]="displayFn"
+                      >
+                        <mat-option
+                          *ngFor="let user of row.filtered$ | async"
+                          [value]="user"
+                        >
+                          {{ user.name }}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <mat-form-field
+                      class="bootstrap-size"
+                      appearance="outline"
+                      style="margin-right: 10px"
+                      [style.width.px]="230"
+                    >
+                      <mat-date-range-input [rangePicker]="picker">
+                        <input
+                          matStartDate
+                          placeholder="Start date"
+                          [formControl]="row.leaveDateStart"
+                        />
+                        <input
+                          matEndDate
+                          placeholder="End date"
+                          [formControl]="row.leaveDateEnd"
+                        />
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle
+                        matSuffix
+                        [for]="picker"
+                      ></mat-datepicker-toggle>
+                      <mat-date-range-picker #picker></mat-date-range-picker>
+
+                      <!-- <mat-date-range-input [rangePicker]="campaignOnePicker2">
+                        <input matStartDate placeholder="Start date" />
+                        <input matEndDate placeholder="End date" />
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle
+                        matSuffix
+                        [for]="campaignOnePicker2"
+                      ></mat-datepicker-toggle>
+                      <mat-date-range-picker
+                        #campaignOnePicker2
+                      ></mat-date-range-picker> -->
+                    </mat-form-field>
+                  </td>
+                  <td>
+                    <select class="form-control" [(ngModel)]="row.leaveType">
+                      <option *ngFor="let item of typeleave" [value]="item">
+                        {{ item }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <select class="form-control" [(ngModel)]="row.leaveTime">
+                      <option *ngFor="let item of timeleave" [value]="item">
+                        {{ item }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="row.leaveNote"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" (click)="getData2()">
+          Save changes
+        </button>
       </div>
     </div>
   </div>
