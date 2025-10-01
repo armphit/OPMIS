@@ -1170,15 +1170,15 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
     // pdfMake.createPdf(docDefinition).open();
-    pdfMake.createPdf(docDefinition).getBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      window.open(url, '_blank'); // ต้องอยู่ใน click event
-    });
+    // pdfMake.createPdf(docDefinition).getBlob((blob) => {
+    //   const url = URL.createObjectURL(blob);
+    //   window.open(url, '_blank'); // ต้องอยู่ใน click event
+    // });
 
-    return false;
+    // return false;
   }
 
   data_allergic: any = null;

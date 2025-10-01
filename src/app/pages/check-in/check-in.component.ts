@@ -1,20 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
-import { DateRange } from '@angular/material/datepicker';
-import {
-  MatDatepickerPanel,
-  MatDatepickerControl,
-} from '@angular/material/datepicker/datepicker-base';
+
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -53,11 +44,12 @@ export class CheckInComponent implements OnInit {
       new Date(new Date().setDate(new Date().getDate() - 1))
     ),
   });
-  typeDevice: string = 'in';
+
   // startDate: any = null;
   dataSource: any = null;
-  dataDrug: any = null;
-  // dataDrug_filter: any = null;
+  dataDrug: any = [];
+  dataLeave_filter: any = null;
+  dataLeave: any = [];
   nameExcel: any = null;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
@@ -76,11 +68,7 @@ export class CheckInComponent implements OnInit {
   }[] = [];
 
   nextId = 1;
-  data: any[] = [
-    { id: 1, name: 'Alice', email: 'alice@example.com' },
-    { id: 2, name: 'Bob', email: 'bob@example.com' },
-    { id: 3, name: 'Charlie', email: 'charlie@example.com' },
-  ];
+
   typeleave: Array<string> = [
     '',
     'ลาป่วย',
@@ -90,8 +78,9 @@ export class CheckInComponent implements OnInit {
     'มาสาย',
   ];
   timeleave: Array<string> = ['', 'เต็มเวลา', 'ครึ่งเช้า', 'ครึ่งบ่าย'];
-  userID: Array<string> = ['1', '2', '3', '4'];
+
   selectedUser: any = null;
+
   filteredOptions!: Observable<any>;
   // picker!: MatDatepickerPanel<MatDatepickerControl<any>, DateRange<any>, any>;
   myControl: FormControl = new FormControl();
@@ -102,7 +91,6 @@ export class CheckInComponent implements OnInit {
   ) {
     this.dateAdapter.setLocale('en-GB');
     this.getData();
-    this.showOrAddRow();
   }
 
   ngOnInit() {
@@ -115,13 +103,13 @@ export class CheckInComponent implements OnInit {
     const filterValue =
       typeof value === 'string'
         ? value.toLowerCase()
-        : value?.name?.toLowerCase() || '';
-    return this.data.filter((option) =>
-      option.name.toLowerCase().includes(filterValue)
+        : value?.userName?.toLowerCase() || '';
+    return this.selectedUser.filter((option: any) =>
+      option.userName.toLowerCase().includes(filterValue)
     );
   }
   displayFn(user: any): string {
-    return user && user.name ? user.name : '';
+    return user && user.userName ? user.userName : '';
   }
   showOrAddRow() {
     const control = new FormControl('');
@@ -158,11 +146,15 @@ export class CheckInComponent implements OnInit {
     rows.forEach((row) => {
       const start = new Date(row.leaveDateStart);
       const end = new Date(row.leaveDateEnd);
-
+      delete row.leaveDateStart;
+      delete row.leaveDateEnd;
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         result.push({
           ...row,
-          leaveDate: formatDate(d), // ใส่วันปัจจุบัน
+          leaveDate: formatDate(d),
+          dateindex: formatDate(d).replace(/-/g, ''),
+          create_dt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+          update_dt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         });
       }
     });
@@ -190,7 +182,7 @@ export class CheckInComponent implements OnInit {
       })
     );
   }
-  getData2() {
+  async getData2() {
     if (this.tableRows.length) {
       if (this.hasEmptyRequiredField(this.tableRows)) {
         Swal.fire('กรุณากรอกข้อมูลทุกช่อง!', '', 'error');
@@ -202,30 +194,67 @@ export class CheckInComponent implements OnInit {
           return `${yyyy}-${mm}-${dd}`;
         };
         const values = this.tableRows.map((r) => ({
-          user: r.control.value,
-          leaveType: r.leaveType,
-          leaveTime: r.leaveTime,
+          userID: r.control.value.USERID,
           leaveNote: r.leaveNote,
+
+          leaveTime: r.leaveTime,
+          leaveType: r.leaveType,
           leaveNum: r.leaveTime === 'เต็มเวลา' ? 1 : 0.5,
+          userName: r.control.value.userName,
           leaveDateStart: formatDate(r.leaveDateStart.value),
           leaveDateEnd: formatDate(r.leaveDateEnd.value),
         }));
-        console.log('Current table data:', values);
         const expanded = this.expandLeaveByDay(values);
-        console.log('Expanded by day:', expanded);
+
+        let send = {
+          choice: 2,
+          dataLeave: expanded,
+          date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
+          date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
+        };
+
+        let getData: any = await this.http.postNodejs('doorReport', send);
+
+        if (getData.connect) {
+          if (getData.response) {
+            let win: any = window;
+            win.$('#exampleModal').modal('hide');
+            this.dataDrug = getData.response.recordset;
+            this.dataFilter();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'บันทึกข้อมูลสำเร็จ',
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          }
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
       }
     } else {
       Swal.fire('กรุณาเพิ่มข้อมูลการลาอย่างน้อย 1 แถว', '', 'warning');
       return;
     }
   }
-  removeRow(index: number) {
-    console.log(index);
-    console.log(this.tableRows);
-    this.tableRows.splice(index, 1);
-  }
-  test222() {
-    console.log(this.tableRows);
+
+  async getUser() {
+    let send = {
+      choice: 3,
+    };
+    let getData: any = await this.http.postNodejs('doorReport', send);
+
+    if (getData.connect) {
+      if (getData.response.recordset.length) {
+        this.selectedUser = getData.response.recordset;
+        this.showOrAddRow();
+      } else {
+        this.selectedUser = null;
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
   public getData = async () => {
     this.displayedColumns = [
@@ -254,7 +283,7 @@ export class CheckInComponent implements OnInit {
     let send = {
       date1: startDate,
       date2: endDate,
-      type: this.typeDevice ? this.typeDevice : '',
+      type: '',
       choice: 1,
     };
     let getData: any = await this.http.postNodejs('doorReport', send);
@@ -264,9 +293,9 @@ export class CheckInComponent implements OnInit {
         this.dataDrug = getData.response.recordset;
 
         this.dataFilter();
-        this.nameExcel = `รายงานเวลาเข้าประตู ${this.typeDevice} ${startDate}_${endDate}`;
+        this.nameExcel = `รายงานเวลาเข้าประตู ${startDate}_${endDate}`;
       } else {
-        this.dataDrug = null;
+        this.dataDrug = [];
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -302,21 +331,21 @@ export class CheckInComponent implements OnInit {
     this.getData();
   }
 
-  public async startChange2(event: any) {
-    if (event.target.value) {
-      this.getDatafreq();
-    }
-  }
+  // public async startChange2(event: any) {
+  //   if (event.target.value) {
+  //     this.getDatafreq();
+  //   }
+  // }
 
   public applyFilter2(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
 
     this.dataSource2.filter = filterValue.trim().toLowerCase();
   }
-  doSomething2() {
-    // this.typeDevice = e.value;
-    this.getDatafreq();
-  }
+  // doSomething2() {
+  //   // this.typeDevice = e.value;
+  //   this.getDatafreq();
+  // }
 
   getTab(e: any) {
     // this.typeDevice = '';
@@ -327,7 +356,7 @@ export class CheckInComponent implements OnInit {
     if (e === 0) {
       this.getData();
     } else if (e === 1) {
-      this.getDatafreq();
+      // this.getDatafreq();
     }
   }
 
@@ -348,8 +377,8 @@ export class CheckInComponent implements OnInit {
         date1: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
         date2: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
       };
+
       let getData: any = await this.http.postNodejs('doorReport', send);
-      console.log(getData);
 
       if (getData.connect) {
         if (getData.response.recordset.length) {
@@ -364,7 +393,7 @@ export class CheckInComponent implements OnInit {
             timer: 1500,
           });
         } else {
-          this.dataDrug = null;
+          this.dataDrug = [];
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -374,7 +403,7 @@ export class CheckInComponent implements OnInit {
 
   displayedColumns2: any = null;
   dataSource2: any = null;
-  leaveTypes = ['กิจ', 'ป่วย', 'พักร้อน'];
+  leaveTypes: any = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ขาดงาน', 'มาสาย'];
 
   months = [
     { value: 1, name: 'มกราคม' },
@@ -392,7 +421,7 @@ export class CheckInComponent implements OnInit {
   ];
 
   monthStart = 1;
-  monthEnd = 12; // แสดง ม.ค.–ก.พ.
+  monthEnd = 1; // แสดง ม.ค.–ก.พ.
 
   rawData: any = [
     {
@@ -503,23 +532,6 @@ export class CheckInComponent implements OnInit {
     datepicker.close();
   }
 
-  getRange() {
-    if (this.startMonth && this.endMonth) {
-      // const startYear = this.startMonth.getFullYear();
-      // const startMonth = this.startMonth.getMonth();
-
-      // const endYear = this.endMonth.getFullYear();
-      // const endMonth = this.endMonth.getMonth();
-
-      // const startDate = new Date(startYear, startMonth, 1);
-      // const endDate = new Date(endYear, endMonth + 1, 0); // วันสุดท้ายของเดือน
-
-      console.log('Start Date:', this.formatDate(this.startMonth));
-
-      console.log('End Date:', this.formatDate(this.endMonth));
-    }
-  }
-
   chooseMonth2(normalizedMonth: Date, datepicker: any) {
     // fix ปีเป็นปีปัจจุบัน
     const year = this.defaultYear.getFullYear();
@@ -535,117 +547,76 @@ export class CheckInComponent implements OnInit {
 
     datepicker.close();
   }
-  formatDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // เดือนเริ่ม 0
-    const day = date.getDate().toString().padStart(2, '0');
+  // formatDate(date: Date): string {
+  //   const year = date.getFullYear();
+  //   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // เดือนเริ่ม 0
+  //   const day = date.getDate().toString().padStart(2, '0');
 
-    return `${year}-${month}-${day}`;
-  }
-  public getDatafreq = async () => {
-    // this.displayedColumns2 = [
-    //   // 'index',
-    //   'USERID',
-    //   'Name',
-    //   'DEPTNAME',
-    //   'time1',
-    //   'time2',
-    //   'time3',
-    //   'time4',
-    //   'time5',
-    //   'time6',
-    // ];
-    // let startDate = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
-    // let endDate = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
-    // // let formData = new FormData();
-    // // formData.append('date1', startDate);
-    // // formData.append('date2', endDate);
-    // // if (this.typeDevice) {
-    // //   formData.append('type', this.typeDevice);
-    // // }
-    // // let getData: any = await this.http.post('doorFreq', formData);
-    // let send = {
-    //   date1: startDate,
-    //   date2: endDate,
-    //   type: this.typeDevice ? this.typeDevice : '',
-    //   choice: 2,
-    // };
-    // let getData: any = await this.http.postNodejs('doorReport', send);
-    // if (getData.connect) {
-    //   if (getData.response.recordset.length) {
-    //     this.dataDrug = getData.response.recordset;
-    //     this.dataDrug_filter = this.dataDrug;
-    //     this.dataFilter2();
-    //     this.nameExcel = `รายงานความถี่การเข้างานแต่ละช่วงเวลา ${this.typeDevice} ${startDate}_${endDate}`;
-    //   } else {
-    //     this.dataDrug = null;
-    //   }
-    // } else {
-    //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    // }
+  //   return `${year}-${month}-${day}`;
+  // }
 
-    this.dataSource2 = this.pivotData(
-      this.rawData,
-      this.monthStart,
-      this.monthEnd,
-      this.leaveTypes
-    );
-  };
-  dataFilter2() {
-    // if (this.getDept) {
-    //   this.dataDrug_filter = this.dataDrug.filter(
-    //     (val: any) => val.DEPTNAME == this.getDept
-    //   );
-    // } else {
-    //   this.dataDrug_filter = this.dataDrug;
-    // }
-    this.dataSource2 = new MatTableDataSource(this.dataDrug);
-    this.dataSource2.sort = this.sort;
-    this.dataSource2.paginator = this.paginator;
-  }
-  pivotData(
-    raw: any[],
-    monthStart: number,
-    monthEnd: number,
-    leaveTypes: string[]
-  ): any[] {
-    const result: { [id: number]: any } = {};
+  async getDatafreq() {
+    this.dataSource2 = [];
+    const getMonthNumber = (dateString: any) => {
+      const date = new Date(dateString);
+      return date.getMonth() + 1; // getMonth() คืนค่า 0-11, ต้อง +1
+    };
 
-    raw.forEach((r) => {
-      if (!result[r.EmployeeId]) {
-        result[r.EmployeeId] = {
-          Id: r.EmployeeId,
-          fullName: r.FullName,
-          total: {},
-          months: {},
-        };
-      }
+    this.monthStart = getMonthNumber(this.startMonth);
+    this.monthEnd = getMonthNumber(this.endMonth);
+    let send = {
+      monthStart: this.monthStart,
+      monthEnd: this.monthEnd,
+      choice: 4,
+    };
+    let getData: any = await this.http.postNodejs('doorReport', send);
 
-      // รวม
-      result[r.EmployeeId].total[r.LeaveType] =
-        (result[r.EmployeeId].total[r.LeaveType] || 0) + r.Days;
+    if (getData.connect) {
+      this.dataLeave_filter = getData.response.data;
+      if (getData.response.result.length) {
+        const result: { [id: number]: any } = {};
+        getData.response.result.forEach((r: any) => {
+          if (!result[r.EmployeeId]) {
+            result[r.EmployeeId] = {
+              Id: r.EmployeeId,
+              fullName: r.FullName,
+              total: {},
+              months: {},
+            };
+          }
 
-      // รายเดือน
-      if (!result[r.EmployeeId].months[r.LeaveMonth]) {
-        result[r.EmployeeId].months[r.LeaveMonth] = {};
-      }
-      result[r.EmployeeId].months[r.LeaveMonth][r.LeaveType] =
-        (result[r.EmployeeId].months[r.LeaveMonth][r.LeaveType] || 0) + r.Days;
-    });
+          // รวม
+          result[r.EmployeeId].total[r.LeaveType] =
+            (result[r.EmployeeId].total[r.LeaveType] || 0) + r.Days;
 
-    // เติม 0 ให้ครบ
-    return Object.values(result).map((emp) => {
-      leaveTypes.forEach((t) => {
-        if (!emp.total[t]) emp.total[t] = 0;
-      });
-      for (let m = monthStart; m <= monthEnd; m++) {
-        if (!emp.months[m]) emp.months[m] = {};
-        leaveTypes.forEach((t) => {
-          if (!emp.months[m][t]) emp.months[m][t] = 0;
+          // รายเดือน
+          if (!result[r.EmployeeId].months[r.LeaveMonth]) {
+            result[r.EmployeeId].months[r.LeaveMonth] = {};
+          }
+          result[r.EmployeeId].months[r.LeaveMonth][r.LeaveType] =
+            (result[r.EmployeeId].months[r.LeaveMonth][r.LeaveType] || 0) +
+            r.Days;
         });
+
+        // เติม 0 ให้ครบ
+        this.dataSource2 = Object.values(result).map((emp) => {
+          this.leaveTypes.forEach((t: any) => {
+            if (!emp.total[t]) emp.total[t] = 0;
+          });
+          for (let m = this.monthStart; m <= this.monthEnd; m++) {
+            if (!emp.months[m]) emp.months[m] = {};
+            this.leaveTypes.forEach((t: any) => {
+              if (!emp.months[m][t]) emp.months[m][t] = 0;
+            });
+          }
+          return emp;
+        });
+      } else {
+        this.dataSource2 = [];
       }
-      return emp;
-    });
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
   }
   exportToExcel() {
     const data: any[][] = [];
@@ -656,12 +627,12 @@ export class CheckInComponent implements OnInit {
 
     // รวม
     header1.push('รวม');
-    this.leaveTypes.forEach((t) => header2.push(t));
+    this.leaveTypes.forEach((t: any) => header2.push(t));
 
     // เดือน
     this.months.slice(this.monthStart - 1, this.monthEnd).forEach((m) => {
       this.leaveTypes.forEach(() => header1.push(m.name)); // ชื่อเดือนซ้ำตามจำนวน leaveTypes
-      this.leaveTypes.forEach((t) => header2.push(t)); // กิจ, ป่วย, พักร้อน
+      this.leaveTypes.forEach((t: any) => header2.push(t)); // กิจ, ป่วย, พักร้อน
     });
 
     data.push(header1, header2);
@@ -670,9 +641,9 @@ export class CheckInComponent implements OnInit {
     this.dataSource2.forEach((emp: any) => {
       const row: any[] = [];
       row.push(emp.fullName);
-      this.leaveTypes.forEach((t) => row.push(emp.total[t]));
+      this.leaveTypes.forEach((t: any) => row.push(emp.total[t]));
       for (let m = this.monthStart; m <= this.monthEnd; m++) {
-        this.leaveTypes.forEach((t) => row.push(emp.months[m][t]));
+        this.leaveTypes.forEach((t: any) => row.push(emp.months[m][t]));
       }
       data.push(row);
     });
@@ -712,10 +683,24 @@ export class CheckInComponent implements OnInit {
     type: string,
     total: any
   ) {
-    console.log(type);
-    console.log(total);
-    console.log(monthOrTotal);
-    console.log(emp);
+    if (total) {
+      let win: any = window;
+      win.$('#leaveModal').modal('show');
+      if (monthOrTotal == 'total') {
+        this.dataLeave = this.dataLeave_filter.filter(
+          (val: any) => val.EmployeeId == emp.Id && val.type_leave == type
+        );
+      } else {
+        this.dataLeave = this.dataLeave_filter.filter(
+          (val: any) =>
+            val.EmployeeId == emp.Id &&
+            val.type_leave == type &&
+            val.leave_month == monthOrTotal
+        );
+      }
+    } else {
+      this.dataLeave = [];
+    }
 
     // ตัวอย่าง: แสดง popup
     // Swal.fire({
