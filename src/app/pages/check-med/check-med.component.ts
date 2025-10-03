@@ -125,7 +125,7 @@ export class CheckMedComponent implements OnInit {
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
-    this.dataUser.ip = '192.168.185.173';
+    this.dataUser.ip = '192.168.185.172';
     formData.append('ip', this.dataUser.ip);
 
     let getData: any = await this.http.post('getprintIP', formData);
@@ -254,12 +254,15 @@ export class CheckMedComponent implements OnInit {
           (val: any) =>
             (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
+
         if (this.getLed) {
           let getNumled = this.patient_drug
             .filter((x: any) => x.deviceCheck.includes(this.getLed))
             .map((a: any) => {
               return {
-                checkqty: a.checkqty,
+                hn: a.hn,
+                drugCode: a.drugCode ? a.drugCode.trim() : a.drugCode,
+                qty: a.qty,
                 deviceCheck: a.deviceCheck,
               };
             })
