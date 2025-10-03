@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -117,13 +118,16 @@ export class CheckMedComponent implements OnInit {
   }
   ip: any = null;
   dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+  getLed: any = '';
   async getIP() {
     // const response = await fetch('./assets/data.json');
     // this.ip = await response.json();
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
+    this.dataUser.ip = '192.168.185.173';
     formData.append('ip', this.dataUser.ip);
+
     let getData: any = await this.http.post('getprintIP', formData);
 
     if (getData.connect) {
@@ -131,6 +135,7 @@ export class CheckMedComponent implements OnInit {
 
       if (getData.response.rowCount) {
         this.checked = true;
+        this.getLed = getData.response.result[0].led;
       } else {
         this.checked = false;
       }
@@ -168,7 +173,7 @@ export class CheckMedComponent implements OnInit {
     // this.patient_contract = getData.response.result[0];
     // if (getData2.connect) {
     //   if (getData2.response.rowCount > 0) {
-    let data_send = {
+    let data_send: any = {
       hn: hn.trim(),
       date: moment(this.campaignOne.value.picker)
         .add(543, 'year')
@@ -249,7 +254,36 @@ export class CheckMedComponent implements OnInit {
           (val: any) =>
             (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
+        if (this.getLed) {
+          let getNumled = this.patient_drug
+            .filter((x: any) => x.deviceCheck.includes(this.getLed))
+            .map((a: any) => {
+              return {
+                checkqty: a.checkqty,
+                deviceCheck: a.deviceCheck,
+              };
+            })
+            .filter((s: any) => s.deviceCheck.includes('-')) // เอาเฉพาะที่มี "-"
+            .map((s: any) => {
+              return { ...s, deviceCheck: s.deviceCheck.split('-').pop() }; // ตัดเอาเฉพาะข้างหลัง "-"
+            });
 
+          if (getNumled.length) {
+            data_send.led = getNumled.length ? getNumled : '';
+            let getData4: any = await this.http.PrintjsLocalhost(
+              'createFile',
+              data_send
+            );
+
+            if (getData4.connect) {
+              if (!getData4.response.success) {
+                Swal.fire('ไม่สามารถ Create File ได้!', '', 'error');
+              }
+            } else {
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            }
+          }
+        }
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -1170,15 +1204,14 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    return pdfDocGenerator;
-    // pdfMake.createPdf(docDefinition).open();
+    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    // return pdfDocGenerator;
+    pdfMake.createPdf(docDefinition).open();
+    return false;
     // pdfMake.createPdf(docDefinition).getBlob((blob) => {
     //   const url = URL.createObjectURL(blob);
     //   window.open(url, '_blank'); // ต้องอยู่ใน click event
     // });
-
-    // return false;
   }
 
   data_allergic: any = null;
