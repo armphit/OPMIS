@@ -86,7 +86,7 @@ export class CheckMedComponent implements OnInit {
   messages: any[] = [];
   ngOnInit(): void {
     this.sseService
-      .getServerSentEvent('http://localhost:4000/events')
+      .getServerSentEvent('http://localhost:5000/events')
       .subscribe({
         next: (data) => this.getdataButton(data),
         error: (err) => console.error('SSE Error:', err),
@@ -125,7 +125,7 @@ export class CheckMedComponent implements OnInit {
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
-    this.dataUser.ip = '192.168.185.173';
+    this.dataUser.ip = '192.168.185.195';
     formData.append('ip', this.dataUser.ip);
 
     let getData: any = await this.http.post('getprintIP', formData);
@@ -136,6 +136,7 @@ export class CheckMedComponent implements OnInit {
       if (getData.response.rowCount) {
         this.checked = true;
         this.getLed = getData.response.result[0].led;
+        console.log(this.getLed);
       } else {
         this.checked = false;
       }
@@ -254,18 +255,22 @@ export class CheckMedComponent implements OnInit {
           (val: any) =>
             (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
-        if (this.getLed) {
+
+        if (this.getLed && this.getLed.includes('LED')) {
+          const simplifyLED = (text: string): string => {
+            if (!text) return '';
+            const match = text.match(/^(LED\d+)/i);
+            return match ? match[1] : text;
+          };
           let getNumled = this.patient_drug
-            .filter((x: any) => x.deviceCheck.includes(this.getLed))
+            .filter((x: any) => simplifyLED(x.device) == this.getLed)
             .map((a: any) => {
               return {
-                checkqty: a.checkqty,
+                hn: a.hn,
+                drugCode: a.drugCode ? a.drugCode.trim() : a.drugCode,
+                qty: a.qty,
                 deviceCheck: a.deviceCheck,
               };
-            })
-            .filter((s: any) => s.deviceCheck.includes('-')) // เอาเฉพาะที่มี "-"
-            .map((s: any) => {
-              return { ...s, deviceCheck: s.deviceCheck.split('-').pop() }; // ตัดเอาเฉพาะข้างหลัง "-"
             });
 
           if (getNumled.length) {
@@ -280,7 +285,7 @@ export class CheckMedComponent implements OnInit {
                 Swal.fire('ไม่สามารถ Create File ได้!', '', 'error');
               }
             } else {
-              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+              // Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
             }
           }
         }
@@ -408,6 +413,7 @@ export class CheckMedComponent implements OnInit {
         value = this.patient_drug.filter(
           (item: any) => item.drugCode.trim() === textSpilt[0].trim()
         );
+
         let formData = new FormData();
         formData.append('code', textSpilt[0].trim());
         let getBot: any = null;
@@ -476,46 +482,6 @@ export class CheckMedComponent implements OnInit {
           }
         }
       }
-      // else if (
-      //   // this.patient_drug.filter(
-      //   //   (item: any) => item.drugCode.trim() === val.trim()
-      //   // ).length ||
-      //   this.patient_drug.filter((item: any) =>
-      //     item.device ? item.device.includes(val.trim()) : []
-      //   ).length
-      // ) {
-      //   // if (
-      //   //   this.patient_drug.filter(
-      //   //     (item: any) => item.drugCode.trim() === val.trim()
-      //   //   ).length
-      //   // ) {
-      //   //   value = this.patient_drug.filter(
-      //   //     (item: any) => item.drugCode.trim() === val.trim()
-      //   //   );
-      //   // } else {
-      //   value = this.patient_drug.filter((item: any) =>
-      //     item.device ? item.device.includes(val.trim()) : []
-      //   );
-
-      //   if (value.length) {
-      //     value[0].HisPackageRatio = value[0].qty + 1;
-      //     value[0].checkqrcode = 'Y';
-      //     // value[0].HisPackageRatio = textSpilt[1];
-      //   }
-      // } else if (
-      //   this.patient_drug.filter(
-      //     (item: any) => item.drugCode.trim() === val.trim()
-      //   )
-      // ) {
-      //   value = this.patient_drug.filter(
-      //     (item: any) => item.drugCode.trim() === val.trim()
-      //   );
-      //   if (value.length) {
-      //     value[0].HisPackageRatio = value[0].qty + 1;
-      //     value[0].checkqrcode = 'Y';
-      //     // value[0].HisPackageRatio = textSpilt[1];
-      //   }
-      // }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
@@ -524,6 +490,7 @@ export class CheckMedComponent implements OnInit {
 
     if (value) {
       value.dataCheck = 1;
+
       if (value.HisPackageRatio) {
         if (Number(value.HisPackageRatio) <= value.checkqty) {
           if (value.checkqty) {
@@ -1204,10 +1171,10 @@ export class CheckMedComponent implements OnInit {
       },
     };
 
-    // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-    // return pdfDocGenerator;
-    pdfMake.createPdf(docDefinition).open();
-    return false;
+    const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+    return pdfDocGenerator;
+    // pdfMake.createPdf(docDefinition).open();
+    // return false;
     // pdfMake.createPdf(docDefinition).getBlob((blob) => {
     //   const url = URL.createObjectURL(blob);
     //   window.open(url, '_blank'); // ต้องอยู่ใน click event
@@ -1405,7 +1372,6 @@ export class CheckMedComponent implements OnInit {
     });
   }
   sendAccept(data: any, evt: any) {
-    console.log(data);
     // if (
     //   (!data.checkAccept && !data.qty && !data.barCode) ||
     //   !data.qty ||
@@ -2001,170 +1967,18 @@ export class CheckMedComponent implements OnInit {
     return pdfDocGenerator;
   }
   async getdataButton(data: any) {
-    data = {
-      countDrug: 3,
-      checkLength: 0,
-      id: '1e6da7ba-9470-11f0-bc57-2cea7f768d4f',
-      cmp_id: '1dfc0eea-9470-11f0-bc57-2cea7f768d4f',
-      rowNum: '3',
-      prescriptionno: '6800896571',
-      seq: 3,
-      hn: 2316717,
-      patientname: 'น.ส. นิลาวัลย์ วงรีย์',
-      sex: 'F',
-      patientdob: '25440305',
-      drugCode: 'METRO1         ',
-      drugName:
-        'FLAGYL(METRONIDAZOLE)200 MG/TAB [ร]*                                                                ',
-      drugNameTh: 'เมโทรนิดาโซล',
-      qty: 42,
-      unitCode: 'TAB   ',
-      departmentcode: 'W20',
-      righttext1: 'บัตรทอง',
-      righttext2: 'ed  ',
-      righttext3: 'ป  ',
-      lamedName:
-        'รับประทานครั้งละ                                                                                                                                      ',
-      dosage: '2     ',
-      freetext0:
-        'เม็ด                                                                                                                                                  ',
-      freetext1: 'วันละ 3 ครั้ง,หลังอาหารเช้า กลางวัน เย็น',
-      freetext2:
-        'รับประทานยาติดต่อทุกวันจนยาหมด,งดดื่มแอลกอฮอล์ขณะทานยา ถึง 24ชั่วโมงหลังทานยา                                                                         ',
-      itemidentify: '( เม็ดกลมสีส้ม มีบากกลาง )',
-      indication: 'ยาฆ่าเชื้อ ',
-      qrCode: '',
-      ordercreatedate: '2025-09-18 15:11:27',
-      lastmodified: '2025-09-18 15:11:27',
-      lamedEng:
-        'take                                                                                                                                                  ',
-      freetext1Eng:
-        'tablet                                                                                                                                                ',
-      checkstamp: null,
-      checkqty: 42,
-      scantimestamp: '2025-09-18T09:19:12.000Z',
-      sortOrder: 27,
-      pathImage: [
-        '/assets/drug-imagecenter/METRO1/METRO1_box.jpg',
-        '/assets/drug-imagecenter/METRO1/METRO1_tab.jpeg',
-      ],
-      typeNum: ['box', 'tab'],
-      barCode: null,
-      device: '',
-      checkDrug: null,
-      cur_qty: 0,
-      qty_cut: null,
-      qty_real: 42,
-      checkAccept: '',
-      deviceCheck: '',
-      checkIndication: 0,
-      isSort: 2,
-      dataCheck: 2,
-    };
-    console.log(data);
+    const safeTrim = (val: any) => (typeof val === 'string' ? val.trim() : '');
 
-    // if (this.dataUser.ip == 'test') {
-    //   let formData = new FormData();
-    //   formData.append('device', data.device);
-    //   formData.append('drugCode', data.drugCode);
-    //   let sendled: any = await this.http.post('update_led', formData);
-    // }
-    data.ip = this.dataUser.ip
-      ? '200.200.200.' + this.dataUser.ip.split('.')[3]
-      : '';
-    if (this.checkprint) {
-      this.sendPDF(data).then((dataPDF: any) => {
-        if (dataPDF) {
-          dataPDF.getBase64(async (buffer: any) => {
-            let getData: any = !this.checked
-              ? await this.http.Printjs162('convertbuffer', {
-                  data: buffer,
-                  name: data.hn + ' ' + data.drugCode + '.pdf',
-                  ip: this.dataUser.print_ip,
+    const found =
+      this.patient_drug.find(
+        (item: any) => safeTrim(item.drugCode) === safeTrim(data.drugCode)
+      ) || false;
 
-                  printName: this.dataUser.print_name,
-                  hn: data.hn + ' ' + data.drugName,
-                })
-              : await this.http.PrintjsLocalhost('convertbuffer', {
-                  data: buffer,
-                  name: data.hn + ' ' + data.drugCode + '.pdf',
-                  ip: this.dataUser.print_ip,
-                  // ip: '192.168.184.163',
-                  printName: this.dataUser.print_name,
-                  hn: data.hn + ' ' + data.drugName,
-                });
-
-            if (data.cur_qty) {
-              if (data.qty_real > data.qty_cut) {
-                this.printPDF(data).then((dataPDF: any) => {
-                  if (dataPDF) {
-                    dataPDF.getBase64(async (buffer: any) => {
-                      !this.checked
-                        ? await this.http.Printjs162('convertbuffer', {
-                            data: buffer,
-                            name: data.hn + ' ' + data.drugCode + '.pdf',
-                            ip: this.dataUser.print_ip,
-
-                            printName: this.dataUser.print_name,
-                            hn: data.hn + ' ' + data.drugName,
-                          })
-                        : await this.http.PrintjsLocalhost('convertbuffer', {
-                            data: buffer,
-                            name:
-                              data.hn + ' ' + data.drugCode + '_drugcut.pdf',
-                            ip: this.dataUser.print_ip,
-                            // ip: '192.168.184.163',
-                            printName: this.dataUser.print_name,
-                            hn: data.hn + ' ' + data.drugName,
-                          });
-                      let formData: any = new FormData();
-                      formData.append('drugcode', data.drugCode);
-                      formData.append('drugname', data.drugName);
-                      formData.append('phar', this.dataUser.user);
-                      formData.append('hn', data.hn);
-                      formData.append('cutamount', data.qty_cut);
-                      formData.append('realamount', data.qty_real);
-                      formData.append(
-                        'balanceamount',
-                        data.qty_real - data.qty_cut
-                      );
-                      formData.append('departmentcode', this.select);
-                      formData.append(
-                        'date',
-                        moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
-                      );
-                      await this.http.post('insertCutDispendDrug', formData);
-                      formData = null;
-                    });
-                  }
-                });
-              }
-            }
-
-            if (getData.connect) {
-              if (getData.response.connect === 'success') {
-                data.currentqty = 0;
-                data.HisPackageRatio = data.checkqty;
-
-                await this.updateCheckmed(data);
-              } else {
-                Swal.fire(
-                  'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                  '',
-                  'error'
-                );
-              }
-            } else {
-              Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-            }
-          });
-        }
-      });
+    if (found.drugCode) {
+      this.getDrug(`${data.drugCode};${data.qty}`);
     } else {
-      data.currentqty = 0;
-      data.HisPackageRatio = data.checkqty;
-
-      await this.updateCheckmed(data);
+      Swal.fire('ไม่พบรายการยานี้ในรายการ!', '', 'error');
     }
+    //
   }
 }
