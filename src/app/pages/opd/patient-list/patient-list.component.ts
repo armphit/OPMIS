@@ -2478,14 +2478,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let arr1 = getData.response.result;
     let result = arr1.map((v: any) => ({
       ...v,
-      ...arr2.find(
-        (sp: any) =>
-          sp.hn.trim() == v.hn.trim() ?? {
-            relativeAddress: '',
-            relativePhone: '',
-            patientName: '',
-          }
-      ),
+      ...(arr2.find((sp: any) => sp?.hn?.trim?.() === v?.hn?.trim?.()) ?? {
+        relativeAddress: '',
+        relativePhone: '',
+        patientName: '',
+      }),
     }));
 
     if (getData.connect) {
@@ -2941,23 +2938,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             //     })
             //   : '',
             freetext2
-              ? lamed.invCode.trim() === 'MIRTA' ||
-                lamed.invCode.trim() === 'ALEND' ||
-                lamed.invCode.trim() === 'INSUG2'
+              ? ['MIRTA', 'ALEND', 'INSUG2'].includes(lamed?.invCode?.trim?.())
                 ? {
-                    text: lamed.freetext2.trim(),
+                    text: lamed?.freetext2?.trim?.() || '',
                     alignment: 'center',
                     fontSize: 13,
                     bold: true,
                   }
-                : freetext2.map(function (item: any) {
-                    return {
-                      text: item.trim(),
-                      alignment: 'center',
-                      fontSize: item.trim().length >= 80 ? 12 : 13,
-                      bold: true,
-                    };
-                  })
+                : freetext2.map((item: any) => ({
+                    text: item?.trim?.() || '',
+                    alignment: 'center',
+                    fontSize: (item?.trim?.()?.length || 0) >= 80 ? 12 : 13,
+                    bold: true,
+                  }))
               : '',
           ] as any,
 
