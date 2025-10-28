@@ -51,7 +51,7 @@
       </a>
 
       <a
-        *ngIf="dataUser.user == 'bas'"
+        *ngIf="dataUser.user == 'bas' || dataUser.user == 'admin'"
         style="margin-bottom: 4px"
         mat-list-item
         [routerLink]="['/check-in']"
