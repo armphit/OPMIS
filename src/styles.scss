@@ -166,3 +166,20 @@ table {
 .mat-drawer.mat-drawer-side {
   z-index: 1 !important;
 }
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: linear-gradient(180deg, #1976d2 0%, #004d80 100%);
+  color: #212121;
+}
+
+* {
+  font-family: "Sarabun", sans-serif;
+  box-sizing: border-box;
+}
+
+.mat-mdc-raised-button.mat-primary {
+  background-color: #0288d1 !important;
+}

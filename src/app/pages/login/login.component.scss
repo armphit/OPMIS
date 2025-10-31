@@ -1,107 +1,102 @@
 .login-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-
-  /* พื้นหลังแนว primary gradient */
-  background: linear-gradient(135deg, #0d47a1 0%, #1976d2 40%, #26c6da 100%);
-  background-attachment: fixed;
-  color: #ffffff;
-  font-family: "Roboto", sans-serif;
+  width: 100%;
+  min-height: calc(100vh - 60px);
+  padding: 20px;
 }
 
-/* โลโก้ */
-.header-logos {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.logo-bg {
-  margin: 10px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  padding: 0.75rem 1rem;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.login-card {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
   }
 }
 
-.logo {
-  object-fit: contain;
-}
-
-/* การ์ดล็อกอิน */
-.login-card {
-  width: 100%;
-  max-width: 380px;
-  padding: 2rem;
-  border-radius: 18px;
-  background: #ffffff;
-  color: #333;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-  text-align: center;
-}
-
-.login-icon {
+.logo-section {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 14px;
+  margin-bottom: 1.5rem;
 
-  mat-icon {
-    font-size: 52px;
-    color: #1976d2;
+  .logo {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: contain;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    padding: 5px;
   }
 }
 
-h2 {
-  margin: 0.5rem 0;
-  color: #0d47a1;
-  font-weight: 600;
-}
-
-p {
-  color: #4db6ac;
-  margin-bottom: 1.5rem;
-}
-
-.full-width {
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.login-button {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-weight: 500;
-}
-h2 {
-  margin: 0.3rem 0;
-  color: #0d47a1;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  font-size: 1.6rem;
+.system-title {
+  font-family: "SpaceQuest", sans-serif;
+  font-size: 1.8rem;
+  color: #00695c;
+  margin-bottom: 0.5rem;
 }
 
 .highlight {
-  color: #26c6da;
-  font-weight: 800;
+  color: #0288d1;
 }
 
 .subtitle {
-  font-size: 0.75rem;
-  color: #4db6ac;
-  margin-bottom: 1.8rem;
-  letter-spacing: 0.3px;
+  font-size: 0.85rem;
+  color: #546e7a;
+  margin-bottom: 2rem;
+}
+
+.input-field {
+  width: 100%;
+}
+
+.login-btn {
+  width: 100%;
+  font-weight: 600;
+  border-radius: 10px;
+  height: 44px;
+  margin-top: 10px;
+}
+
+.icon-decor {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.5;
+
+  .decor-icon {
+    font-size: 28px;
+    color: #0277bd;
+  }
+}
+
+/* Responsive Section */
+@media (max-width: 600px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 14px;
+  }
+  .system-title {
+    font-size: 1.4rem;
+  }
+  .subtitle {
+    font-size: 0.85rem;
+  }
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
 }

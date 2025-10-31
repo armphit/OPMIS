@@ -1,54 +1,33 @@
 <div class="login-container">
-  <!-- การ์ดล็อกอิน -->
-  <mat-card class="login-card">
-    <div class="login-icon">
-      <div class="logo-bg">
-        <img
-          src="assets/logo-company.jpg"
-          alt="Company Logo"
-          class="logo"
-          width="130"
-          height="110"
-        />
-      </div>
-      <div class="logo-bg">
-        <img
-          src="assets/logo-hospital.jpg"
-          alt="Hospital Logo"
-          class="logo"
-          width="130"
-          height="110"
-        />
-      </div>
+  <div class="login-card">
+    <div class="logo-section">
+      <img src="assets/logo-company.jpg" alt="Company Logo" class="logo" />
+      <img src="assets/logo-hospital.jpg" alt="Hospital Logo" class="logo" />
     </div>
 
-    <h2>Pharmacy <span class="highlight">MSR</span></h2>
-    <div class="subtitle">
+    <h2 class="system-title">
+      Pharmacy <span class="highlight system-title">MSR.</span>
+    </h2>
+    <p class="subtitle">
       Management, Service, and Reporting Intelligence System
-    </div>
+    </p>
 
     <form
       [formGroup]="inputGroup"
       (ngSubmit)="inputGroup.valid ? submitInput() : ''"
     >
-      <mat-form-field appearance="outline" class="full-width">
+      <mat-form-field appearance="outline" class="input-field">
+        <mat-label>Username</mat-label>
         <input matInput formControlName="name" required />
-        <mat-icon matSuffix>person</mat-icon>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="full-width">
+      <mat-form-field appearance="outline" class="input-field">
+        <mat-label>Password</mat-label>
         <input matInput type="password" formControlName="password" required />
-        <mat-icon matSuffix>lock</mat-icon>
       </mat-form-field>
 
-      <button
-        mat-raised-button
-        color="primary"
-        style="margin-bottom: 10px"
-        class="login-button"
-      >
-        <mat-icon>login</mat-icon>
-        เข้าสู่ระบบ
+      <button mat-raised-button color="primary" class="login-btn">
+        <mat-icon>login</mat-icon>&nbsp; Login
       </button>
       <span style="margin-top: 25px" class="text-center small">
         <a
@@ -70,8 +49,15 @@
         >
       </span>
     </form>
-  </mat-card>
+
+    <div class="icon-decor">
+      <mat-icon class="decor-icon">medical_services</mat-icon>
+      <mat-icon class="decor-icon">vaccines</mat-icon>
+      <mat-icon class="decor-icon">medication</mat-icon>
+    </div>
+  </div>
 </div>
+
 <div class="modal fade" id="singup">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
