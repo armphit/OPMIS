@@ -125,7 +125,7 @@ export class CheckMedComponent implements OnInit {
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
-    // this.dataUser.ip = '192.168.185.195';
+    this.dataUser.ip = '192.168.185.195';
     formData.append('ip', this.dataUser.ip);
 
     let getData: any = await this.http.post('getprintIP', formData);
