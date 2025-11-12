@@ -781,7 +781,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'PCT รังสี',
     ],
     type_pre: ['nonCPOE', 'CPOE'],
-    screening: ['รับรายงาน', 'Screening', 'เชิงรุก'],
+    screening: [
+      'Screening',
+      'หน้างานบริการ',
+      'Ambulatory',
+      'เชิงรุก',
+      'รับรายงาน',
+    ],
   };
   tel_site: string[] = [
     `ห้องยา ชั้น 1 โทร 32142-3`,

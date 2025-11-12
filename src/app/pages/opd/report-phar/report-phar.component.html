@@ -1818,7 +1818,7 @@
               (selectionChange)="changeText($event); note_change.value = ''"
               #note_change
             >
-              <mat-optgroup *ngFor="let code of note.noteCodes" [label]="code">
+              <mat-optgroup *ngFor="let code of note?.noteCodes" [label]="code">
                 <mat-option
                   *ngFor="let note of note.groupedNotes[code]"
                   [value]="note.note_text"
