@@ -747,7 +747,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   gettypeE: any = [];
   pe_de: any = {
     level: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
-    occurrence: ['รับรายงาน', 'Screening', 'เชิงรุก'],
+    occurrence: [
+      'Screening',
+      'หน้างานบริการ',
+      'Ambulatory',
+      'เชิงรุก',
+      'รับรายงาน',
+    ],
     source: ['ในเวลา', 'นอกเวลา'],
     error_type: [
       'drug error',
