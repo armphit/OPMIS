@@ -1,0 +1,171 @@
+.container h2 {
+  font-weight: 700;
+  color: #333;
+}
+
+.input-group .form-control {
+  font-size: 1rem;
+}
+
+.input-group .btn {
+  font-size: 1rem;
+}
+
+.row > .col-md-4 {
+  display: flex;
+  flex-direction: column;
+}
+.mat-expansion-panel {
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.mat-expansion-panel-header {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.info-panel {
+ line-height: 30px;
+
+}
+
+
+
+/* Section title */
+.section-title {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #3949ab;
+}
+
+/* Grid layout (modern) */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem 1rem;
+  padding: 0.5rem 0 1rem 0;
+    font-size: medium;
+}
+
+/* Address ให้เต็มแถว */
+.address {
+  grid-column: 1 / -1;
+}
+
+.check-card {
+  border-radius: 12px;
+  // padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  mat-card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  mat-card-content {
+    font-size: 0.95rem;
+  }
+
+  /* Hover effect smooth */
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Transition background color for status change */
+  &.bg-success {
+    background-color: #4caf50;
+    color: #fff;
+  }
+
+  &.bg-danger {
+    background-color: #f44336;
+    color: #fff;
+  }
+}
+
+/* Responsive: ให้ card เต็มความกว้างบนมือถือ */
+@media (max-width: 768px) {
+  .check-card {
+    width: 100%;
+  }
+}
+
+/* ตารางรายการยา */
+table.mat-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Header row */
+.mat-header-row {
+  background-color: #1976d2; /* Material Blue */
+  color: #fff;
+  font-weight: 600;
+}
+
+.mat-header-cell {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+/* Data row */
+.mat-row {
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.mat-row:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+/* Cell padding */
+.mat-cell {
+  padding: 0.75rem 1rem;
+}
+
+/* Hover effect for rows */
+.mat-row:hover {
+  background-color: #e3f2fd; /* light blue */
+  cursor: pointer;
+}
+
+/* Table card */
+.mat-card {
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease-in-out;
+}
+
+.mat-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+.mat-expansion-panel-header.mat-expanded,
+.mat-expansion-panel-header.mat-expanded:hover {
+  background-color: #f1f1f1 !important;
+  color: #e0f7fa !important;
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mat-header-cell,
+  .mat-cell {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+.mat-cell:first-child {
+  font-weight: 600;
+  color: #1976d2;
+}

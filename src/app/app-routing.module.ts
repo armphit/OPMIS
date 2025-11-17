@@ -14,6 +14,7 @@ import { NotfoundComponent } from './pages/notfound/notfound.component';
 import { SearchDrugComponent } from './pages/search-drug/search-drug.component';
 import { CheckMedComponent } from './pages/check-med/check-med.component';
 import { CheckPostComponent } from './pages/check-post/check-post.component';
+import { CheckPatientComponent } from './pages/check-patient/check-patient.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
       {
         path: 'check-post',
         component: CheckPostComponent,
+      },
+      {
+        path: 'check-patient',
+        component: CheckPatientComponent,
       },
       {
         path: '',

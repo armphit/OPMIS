@@ -1,1 +1,128 @@
-<p>check-patient works!</p>
+<div class="container-fluid mt-3">
+  <h2 class="mb-4">🔍 สแกน ID ผู้ป่วย</h2>
+
+  <div class="input-group mb-4">
+    <input
+      [(ngModel)]="patientId"
+      type="text"
+      class="form-control form-control-lg"
+      placeholder="กรอกหรือสแกน ID"
+      (keyup.enter)="scan()"
+    />
+    <button class="btn btn-primary btn-lg" (click)="scan()">Scan</button>
+  </div>
+
+  <div *ngIf="patient">
+    <!-- ข้อมูลส่วนตัว -->
+    <mat-accordion class="mb-3" multi>
+      <!-- <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> 👤 ข้อมูลส่วนตัว </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p><strong>ID:</strong> {{ patient.id }}</p>
+        <p><strong>ชื่อ:</strong> {{ patient.name }}</p>
+        <p><strong>เพศ:</strong> {{ patient.gender }}</p>
+        <p><strong>อายุ:</strong> {{ patient.age }} ปี</p>
+      </mat-expansion-panel>
+
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> 📇 ข้อมูลประจำตัว </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p><strong>เลขบัตรประชาชน:</strong> {{ patient.citizenId }}</p>
+        <p><strong>ที่อยู่:</strong> {{ patient.address }}</p>
+      </mat-expansion-panel> -->
+      <mat-expansion-panel class="info-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="section-title">ข้อมูลส่วนตัว</div>
+        <div class="info-grid">
+          <div><strong>ID:</strong> {{ patient[0]?.hn }}</div>
+          <div><strong>ชื่อ:</strong> {{ patient[0]?.patientname }}</div>
+          <div><strong>เพศ:</strong> {{ patient[0]?.sex }}</div>
+          <div><strong>วันเกิด:</strong> {{ patient[0]?.birthDay }}</div>
+          <div><strong>อายุ:</strong> {{ patient[0]?.Age }} ปี</div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="section-title">ข้อมูลประจำตัว</div>
+        <div class="info-grid">
+          <div><strong>เลขบัตรประชาชน:</strong> {{ patient[0]?.CardID }}</div>
+          <div class="address">
+            <strong>ที่อยู่:</strong> {{ patient[0]?.addr }}
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- ตารางรายการยา -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> 💊 รายการยา </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-card class="mb-3">
+          <mat-card-title>รายการยา</mat-card-title>
+          <mat-card-content>
+            <table
+              mat-table
+              [dataSource]="patient"
+              class="mat-elevation-z1 w-100"
+            >
+              <ng-container matColumnDef="invName">
+                <th mat-header-cell *matHeaderCellDef>ชื่อยา</th>
+                <td mat-cell *matCellDef="let med">{{ med.invName }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="qtyReq">
+                <th mat-header-cell *matHeaderCellDef>จำนวน</th>
+                <td mat-cell *matCellDef="let med">{{ med.qtyReq }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="unit">
+                <th mat-header-cell *matHeaderCellDef>หน่วย</th>
+                <td mat-cell *matCellDef="let med">{{ med.unit }}</td>
+              </ng-container>
+
+              <tr
+                mat-header-row
+                *matHeaderRowDef="['invName', 'qtyReq', 'unit']"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: ['invName', 'qtyReq', 'unit']"
+              ></tr>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </mat-expansion-panel>
+
+      <!-- Check Card -->
+      <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+          <mat-panel-title> ✅ การตรวจเช็ค </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-md-4 mb-3" *ngFor="let check of patient2?.checks">
+            <mat-card
+              [ngClass]="{
+                'bg-success text-white': check.status === 'pass',
+                'bg-danger text-white': check.status === 'fail'
+              }"
+              class="check-card mat-elevation-z2"
+              style="cursor: pointer"
+              (click)="check.status === 'fail' ? openDetail(check) : null"
+            >
+              <mat-card-title>{{ check.title }}</mat-card-title>
+              <mat-card-content>
+                สถานะ: {{ check.status | uppercase }}
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

@@ -59,6 +59,15 @@
         (click)="togglePanel()"
         ><i class="far fa-calendar-check"></i>&nbsp;<strong>Door Report</strong>
       </a>
+      <!-- <a
+        *ngIf="dataUser.role != 'ipd' && dataUser.role != 'officer'"
+        style="margin-bottom: 4px"
+        mat-list-item
+        [routerLink]="['check-patient']"
+        [routerLinkActive]="['active']"
+        (click)="togglePanel()"
+        ><i class="fas fa-user-md"></i>&nbsp;<strong>Check - Patient</strong>
+      </a> -->
       <a
         mat-list-item
         [routerLink]="['/check-med']"
