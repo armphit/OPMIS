@@ -37,23 +37,24 @@
         <mat-expansion-panel-header>
           <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
         </mat-expansion-panel-header>
+        <div style="margin: 10px">
+          <div class="section-title">ข้อมูลส่วนตัว</div>
+          <div class="info-grid contrainer">
+            <div><strong>ID:</strong> {{ patient[0]?.hn }}</div>
+            <div><strong>ชื่อ:</strong> {{ patient[0]?.patientname }}</div>
+            <div><strong>เพศ:</strong> {{ patient[0]?.sex }}</div>
+            <div><strong>วันเกิด:</strong> {{ patient[0]?.birthDay }}</div>
+            <div><strong>อายุ:</strong> {{ patient[0]?.Age }} ปี</div>
+          </div>
 
-        <div class="section-title">ข้อมูลส่วนตัว</div>
-        <div class="info-grid">
-          <div><strong>ID:</strong> {{ patient[0]?.hn }}</div>
-          <div><strong>ชื่อ:</strong> {{ patient[0]?.patientname }}</div>
-          <div><strong>เพศ:</strong> {{ patient[0]?.sex }}</div>
-          <div><strong>วันเกิด:</strong> {{ patient[0]?.birthDay }}</div>
-          <div><strong>อายุ:</strong> {{ patient[0]?.Age }} ปี</div>
-        </div>
+          <mat-divider></mat-divider>
 
-        <mat-divider></mat-divider>
-
-        <div class="section-title">ข้อมูลประจำตัว</div>
-        <div class="info-grid">
-          <div><strong>เลขบัตรประชาชน:</strong> {{ patient[0]?.CardID }}</div>
-          <div class="address">
-            <strong>ที่อยู่:</strong> {{ patient[0]?.addr }}
+          <div class="section-title">ข้อมูลประจำตัว</div>
+          <div class="info-grid">
+            <div><strong>เลขบัตรประชาชน:</strong> {{ patient[0]?.CardID }}</div>
+            <div class="address">
+              <strong>ที่อยู่:</strong> {{ patient[0]?.addr }}
+            </div>
           </div>
         </div>
       </mat-expansion-panel>
@@ -64,7 +65,6 @@
           <mat-panel-title> 💊 รายการยา </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-card class="mb-3">
-          <mat-card-title>รายการยา</mat-card-title>
           <mat-card-content>
             <table
               mat-table
@@ -124,5 +124,39 @@
         </div>
       </mat-expansion-panel>
     </mat-accordion>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-backdrop="static"
+  data-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
   </div>
 </div>

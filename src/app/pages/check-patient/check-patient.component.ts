@@ -55,7 +55,7 @@ export class CheckPatientComponent implements OnInit {
   }
   openDetail(check: CheckResult) {
     let win: any = window;
-    win.$('#exampleModal').modal('hide');
+    win.$('#staticBackdrop').modal('show');
     // if (check.status === "fail") {
     //   const modalRef = this.modalService.open(CheckDetailModalComponent, {
     //     size: "lg",
