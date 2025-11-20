@@ -209,50 +209,47 @@ export class AllDrugComponent implements OnInit {
 
     if (num == 2) {
       if (this.formValues >= 0) {
-        if (this.formValues) {
-          formData.append('num', '2');
+        // if (this.formValues) {
+        formData.append('num', '2');
 
-          let getData: any = await this.http.post('drugCut', formData);
+        let getData: any = await this.http.post('drugCut', formData);
 
-          if (getData.connect) {
-            if (getData.response.rowCount) {
-              formData.append('status', 'เพิ่ม');
-              let getData2: any = await this.http.post(
-                'adddrugcutLog',
-                formData
-              );
+        if (getData.connect) {
+          if (getData.response.rowCount) {
+            formData.append('status', 'เพิ่ม');
+            let getData2: any = await this.http.post('adddrugcutLog', formData);
 
-              if (getData2.connect) {
-                if (getData2.response.result) {
-                  await this.getData();
-                  this.dataSource.filter = this.input.nativeElement.value
-                    .trim()
-                    .toLowerCase();
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    showConfirmButton: false,
-                    timer: 1500,
-                  });
-                  let win: any = window;
-                  win.$('#usercut').modal('hide');
-                } else {
-                  Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
-                }
+            if (getData2.connect) {
+              if (getData2.response.result) {
+                await this.getData();
+                this.dataSource.filter = this.input.nativeElement.value
+                  .trim()
+                  .toLowerCase();
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'บันทึกข้อมูลสำเร็จ',
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                let win: any = window;
+                win.$('#usercut').modal('hide');
               } else {
-                Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+                Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
               }
             } else {
-              console.log(getData);
-              Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
+              Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
             }
           } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+            console.log(getData);
+            Swal.fire('ไม่สามารถ Update ข้อมูลได้!', '', 'error');
           }
         } else {
-          Swal.fire('Invalid number!', '', 'error');
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
+        // } else {
+        //   Swal.fire('Invalid number!', '', 'error');
+        // }
       } else {
         Swal.fire('Invalid number!', '', 'error');
       }
