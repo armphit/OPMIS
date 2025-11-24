@@ -585,7 +585,7 @@ export class CheckMedComponent implements OnInit {
                             printName: this.dataUser.print_name,
                             hn: value.hn + ' ' + value.drugName,
                           });
-                      if (value.cur_qty) {
+                      if (value.cur_qty && value.qty_cut) {
                         if (value.qty_real > value.qty_cut) {
                           this.printPDF(value).then((dataPDF: any) => {
                             if (dataPDF) {
@@ -814,7 +814,7 @@ export class CheckMedComponent implements OnInit {
                                   }
                                 );
 
-                            if (value.cur_qty) {
+                            if (value.cur_qty && value.qty_cut) {
                               if (value.qty_real > value.qty_cut) {
                                 this.printPDF(value).then((dataPDF: any) => {
                                   if (dataPDF) {
@@ -1387,8 +1387,8 @@ export class CheckMedComponent implements OnInit {
 
   sendServer(data: any, evt: any) {
     if (this.checkprint) {
-      data.cur_qty = data.qty_real;
       if (data.qty_cut === 0) {
+        data.cur_qty = data.qty_real;
         this.printPDF(data).then((dataPDF: any) => {
           if (dataPDF) {
             dataPDF.getBase64(async (buffer: any) => {
@@ -1434,7 +1434,7 @@ export class CheckMedComponent implements OnInit {
                     hn: data.hn + ' ' + data.drugName,
                   });
 
-              if (data.cur_qty) {
+              if (data.cur_qty && data.qty_cut) {
                 if (data.qty_real > data.qty_cut) {
                   this.printPDF(data).then((dataPDF: any) => {
                     if (dataPDF) {
@@ -1658,7 +1658,7 @@ export class CheckMedComponent implements OnInit {
                         hn: data.hn + ' ' + data.drugName,
                       });
 
-                  if (data.cur_qty) {
+                  if (data.cur_qty && data.qty_cut) {
                     if (data.qty_real > data.qty_cut) {
                       this.printPDF(data).then((dataPDF: any) => {
                         if (dataPDF) {
