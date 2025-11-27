@@ -125,7 +125,7 @@ export class CheckMedComponent implements OnInit {
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
-    // this.dataUser.ip = '192.168.185.195';
+    this.dataUser.ip = '192.168.185.195';
     formData.append('ip', this.dataUser.ip);
 
     let getData: any = await this.http.post('getprintIP', formData);
@@ -288,7 +288,17 @@ export class CheckMedComponent implements OnInit {
               // Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
             }
           }
+
+          if (
+            this.patient_drug.filter((item: any) => item.device == this.getLed)
+              .length
+          ) {
+            this.patient_drug = this.patient_drug.filter(
+              (item: any) => item.device == this.getLed
+            );
+          }
         }
+
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -1004,6 +1014,16 @@ export class CheckMedComponent implements OnInit {
           (val: any) =>
             (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
+        if (this.getLed && this.getLed.includes('LED')) {
+          if (
+            this.patient_drug.filter((item: any) => item.device == this.getLed)
+              .length
+          ) {
+            this.patient_drug = this.patient_drug.filter(
+              (item: any) => item.device == this.getLed
+            );
+          }
+        }
 
         this.dataSource = new MatTableDataSource(this.patient_drug);
         this.dataSource.sort = this.sort;
@@ -1546,208 +1566,209 @@ export class CheckMedComponent implements OnInit {
     });
   }
   sendAccept(data: any, evt: any) {
-    // if (
-    //   (!data.checkAccept && !data.qty && !data.barCode) ||
-    //   !data.qty ||
-    //   !data.checkAccept
-    // ) {
-    data.dataCheck = 2;
-    Swal.fire({
-      // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
-      //   data.unitCode ? data.unitCode.trim() : ''
-      // }`,
-      imageUrl: data.pathImage
-        ? data.typeNum.indexOf('pack') != -1
-          ? this.http.imgPath +
-            data.pathImage[data.typeNum.indexOf('pack')] +
-            this.mathRandom
-          : data.pathImage[data.pathImage.length - 1]
-          ? this.http.imgPath +
-            data.pathImage[data.pathImage.length - 1] +
-            this.mathRandom
-          : ''
-        : '',
-      imageWidth: 150,
-      imageHeight: 150,
-      title: `<strong style="font-size:18px">จำนวน ${data.drugName} คงเหลือ ${
-        data.checkqty
-      } ${data.unitCode ? data.unitCode.trim() : ''}</strong>`,
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes',
-      position: 'top',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        // if (this.dataUser.ip == 'test') {
-        //   let formData = new FormData();
-        //   formData.append('device', data.device);
-        //   formData.append('drugCode', data.drugCode);
-        //   let sendled: any = await this.http.post('update_led', formData);
-        // }
-        data.ip = this.dataUser.ip
-          ? '200.200.200.' + this.dataUser.ip.split('.')[3]
-          : '';
-        if (this.checkprint) {
-          if (data.qty_cut === 0) {
-            data.cur_qty = data.qty_real;
-            this.printPDF(data).then(async (dataPDF: any) => {
-              if (dataPDF) {
-                dataPDF.getBase64(async (buffer: any) => {
-                  !this.checked
-                    ? await this.http.Printjs162('convertbuffer', {
-                        data: buffer,
-                        name: data.hn + ' ' + data.drugCode + '.pdf',
-                        ip: this.dataUser.print_ip,
+    if (
+      (!data.checkAccept && !data.qty && !data.barCode) ||
+      !data.qty ||
+      !data.checkAccept
+    ) {
+      data.dataCheck = 2;
+      Swal.fire({
+        // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${
+        //   data.unitCode ? data.unitCode.trim() : ''
+        // }`,
+        imageUrl: data.pathImage
+          ? data.typeNum.indexOf('pack') != -1
+            ? this.http.imgPath +
+              data.pathImage[data.typeNum.indexOf('pack')] +
+              this.mathRandom
+            : data.pathImage[data.pathImage.length - 1]
+            ? this.http.imgPath +
+              data.pathImage[data.pathImage.length - 1] +
+              this.mathRandom
+            : ''
+          : '',
+        imageWidth: 150,
+        imageHeight: 150,
+        title: `<strong style="font-size:18px">จำนวน ${data.drugName} คงเหลือ ${
+          data.checkqty
+        } ${data.unitCode ? data.unitCode.trim() : ''}</strong>`,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        position: 'top',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // if (this.dataUser.ip == 'test') {
+          //   let formData = new FormData();
+          //   formData.append('device', data.device);
+          //   formData.append('drugCode', data.drugCode);
+          //   let sendled: any = await this.http.post('update_led', formData);
+          // }
+          data.ip = this.dataUser.ip
+            ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+            : '';
+          if (this.checkprint) {
+            if (data.qty_cut === 0) {
+              data.cur_qty = data.qty_real;
+              this.printPDF(data).then(async (dataPDF: any) => {
+                if (dataPDF) {
+                  dataPDF.getBase64(async (buffer: any) => {
+                    !this.checked
+                      ? await this.http.Printjs162('convertbuffer', {
+                          data: buffer,
+                          name: data.hn + ' ' + data.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                        printName: this.dataUser.print_name,
-                        hn: data.hn + ' ' + data.drugName,
-                      })
-                    : await this.http.PrintjsLocalhost('convertbuffer', {
-                        data: buffer,
-                        name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
-                        ip: this.dataUser.print_ip,
-                        // ip: '192.168.184.163',
-                        printName: this.dataUser.print_name,
-                        hn: data.hn + ' ' + data.drugName,
-                      });
-                  let formData: any = new FormData();
-                  formData.append('drugcode', data.drugCode);
-                  formData.append('drugname', data.drugName);
-                  formData.append('phar', this.dataUser.user);
-                  formData.append('hn', data.hn);
-                  formData.append('cutamount', data.qty_cut);
-                  formData.append('realamount', data.qty_real);
-                  formData.append(
-                    'balanceamount',
-                    data.qty_real - data.qty_cut
-                  );
-                  formData.append('departmentcode', this.select);
-                  formData.append(
-                    'date',
-                    moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
-                  );
-                  await this.http.post('insertCutDispendDrug', formData);
-                  formData = null;
-                });
-              }
-              data.currentqty = 0;
-              data.HisPackageRatio = data.checkqty;
+                          printName: this.dataUser.print_name,
+                          hn: data.hn + ' ' + data.drugName,
+                        })
+                      : await this.http.PrintjsLocalhost('convertbuffer', {
+                          data: buffer,
+                          name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                          ip: this.dataUser.print_ip,
+                          // ip: '192.168.184.163',
+                          printName: this.dataUser.print_name,
+                          hn: data.hn + ' ' + data.drugName,
+                        });
+                    let formData: any = new FormData();
+                    formData.append('drugcode', data.drugCode);
+                    formData.append('drugname', data.drugName);
+                    formData.append('phar', this.dataUser.user);
+                    formData.append('hn', data.hn);
+                    formData.append('cutamount', data.qty_cut);
+                    formData.append('realamount', data.qty_real);
+                    formData.append(
+                      'balanceamount',
+                      data.qty_real - data.qty_cut
+                    );
+                    formData.append('departmentcode', this.select);
+                    formData.append(
+                      'date',
+                      moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
+                    );
+                    await this.http.post('insertCutDispendDrug', formData);
+                    formData = null;
+                  });
+                }
+                data.currentqty = 0;
+                data.HisPackageRatio = data.checkqty;
 
-              await this.updateCheckmed(data);
-            });
-          } else {
-            this.sendPDF(data).then((dataPDF: any) => {
-              if (dataPDF) {
-                dataPDF.getBase64(async (buffer: any) => {
-                  let getData: any = !this.checked
-                    ? await this.http.Printjs162('convertbuffer', {
-                        data: buffer,
-                        name: data.hn + ' ' + data.drugCode + '.pdf',
-                        ip: this.dataUser.print_ip,
+                await this.updateCheckmed(data);
+              });
+            } else {
+              this.sendPDF(data).then((dataPDF: any) => {
+                if (dataPDF) {
+                  dataPDF.getBase64(async (buffer: any) => {
+                    let getData: any = !this.checked
+                      ? await this.http.Printjs162('convertbuffer', {
+                          data: buffer,
+                          name: data.hn + ' ' + data.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                        printName: this.dataUser.print_name,
-                        hn: data.hn + ' ' + data.drugName,
-                      })
-                    : await this.http.PrintjsLocalhost('convertbuffer', {
-                        data: buffer,
-                        name: data.hn + ' ' + data.drugCode + '.pdf',
-                        ip: this.dataUser.print_ip,
-                        // ip: '192.168.184.163',
-                        printName: this.dataUser.print_name,
-                        hn: data.hn + ' ' + data.drugName,
-                      });
+                          printName: this.dataUser.print_name,
+                          hn: data.hn + ' ' + data.drugName,
+                        })
+                      : await this.http.PrintjsLocalhost('convertbuffer', {
+                          data: buffer,
+                          name: data.hn + ' ' + data.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
+                          // ip: '192.168.184.163',
+                          printName: this.dataUser.print_name,
+                          hn: data.hn + ' ' + data.drugName,
+                        });
 
-                  if (data.cur_qty && data.qty_cut) {
-                    if (data.qty_real > data.qty_cut) {
-                      this.printPDF(data).then((dataPDF: any) => {
-                        if (dataPDF) {
-                          dataPDF.getBase64(async (buffer: any) => {
-                            !this.checked
-                              ? await this.http.Printjs162('convertbuffer', {
-                                  data: buffer,
-                                  name: data.hn + ' ' + data.drugCode + '.pdf',
-                                  ip: this.dataUser.print_ip,
-
-                                  printName: this.dataUser.print_name,
-                                  hn: data.hn + ' ' + data.drugName,
-                                })
-                              : await this.http.PrintjsLocalhost(
-                                  'convertbuffer',
-                                  {
+                    if (data.cur_qty && data.qty_cut) {
+                      if (data.qty_real > data.qty_cut) {
+                        this.printPDF(data).then((dataPDF: any) => {
+                          if (dataPDF) {
+                            dataPDF.getBase64(async (buffer: any) => {
+                              !this.checked
+                                ? await this.http.Printjs162('convertbuffer', {
                                     data: buffer,
                                     name:
-                                      data.hn +
-                                      ' ' +
-                                      data.drugCode +
-                                      '_drugcut.pdf',
+                                      data.hn + ' ' + data.drugCode + '.pdf',
                                     ip: this.dataUser.print_ip,
-                                    // ip: '192.168.184.163',
+
                                     printName: this.dataUser.print_name,
                                     hn: data.hn + ' ' + data.drugName,
-                                  }
-                                );
-                            let formData: any = new FormData();
-                            formData.append('drugcode', data.drugCode);
-                            formData.append('drugname', data.drugName);
-                            formData.append('phar', this.dataUser.user);
-                            formData.append('hn', data.hn);
-                            formData.append('cutamount', data.qty_cut);
-                            formData.append('realamount', data.qty_real);
-                            formData.append(
-                              'balanceamount',
-                              data.qty_real - data.qty_cut
-                            );
-                            formData.append('departmentcode', this.select);
-                            formData.append(
-                              'date',
-                              moment(data.lastmodified).format(
-                                'YYYY-MM-DD HH:mm:ss'
-                              )
-                            );
-                            await this.http.post(
-                              'insertCutDispendDrug',
-                              formData
-                            );
-                            formData = null;
-                          });
-                        }
-                      });
+                                  })
+                                : await this.http.PrintjsLocalhost(
+                                    'convertbuffer',
+                                    {
+                                      data: buffer,
+                                      name:
+                                        data.hn +
+                                        ' ' +
+                                        data.drugCode +
+                                        '_drugcut.pdf',
+                                      ip: this.dataUser.print_ip,
+                                      // ip: '192.168.184.163',
+                                      printName: this.dataUser.print_name,
+                                      hn: data.hn + ' ' + data.drugName,
+                                    }
+                                  );
+                              let formData: any = new FormData();
+                              formData.append('drugcode', data.drugCode);
+                              formData.append('drugname', data.drugName);
+                              formData.append('phar', this.dataUser.user);
+                              formData.append('hn', data.hn);
+                              formData.append('cutamount', data.qty_cut);
+                              formData.append('realamount', data.qty_real);
+                              formData.append(
+                                'balanceamount',
+                                data.qty_real - data.qty_cut
+                              );
+                              formData.append('departmentcode', this.select);
+                              formData.append(
+                                'date',
+                                moment(data.lastmodified).format(
+                                  'YYYY-MM-DD HH:mm:ss'
+                                )
+                              );
+                              await this.http.post(
+                                'insertCutDispendDrug',
+                                formData
+                              );
+                              formData = null;
+                            });
+                          }
+                        });
+                      }
                     }
-                  }
 
-                  if (getData.connect) {
-                    if (getData.response.connect === 'success') {
-                      data.currentqty = 0;
-                      data.HisPackageRatio = data.checkqty;
+                    if (getData.connect) {
+                      if (getData.response.connect === 'success') {
+                        data.currentqty = 0;
+                        data.HisPackageRatio = data.checkqty;
 
-                      await this.updateCheckmed(data);
+                        await this.updateCheckmed(data);
+                      } else {
+                        Swal.fire(
+                          'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                          '',
+                          'error'
+                        );
+                      }
                     } else {
-                      Swal.fire(
-                        'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                        '',
-                        'error'
-                      );
+                      Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
                     }
-                  } else {
-                    Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!', '', 'error');
-                  }
-                });
-              }
-            });
-          }
-        } else {
-          data.currentqty = 0;
-          data.HisPackageRatio = data.checkqty;
+                  });
+                }
+              });
+            }
+          } else {
+            data.currentqty = 0;
+            data.HisPackageRatio = data.checkqty;
 
-          await this.updateCheckmed(data);
+            await this.updateCheckmed(data);
+          }
         }
+      });
+      if (evt) {
+        evt.stopPropagation();
       }
-    });
-    if (evt) {
-      evt.stopPropagation();
     }
-    // }
   }
 
   async changeBarcode(e: any) {
