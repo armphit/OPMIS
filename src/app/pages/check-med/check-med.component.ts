@@ -125,7 +125,7 @@ export class CheckMedComponent implements OnInit {
     // this.ip = this.ip.data.ip;
     // console.log();
     let formData = new FormData();
-    this.dataUser.ip = '192.168.185.195';
+    this.dataUser.ip = '192.168.185.174';
     formData.append('ip', this.dataUser.ip);
 
     let getData: any = await this.http.post('getprintIP', formData);
@@ -289,14 +289,14 @@ export class CheckMedComponent implements OnInit {
             }
           }
 
-          if (
-            this.patient_drug.filter((item: any) => item.device == this.getLed)
-              .length
-          ) {
-            this.patient_drug = this.patient_drug.filter(
-              (item: any) => item.device == this.getLed
-            );
-          }
+          // if (
+          //   this.patient_drug.filter((item: any) => item.device == this.getLed)
+          //     .length
+          // ) {
+          //   this.patient_drug = this.patient_drug.filter(
+          //     (item: any) => item.device == this.getLed
+          //   );
+          // }
         }
 
         this.dataSource = new MatTableDataSource(this.patient_drug);
@@ -1015,14 +1015,14 @@ export class CheckMedComponent implements OnInit {
             (val.checkDrug && !val.checkstamp) || (!val.qty && !val.checkstamp)
         );
         if (this.getLed && this.getLed.includes('LED')) {
-          if (
-            this.patient_drug.filter((item: any) => item.device == this.getLed)
-              .length
-          ) {
-            this.patient_drug = this.patient_drug.filter(
-              (item: any) => item.device == this.getLed
-            );
-          }
+          // if (
+          //   this.patient_drug.filter((item: any) => item.device == this.getLed)
+          //     .length
+          // ) {
+          //   this.patient_drug = this.patient_drug.filter(
+          //     (item: any) => item.device == this.getLed
+          //   );
+          // }
         }
 
         this.dataSource = new MatTableDataSource(this.patient_drug);
@@ -1565,12 +1565,9 @@ export class CheckMedComponent implements OnInit {
       }
     });
   }
+  clickrow: boolean = false;
   sendAccept(data: any, evt: any) {
-    if (
-      (!data.checkAccept && !data.qty && !data.barCode) ||
-      !data.qty ||
-      !data.checkAccept
-    ) {
+    if (this.clickrow || !data.checkAccept) {
       data.dataCheck = 2;
       Swal.fire({
         // title: `จำนวน ${data.drugName} คงเหลือ ${data.checkqty} ${

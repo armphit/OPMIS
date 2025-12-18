@@ -23,6 +23,7 @@ import { LightboxModule } from 'ng-gallery/lightbox';
 import { ReportDispenseComponent } from './report-dispense/report-dispense.component';
 // import { CheckMedComponent } from './check-med/check-med.component';
 import { DetailMedComponent } from './detail-med/detail-med.component';
+import { ReportScanComponent } from './patient-list/report-scan/report-scan.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { DetailMedComponent } from './detail-med/detail-med.component';
     ReportDispenseComponent,
     // CheckMedComponent,
     DetailMedComponent,
+    ReportScanComponent,
   ],
   imports: [
     CommonModule,

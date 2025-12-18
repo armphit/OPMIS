@@ -2,9 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Input,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 import {
@@ -21,12 +19,12 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as moment from 'moment';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
-import { interval, Subscription } from 'rxjs';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import JsBarcode from 'jsbarcode';
+import { ReportScanComponent } from './report-scan/report-scan.component';
 (pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
 (pdfMake as any).fonts = {
   THSarabunNew: {
@@ -64,6 +62,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   @ViewChild('input') input!: ElementRef;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatPaginator') paginator!: MatPaginator;
+  @ViewChild(ReportScanComponent) ReportScan!: ReportScanComponent;
   public dataDrug = new Array();
   nameFilter = new FormControl('');
   idFilter = new FormControl('');
@@ -78,9 +77,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   };
   checkCost: boolean = false;
   checkmodalpatient: boolean = false;
-  // date1 = new FormControl(new Date());
-  // @ViewChild('swiper') swiper!: ElementRef;
-  private updateSubscription!: Subscription;
+
   constructor(
     private http: HttpService,
     private formBuilder: FormBuilder,
@@ -2565,6 +2562,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       ? this.reportTimeDispend()
       : this.getTab === 6
       ? this.reportreturnDrug()
+      : this.getTab === 7
+      ? this.ReportScan.reportCheck()
       : '';
   }
 

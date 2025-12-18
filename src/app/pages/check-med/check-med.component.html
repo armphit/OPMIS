@@ -57,10 +57,17 @@
                   </button>
                 </form>
                 <mat-checkbox
+                  style="margin-right: 10px"
                   color="primary"
                   class="example-margin"
                   [(ngModel)]="checked"
                   >Localhost</mat-checkbox
+                >
+                <mat-checkbox
+                  color="primary"
+                  class="example-margin"
+                  [(ngModel)]="clickrow"
+                  >Click Row</mat-checkbox
                 >
                 <div style="font-size: 20px; line-height: 50px">
                   <p class="text-nowrap" *ngIf="patient_drug.length">

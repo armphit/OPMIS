@@ -47,7 +47,10 @@ export class CheckPatientComponent implements OnInit {
         Swal.fire('ไม่สามารถ response ได้!', '', 'error');
       }
     } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      this.patient = [];
+      if (getData.response.status == 404) {
+        Swal.fire(getData.response.error.message, '', 'error');
+      } else Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
     this.patientService.scanPatient(this.patientId).subscribe((data) => {
       this.patient2 = data;

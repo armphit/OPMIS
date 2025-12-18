@@ -1,0 +1,324 @@
+<div class="container-fluid pt-2">
+  <div class="row">
+    <div class="col-lg-3">
+      <mat-form-field class="example-form-field" style="float: left">
+        <mat-label>เลือกวันที่</mat-label>
+        <mat-date-range-input
+          [formGroup]="campaignOne"
+          [rangePicker]="campaignOnePicker7"
+          [comparisonStart]="campaignOne.value.start"
+          [comparisonEnd]="campaignOne.value.end"
+        >
+          <input
+            matStartDate
+            placeholder="วันที่เริ่มต้น"
+            formControlName="start"
+          />
+          <input
+            matEndDate
+            placeholder="วันที่สิ้นสุด"
+            formControlName="end"
+            (dateChange)="reportCheck()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="campaignOnePicker7"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #campaignOnePicker7></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-6">
+      <!-- <mat-form-field>
+        <mat-label>Select Scan</mat-label>
+        <mat-select
+          [(ngModel)]="checkS"
+          (ngModelChange)="applyFilterDropdown()"
+        >
+          <mat-option value="">All</mat-option>
+          <mat-option value="QRCode">QRCode</mat-option>
+          <mat-option value="OnClick">ONClick</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <mat-form-field style="margin-left: 20px">
+        <mat-label>Select Site</mat-label>
+        <mat-select [(ngModel)]="select" (ngModelChange)="reportCheck()">
+          <mat-option value="">All</mat-option>
+          <mat-option value="R93">ROOM 93</mat-option>
+          <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+          <mat-option value="2">ห้องยาชั้น 2</mat-option>
+          <mat-option value="3">ห้องยาชั้น 3</mat-option>
+          <mat-option value="W19">ห้องยา M - Park</mat-option>
+          <mat-option value="W20">ห้องยา ER OPD</mat-option>
+          <mat-option value="W21">ห้องยา ER IPD</mat-option>
+          <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+          <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-lg-3">
+      <!-- <mat-form-field class="example-full-width" style="float: right">
+        <input matInput (keyup)="applyFilter7($event)" #input7 />
+        <mat-placeholder>Search</mat-placeholder>
+        <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+      </mat-form-field> -->
+    </div>
+  </div>
+  <section class="example-container mat-elevation-z8" tabindex="0">
+    <!-- <table
+      mat-table
+      [dataSource]="dataSource7"
+      #MatSort7="matSort"
+      matSort
+      class="mat-elevation-z8"
+      matTableExporter
+      #exporter7="matTableExporter"
+      [hiddenColumns]=""
+    >
+      <ng-container matColumnDef="queue">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          queue
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.queue }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hn">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          HN
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.hn }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="patientname">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          patientName
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.patientname }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="drugCode">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          drugCode
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.drugCode }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="drugName">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          drugName
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.drugName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="checkAccept">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          checkAccept
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.checkAccept }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="user">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          user
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.user }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          name
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createDT">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          mat-sort-header
+          style="padding-left: 10px"
+        >
+          createDT
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element"
+          style="padding-left: 20px; padding-right: 20px"
+        >
+          {{ element.createDT }}
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns7; sticky: true"
+      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns7"></tr>
+    </table> -->
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8"
+      style="width: 650px"
+      #MatSort7="matSort"
+      matSort
+    >
+      <!-- Row 1: main headers -->
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header rowspan="2">
+          user
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.user }}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header rowspan="2">
+          Name
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header rowspan="2">
+          total
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.total }}</td>
+      </ng-container>
+
+      <!-- Main header -->
+      <ng-container matColumnDef="OnClickHeader">
+        <th mat-header-cell *matHeaderCellDef colspan="2" class="text-center">
+          OnClick
+        </th>
+      </ng-container>
+
+      <ng-container matColumnDef="QRCode">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header rowspan="2">
+          QRCode
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.QRCode }}</td>
+      </ng-container>
+
+      <!-- Child headers -->
+      <ng-container matColumnDef="OnClick_1">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          OnClick_มีQRCode
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.OnClick_1 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="OnClick_0">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          OnClick_ไม่มีQRCode
+        </th>
+        <td mat-cell *matCellDef="let e">{{ e.OnClick_0 }}</td>
+      </ng-container>
+
+      <!-- Header row 1 -->
+      <tr mat-header-row *matHeaderRowDef="headerRow1"></tr>
+
+      <!-- Header row 2 -->
+      <tr mat-header-row *matHeaderRowDef="headerRow2"></tr>
+
+      <!-- Data rows -->
+      <tr mat-row *matRowDef="let row; columns: dataColumns"></tr>
+    </table>
+  </section>
+
+  <div>
+    <button mat-raised-button color="primary" (click)="exportExcel()">
+      Export Excel
+    </button>
+    <mat-paginator
+      style="float: right"
+      #MatPaginator7="matPaginator"
+      [length]="10"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 50, 100]"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>
