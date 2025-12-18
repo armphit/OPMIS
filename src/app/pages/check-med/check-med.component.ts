@@ -407,15 +407,27 @@ export class CheckMedComponent implements OnInit {
           }));
 
         if (!value.length) {
-          value = this.patient_drug.filter(
-            (item: any) =>
-              item.drugCode.trim() ===
-              getBarcode.response[2].result[0].drugCode.trim()
-          );
+          // value = this.patient_drug.filter(
+          //   (item: any) =>
+          //     item.drugCode.trim() ===
+          //     getBarcode.response[2].result[0].drugCode.trim()
+          // );
+          value = this.patient_drug
+            .filter((x: any) =>
+              getBarcode?.response?.[2]?.result?.some(
+                (y: any) => y?.drugCode?.trim?.() === x?.drugCode?.trim?.()
+              )
+            )
+            .map((x: any) => {
+              const found = getBarcode?.response?.[2]?.result?.find(
+                (y: any) => y?.drugCode?.trim?.() === x?.drugCode?.trim?.()
+              );
 
-          if (value.length) {
-            value[0].HisPackageRatio = getBarcode.response[2].result[0].pack;
-          }
+              return {
+                ...x,
+                HisPackageRatio: found?.pack ?? x.HisPackageRatio,
+              };
+            });
         }
       } else if (val.includes(';') && !value.length) {
         let textSpilt = val.split(';');
