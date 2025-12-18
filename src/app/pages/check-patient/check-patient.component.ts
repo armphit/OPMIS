@@ -32,9 +32,7 @@ export class CheckPatientComponent implements OnInit {
   async scan() {
     let getData: any = await this.http.postNodejsTest('getdatacpoe', {
       hn: this.patientId,
-      date: moment(new Date())
-        .year(moment().year() + 543)
-        .format('YYYYMMDD'),
+      date: moment(new Date()).format('YYYY-MM-DD'),
     });
 
     if (getData.connect) {
