@@ -37,7 +37,8 @@ export class CheckPatientComponent implements OnInit {
 
     if (getData.connect) {
       if (getData.response) {
-        this.patient = getData.response;
+        console.log(getData.response.finalResult);
+        this.patient = getData.response.todayDrugs;
         if (!this.patient[0]) {
           Swal.fire(getData.response.message, '', 'error');
         }
