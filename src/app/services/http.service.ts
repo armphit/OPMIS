@@ -148,8 +148,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        // .post(this.testPath + path, data)
-        .post(this.patientPath + path, data)
+        .post(this.testPath + path, data)
+        // .post(this.patientPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

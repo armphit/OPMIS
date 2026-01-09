@@ -32,6 +32,7 @@ import { LightboxModule } from 'ng-gallery/lightbox';
 import { CheckMedComponent } from './pages/check-med/check-med.component';
 import { CheckPostComponent } from './pages/check-post/check-post.component';
 import { CheckPatientComponent } from './pages/check-patient/check-patient.component';
+import { GalleryModule } from 'ng-gallery';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { CheckPatientComponent } from './pages/check-patient/check-patient.compo
       tertiaryColour: '#3f51b5',
     }),
     LightboxModule,
+    GalleryModule,
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
