@@ -1,0 +1,45 @@
+<mat-card
+  class="check-card mat-elevation-z2"
+  style="cursor: pointer"
+  [ngClass]="cardClass"
+  (click)="openModal()"
+>
+  <mat-card-title>ตรวจค่าแล็บ</mat-card-title>
+  <mat-card-content> สถานะ: {{ allergyStatus }} </mat-card-content>
+</mat-card>
+
+<div
+  class="modal fade"
+  [id]="modalId"
+  data-backdrop="static"
+  data-keyboard="false"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">LAB</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body"></div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <button
+          *ngIf="!patient?.finalResult?.allergymed?.[0]?.timestamp"
+          class="btn btn-primary"
+          (click)="onConfirm()"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

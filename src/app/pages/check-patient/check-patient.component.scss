@@ -26,11 +26,8 @@
   font-size: 1.1rem;
 }
 .info-panel {
- line-height: 30px;
-
+  line-height: 30px;
 }
-
-
 
 /* Section title */
 .section-title {
@@ -47,7 +44,7 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0.6rem 1rem;
   padding: 0.5rem 0 1rem 0;
-    font-size: medium;
+  font-size: medium;
 }
 
 /* Address ให้เต็มแถว */
@@ -175,13 +172,17 @@ table.mat-table {
   z-index: 99999;
   background-color: #f5c6cb;
 
- /* Optional: change background color for the sticky column */
+  /* Optional: change background color for the sticky column */
 }
 
 .st-th {
-  background-color: #EDD6D9;
+  background-color: #edd6d9;
 }
 
-.st-td:hover{
+.st-td:hover {
   background-color: #e7e4e4;
+}
+.modal-table {
+  max-height: 400px !important;
+  overflow-y: auto !important;
 }

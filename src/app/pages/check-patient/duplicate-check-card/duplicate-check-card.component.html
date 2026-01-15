@@ -1,0 +1,129 @@
+<mat-card
+  class="check-card mat-elevation-z2"
+  style="cursor: pointer"
+  [ngClass]="cardClass"
+  (click)="openModal()"
+>
+  <mat-card-title>ตรวจยาซ้ำซ้อน</mat-card-title>
+  <mat-card-content> สถานะ: {{ allergyStatus }} </mat-card-content>
+</mat-card>
+
+<div
+  class="modal fade"
+  [id]="modalId"
+  data-backdrop="static"
+  data-keyboard="false"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h1 class="modal-title">duplicateDrug</h1>
+        <button type="button" class="close" (click)="closeModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+        <mat-accordion multi>
+          <ng-container
+            *ngFor="let key of ['condition1', 'condition2', 'condition3']"
+          >
+            <mat-expansion-panel *ngIf="data[key]?.length" class="mb-3"
+              >`
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <mat-icon [color]="conditionMeta[key].color">
+                    {{ conditionMeta[key].icon }}
+                  </mat-icon>
+                  &nbsp; {{ conditionMeta[key].title }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  พบ {{ data[key].length }} รายการ
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+
+              <table
+                mat-table
+                [dataSource]="data[key]"
+                class="mat-elevation-z2 w-100"
+              >
+                <ng-container matColumnDef="currentDrug">
+                  <th mat-header-cell *matHeaderCellDef>ยาปัจจุบัน</th>
+                  <td mat-cell *matCellDef="let row">
+                    <strong>{{ row.currentDrugName }}</strong>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="groupName">
+                  <th mat-header-cell *matHeaderCellDef>กลุ่มยา</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.groupName }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="duplicate">
+                  <th mat-header-cell *matHeaderCellDef>ยาที่พบซ้ำ</th>
+                  <td mat-cell *matCellDef="let row">
+                    <div *ngFor="let d of row.foundToday || row.foundHistory">
+                      <mat-chip color="warn" selected>
+                        {{ d.invName || d.duplicateDrug }}
+                      </mat-chip>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastDate">
+                  <th mat-header-cell *matHeaderCellDef>วันที่ล่าสุด</th>
+                  <td mat-cell *matCellDef="let row">
+                    <div *ngFor="let d of row.foundHistory">
+                      {{ d.lastDate }}
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="daysDiff">
+                  <th mat-header-cell *matHeaderCellDef>ห่าง (วัน)</th>
+                  <td mat-cell *matCellDef="let row">
+                    <div *ngFor="let d of row.foundHistory">
+                      <span class="badge badge-danger">
+                        {{ d.daysDiff }} วัน
+                      </span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr
+                  mat-header-row
+                  *matHeaderRowDef="conditionMeta[key].columns"
+                ></tr>
+
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: conditionMeta[key].columns"
+                ></tr>
+              </table>
+            </mat-expansion-panel>
+          </ng-container>
+        </mat-accordion>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <button
+          *ngIf="
+            patient?.finalResult?.duplicatemed?.result?.drug_interaction_status
+          "
+          class="btn btn-primary"
+          (click)="onConfirm()"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

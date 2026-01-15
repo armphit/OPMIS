@@ -33,6 +33,9 @@ import { CheckMedComponent } from './pages/check-med/check-med.component';
 import { CheckPostComponent } from './pages/check-post/check-post.component';
 import { CheckPatientComponent } from './pages/check-patient/check-patient.component';
 import { GalleryModule } from 'ng-gallery';
+import { AllergyCheckCardComponent } from './pages/check-patient/allergy-check-card/allergy-check-card.component';
+import { DuplicateCheckCardComponent } from './pages/check-patient/duplicate-check-card/duplicate-check-card.component';
+import { LaboratoryTestComponent } from './pages/check-patient/laboratory-test/laboratory-test.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +52,9 @@ import { GalleryModule } from 'ng-gallery';
     CheckMedComponent,
     CheckPostComponent,
     CheckPatientComponent,
+    AllergyCheckCardComponent,
+    DuplicateCheckCardComponent,
+    LaboratoryTestComponent,
   ],
   imports: [
     BrowserModule,

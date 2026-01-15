@@ -15,24 +15,6 @@
   <div *ngIf="patient.todayDrugsHN">
     <!-- ข้อมูลส่วนตัว -->
     <mat-accordion class="mb-3" multi>
-      <!-- <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> 👤 ข้อมูลส่วนตัว </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p><strong>ID:</strong> {{ patient.id }}</p>
-        <p><strong>ชื่อ:</strong> {{ patient.name }}</p>
-        <p><strong>เพศ:</strong> {{ patient.gender }}</p>
-        <p><strong>อายุ:</strong> {{ patient.age }} ปี</p>
-      </mat-expansion-panel>
-
-
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> 📇 ข้อมูลประจำตัว </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p><strong>เลขบัตรประชาชน:</strong> {{ patient.citizenId }}</p>
-        <p><strong>ที่อยู่:</strong> {{ patient.address }}</p>
-      </mat-expansion-panel> -->
       <mat-expansion-panel class="info-panel">
         <mat-expansion-panel-header>
           <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
@@ -106,256 +88,32 @@
       </mat-expansion-panel>
 
       <!-- Check Card -->
+
       <mat-expansion-panel [expanded]="true">
         <mat-expansion-panel-header>
           <mat-panel-title> ✅ การตรวจเช็ค </mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="row" style="padding: 10px">
-          <div class="col-md-4 mb-3" *ngIf="patient.todayDrugsHN.length">
-            <mat-card
-              [ngClass]="{
-                'bg-success text-white':
-                  patient.finalResult?.allergymed[0]?.cid == null ||
-                  patient.finalResult?.allergymed[0]?.cid === '' ||
-                  (patient.finalResult?.allergymed[0]?.cid != null &&
-                    patient.finalResult?.allergymed[0]?.cid !== '' &&
-                    patient.finalResult?.allergymed[0]?.timestamp != null &&
-                    patient.finalResult?.allergymed[0]?.timestamp !== ''),
-
-                'bg-danger text-white':
-                  patient.finalResult?.allergymed[0]?.cid != null &&
-                  patient.finalResult?.allergymed[0]?.cid !== '' &&
-                  (patient.finalResult?.allergymed[0]?.timestamp == null ||
-                    patient.finalResult?.allergymed[0]?.timestamp === '')
-              }"
-              class="check-card mat-elevation-z2"
-              style="cursor: pointer"
-              (click)="patient.finalResult?.allergymed[0]?.cid && openDetail()"
+        <div
+          class="row"
+          style="padding: 10px"
+          *ngIf="patient.todayDrugsHN.length"
+        >
+          <div class="col-md-4 mb-3">
+            <app-allergy-check-card
+              [patient]="patient"
+              (confirm)="dataConfirm('allergy')"
             >
-              <mat-card-title>ตรวจแพ้ยา</mat-card-title>
-              <mat-card-content> สถานะ: {{ allergyStatus }} </mat-card-content>
-            </mat-card>
+            </app-allergy-check-card>
+          </div>
+          <div class="col-md-4 mb-3">
+            <app-duplicate-check-card
+              [patient]="patient"
+              (confirm)="dataConfirm('duplicate')"
+            >
+            </app-duplicate-check-card>
           </div>
         </div>
       </mat-expansion-panel>
     </mat-accordion>
-  </div>
-</div>
-
-<!-- Modal -->
-<div
-  class="modal fade"
-  id="staticBackdrop"
-  data-backdrop="static"
-  data-keyboard="false"
-  tabindex="-1"
-  aria-labelledby="staticBackdropLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Allergy</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-7">
-            <span style="font-weight: bold; color: #f40000">รายการแพ้ยา</span>
-            <div class="table-responsive">
-              <table class="table table-danger">
-                <thead>
-                  <tr>
-                    <!-- <th style="padding-right: 50px; border-right: 0px">
-                            #
-                          </th> -->
-                    <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
-
-                    <th style="padding-right: 50px; border-right: 0px">
-                      โรงพยาบาล
-                    </th>
-                    <th style="padding-right: 50px; border-right: 0px">
-                      typedx
-                    </th>
-                    <th style="padding-right: 50px; border-right: 0px">
-                      ระดับแพ้ยา
-                    </th>
-                    <!-- <th style="padding-right: 50px; border-right: 0px">
-                            รหัสยา
-                          </th> -->
-                    <!-- <th style="padding-right: 50px; border-right: 0px">
-                            วันที่
-                          </th> -->
-                    <th
-                      class="sticky-col st-th"
-                      style="padding-right: 50px; border-right: 0px"
-                    >
-                      ชื่อยา
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
-                      let i of patient.finalResult?.allergymed;
-                      let x = index
-                    "
-                  >
-                    <!-- <td style="border-right: 0px; vertical-align: middle">
-                            <div style="width: 10px">{{ x + 1 }}</div>
-                          </td> -->
-
-                    <td style="border-right: 0px; vertical-align: middle">
-                      {{ i.hospName }}
-                    </td>
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.typedx }}
-                    </td>
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.allerglevelcode }}
-                    </td>
-                    <!-- <td
-                            style="
-                              border-right: 0px;
-                              vertical-align: middle;
-                              white-space: nowrap;
-                            "
-                          >
-                            {{ i.drugcode }}
-                          </td> -->
-
-                    <!-- <td
-                            style="
-                              border-right: 0px;
-                              vertical-align: middle;
-                              white-space: nowrap;
-                            "
-                          >
-                            {{ i.daterecord }}
-                          </td> -->
-                    <td
-                      class="sticky-col st-td"
-                      style="border-right: 0px; vertical-align: middle"
-                    >
-                      {{ i.drugname }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="col-5">
-            <span style="font-weight: bold; color: #f40000">
-              รายการแพ้ยาโรงพยาบาลมหาราชนครราชสีมา
-            </span>
-            <div class="table-responsive">
-              <table class="table table-danger">
-                <thead>
-                  <tr>
-                    <!-- <th style="padding-right: 50px; border-right: 0px">
-                            #
-                          </th> -->
-                    <!-- <th style="padding-right: 50px; border-right: 0px"></th> -->
-                    <th style="padding-right: 50px; border-right: 0px">
-                      ชื่อยา
-                    </th>
-                    <th style="padding-right: 50px; border-right: 0px">
-                      แหล่งที่มา
-                    </th>
-                    <th style="padding-right: 50px; border-right: 0px">
-                      ประเภทแพ้ยา
-                    </th>
-                    <th style="padding-right: 50px; border-right: 0px">
-                      สาเหตุ
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
-                      let i of patient.finalResult?.allergymhr;
-                      let x = index
-                    "
-                  >
-                    <!-- <td style="border-right: 0px; vertical-align: middle">
-                            <div style="width: 10px">{{ x + 1 }}</div>
-                          </td> -->
-
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.drugName }}
-                    </td>
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.ward_id }}
-                    </td>
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.alergyType }}
-                    </td>
-                    <td
-                      style="
-                        border-right: 0px;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                      "
-                    >
-                      {{ i.causality }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Close
-        </button>
-        <button
-          (click)="allergyConfirm()"
-          *ngIf="!patient.finalResult?.allergymed[0]?.timestamp"
-          type="button"
-          class="btn btn-primary"
-        >
-          Confirm
-        </button>
-      </div>
-    </div>
   </div>
 </div>
