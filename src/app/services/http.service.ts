@@ -30,7 +30,10 @@ export class HttpService {
   public drugAppointPath: string =
     'http://192.168.42.1/unit/ssr/pharm_rep/service/drugAppoint.asp?addDay=1';
 
-  constructor(public router: Router, private http: HttpClient) {}
+  constructor(
+    public router: Router,
+    private http: HttpClient,
+  ) {}
 
   public post = async (path: string, formdata: any = null) => {
     this.loading = true;
@@ -108,7 +111,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .get(
-          'http://192.168.185.160:3000/reportq/checker_other/2022-07-18/2022-07-18/08:00/16:00/W9'
+          'http://192.168.185.160:3000/reportq/checker_other/2022-07-18/2022-07-18/08:00/16:00/W9',
         )
         .toPromise()
         .then((value) => {
@@ -148,8 +151,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.testPath + path, data)
-        // .post(this.patientPath + path, data)
+        // .post(this.testPath + path, data)
+        .post(this.patientPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

@@ -127,7 +127,7 @@ export class CheckPatientComponent implements OnInit {
     if (getData.connect) {
       if (getData.response) {
         this.patient = getData.response;
-        console.log(this.patient);
+        // console.log(this.patient);
       } else {
         Swal.fire('ไม่สามารถ response ได้!', '', 'error');
       }
