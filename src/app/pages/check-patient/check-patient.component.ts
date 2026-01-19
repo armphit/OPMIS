@@ -121,6 +121,7 @@ export class CheckPatientComponent implements OnInit {
       hn: this.patientId,
       date: moment(new Date()).format('YYYY-MM-DD'),
       check: 1,
+      site: 'W8',
     });
 
     if (getData.connect) {
@@ -138,6 +139,7 @@ export class CheckPatientComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     }
+    this.patientId = '';
   }
 
   /**
@@ -163,8 +165,10 @@ export class CheckPatientComponent implements OnInit {
       // update เฉพาะผล allergy
       if (data === 'allergy') {
         this.patient.finalResult.allergymed = getData.response.moph_patient;
-      } else {
+      } else if (data === 'duplicate') {
         this.patient.finalResult.duplicatemed.result = getData.response.updated;
+      } else if (data === 'lab') {
+        this.patient.finalResult.lab.result = getData.response.updated;
       }
 
       Swal.fire({

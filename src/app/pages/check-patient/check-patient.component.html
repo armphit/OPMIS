@@ -112,6 +112,13 @@
             >
             </app-duplicate-check-card>
           </div>
+          <div class="col-md-4 mb-3">
+            <app-laboratory-test
+              [patient]="patient"
+              (confirm)="dataConfirm('lab')"
+            >
+            </app-laboratory-test>
+          </div>
         </div>
       </mat-expansion-panel>
     </mat-accordion>

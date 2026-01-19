@@ -186,3 +186,18 @@ table.mat-table {
   max-height: 400px !important;
   overflow-y: auto !important;
 }
+.normal {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.danger {
+  color: #c62828;
+  font-weight: 700;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+  white-space: nowrap;
+}

@@ -26,14 +26,74 @@
       </div>
 
       <!-- BODY -->
-      <div class="modal-body"></div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th>ยา</th>
+                <th>Lab</th>
+                <th>วันที่</th>
+                <th class="text-center">ค่า Lab</th>
+                <th>เงื่อนไข</th>
+                <th class="text-center">ขนาดยา/วัน</th>
+                <th class="text-center">สถานะ</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                *ngFor="let r of patient?.finalResult?.lab?.valueLab"
+                [class.table-danger]="r.lab_res === 1"
+              >
+                <td>
+                  <strong>{{ r.invName }}</strong
+                  ><br />
+                  <small class="text-muted">{{ r.invCode }}</small>
+                </td>
+
+                <td>{{ r.result_name }}</td>
+
+                <td>{{ conDate(r.res_date) }}</td>
+
+                <td class="text-center">
+                  <span [ngClass]="r.lab_res === 1 ? 'danger' : 'normal'">
+                    {{ r.real_res }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ r.parameter }}<br />
+                  <small>
+                    <span *ngIf="r.labMin !== null">≥ {{ r.labMin }}</span>
+                    <span *ngIf="r.labMax !== null"> ≤ {{ r.labMax }}</span>
+                  </small>
+                </td>
+
+                <td class="text-center">
+                  {{ r.dosagePday ?? "-" }}
+                </td>
+
+                <td class="text-center">
+                  <span class="badge badge-danger" *ngIf="r.lab_res === 1">
+                    ผิดปกติ
+                  </span>
+                  <span class="badge badge-success" *ngIf="r.lab_res === 0">
+                    ปกติ
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <!-- FOOTER -->
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="closeModal()">Close</button>
 
         <button
-          *ngIf="!patient?.finalResult?.allergymed?.[0]?.timestamp"
+          *ngIf="patient?.finalResult?.lab?.result?.statusCheck"
           class="btn btn-primary"
           (click)="onConfirm()"
         >

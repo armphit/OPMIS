@@ -3,7 +3,7 @@ declare const $: any;
 @Component({
   selector: 'app-laboratory-test',
   templateUrl: './laboratory-test.component.html',
-  styleUrls: ['./laboratory-test.component.scss'],
+  styleUrls: ['../check-patient.component.scss'],
 })
 export class LaboratoryTestComponent implements OnInit {
   @Input() patient: any;
@@ -14,8 +14,9 @@ export class LaboratoryTestComponent implements OnInit {
   modalId = 'labModal';
 
   openModal() {
-    const a = this.patient?.finalResult?.allergymed?.[0];
-    if (a?.cid) {
+    const a = this.patient?.finalResult?.lab?.valueLab.length;
+
+    if (a) {
       $('#' + this.modalId).modal('show');
     }
   }
@@ -25,22 +26,30 @@ export class LaboratoryTestComponent implements OnInit {
   }
 
   get allergyStatus(): string {
-    // const a = this.patient?.finalResult?.allergymed?.[0];
-    // if (!a?.cid) return 'PASS (ไม่มีแพ้ยา)';
-    // return a.timestamp ? 'PASS' : 'FAIL';
-    return true ? 'PASS' : 'FAIL';
+    const a = this.patient?.finalResult?.lab?.result;
+    return !a?.statusCheck ? 'PASS' : 'FAIL';
   }
 
   get cardClass() {
-    // const a = this.patient?.finalResult?.allergymed?.[0];
-    // return {
-    //   'bg-success text-white': !a?.cid || (a?.cid && a?.timestamp),
-    //   'bg-danger text-white': a?.cid && !a?.timestamp,
-    // };
+    const a = this.patient?.finalResult?.lab?.result;
+
     return {
-      'bg-success text-white': true,
-      'bg-danger text-white': false,
+      'bg-success text-white': !a?.statusCheck,
+      'bg-danger text-white': a?.statusCheck,
     };
+  }
+
+  conDate(val: string | number): string {
+    if (!val) return '-';
+
+    const s = val.toString();
+    if (s.length !== 8) return '-';
+
+    const year = s.substring(0, 4); // 2568
+    const month = s.substring(4, 6); // 12
+    const day = s.substring(6, 8); // 26
+
+    return `${day}/${month}/${year}`;
   }
   onConfirm() {
     this.confirm.emit();
