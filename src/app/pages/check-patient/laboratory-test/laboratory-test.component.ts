@@ -27,7 +27,13 @@ export class LaboratoryTestComponent implements OnInit {
 
   get allergyStatus(): string {
     const a = this.patient?.finalResult?.lab?.result;
-    return !a?.statusCheck ? 'PASS' : 'FAIL';
+
+    const b = this.patient?.finalResult?.lab?.valueLab;
+    return b.length
+      ? !a?.statusCheck
+        ? 'PASS'
+        : 'FAIL'
+      : 'PASS (ไม่มีค่าผลแลป)';
   }
 
   get cardClass() {

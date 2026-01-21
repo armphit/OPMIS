@@ -2229,9 +2229,17 @@ export class CheckMedComponent implements OnInit {
 
     if (found.drugCode) {
       this.getDrug(`${data.drugCode};${data.qty}`);
-      console.log(this.patient_drug);
+
+      const hnRaw = this.patient_drug?.[0]?.hn;
+
+      const hn =
+        typeof hnRaw === 'string'
+          ? hnRaw.trim()
+          : hnRaw != null
+          ? String(hnRaw)
+          : '';
       let data_send: any = {
-        hn: this.patient_drug[0].hn.trim(),
+        hn: hn,
         date: moment(this.campaignOne.value.picker)
           .add(543, 'year')
           .format('YYYYMMDD'),
