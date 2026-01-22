@@ -2230,58 +2230,58 @@ export class CheckMedComponent implements OnInit {
     if (found.drugCode) {
       this.getDrug(`${data.drugCode};${data.qty}`);
 
-      const hnRaw = this.patient_drug?.[0]?.hn;
+      // const hnRaw = this.patient_drug?.[0]?.hn;
 
-      const hn =
-        typeof hnRaw === 'string'
-          ? hnRaw.trim()
-          : hnRaw != null
-          ? String(hnRaw)
-          : '';
-      let data_send: any = {
-        hn: hn,
-        date: moment(this.campaignOne.value.picker)
-          .add(543, 'year')
-          .format('YYYYMMDD'),
-        dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
-        user: this.dataUser.user,
-        ipmain: this.dataUser.ip
-          ? '200.200.200.' + this.dataUser.ip.split('.')[3]
-          : '',
-        site: this.select,
-      };
-      const simplifyLED = (text: string): string => {
-        if (!text) return '';
-        const match = text.match(/^(LED\d+)/i);
-        return match ? match[1] : text;
-      };
-      let getNumled = this.patient_drug
-        .filter((x: any) => simplifyLED(x.device) == this.getLed)
-        .map((a: any) => {
-          return {
-            hn: a.hn,
-            drugCode: a.drugCode ? a.drugCode.trim() : a.drugCode,
-            qty: a.qty,
-            deviceCheck: a.deviceCheck,
-          };
-        });
+      // const hn =
+      //   typeof hnRaw === 'string'
+      //     ? hnRaw.trim()
+      //     : hnRaw != null
+      //     ? String(hnRaw)
+      //     : '';
+      // let data_send: any = {
+      //   hn: hn,
+      //   date: moment(this.campaignOne.value.picker)
+      //     .add(543, 'year')
+      //     .format('YYYYMMDD'),
+      //   dateEN: moment(this.campaignOne.value.picker).format('YYYY-MM-DD'),
+      //   user: this.dataUser.user,
+      //   ipmain: this.dataUser.ip
+      //     ? '200.200.200.' + this.dataUser.ip.split('.')[3]
+      //     : '',
+      //   site: this.select,
+      // };
+      // const simplifyLED = (text: string): string => {
+      //   if (!text) return '';
+      //   const match = text.match(/^(LED\d+)/i);
+      //   return match ? match[1] : text;
+      // };
+      // let getNumled = this.patient_drug
+      //   .filter((x: any) => simplifyLED(x.device) == this.getLed)
+      //   .map((a: any) => {
+      //     return {
+      //       hn: a.hn,
+      //       drugCode: a.drugCode ? a.drugCode.trim() : a.drugCode,
+      //       qty: a.qty,
+      //       deviceCheck: a.deviceCheck,
+      //     };
+      //   });
 
-      if (getNumled.length) {
-        data_send.led = getNumled.length ? getNumled : '';
+      // if (getNumled.length) {
+      //   data_send.led = getNumled.length ? getNumled : '';
 
-        let getData4: any = await this.http.PrintjsLocalhost(
-          'createFile',
-          data_send
-        );
+      //   let getData4: any = await this.http.PrintjsLocalhost(
+      //     'createFile',
+      //     data_send
+      //   );
 
-        if (getData4.connect) {
-          if (!getData4.response.success) {
-            Swal.fire('ไม่สามารถ Create File ได้!', '', 'error');
-          }
-        } else {
-          // Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-        }
-      }
+      //   if (getData4.connect) {
+      //     if (!getData4.response.success) {
+      //       Swal.fire('ไม่สามารถ Create File ได้!', '', 'error');
+      //     }
+      //   } else {
+      //     // Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+      //   }
+      // }
     } else {
       Swal.fire('ไม่พบรายการยานี้ในรายการ!', '', 'error');
     }
