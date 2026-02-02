@@ -15,7 +15,7 @@
   <div *ngIf="patient.todayDrugsHN">
     <!-- ข้อมูลส่วนตัว -->
     <mat-accordion class="mb-3" multi>
-      <mat-expansion-panel class="info-panel">
+      <mat-expansion-panel [expanded]="true" class="info-panel">
         <mat-expansion-panel-header>
           <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
         </mat-expansion-panel-header>
