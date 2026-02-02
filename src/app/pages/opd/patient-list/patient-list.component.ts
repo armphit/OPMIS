@@ -83,7 +83,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     private formBuilder: FormBuilder,
     private dateAdapter: DateAdapter<Date>,
     public gallery: Gallery,
-    public lightbox: Lightbox
+    public lightbox: Lightbox,
   ) {
     this.dateAdapter.setLocale('en-GB');
 
@@ -203,19 +203,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           'date',
           moment(this.campaignOne.value.start)
             .add(543, 'year')
-            .format('YYYYMMDD')
+            .format('YYYYMMDD'),
         );
         formData.append(
           'date2',
-          moment(this.campaignOne.value.end).add(543, 'year').format('YYYYMMDD')
+          moment(this.campaignOne.value.end)
+            .add(543, 'year')
+            .format('YYYYMMDD'),
         );
         formData.append(
           'datestart',
-          moment(this.campaignOne.value.start).format('YYYY-MM-DD')
+          moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
         );
         formData.append(
           'dateend',
-          moment(this.campaignOne.value.end).format('YYYY-MM-DD')
+          moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
         );
         formData.append('time1', this.starttime);
         formData.append('time2', this.endtime);
@@ -224,7 +226,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         let getData3: any = await this.http.post(
           'checkdrugAllergyHomc',
-          formData
+          formData,
         );
 
         dataPatient = getData.response.result.map(function (emp: {
@@ -234,15 +236,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             ...emp,
             ...(getData3.response[0].result.find(
               (item: { patientNO: any }) =>
-                item.patientNO.trim() === emp.patientNO.trim()
+                item.patientNO.trim() === emp.patientNO.trim(),
             ) ?? { status: 'N' }),
             ...(getData3.response[1].result.find(
               (item: { patientID: any }) =>
-                item.patientID.trim() === emp.patientNO.trim()
+                item.patientID.trim() === emp.patientNO.trim(),
             ) ?? { check: '', timestamp: null }),
             ...(getData2.response.result.find(
               (item: { checkAllergy: any }) =>
-                item.checkAllergy.trim() === emp.patientNO.trim()
+                item.checkAllergy.trim() === emp.patientNO.trim(),
             ) ?? { checkAllergy: null, checkComplete: null }),
           };
         });
@@ -346,7 +348,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       formData.append('hn', val.patientNO);
       let drug_allergic: any = await this.http.post(
         'drug_allergic_fix',
-        formData
+        formData,
       );
 
       if (drug_allergic.connect) {
@@ -370,7 +372,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('hn', val.patientNO);
     formData.append(
       'date',
-      moment(val.createdDT).add(543, 'year').format('YYYYMMDD')
+      moment(val.createdDT).add(543, 'year').format('YYYYMMDD'),
     );
     formData.append('date2', moment(val.createdDT).format('YYYY-MM-DD'));
     formData.append('queue', val.QN);
@@ -411,32 +413,35 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     ...emp,
                     ...(getData3.response.get_compiler.find(
                       (item: { drugCode: any }) =>
-                        item.drugCode === emp.drugCode
+                        item.drugCode === emp.drugCode,
                     ) ??
                       (this.select == 'W9'
                         ? { userCheck: 'จนท ชั้น1', checkDT: '' }
                         : this.select == 'W18'
-                        ? { userCheck: 'จนท ชั้น3', checkDT: '' }
-                        : this.select == 'W19'
-                        ? { userCheck: 'จนท M-Park', checkDT: '' }
-                        : this.select == 'W8'
-                        ? { userCheck: emp.userCheck, checkDT: '' }
-                        : '')),
+                          ? { userCheck: 'จนท ชั้น3', checkDT: '' }
+                          : this.select == 'W19'
+                            ? { userCheck: 'จนท M-Park', checkDT: '' }
+                            : this.select == 'W8'
+                              ? { userCheck: emp.userCheck, checkDT: '' }
+                              : '')),
                   };
                 })
                 .map((val: any) => {
                   return {
                     ...val,
                     ...(this.userList.find(
-                      (item: { user: any }) => item.user === val.userCheck
+                      (item: { user: any }) => item.user === val.userCheck,
                     ) ??
                       (this.select == 'W9'
                         ? { nameCheck: 'จนท ชั้น1', userName: 'จนท ชั้น1' }
                         : this.select == 'W18'
-                        ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น3' }
-                        : this.select == 'W19'
-                        ? { nameCheck: 'จนท M-Park', userName: 'จนท M-Park' }
-                        : { nameCheck: '', userName: '' })),
+                          ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น3' }
+                          : this.select == 'W19'
+                            ? {
+                                nameCheck: 'จนท M-Park',
+                                userName: 'จนท M-Park',
+                              }
+                            : { nameCheck: '', userName: '' })),
                   };
                 });
 
@@ -560,7 +565,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           let dis: any = '';
           if (val.position_text === 'check') {
             check = this.userList.find(
-              (data: any) => data.user == val.offender_id
+              (data: any) => data.user == val.offender_id,
             );
             if (check) {
               check = check.userName;
@@ -569,7 +574,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
           if (val.position_text === 'DE') {
             dis = this.userList.find(
-              (data: any) => data.user == val.offender_id
+              (data: any) => data.user == val.offender_id,
             );
             if (dis) {
               dis = dis.userName;
@@ -582,6 +587,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             dispend: dis,
             pe: dataUser.response.pe,
             userName: val.position_text === 'จัด' ? val.offender_id : '',
+            screen: dataUser.response.screen,
           };
         } else {
           this.userList = null;
@@ -590,7 +596,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
 
     let drugAllergy = this.drugList.find(
-      (data: any) => data.code.trim() === val.drugAllergy.trim()
+      (data: any) => data.code.trim() === val.drugAllergy.trim(),
     );
 
     if (drugAllergy) {
@@ -601,17 +607,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     let med_wrong =
       this.drugList.find(
-        (data: any) => data.code.trim() === val.med_wrong.trim()
+        (data: any) => data.code.trim() === val.med_wrong.trim(),
       ) ?? null;
     let med_good =
       this.drugList.find(
-        (data: any) => data.code.trim() === val.med_good.trim()
+        (data: any) => data.code.trim() === val.med_good.trim(),
       ) ?? null;
     let offender =
       this.userList.find((user: any) => user.user === val.offender_id) ?? null;
     let offender2 =
       this.userList.find(
-        (user: any) => user.user === val.another_offender_id
+        (user: any) => user.user === val.another_offender_id,
       ) ?? null;
     let interceptor =
       this.userList.find((user: any) => user.user === val.interceptor_id) ??
@@ -620,7 +626,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.positionE.find((po: any) => po === val.position_text) ?? 'other';
 
     let fineTy = this.typeE.find(
-      (ty: any) => ty.name_type === val.type_text
+      (ty: any) => ty.name_type === val.type_text,
     ) ?? { id_type: 'n10', name_type: 'other' };
     await this.getDataposition();
     // await this.getDatatype();
@@ -732,6 +738,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   dataUsercheck: any = null;
   positionE: string[] = [
     'PE',
+    'Screening',
     'key',
     'จัด',
 
@@ -806,7 +813,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       site: this.select,
     });
 
-    this.pe_de.note = dataUser.response.note.groupedNotes.อื่นๆ;
+    this.pe_de.note = dataUser.response?.note?.groupedNotes?.อื่นๆ;
 
     //     console.log(this.pe_de.note.groupedNotes);
     // console.log(this.pe_de.note.groupedNotes.อื่นๆ);
@@ -815,6 +822,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       check: '',
       dispend: '',
       pe: '',
+      screen: '',
     };
     if (dataUser.connect) {
       positionError = {
@@ -822,12 +830,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         check: dataUser.response.check,
         dispend: dataUser.response.dispend,
         pe: dataUser.response.pe,
+        screen: dataUser.response.screen,
       };
     }
 
     this.dataUsercheck = { ...positionError, userName: val.item.userName };
     let dataDrug = this.drugList.find(
-      (data: any) => data.code === val.item.drugCode.trim()
+      (data: any) => data.code === val.item.drugCode.trim(),
     );
 
     this.medError.reset();
@@ -880,7 +889,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     for (const group in groupedNotes) {
       if (
         groupedNotes[group].some((note: any) =>
-          note.note_text.includes(targetText)
+          note.note_text.includes(targetText),
         )
       ) {
         return group;
@@ -918,14 +927,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     let drugaller = this.medError.patchValue({
       interceptor: this.userList.find(
-        (val: any) => val.userName === this.medError.value.interceptor
+        (val: any) => val.userName === this.medError.value.interceptor,
       ) ?? {
         name: this.medError.value.interceptor,
         user: this.medError.value.interceptor,
         userName: this.medError.value.interceptor,
       },
       offender: this.userList.find(
-        (val: any) => val.userName === this.medError.value.offender
+        (val: any) => val.userName === this.medError.value.offender,
       ) ?? {
         name: this.medError.value.offender ? this.medError.value.offender : '',
         user: this.medError.value.offender ? this.medError.value.offender : '',
@@ -934,7 +943,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           : '',
       },
       offender2: this.userList.find(
-        (val: any) => val.userName === this.medError.value.offender2
+        (val: any) => val.userName === this.medError.value.offender2,
       ) ?? {
         name: this.medError.value.offender2
           ? this.medError.value.offender2
@@ -947,13 +956,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           : '',
       },
       medGood: this.drugList.find(
-        (val: any) => val.name.trim() === this.medError.value.medGood
+        (val: any) => val.name.trim() === this.medError.value.medGood,
       ) ?? {
         code: this.medError.value.medGood,
         name: this.medError.value.medGood,
       },
       medWrong: this.drugList.find(
-        (val: any) => val.name.trim() === this.medError.value.medWrong
+        (val: any) => val.name.trim() === this.medError.value.medWrong,
       ) ?? {
         code: this.medError.value.medWrong,
         name: this.medError.value.medWrong,
@@ -993,10 +1002,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           : this.medError.value.med,
       medcode_err: this.medError.value.medcode_err
         ? this.drugList.find(
-            (val: any) => val.name.trim() === this.medError.value.medcode_err
+            (val: any) => val.name.trim() === this.medError.value.medcode_err,
           )
           ? this.drugList.find(
-              (val: any) => val.name.trim() === this.medError.value.medcode_err
+              (val: any) => val.name.trim() === this.medError.value.medcode_err,
             ).code
           : this.medError.value.medcode_err
         : this.medError.value.medcode_err,
@@ -1040,7 +1049,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                       Swal.fire(
                         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                         '',
-                        'error'
+                        'error',
                       );
                     }
                   } else {
@@ -1066,7 +1075,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     let getData3: any = await this.http.postNodejs(
       this.medError.value.id ? 'manageError' : 'medError',
-      this.medError.value
+      this.medError.value,
     );
 
     if (getData3.connect) {
@@ -1197,8 +1206,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             data.interceptor_name
               ? data.interceptor_name
               : data.interceptor
-              ? data.interceptor.name
-              : ''
+                ? data.interceptor.name
+                : ''
           }... ${
             this.dataUser.user.toUpperCase().includes('C')
               ? 'เจ้าพนักงานเภสัชกรรม'
@@ -1213,12 +1222,12 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             this.select === 'W9'
               ? this.tel_site[0]
               : this.select === 'W8'
-              ? this.tel_site[1]
-              : this.select === 'W18'
-              ? this.tel_site[2]
-              : this.select === 'W19'
-              ? this.tel_site[3]
-              : `ห้องยา ชั้น 1 โทร 32142-3 ชั้น 2 โทร 32200-1 ชั้น 3 โทร 32341-2`,
+                ? this.tel_site[1]
+                : this.select === 'W18'
+                  ? this.tel_site[2]
+                  : this.select === 'W19'
+                    ? this.tel_site[3]
+                    : `ห้องยา ชั้น 1 โทร 32142-3 ชั้น 2 โทร 32200-1 ชั้น 3 โทร 32341-2`,
           alignment: 'center',
 
           fontSize: 12,
@@ -1248,7 +1257,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     if (getData.connect) {
       n = getData.response.data.find(
-        (e: any) => e.orderitemcode.trim() == data.med.med_name
+        (e: any) => e.orderitemcode.trim() == data.med.med_name,
       );
     }
 
@@ -1287,7 +1296,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   Swal.fire(
                     'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                     '',
-                    'error'
+                    'error',
                   );
                 }
               } else {
@@ -1504,6 +1513,32 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
       this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
+    } else if (this.medError.value.position === 'Screening') {
+      this.setText.textposition = false;
+
+      this.medError.patchValue({
+        offender: this.dataUsercheck.screen,
+        position_text: this.medError.value.position,
+        level: '',
+        occurrence: '',
+        source: '',
+        error_type: '',
+
+        site: '',
+        type: 'n1',
+        type_pre: '',
+        screening: '',
+      });
+
+      this.userList = this.userList.map((val: any) => {
+        return {
+          ...val,
+          valSort: val.user.toLowerCase().charAt(0) == 'c' ? 1 : 2,
+        };
+      });
+
+      this.userList.sort((a: any, b: any) => a.valSort - b.valSort);
+      this.gettypeE = this.typeE.filter((e: any) => e.id_type.includes('n'));
     } else {
       this.setText.textposition = true;
       this.medError.patchValue({
@@ -1532,21 +1567,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputadd.nativeElement.value.toLowerCase();
 
     this.dataAdd = this.drugList.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+      o.name.trim().toLowerCase().includes(filterValue),
     );
   }
   filter_good(): void {
     const filterValue = this.inputgood.nativeElement.value.toLowerCase();
 
     this.dataGood = this.drugList.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+      o.name.trim().toLowerCase().includes(filterValue),
     );
   }
   filter_wrong(): void {
     const filterValue = this.inputwrong.nativeElement.value.toLowerCase();
 
     this.dataWrong = this.drugList.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+      o.name.trim().toLowerCase().includes(filterValue),
     );
   }
 
@@ -1554,7 +1589,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputallergic.nativeElement.value.toLowerCase();
 
     this.dataAllergic = this.drugList.filter((o: any) =>
-      o.name.trim().toLowerCase().includes(filterValue)
+      o.name.trim().toLowerCase().includes(filterValue),
     );
   }
 
@@ -1562,7 +1597,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputinterceptor.nativeElement.value.toLowerCase();
 
     this.dataInterceptor = this.userList.filter((o: any) =>
-      o.userName.trim().toLowerCase().includes(filterValue)
+      o.userName.trim().toLowerCase().includes(filterValue),
     );
   }
 
@@ -1570,14 +1605,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     const filterValue = this.inputoffender.nativeElement.value.toLowerCase();
 
     this.dataOffender = this.userList.filter((o: any) =>
-      o.userName.trim().toLowerCase().includes(filterValue)
+      o.userName.trim().toLowerCase().includes(filterValue),
     );
   }
   filter_offender2(): void {
     const filterValue = this.inputoffender2.nativeElement.value.toLowerCase();
 
     this.dataOffender2 = this.userList.filter((o: any) =>
-      o.userName.trim().toLowerCase().includes(filterValue)
+      o.userName.trim().toLowerCase().includes(filterValue),
     );
   }
 
@@ -1678,34 +1713,34 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     'hn',
                     this.dataAdress.patientNO
                       ? this.dataAdress.patientNO.trim()
-                      : ''
+                      : '',
                   );
                   formData.append(
                     'patientname',
                     this.dataAdress.patientName
                       ? this.dataAdress.patientName
-                      : ''
+                      : '',
                   );
                   formData.append(
                     'pat_address',
-                    this.dataAdress.address ? this.dataAdress.address : ''
+                    this.dataAdress.address ? this.dataAdress.address : '',
                   );
                   formData.append(
                     'pat_phone',
-                    this.dataAdress.phone ? this.dataAdress.phone : ''
+                    this.dataAdress.phone ? this.dataAdress.phone : '',
                   );
                   formData.append(
                     'pat_ems',
-                    this.dataAdress.ems ? this.dataAdress.ems : ''
+                    this.dataAdress.ems ? this.dataAdress.ems : '',
                   );
                   formData.append(
                     'phar',
-                    this.dataUser ? this.dataUser.user : ''
+                    this.dataUser ? this.dataUser.user : '',
                   );
 
                   let getData2: any = await this.http.post(
                     'insertAddress',
-                    formData
+                    formData,
                   );
 
                   if (getData2.connect) {
@@ -1724,7 +1759,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   Swal.fire(
                     'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                     '',
-                    'error'
+                    'error',
                   );
                 }
               } else {
@@ -1736,23 +1771,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
             formData.append(
               'hn',
-              this.dataAdress.patientNO ? this.dataAdress.patientNO.trim() : ''
+              this.dataAdress.patientNO ? this.dataAdress.patientNO.trim() : '',
             );
             formData.append(
               'patientname',
-              this.dataAdress.patientName ? this.dataAdress.patientName : ''
+              this.dataAdress.patientName ? this.dataAdress.patientName : '',
             );
             formData.append(
               'pat_address',
-              this.dataAdress.address ? this.dataAdress.address : ''
+              this.dataAdress.address ? this.dataAdress.address : '',
             );
             formData.append(
               'pat_phone',
-              this.dataAdress.phone ? this.dataAdress.phone : ''
+              this.dataAdress.phone ? this.dataAdress.phone : '',
             );
             formData.append(
               'pat_ems',
-              this.dataAdress.ems ? this.dataAdress.ems : ''
+              this.dataAdress.ems ? this.dataAdress.ems : '',
             );
             formData.append('phar', this.dataUser ? this.dataUser.user : '');
             let getData2: any = await this.http.post('insertAddress', formData);
@@ -1915,7 +1950,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         if (this.dataAdress.balanceamount === 0) {
           await this.updatedispendDrug(
             this.dataAdress,
-            this.balanceamountValue
+            this.balanceamountValue,
           );
           await this.getData(null);
 
@@ -1948,14 +1983,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     if (getData.response.connect === 'success') {
                       await this.updatedispendDrug(
                         this.dataAdress,
-                        this.balanceamountValue
+                        this.balanceamountValue,
                       );
                       await this.drugCut({ patientNO: this.hncut });
                     } else {
                       Swal.fire(
                         'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                         '',
-                        'error'
+                        'error',
                       );
                     }
                   } else {
@@ -1967,7 +2002,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           } else {
             await this.updatedispendDrug(
               this.dataAdress,
-              this.balanceamountValue
+              this.balanceamountValue,
             );
             await this.drugCut({ patientNO: this.hncut });
           }
@@ -2008,7 +2043,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     Swal.fire(
                       'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                       '',
-                      'error'
+                      'error',
                     );
                   }
                 } else {
@@ -2154,7 +2189,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                   Swal.fire(
                     'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                     '',
-                    'error'
+                    'error',
                   );
                 }
               } else {
@@ -2181,7 +2216,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     formData.append('departmentcode', this.select);
     formData.append(
       'date',
-      moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss')
+      moment(data.lastmodified).format('YYYY-MM-DD HH:mm:ss'),
     );
     let getData: any = await this.http.post('insertCutDispendDrug', formData);
 
@@ -2223,7 +2258,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (getData.connect) {
       if (getData.response.rowCount > 0) {
         const result = Array.from(
-          new Set(getData.response.result.map((s: { id: any }) => s.id))
+          new Set(getData.response.result.map((s: { id: any }) => s.id)),
         ).map((lab) => {
           return {
             id: lab,
@@ -2248,7 +2283,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let dataOwe = getData.response.result;
         dataOwe = dataOwe.filter(
           (value: any, index: any, self: any) =>
-            index === self.findIndex((t: any) => t.id === value.id)
+            index === self.findIndex((t: any) => t.id === value.id),
         );
 
         dataOwe.forEach((element: any) => {
@@ -2373,7 +2408,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (getData.response.rowCount > 0) {
         let getData2: any = await this.http.post(
           'updateCutDispendDrug',
-          formData
+          formData,
         );
 
         if (getData2.connect) {
@@ -2417,7 +2452,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         let getData2: any = await this.http.post(
           'deleteCutDispendDrug',
-          formData
+          formData,
         );
 
         if (getData2.connect) {
@@ -2551,20 +2586,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         (this.starttime = '00:00'),
         (this.endtime = '23:59'))
       : this.getTab === 1
-      ? this.getMoph()
-      : this.getTab === 2
-      ? this.getReport()
-      : this.getTab === 3
-      ? this.reportDispend()
-      : this.getTab === 4
-      ? this.reportCheckmed()
-      : this.getTab === 5
-      ? this.reportTimeDispend()
-      : this.getTab === 6
-      ? this.reportreturnDrug()
-      : this.getTab === 7
-      ? this.ReportScan.reportCheck()
-      : '';
+        ? this.getMoph()
+        : this.getTab === 2
+          ? this.getReport()
+          : this.getTab === 3
+            ? this.reportDispend()
+            : this.getTab === 4
+              ? this.reportCheckmed()
+              : this.getTab === 5
+                ? this.reportTimeDispend()
+                : this.getTab === 6
+                  ? this.reportreturnDrug()
+                  : this.getTab === 7
+                    ? this.ReportScan.reportCheck()
+                    : '';
   }
 
   async deleteCutowe(dcc_id: any, val: any, amount: any) {
@@ -2583,7 +2618,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
         let getData: any = await this.http.post(
           'deleteCutDispendOwe',
-          formData
+          formData,
         );
 
         if (getData.connect) {
@@ -2593,7 +2628,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
             let getData2: any = await this.http.post(
               'updateCutDispendDrugOwe',
-              formData
+              formData,
             );
 
             if (getData2.connect) {
@@ -2731,13 +2766,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       code: data.drugcode
         ? data.drugcode.trim()
         : data.drugCode
-        ? data.drugCode.trim()
-        : '',
+          ? data.drugCode.trim()
+          : '',
     };
 
     let getDataprint: any = await this.http.postNodejs(
       'prinsticker',
-      data_send
+      data_send,
     );
 
     if (getDataprint.connect) {
@@ -2841,13 +2876,13 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         let nameDrug = data.drugName
           ? data.drugName.trim()
           : data.drugname
-          ? data.drugname.trim()
-          : '';
+            ? data.drugname.trim()
+            : '';
         let drugCode = data.drugcode
           ? data.drugcode.trim()
           : data.drugCode
-          ? data.drugCode.trim()
-          : '';
+            ? data.drugCode.trim()
+            : '';
 
         if (drugCode === 'SOFOS8') {
           nameDrug = nameDrug.substring(0, 36);
@@ -2910,8 +2945,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     (data.unit
                       ? data.unit.trim()
                       : data.miniUnit
-                      ? data.miniUnit.trim()
-                      : '')
+                        ? data.miniUnit.trim()
+                        : '')
                   }`,
                   alignment: 'right',
                 },
@@ -3044,7 +3079,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               Swal.fire(
                 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
                 '',
-                'error'
+                'error',
               );
             }
           } else {
@@ -3181,7 +3216,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     let datareport = null;
     if (this.select) {
       this.datareportCheckmedFilter = this.datareportCheckmed.filter(
-        (val: any) => val.location == this.select
+        (val: any) => val.location == this.select,
       );
     } else {
       datareport = this.datareportCheckmed.filter(
@@ -3192,22 +3227,22 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           val.location == 'W19' ||
           val.location == 'W20' ||
           val.location == 'W13' ||
-          val.location == 'W11'
+          val.location == 'W11',
       );
       this.datareportCheckmedFilter = datareport;
     }
 
     if (this.filterType == 'pe') {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text == 'PE'
+        (val: any) => val.position_text == 'PE',
       );
     } else if (this.filterType == 'de') {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text == 'DE'
+        (val: any) => val.position_text == 'DE',
       );
     } else if (this.filterType == 'predis') {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter.filter(
-        (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+        (val: any) => val.position_text != 'PE' && val.position_text != 'DE',
       );
     } else {
       this.datareportCheckmedFilter = this.datareportCheckmedFilter;
@@ -3215,23 +3250,23 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
     this.numError.all = this.datareportCheckmedFilter.length;
     this.numError.pe = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text == 'PE'
+      (val: any) => val.position_text == 'PE',
     ).length;
     this.numError.de = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text == 'DE'
+      (val: any) => val.position_text == 'DE',
     ).length;
 
     this.numError.predis = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text != 'PE' && val.position_text != 'DE'
+      (val: any) => val.position_text != 'PE' && val.position_text != 'DE',
     ).length;
     this.numError.key = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text == 'key'
+      (val: any) => val.position_text == 'key',
     ).length;
     this.numError.set = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text == 'จัด'
+      (val: any) => val.position_text == 'จัด',
     ).length;
     this.numError.check = this.datareportCheckmedFilter.filter(
-      (val: any) => val.position_text == 'check'
+      (val: any) => val.position_text == 'check',
     ).length;
     this.numError.etc = this.datareportCheckmedFilter.filter(
       (val: any) =>
@@ -3241,7 +3276,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         val.position_text != 'จัด' &&
         val.position_text != 'check' &&
         val.position_text != 'key&check' &&
-        val.position_text != 'จัด&check'
+        val.position_text != 'จัด&check',
     ).length;
 
     this.dataSource5 = new MatTableDataSource(this.datareportCheckmedFilter);
@@ -3376,7 +3411,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       if (getData.connect) {
         if (getData.response.datadrugcheck.length) {
           this.dataSource5 = new MatTableDataSource(
-            getData.response.datadrugcheck
+            getData.response.datadrugcheck,
           );
           this.avgTime = getData.response.average;
           this.dataSource5.sort = this.sort5;
@@ -3423,7 +3458,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       let getData: any = await this.http.postNodejs(
         'getTimedispenddrug',
-        formData
+        formData,
       );
 
       if (getData.connect) {
@@ -3517,7 +3552,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                     : this.medError.value.med.code) ==
                   (val.orderitemcode
                     ? val.orderitemcode.trim()
-                    : val.orderitemcode)
+                    : val.orderitemcode),
               ) ?? null;
 
             if (caldrug) {
@@ -3525,7 +3560,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 this.medError.controls['note'].setValue(
                   (parseInt(this.medError.value.medWrong_text) -
                     parseInt(this.medError.value.medGood_text)) *
-                    parseFloat(caldrug.OPDprice.trim())
+                    parseFloat(caldrug.OPDprice.trim()),
                 );
                 this.checkCost = true;
               } else {

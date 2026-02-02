@@ -44,67 +44,156 @@
                   พบ {{ data[key].length }} รายการ
                 </mat-panel-description>
               </mat-expansion-panel-header>
+              <div class="responsive-table">
+                <section
+                  class="example-container mat-elevation-z8"
+                  tabindex="0"
+                >
+                  <table
+                    mat-table
+                    [dataSource]="data[key]"
+                    class="mat-elevation-z2 w-100"
+                  >
+                    <ng-container matColumnDef="currentDrug">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        ยาปัจจุบัน
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <strong>{{ row.currentDrugName }}</strong>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="currentQty">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        ปริมาณ
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        {{ row.currentQty }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="currentUnit">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        หน่วย
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        {{ row.currentUnit }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="currentSite">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        สถานที่
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        {{ row.currentSite }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="currentMedHow">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        วิธีใช้
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        {{ row.currentMedHow }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="groupName">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        กลุ่มยา
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        {{ row.groupName }}
+                      </td>
+                    </ng-container>
 
-              <table
-                mat-table
-                [dataSource]="data[key]"
-                class="mat-elevation-z2 w-100"
-              >
-                <ng-container matColumnDef="currentDrug">
-                  <th mat-header-cell *matHeaderCellDef>ยาปัจจุบัน</th>
-                  <td mat-cell *matCellDef="let row">
-                    <strong>{{ row.currentDrugName }}</strong>
-                  </td>
-                </ng-container>
+                    <ng-container matColumnDef="duplicate">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        ยาที่พบซ้ำ
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div
+                          *ngFor="let d of row.foundToday || row.foundHistory"
+                        >
+                          <mat-chip color="warn" selected>
+                            {{ d.invName || d.duplicateDrug }}
+                          </mat-chip>
+                        </div>
+                      </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="groupName">
-                  <th mat-header-cell *matHeaderCellDef>กลุ่มยา</th>
-                  <td mat-cell *matCellDef="let row">
-                    {{ row.groupName }}
-                  </td>
-                </ng-container>
+                    <ng-container matColumnDef="duplicateQty">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        ปริมาณ
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          {{ d.duplicateQty }}
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="duplicateUnit">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        หน่วย
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          {{ d.duplicateUnit }}
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="duplicateSite">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        สถานที่
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          {{ d.duplicateSite }}
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="duplicateMedHow">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        วิธีใช้
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          {{ d.duplicateMedHow }}
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="lastDate">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        วันที่ล่าสุด
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          {{ d.lastDate }}
+                        </div>
+                      </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="duplicate">
-                  <th mat-header-cell *matHeaderCellDef>ยาที่พบซ้ำ</th>
-                  <td mat-cell *matCellDef="let row">
-                    <div *ngFor="let d of row.foundToday || row.foundHistory">
-                      <mat-chip color="warn" selected>
-                        {{ d.invName || d.duplicateDrug }}
-                      </mat-chip>
-                    </div>
-                  </td>
-                </ng-container>
+                    <ng-container matColumnDef="daysDiff">
+                      <th class="text-nowrap" mat-header-cell *matHeaderCellDef>
+                        ห่าง (วัน)
+                      </th>
+                      <td class="text-nowrap" mat-cell *matCellDef="let row">
+                        <div *ngFor="let d of row.foundHistory">
+                          <span class="badge badge-danger">
+                            {{ d.daysDiff }} วัน
+                          </span>
+                        </div>
+                      </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="lastDate">
-                  <th mat-header-cell *matHeaderCellDef>วันที่ล่าสุด</th>
-                  <td mat-cell *matCellDef="let row">
-                    <div *ngFor="let d of row.foundHistory">
-                      {{ d.lastDate }}
-                    </div>
-                  </td>
-                </ng-container>
+                    <tr
+                      mat-header-row
+                      *matHeaderRowDef="conditionMeta[key].columns"
+                    ></tr>
 
-                <ng-container matColumnDef="daysDiff">
-                  <th mat-header-cell *matHeaderCellDef>ห่าง (วัน)</th>
-                  <td mat-cell *matCellDef="let row">
-                    <div *ngFor="let d of row.foundHistory">
-                      <span class="badge badge-danger">
-                        {{ d.daysDiff }} วัน
-                      </span>
-                    </div>
-                  </td>
-                </ng-container>
-
-                <tr
-                  mat-header-row
-                  *matHeaderRowDef="conditionMeta[key].columns"
-                ></tr>
-
-                <tr
-                  mat-row
-                  *matRowDef="let row; columns: conditionMeta[key].columns"
-                ></tr>
-              </table>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: conditionMeta[key].columns"
+                    ></tr>
+                  </table>
+                </section>
+              </div>
             </mat-expansion-panel>
           </ng-container>
         </mat-accordion>
