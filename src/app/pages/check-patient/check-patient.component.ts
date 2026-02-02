@@ -30,6 +30,7 @@ export class CheckPatientComponent implements OnInit {
       date: moment(new Date()).format('YYYY-MM-DD'),
       check: 1,
       site: 'W8',
+      user: this.dataUser.user,
     });
 
     if (getData.connect) {
