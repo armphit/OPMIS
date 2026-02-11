@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import moment from 'moment';
 declare const $: any;
 @Component({
   selector: 'app-duplicate-check-card',
@@ -144,5 +145,8 @@ export class DuplicateCheckCardComponent implements OnInit {
   onConfirm() {
     this.confirm.emit();
     this.closeModal();
+  }
+  getDateTime(date: any) {
+    return moment(date).format('DD/MM/YYYY HH:mm:ss');
   }
 }

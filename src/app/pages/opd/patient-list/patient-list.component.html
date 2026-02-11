@@ -1,5 +1,5 @@
 <mat-tab-group (selectedTabChange)="onTabChange($event.index)">
-  <mat-tab label="รายการยา">
+  <mat-tab #tab label="รายการยา">
     <div class="container-fluid pt-2">
       <div class="row">
         <div class="col-lg-6">
@@ -1204,7 +1204,7 @@
             exporter3.exportTable('xlsx', {
               fileName: nameExcel3,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -1559,7 +1559,7 @@
             exporter2.exportTable('xlsx', {
               fileName: nameExcel2,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -1799,7 +1799,7 @@
             exporter4.exportTable('xlsx', {
               fileName: nameExcel4,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -2555,7 +2555,7 @@
             exporter5.exportTable('xlsx', {
               fileName: nameExcel5,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -2771,7 +2771,7 @@
             exporter6.exportTable('xlsx', {
               fileName: nameExcel6,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -3052,7 +3052,7 @@
             exporter7.exportTable('xlsx', {
               fileName: nameExcel7,
               sheet: 'sheet_name',
-              Props: { Author: 'Talha' }
+              Props: { Author: 'Talha' },
             })
           "
         >
@@ -3616,8 +3616,8 @@
                 drugcut
                   ? "จำนวนจ่ายยา"
                   : checkmodalpatient
-                  ? "จำนวนคืนยา"
-                  : "จำนวนตัดจ่ายยา"
+                    ? "จำนวนคืนยา"
+                    : "จำนวนตัดจ่ายยา"
               }}</label>
               <input
                 [(ngModel)]="balanceamountValue"

@@ -1,126 +1,218 @@
-<div class="container-fluid mt-3">
-  <h2 class="mb-4">🔍 สแกน ID ผู้ป่วย</h2>
+<mat-tab-group
+  [(selectedIndex)]="tabIndex"
+  (selectedTabChange)="onTabChange($event.index)"
+>
+  <mat-tab label="Scan">
+    <div class="container-fluid mt-3">
+      <h2 class="mb-4">🔍 สแกน ID ผู้ป่วย</h2>
+      <!-- <button class="btn btn-info mb-4" (click)="openPopup()">
+        เปิดระบบ Angular
+      </button> -->
+      <div class="input-group mb-4">
+        <input
+          [(ngModel)]="patientId"
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="กรอกหรือสแกน ID"
+          (keyup.enter)="scan()"
+        />
+        <button class="btn btn-primary btn-lg" (click)="scan()">Scan</button>
+      </div>
 
-  <div class="input-group mb-4">
-    <input
-      [(ngModel)]="patientId"
-      type="text"
-      class="form-control form-control-lg"
-      placeholder="กรอกหรือสแกน ID"
-      (keyup.enter)="scan()"
-    />
-    <button class="btn btn-primary btn-lg" (click)="scan()">Scan</button>
-  </div>
+      <div *ngIf="patient.todayDrugsHN">
+        <!-- ข้อมูลส่วนตัว -->
+        <mat-accordion class="mb-3" multi>
+          <mat-expansion-panel [expanded]="true" class="info-panel">
+            <mat-expansion-panel-header>
+              <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div style="margin: 10px">
+              <div class="section-title">ข้อมูลส่วนตัว</div>
+              <div class="info-grid contrainer">
+                <div>
+                  <strong>HN:</strong> {{ patient.todayDrugsHN[0]?.hn }}
+                </div>
+                <div>
+                  <strong>ชื่อ:</strong>
+                  {{ patient.todayDrugsHN[0]?.patientname }}
+                </div>
+                <div>
+                  <strong>เพศ:</strong> {{ patient.todayDrugsHN[0]?.sex }}
+                </div>
+                <div>
+                  <strong>วันเกิด:</strong>
+                  {{ patient.todayDrugsHN[0]?.birthDay }}
+                </div>
+                <div>
+                  <strong>อายุ:</strong> {{ patient.todayDrugsHN[0]?.Age }} ปี
+                </div>
+              </div>
 
-  <div *ngIf="patient.todayDrugsHN">
-    <!-- ข้อมูลส่วนตัว -->
-    <mat-accordion class="mb-3" multi>
-      <mat-expansion-panel [expanded]="true" class="info-panel">
-        <mat-expansion-panel-header>
-          <mat-panel-title> 👤 ข้อมูลผู้ป่วย </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div style="margin: 10px">
-          <div class="section-title">ข้อมูลส่วนตัว</div>
-          <div class="info-grid contrainer">
-            <div><strong>HN:</strong> {{ patient.todayDrugsHN[0]?.hn }}</div>
-            <div>
-              <strong>ชื่อ:</strong> {{ patient.todayDrugsHN[0]?.patientname }}
+              <mat-divider></mat-divider>
+
+              <div class="section-title">ข้อมูลประจำตัว</div>
+              <div class="info-grid">
+                <!-- <div><strong>เลขบัตรประชาชน:</strong> {{ patient.todayDrugsHN[0]?.CardID }}</div> -->
+                <div class="address">
+                  <strong>ที่อยู่:</strong> {{ patient.todayDrugsHN[0]?.addr }}
+                </div>
+              </div>
             </div>
-            <div><strong>เพศ:</strong> {{ patient.todayDrugsHN[0]?.sex }}</div>
-            <div>
-              <strong>วันเกิด:</strong> {{ patient.todayDrugsHN[0]?.birthDay }}
+          </mat-expansion-panel>
+
+          <!-- ตารางรายการยา -->
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> 💊 รายการยา </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="mb-3">
+              <mat-card-content>
+                <table
+                  mat-table
+                  [dataSource]="patient?.todayDrugsHN"
+                  class="mat-elevation-z1 w-100"
+                >
+                  <ng-container matColumnDef="invName">
+                    <th mat-header-cell *matHeaderCellDef>ชื่อยา</th>
+                    <td mat-cell *matCellDef="let med">{{ med.invName }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="qtyReq">
+                    <th mat-header-cell *matHeaderCellDef>จำนวน</th>
+                    <td mat-cell *matCellDef="let med">{{ med.qtyReq }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="unit">
+                    <th mat-header-cell *matHeaderCellDef>หน่วย</th>
+                    <td mat-cell *matCellDef="let med">{{ med.unit }}</td>
+                  </ng-container>
+
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="['invName', 'qtyReq', 'unit']"
+                  ></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let row; columns: ['invName', 'qtyReq', 'unit']"
+                  ></tr>
+                </table>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+
+          <!-- Check Card -->
+
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title> ✅ การตรวจเช็ค </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div
+              class="row"
+              style="padding: 10px"
+              *ngIf="patient.todayDrugsHN.length"
+            >
+              <div class="col-md-4 mb-3">
+                <app-allergy-check-card
+                  [patient]="patient"
+                  (confirm)="dataConfirm('allergy')"
+                >
+                </app-allergy-check-card>
+              </div>
+              <div class="col-md-4 mb-3">
+                <app-duplicate-check-card
+                  [patient]="patient"
+                  (confirm)="dataConfirm('duplicate')"
+                >
+                </app-duplicate-check-card>
+              </div>
+              <div class="col-md-4 mb-3">
+                <app-laboratory-test
+                  [patient]="patient"
+                  (confirm)="dataConfirm('lab')"
+                >
+                </app-laboratory-test>
+              </div>
             </div>
-            <div>
-              <strong>อายุ:</strong> {{ patient.todayDrugsHN[0]?.Age }} ปี
-            </div>
-          </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </mat-tab>
+  <mat-tab label="Report">
+    <div class="container-fluid mt-3 table-wrapper">
+      <div class="table-toolbar">
+        <mat-form-field appearance="outline" class="search-box">
+          <mat-label>Search</mat-label>
+          <input
+            matInput
+            (keyup)="applyFilter($event)"
+            placeholder="ค้นหา HN / Queue / Prescription"
+          />
+        </mat-form-field>
+      </div>
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        class="mat-elevation-z2 responsive-table"
+      >
+        <!-- Prescription -->
+        <ng-container matColumnDef="prescription">
+          <th mat-header-cell *matHeaderCellDef>Prescription</th>
+          <td mat-cell *matCellDef="let row" data-label="Prescription">
+            {{ row.prescription }}
+          </td>
+        </ng-container>
 
-          <mat-divider></mat-divider>
+        <!-- HN -->
+        <ng-container matColumnDef="hn">
+          <th mat-header-cell *matHeaderCellDef>HN</th>
+          <td mat-cell *matCellDef="let row" data-label="HN">
+            {{ row.hn }}
+          </td>
+        </ng-container>
 
-          <div class="section-title">ข้อมูลประจำตัว</div>
-          <div class="info-grid">
-            <!-- <div><strong>เลขบัตรประชาชน:</strong> {{ patient.todayDrugsHN[0]?.CardID }}</div> -->
-            <div class="address">
-              <strong>ที่อยู่:</strong> {{ patient.todayDrugsHN[0]?.addr }}
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
+        <!-- Queue -->
+        <ng-container matColumnDef="queue">
+          <th mat-header-cell *matHeaderCellDef>Queue</th>
+          <td mat-cell *matCellDef="let row" data-label="Queue">
+            {{ row.queue }}
+          </td>
+        </ng-container>
 
-      <!-- ตารางรายการยา -->
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> 💊 รายการยา </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-card class="mb-3">
-          <mat-card-content>
-            <table
-              mat-table
-              [dataSource]="patient?.todayDrugsHN"
-              class="mat-elevation-z1 w-100"
-            >
-              <ng-container matColumnDef="invName">
-                <th mat-header-cell *matHeaderCellDef>ชื่อยา</th>
-                <td mat-cell *matCellDef="let med">{{ med.invName }}</td>
-              </ng-container>
+        <!-- Status -->
+        <ng-container matColumnDef="statusCheck">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row" data-label="Status">
+            {{ row.statusCheck === "1" ? "Checked" : "Pending" }}
+          </td>
+        </ng-container>
 
-              <ng-container matColumnDef="qtyReq">
-                <th mat-header-cell *matHeaderCellDef>จำนวน</th>
-                <td mat-cell *matCellDef="let med">{{ med.qtyReq }}</td>
-              </ng-container>
+        <!-- Scan -->
+        <ng-container matColumnDef="scanDT">
+          <th mat-header-cell *matHeaderCellDef>Scan Time</th>
+          <td mat-cell *matCellDef="let row" data-label="Scan">
+            {{ row.scanDT | date: "HH:mm:ss" }}
+          </td>
+        </ng-container>
 
-              <ng-container matColumnDef="unit">
-                <th mat-header-cell *matHeaderCellDef>หน่วย</th>
-                <td mat-cell *matCellDef="let med">{{ med.unit }}</td>
-              </ng-container>
-
-              <tr
-                mat-header-row
-                *matHeaderRowDef="['invName', 'qtyReq', 'unit']"
-              ></tr>
-              <tr
-                mat-row
-                *matRowDef="let row; columns: ['invName', 'qtyReq', 'unit']"
-              ></tr>
-            </table>
-          </mat-card-content>
-        </mat-card>
-      </mat-expansion-panel>
-
-      <!-- Check Card -->
-
-      <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title> ✅ การตรวจเช็ค </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div
-          class="row"
-          style="padding: 10px"
-          *ngIf="patient.todayDrugsHN.length"
-        >
-          <div class="col-md-4 mb-3">
-            <app-allergy-check-card
-              [patient]="patient"
-              (confirm)="dataConfirm('allergy')"
-            >
-            </app-allergy-check-card>
-          </div>
-          <div class="col-md-4 mb-3">
-            <app-duplicate-check-card
-              [patient]="patient"
-              (confirm)="dataConfirm('duplicate')"
-            >
-            </app-duplicate-check-card>
-          </div>
-          <div class="col-md-4 mb-3">
-            <app-laboratory-test
-              [patient]="patient"
-              (confirm)="dataConfirm('lab')"
-            >
-            </app-laboratory-test>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-</div>
+        <!-- User -->
+        <ng-container matColumnDef="userCheck">
+          <th mat-header-cell *matHeaderCellDef>User</th>
+          <td mat-cell *matCellDef="let row" data-label="User">
+            {{ row.userCheck }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row" data-label="Actions">
+            <button mat-button color="primary" (click)="goTab2(row)">
+              View Report
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </mat-tab>
+</mat-tab-group>

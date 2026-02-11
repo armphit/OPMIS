@@ -201,3 +201,20 @@ table.mat-table {
   vertical-align: middle;
   white-space: nowrap;
 }
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+.search-box {
+  width: 280px;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .search-box {
+    width: 100%;
+  }
+}
+

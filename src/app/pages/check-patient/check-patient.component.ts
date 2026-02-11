@@ -1,9 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import { HttpService } from 'src/app/services/http.service';
-
+import { MatTabGroup } from '@angular/material/tabs';
+import { MatTableDataSource } from '@angular/material/table';
+export interface Prescription {
+  prescription: string;
+  hn: string;
+  keyCreateDT: string;
+  statusCheck: string;
+  scanDT: string;
+  queue: string;
+  userCheck: string;
+}
 @Component({
   selector: 'app-check-patient',
   templateUrl: './check-patient.component.html',
@@ -14,43 +24,60 @@ export class CheckPatientComponent implements OnInit {
   patientId = '';
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+  displayedColumns: string[] = [
+    'prescription',
+    'hn',
+    'queue',
+    'statusCheck',
+    'scanDT',
+    'userCheck',
+    'Actions',
+  ];
 
+  dataSource: MatTableDataSource<Prescription> =
+    new MatTableDataSource<Prescription>([]);
   constructor(private http: HttpService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataSource.filterPredicate = (data, filter) => {
+      const text = data.prescription + data.hn + data.queue + data.userCheck;
+
+      return text.toLowerCase().includes(filter);
+    };
+  }
 
   /**
    * Scan HN / Patient ID
    */
   async scan() {
     this.patient = {};
+    if (this.patientId) {
+      const getData: any = await this.http.postNodejsTest('getdatacpoe', {
+        hn: this.patientId,
+        date: moment(new Date()).format('YYYY-MM-DD'),
+        check: 1,
+        site: 'W8',
+        user: this.dataUser.user,
+      });
 
-    const getData: any = await this.http.postNodejsTest('getdatacpoe', {
-      hn: this.patientId,
-      date: moment(new Date()).format('YYYY-MM-DD'),
-      check: 1,
-      site: 'W8',
-      user: this.dataUser.user,
-    });
-
-    if (getData.connect) {
-      if (getData.response) {
-        this.patient = getData.response;
-        // console.log(this.patient);
+      if (getData.connect) {
+        if (getData.response) {
+          this.patient = getData.response;
+          // console.log(this.patient);
+        } else {
+          Swal.fire('ไม่สามารถ response ได้!', '', 'error');
+        }
       } else {
-        Swal.fire('ไม่สามารถ response ได้!', '', 'error');
+        this.patient = {};
+        if (getData?.response?.status === 404) {
+          Swal.fire('ไม่พบข้อมูลผู้ป่วย', '', 'warning');
+        } else {
+          Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        }
       }
-    } else {
-      this.patient = {};
-      if (getData?.response?.status === 404) {
-        Swal.fire('ไม่พบข้อมูลผู้ป่วย', '', 'warning');
-      } else {
-        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-      }
+      this.patientId = '';
     }
-    this.patientId = '';
   }
-
   /**
    * Confirm Allergy จาก child component
    */
@@ -90,4 +117,46 @@ export class CheckPatientComponent implements OnInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
+  async getDuplicate() {
+    let getData: any = await this.http.post('getDuplicate');
+    if (getData.connect) {
+      if (getData.response.rowCount) {
+        this.dataSource = new MatTableDataSource<Prescription>(
+          getData.response.result,
+        );
+      } else {
+        this.dataSource = new MatTableDataSource<Prescription>([]);
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  onTabChange(index: any) {
+    if (index === 1) {
+      this.getDuplicate();
+    } else if (index === 0) {
+      this.patientId = '';
+      this.scan();
+    }
+  }
+  tabIndex = 0;
+  async goTab2(row: any) {
+    this.patientId = row.hn;
+
+    this.tabIndex = 0;
+    await this.scan();
+  }
+  applyFilter(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = value.trim().toLowerCase();
+  }
+  // openPopup() {
+  //   const url = 'http://localhost:4202?hn=1293492';
+
+  //   window.open(
+  //     url,
+  //     'popupWindow',
+  //     'width=900,height=600,left=200,top=100,resizable=yes,scrollbars=yes',
+  //   );
+  // }
 }

@@ -1436,7 +1436,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         position_text: this.medError.value.position,
         type: '',
         level: 'B',
-        occurrence: 'รับรายงาน',
+        occurrence: 'หน้างานบริการ',
         source: 'ในเวลา',
         error_type: 'drug error',
         site: 'PCT MED',

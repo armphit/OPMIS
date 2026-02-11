@@ -327,7 +327,11 @@
                             ><mat-icon style="font-size: 12px; width: 15px"
                               >event</mat-icon
                             >
-                            {{ d.lastDate || "วันนี้" }}</span
+                            {{
+                              (d.lastDate
+                                | date: "dd/MM/yyyy HH:mm:ss" : "UTC") ||
+                                "วันนี้"
+                            }}</span
                           >
                           &nbsp; &nbsp;
                           <span class="label-pill"

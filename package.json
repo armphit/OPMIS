@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --aot --open",
-    "build": "ng build --build-optimizer --output-hashing=all --prod --base-href=/opmis/",
+    "start": "node --max-old-space-size=12288 ./node_modules/@angular/cli/bin/ng serve --aot=false --source-map=false",
+    "build": "node --max-old-space-size=12288 ./node_modules/@angular/cli/bin/ng build --configuration production --output-hashing=all --base-href=/opmis/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
