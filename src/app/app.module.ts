@@ -55,6 +55,7 @@ import { LaboratoryTestComponent } from './pages/check-patient/laboratory-test/l
     AllergyCheckCardComponent,
     DuplicateCheckCardComponent,
     LaboratoryTestComponent,
+
   ],
   imports: [
     BrowserModule,

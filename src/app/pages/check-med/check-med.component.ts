@@ -209,9 +209,17 @@ export class CheckMedComponent implements OnInit {
         }
         this.drug_xmed = getData3.response.patientDrug;
 
-        this.patient_drug = this.patient_drug.filter(
-          (val: any) => val.departmentcode.trim() == this.select
-        );
+          if (this.select == 'W8') {
+          this.patient_drug = this.patient_drug.filter(
+            (val: any) =>
+              val.departmentcode.trim() == 'W8' ||
+              val.departmentcode.trim() == 'W9',
+          );
+        } else {
+          this.patient_drug = this.patient_drug.filter(
+            (val: any) => val.departmentcode.trim() == this.select,
+          );
+        }
         this.patient_drug.forEach((v: any) => {
           if (!v.checkstamp) {
             v.isSort = 2;
@@ -1247,7 +1255,7 @@ export class CheckMedComponent implements OnInit {
           text: textProbrem,
           bold: true,
           fontSize: textProbrem.length > 57 ? 14 : 15,
-          noWrap: true,
+
           alignment: 'center',
         },
         {
@@ -2137,7 +2145,7 @@ export class CheckMedComponent implements OnInit {
           text: textProbrem,
           bold: true,
           fontSize: textProbrem.length > 57 ? 14 : 15,
-          noWrap: true,
+
           alignment: 'center',
         },
         {

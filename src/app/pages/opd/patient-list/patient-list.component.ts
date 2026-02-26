@@ -164,7 +164,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let dataPatient: any = null;
 
       // if (this.select == 'W100') {
-      if (this.select == 'W8' || this.select == 'W18') {
+      if (this.select == 'W' ) {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
 
         formData.append('date1', date1);
@@ -315,6 +315,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   drugList: any = null;
   dataDrug2: any = [];
   listDrug = async (val: any) => {
+    console.log(val);
+
     let formData = new FormData();
     this.hncut = null;
     this.dataP = {};
@@ -757,6 +759,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'Ambulatory',
       'เชิงรุก',
       'รับรายงาน',
+       'MSR'
     ],
     source: ['ในเวลา', 'นอกเวลา'],
     error_type: [
@@ -797,6 +800,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'Ambulatory',
       'เชิงรุก',
       'รับรายงาน',
+      'MSR'
     ],
   };
   tel_site: string[] = [
@@ -3041,10 +3045,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             font: 'THSarabunNew',
           },
         };
-        // pdfMake.createPdf(docDefinition).open();
-        // return false;
-        const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-        return pdfDocGenerator;
+        pdfMake.createPdf(docDefinition).open();
+        return false;
+        // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+        // return pdfDocGenerator;
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
         return false;

@@ -114,6 +114,16 @@
               <i class="fas fa-tasks"></i>&nbsp;Med - Manage
             </a>
           </mat-nav-list>
+          <mat-nav-list dense>
+            <a
+              mat-list-item
+              [routerLink]="['/ipd/floor-stock']"
+              [routerLinkActive]="['active']"
+              (click)="checkinnerWidth()"
+            >
+              <i class="fas fa-vial"></i>&nbsp;Floor Stock
+            </a>
+          </mat-nav-list>
         </mat-expansion-panel>
         <mat-expansion-panel
           [expanded]="panelOpd"

@@ -1,0 +1,32 @@
+.table-container {
+  overflow: auto;
+  border-radius: 10px;
+}
+
+/* เพิ่ม padding ให้ cell */
+::ng-deep .mat-cell,
+::ng-deep .mat-header-cell {
+  padding: 10px 16px !important;
+  white-space: nowrap;          /* <<< ไม่ตัดบรรทัด */
+}
+
+/* ไม่ให้ text ติดซ้ายเกิน */
+::ng-deep .mat-header-cell {
+  font-weight: 600;
+}
+
+/* row สูงขึ้น อ่านง่าย */
+::ng-deep .mat-row {
+  height: 44px;
+}
+
+/* hover effect ลื่น ๆ */
+::ng-deep .mat-row:hover {
+  background: #f5f5f5;
+  transition: .15s;
+}
+
+/* ให้ table เลื่อนได้ถ้ายาว */
+table {
+  min-width: 1100px;
+}

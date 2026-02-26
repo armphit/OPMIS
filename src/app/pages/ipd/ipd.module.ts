@@ -6,9 +6,10 @@ import { MaterialModules } from 'src/app/materialModule';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { DrugManageComponent } from './drug-manage/drug-manage.component';
+import { FloorStockComponent } from './floor-stock/floor-stock.component';
 
 @NgModule({
-  declarations: [ApMedComponent, DrugManageComponent],
+  declarations: [ApMedComponent, DrugManageComponent, FloorStockComponent],
   imports: [
     CommonModule,
     IpdRoutingModule,
