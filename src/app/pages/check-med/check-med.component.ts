@@ -1585,7 +1585,7 @@ export class CheckMedComponent implements OnInit {
       }
     });
   }
-  clickrow: boolean = false;
+  clickrow: boolean = true;
   sendAccept(data: any, evt: any) {
     if (this.clickrow || !data.checkAccept) {
       data.dataCheck = 2;

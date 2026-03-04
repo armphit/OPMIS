@@ -54,7 +54,7 @@ export class CheckPatientComponent implements OnInit {
     if (this.patientId) {
       const getData: any = await this.http.postNodejsTest('getdatacpoe', {
         hn: this.patientId,
-        date: moment(new Date()).format('YYYY-MM-DD'),
+        date: moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD'),
         check: 1,
         site: 'W8',
         user: this.dataUser.user,
