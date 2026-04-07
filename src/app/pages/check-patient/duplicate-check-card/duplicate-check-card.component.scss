@@ -6,8 +6,13 @@
 }
 
 /* พื้นหลังฝั่งซ้าย-ขวา ให้ต่างกันนิดหน่อยเพื่อแยกสายตา */
-.mat-column-currentSide { background-color: #ffffff; }
-.mat-column-duplicateSide { background-color: #fff8f8; }
+.mat-column-currentSide {
+  background-color: #ffffff;
+}
+
+.mat-column-duplicateSide {
+  background-color: #fff8f8;
+}
 
 /* Wrapper สำหรับเนื้อหายา */
 .drug-item-box {
@@ -19,13 +24,15 @@
 .drug-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1a73e8; /* สีน้ำเงินสำหรับยาปัจจุบัน */
+  color: #1a73e8;
+  /* สีน้ำเงินสำหรับยาปัจจุบัน */
 }
 
 .duplicate-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #d93025; /* สีแดงสำหรับยาที่ซ้ำ */
+  color: #d93025;
+  /* สีแดงสำหรับยาที่ซ้ำ */
 }
 
 .usage-info {
@@ -33,7 +40,7 @@
   color: #3c4043;
   line-height: 1.4;
   padding: 8px;
-  background: rgba(0,0,0,0.03);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 6px;
 }
 
@@ -53,18 +60,25 @@
   color: #5f6368;
   font-weight: 500;
 }
-.mat-icon{
+
+.mat-icon {
   width: 0 !important;
   height: 0 !important;
   vertical-align: middle !important;
 }
 
 /* ลบเส้นคั่นระหว่างแถวที่ไม่จำเป็นออกเพื่อให้ดู Smooth */
-.mat-table { border-collapse: separate; border-spacing: 0 8px; }
+.mat-table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
 .mat-row {
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
 }
-.mat-row:hover { transform: scale(1.002); background-color: #fbfbfb; }
 
-
+.mat-row:hover {
+  transform: scale(1.002);
+  background-color: #fbfbfb;
+}

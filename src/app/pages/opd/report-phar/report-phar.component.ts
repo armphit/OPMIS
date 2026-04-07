@@ -97,7 +97,7 @@ export class ReportPharComponent implements OnInit {
     // this.getData2();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   public nameExcel = '';
   public getData = async () => {
     let dataUser: any = await this.http.postNodejsTest('positionError', {
@@ -167,6 +167,7 @@ export class ReportPharComponent implements OnInit {
       // getData = await this.http.post('checkerPhar_copy', formData);
       send.choice = 1;
       getData = await this.http.postNodejs('onusPhar', send);
+      console.log(getData);
 
       if (getData.connect) {
         if (getData.response.length > 0) {
@@ -417,10 +418,10 @@ export class ReportPharComponent implements OnInit {
         this.numTab == 0
           ? val.checker_id
           : this.numTab == 1
-          ? val.dispenser_id
-          : this.numTab == 2 || this.numTab == 3
-          ? val.staff
-          : '',
+            ? val.dispenser_id
+            : this.numTab == 2 || this.numTab == 3
+              ? val.staff
+              : '',
       dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
       datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
       time1: this.starttime + ':00',
@@ -429,12 +430,12 @@ export class ReportPharComponent implements OnInit {
         this.numTab == 0
           ? 'check'
           : this.numTab == 1
-          ? 'จ่าย'
-          : this.numTab == 2
-          ? 'จัด'
-          : this.numTab == 3
-          ? 'key'
-          : '',
+            ? 'จ่าย'
+            : this.numTab == 2
+              ? 'จัด'
+              : this.numTab == 3
+                ? 'key'
+                : '',
       choice: 1,
       site: this.select,
     };

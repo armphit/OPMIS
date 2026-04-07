@@ -164,7 +164,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       let dataPatient: any = null;
 
       // if (this.select == 'W100') {
-      if (this.select == 'W' ) {
+      if (this.select == 'W') {
         formData.append('floor', this.select == 'W8' ? '2' : '3');
 
         formData.append('date1', date1);
@@ -440,9 +440,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                           ? { nameCheck: 'จนท ชั้น3', userName: 'จนท ชั้น3' }
                           : this.select == 'W19'
                             ? {
-                                nameCheck: 'จนท M-Park',
-                                userName: 'จนท M-Park',
-                              }
+                              nameCheck: 'จนท M-Park',
+                              userName: 'จนท M-Park',
+                            }
                             : { nameCheck: '', userName: '' })),
                   };
                 });
@@ -759,7 +759,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       'Ambulatory',
       'เชิงรุก',
       'รับรายงาน',
-       'MSR'
+      'MSR'
     ],
     source: ['ในเวลา', 'นอกเวลา'],
     error_type: [
@@ -918,16 +918,16 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         ? this.medError.value.position_text
         : 'ไม่ระบุข้อความ'
       : this.medError.patchValue({
-          position_text: this.medError.value.position,
-        });
+        position_text: this.medError.value.position,
+      });
 
     this.medError.value.type === 'other' || this.medError.value.type === 'n10'
       ? this.medError.value.type_text
         ? this.medError.value.type_text
         : 'ไม่ระบุข้อความ'
       : this.medError.patchValue({
-          type_text: this.medError.value.type,
-        });
+        type_text: this.medError.value.type,
+      });
 
     let drugaller = this.medError.patchValue({
       interceptor: this.userList.find(
@@ -995,22 +995,22 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         : '',
       med:
         this.medError.value.type == 'pe7' ||
-        this.medError.value.type == 'pe8' ||
-        this.medError.value.type == 'pe9'
+          this.medError.value.type == 'pe8' ||
+          this.medError.value.type == 'pe9'
           ? this.dataAllergic.length
             ? {
-                code: this.dataAllergic[0].code,
-                med_name: this.dataAllergic[0].name,
-              }
+              code: this.dataAllergic[0].code,
+              med_name: this.dataAllergic[0].name,
+            }
             : this.medError.value.med
           : this.medError.value.med,
       medcode_err: this.medError.value.medcode_err
         ? this.drugList.find(
-            (val: any) => val.name.trim() === this.medError.value.medcode_err,
-          )
+          (val: any) => val.name.trim() === this.medError.value.medcode_err,
+        )
           ? this.drugList.find(
-              (val: any) => val.name.trim() === this.medError.value.medcode_err,
-            ).code
+            (val: any) => val.name.trim() === this.medError.value.medcode_err,
+          ).code
           : this.medError.value.medcode_err
         : this.medError.value.medcode_err,
     });
@@ -1182,11 +1182,11 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         },
         type
           ? {
-              text: `- ${type ? type.name_type : ''}`,
+            text: `- ${type ? type.name_type : ''}`,
 
-              fontSize: 14,
-              margin: [5, 0, 0, 0],
-            }
+            fontSize: 14,
+            margin: [5, 0, 0, 0],
+          }
           : ``,
         {
           text: data.medGood_text
@@ -1206,17 +1206,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
 
       footer: [
         {
-          text: `ขอบคุณค่ะ ...${
-            data.interceptor_name
+          text: `ขอบคุณค่ะ ...${data.interceptor_name
               ? data.interceptor_name
               : data.interceptor
                 ? data.interceptor.name
                 : ''
-          }... ${
-            this.dataUser.user.toUpperCase().includes('C')
+            }... ${this.dataUser.user.toUpperCase().includes('C')
               ? 'เจ้าพนักงานเภสัชกรรม'
               : 'เภสัชกร'
-          }`,
+            }`,
           alignment: 'center',
 
           fontSize: 14,
@@ -1401,7 +1399,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ...val,
           valSort:
             val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
+              val.user.toLowerCase().charAt(0) != 'o'
               ? 1
               : 2,
         };
@@ -1426,7 +1424,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ...val,
           valSort:
             val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
+              val.user.toLowerCase().charAt(0) != 'o'
               ? 1
               : 2,
         };
@@ -1453,7 +1451,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
           ...val,
           valSort:
             val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
+              val.user.toLowerCase().charAt(0) != 'o'
               ? 1
               : 2,
         };
@@ -1921,10 +1919,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         },
         this.ems
           ? {
-              image: this.generateBarcode(this.ems), // Insert barcode as image
-              width: 200,
-              height: 50, // You can adjust the width
-            }
+            image: this.generateBarcode(this.ems), // Insert barcode as image
+            width: 200,
+            height: 50, // You can adjust the width
+          }
           : '',
       ],
 
@@ -1944,7 +1942,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     if (this.drugcut) {
       if (
         Number(this.dataAdress.balanceamount) -
-          Number(this.balanceamountValue) >=
+        Number(this.balanceamountValue) >=
         0
       ) {
         this.dataAdress.balanceamount =
@@ -2873,9 +2871,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             : '';
         }
         let lamedName = lamed.lamedName ? lamed.lamedName.trim() : '';
-        let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${
-          freetext1 ? (freetext1[0] ? freetext1[0] : '') : ''
-        }`;
+        let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${freetext1 ? (freetext1[0] ? freetext1[0] : '') : ''
+          }`;
 
         let nameDrug = data.drugName
           ? data.drugName.trim()
@@ -2943,15 +2940,14 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 },
                 {
                   width: '*',
-                  text: `#${
-                    data.balanceamount +
+                  text: `#${data.balanceamount +
                     ' ' +
                     (data.unit
                       ? data.unit.trim()
                       : data.miniUnit
                         ? data.miniUnit.trim()
                         : '')
-                  }`,
+                    }`,
                   alignment: 'right',
                 },
               ],
@@ -2990,17 +2986,17 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             freetext2
               ? ['MIRTA', 'ALEND', 'INSUG2'].includes(lamed?.invCode?.trim?.())
                 ? {
-                    text: lamed?.freetext2?.trim?.() || '',
-                    alignment: 'center',
-                    fontSize: 13,
-                    bold: true,
-                  }
+                  text: lamed?.freetext2?.trim?.() || '',
+                  alignment: 'center',
+                  fontSize: 13,
+                  bold: true,
+                }
                 : freetext2.map((item: any) => ({
-                    text: item?.trim?.() || '',
-                    alignment: 'center',
-                    fontSize: (item?.trim?.()?.length || 0) >= 80 ? 12 : 13,
-                    bold: true,
-                  }))
+                  text: item?.trim?.() || '',
+                  alignment: 'center',
+                  fontSize: (item?.trim?.()?.length || 0) >= 80 ? 12 : 13,
+                  bold: true,
+                }))
               : '',
           ] as any,
 
@@ -3011,21 +3007,19 @@ export class PatientListComponent implements OnInit, AfterViewInit {
               ],
             },
             {
-              text: `รับยาที่ ${
-                getDataprint.response.datasite[0].site_name
+              text: `รับยาที่ ${getDataprint.response.datasite[0].site_name
                   ? getDataprint.response.datasite[0].site_name.trim()
                   : ''
-              }`,
+                }`,
 
               fontSize: 12,
               bold: true,
             },
             {
-              text: `โทร ${
-                getDataprint.response.datasite[0].site_tel
+              text: `โทร ${getDataprint.response.datasite[0].site_tel
                   ? getDataprint.response.datasite[0].site_tel
                   : ''
-              }`,
+                }`,
 
               fontSize: 12,
               bold: true,
@@ -3564,7 +3558,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
                 this.medError.controls['note'].setValue(
                   (parseInt(this.medError.value.medWrong_text) -
                     parseInt(this.medError.value.medGood_text)) *
-                    parseFloat(caldrug.OPDprice.trim()),
+                  parseFloat(caldrug.OPDprice.trim()),
                 );
                 this.checkCost = true;
               } else {

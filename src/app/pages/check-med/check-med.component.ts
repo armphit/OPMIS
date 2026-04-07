@@ -209,7 +209,7 @@ export class CheckMedComponent implements OnInit {
         }
         this.drug_xmed = getData3.response.patientDrug;
 
-          if (this.select == 'W8') {
+        if (this.select == 'W8') {
           this.patient_drug = this.patient_drug.filter(
             (val: any) =>
               val.departmentcode.trim() == 'W8' ||
@@ -377,7 +377,7 @@ export class CheckMedComponent implements OnInit {
           .filter(
             (element: any) =>
               element.drugCode.trim().toLowerCase() ===
-                data.drugCode.trim().toLowerCase() &&
+              data.drugCode.trim().toLowerCase() &&
               Number(element.hn) === Number(data.PatientNo) &&
               Number(element.qty) === Number(data.HisPackageRatio)
           )
@@ -390,7 +390,7 @@ export class CheckMedComponent implements OnInit {
             .filter(
               (element: any) =>
                 element.drugCode.trim().toLowerCase() ===
-                  data.drugCode.trim().toLowerCase() &&
+                data.drugCode.trim().toLowerCase() &&
                 Number(element.hn) === Number(data.PatientNo)
             )
             .map((emp: any) => ({
@@ -541,22 +541,22 @@ export class CheckMedComponent implements OnInit {
                     dataPDF.getBase64(async (buffer: any) => {
                       !this.checked
                         ? await this.http.Printjs162('convertbuffer', {
-                            data: buffer,
-                            name: value.hn + ' ' + value.drugCode + '.pdf',
-                            ip: this.dataUser.print_ip,
+                          data: buffer,
+                          name: value.hn + ' ' + value.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                            printName: this.dataUser.print_name,
-                            hn: value.hn + ' ' + value.drugName,
-                          })
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        })
                         : await this.http.PrintjsLocalhost('convertbuffer', {
-                            data: buffer,
-                            name:
-                              value.hn + ' ' + value.drugCode + '_drugcut.pdf',
-                            ip: this.dataUser.print_ip,
-                            // ip: '192.168.184.163',
-                            printName: this.dataUser.print_name,
-                            hn: value.hn + ' ' + value.drugName,
-                          });
+                          data: buffer,
+                          name:
+                            value.hn + ' ' + value.drugCode + '_drugcut.pdf',
+                          ip: this.dataUser.print_ip,
+                          // ip: '192.168.184.163',
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        });
                       let formData: any = new FormData();
                       formData.append('drugcode', value.drugCode);
                       formData.append('drugname', value.drugName);
@@ -600,21 +600,21 @@ export class CheckMedComponent implements OnInit {
                     dataPDF.getBase64(async (buffer: any) => {
                       let pdf: any = !this.checked
                         ? await this.http.Printjs162('convertbuffer', {
-                            data: buffer,
-                            name: value.hn + ' ' + value.drugCode + '.pdf',
-                            ip: this.dataUser.print_ip,
+                          data: buffer,
+                          name: value.hn + ' ' + value.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                            printName: this.dataUser.print_name,
-                            hn: value.hn + ' ' + value.drugName,
-                          })
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        })
                         : await this.http.PrintjsLocalhost('convertbuffer', {
-                            data: buffer,
-                            name: value.hn + ' ' + value.drugCode + '.pdf',
-                            ip: this.dataUser.print_ip,
+                          data: buffer,
+                          name: value.hn + ' ' + value.drugCode + '.pdf',
+                          ip: this.dataUser.print_ip,
 
-                            printName: this.dataUser.print_name,
-                            hn: value.hn + ' ' + value.drugName,
-                          });
+                          printName: this.dataUser.print_name,
+                          hn: value.hn + ' ' + value.drugName,
+                        });
                       if (value.cur_qty && value.qty_cut) {
                         if (value.qty_real > value.qty_cut) {
                           this.printPDF(value).then((dataPDF: any) => {
@@ -622,35 +622,35 @@ export class CheckMedComponent implements OnInit {
                               dataPDF.getBase64(async (buffer: any) => {
                                 !this.checked
                                   ? await this.http.Printjs162(
-                                      'convertbuffer',
-                                      {
-                                        data: buffer,
-                                        name:
-                                          value.hn +
-                                          ' ' +
-                                          value.drugCode +
-                                          '.pdf',
-                                        ip: this.dataUser.print_ip,
+                                    'convertbuffer',
+                                    {
+                                      data: buffer,
+                                      name:
+                                        value.hn +
+                                        ' ' +
+                                        value.drugCode +
+                                        '.pdf',
+                                      ip: this.dataUser.print_ip,
 
-                                        printName: this.dataUser.print_name,
-                                        hn: value.hn + ' ' + value.drugName,
-                                      }
-                                    )
+                                      printName: this.dataUser.print_name,
+                                      hn: value.hn + ' ' + value.drugName,
+                                    }
+                                  )
                                   : await this.http.PrintjsLocalhost(
-                                      'convertbuffer',
-                                      {
-                                        data: buffer,
-                                        name:
-                                          value.hn +
-                                          ' ' +
-                                          value.drugCode +
-                                          '_drugcut.pdf',
-                                        ip: this.dataUser.print_ip,
-                                        // ip: '192.168.184.163',
-                                        printName: this.dataUser.print_name,
-                                        hn: value.hn + ' ' + value.drugName,
-                                      }
-                                    );
+                                    'convertbuffer',
+                                    {
+                                      data: buffer,
+                                      name:
+                                        value.hn +
+                                        ' ' +
+                                        value.drugCode +
+                                        '_drugcut.pdf',
+                                      ip: this.dataUser.print_ip,
+                                      // ip: '192.168.184.163',
+                                      printName: this.dataUser.print_name,
+                                      hn: value.hn + ' ' + value.drugName,
+                                    }
+                                  );
                                 let formData: any = new FormData();
                                 formData.append('drugcode', value.drugCode);
                                 formData.append('drugname', value.drugName);
@@ -724,21 +724,19 @@ export class CheckMedComponent implements OnInit {
                 imageUrl: value.pathImage
                   ? value.typeNum.indexOf('pack') != -1
                     ? this.http.imgPath +
-                      value.pathImage[value.typeNum.indexOf('pack')] +
-                      this.mathRandom
+                    value.pathImage[value.typeNum.indexOf('pack')] +
+                    this.mathRandom
                     : value.pathImage[value.pathImage.length - 1]
-                    ? this.http.imgPath +
+                      ? this.http.imgPath +
                       value.pathImage[value.pathImage.length - 1] +
                       this.mathRandom
-                    : ''
+                      : ''
                   : '',
                 imageWidth: 150,
                 imageHeight: 150,
-                title: `<strong style="font-size:18px">จำนวน ${
-                  value.drugName
-                } คงเหลือ ${value.checkqty} ${
-                  value.unitCode ? value.unitCode.trim() : ''
-                }</strong>`,
+                title: `<strong style="font-size:18px">จำนวน ${value.drugName
+                  } คงเหลือ ${value.checkqty} ${value.unitCode ? value.unitCode.trim() : ''
+                  }</strong>`,
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
@@ -764,29 +762,29 @@ export class CheckMedComponent implements OnInit {
                           dataPDF.getBase64(async (buffer: any) => {
                             !this.checked
                               ? await this.http.Printjs162('convertbuffer', {
+                                data: buffer,
+                                name:
+                                  value.hn + ' ' + value.drugCode + '.pdf',
+                                ip: this.dataUser.print_ip,
+
+                                printName: this.dataUser.print_name,
+                                hn: value.hn + ' ' + value.drugName,
+                              })
+                              : await this.http.PrintjsLocalhost(
+                                'convertbuffer',
+                                {
                                   data: buffer,
                                   name:
-                                    value.hn + ' ' + value.drugCode + '.pdf',
+                                    value.hn +
+                                    ' ' +
+                                    value.drugCode +
+                                    '_drugcut.pdf',
                                   ip: this.dataUser.print_ip,
-
+                                  // ip: '192.168.184.163',
                                   printName: this.dataUser.print_name,
                                   hn: value.hn + ' ' + value.drugName,
-                                })
-                              : await this.http.PrintjsLocalhost(
-                                  'convertbuffer',
-                                  {
-                                    data: buffer,
-                                    name:
-                                      value.hn +
-                                      ' ' +
-                                      value.drugCode +
-                                      '_drugcut.pdf',
-                                    ip: this.dataUser.print_ip,
-                                    // ip: '192.168.184.163',
-                                    printName: this.dataUser.print_name,
-                                    hn: value.hn + ' ' + value.drugName,
-                                  }
-                                );
+                                }
+                              );
                             let formData: any = new FormData();
                             formData.append('drugcode', value.drugCode);
                             formData.append('drugname', value.drugName);
@@ -823,26 +821,26 @@ export class CheckMedComponent implements OnInit {
                           dataPDF.getBase64(async (buffer: any) => {
                             let getData: any = !this.checked
                               ? await this.http.Printjs162('convertbuffer', {
+                                data: buffer,
+                                name:
+                                  value.hn + ' ' + value.drugCode + '.pdf',
+                                ip: this.dataUser.print_ip,
+
+                                printName: this.dataUser.print_name,
+                                hn: value.hn + ' ' + value.drugName,
+                              })
+                              : await this.http.PrintjsLocalhost(
+                                'convertbuffer',
+                                {
                                   data: buffer,
                                   name:
                                     value.hn + ' ' + value.drugCode + '.pdf',
                                   ip: this.dataUser.print_ip,
-
+                                  // ip: '192.168.184.163',
                                   printName: this.dataUser.print_name,
                                   hn: value.hn + ' ' + value.drugName,
-                                })
-                              : await this.http.PrintjsLocalhost(
-                                  'convertbuffer',
-                                  {
-                                    data: buffer,
-                                    name:
-                                      value.hn + ' ' + value.drugCode + '.pdf',
-                                    ip: this.dataUser.print_ip,
-                                    // ip: '192.168.184.163',
-                                    printName: this.dataUser.print_name,
-                                    hn: value.hn + ' ' + value.drugName,
-                                  }
-                                );
+                                }
+                              );
 
                             if (value.cur_qty && value.qty_cut) {
                               if (value.qty_real > value.qty_cut) {
@@ -851,39 +849,39 @@ export class CheckMedComponent implements OnInit {
                                     dataPDF.getBase64(async (buffer: any) => {
                                       !this.checked
                                         ? await this.http.Printjs162(
-                                            'convertbuffer',
-                                            {
-                                              data: buffer,
-                                              name:
-                                                value.hn +
-                                                ' ' +
-                                                value.drugCode +
-                                                '.pdf',
-                                              ip: this.dataUser.print_ip,
+                                          'convertbuffer',
+                                          {
+                                            data: buffer,
+                                            name:
+                                              value.hn +
+                                              ' ' +
+                                              value.drugCode +
+                                              '.pdf',
+                                            ip: this.dataUser.print_ip,
 
-                                              printName:
-                                                this.dataUser.print_name,
-                                              hn:
-                                                value.hn + ' ' + value.drugName,
-                                            }
-                                          )
+                                            printName:
+                                              this.dataUser.print_name,
+                                            hn:
+                                              value.hn + ' ' + value.drugName,
+                                          }
+                                        )
                                         : await this.http.PrintjsLocalhost(
-                                            'convertbuffer',
-                                            {
-                                              data: buffer,
-                                              name:
-                                                value.hn +
-                                                ' ' +
-                                                value.drugCode +
-                                                '_drugcut.pdf',
-                                              ip: this.dataUser.print_ip,
-                                              // ip: '192.168.184.163',
-                                              printName:
-                                                this.dataUser.print_name,
-                                              hn:
-                                                value.hn + ' ' + value.drugName,
-                                            }
-                                          );
+                                          'convertbuffer',
+                                          {
+                                            data: buffer,
+                                            name:
+                                              value.hn +
+                                              ' ' +
+                                              value.drugCode +
+                                              '_drugcut.pdf',
+                                            ip: this.dataUser.print_ip,
+                                            // ip: '192.168.184.163',
+                                            printName:
+                                              this.dataUser.print_name,
+                                            hn:
+                                              value.hn + ' ' + value.drugName,
+                                          }
+                                        );
                                       let formData: any = new FormData();
                                       formData.append(
                                         'drugcode',
@@ -1056,13 +1054,13 @@ export class CheckMedComponent implements OnInit {
           imageUrl: value.pathImage
             ? value.typeNum.indexOf('pack') != -1
               ? this.http.imgPath +
-                value.pathImage[value.typeNum.indexOf('pack')] +
-                this.mathRandom
+              value.pathImage[value.typeNum.indexOf('pack')] +
+              this.mathRandom
               : value.pathImage[value.pathImage.length - 1]
-              ? this.http.imgPath +
+                ? this.http.imgPath +
                 value.pathImage[value.pathImage.length - 1] +
                 this.mathRandom
-              : ''
+                : ''
             : '',
           imageWidth: 200,
           imageHeight: 200,
@@ -1160,9 +1158,8 @@ export class CheckMedComponent implements OnInit {
           : '';
       }
     }
-    let textProbrem = `${lamed} ${data.dosage.trim()} ${freetext_lang} ${
-      freetext1[0] ? freetext1[0] : ''
-    }`;
+    let textProbrem = `${lamed} ${data.dosage.trim()} ${freetext_lang} ${freetext1[0] ? freetext1[0] : ''
+      }`;
     let fix =
       this.dataUser.print_ip == '192.168.124.94'
         ? [0, 10, 10, 70]
@@ -1193,15 +1190,13 @@ export class CheckMedComponent implements OnInit {
           noWrap: true,
         },
         {
-          text: `สิทธิ : ${right} / ${
-            data.righttext2 ? data.righttext2.toUpperCase().trim() : ''
-          } / ${
-            data.righttext3
+          text: `สิทธิ : ${right} / ${data.righttext2 ? data.righttext2.toUpperCase().trim() : ''
+            } / ${data.righttext3
               ? data.righttext3.trim() === 'ป'
                 ? 'ปกติ'
                 : data.righttext3.trim()
               : ''
-          }`,
+            }`,
           fontSize: 14,
           bold: true,
         },
@@ -1276,29 +1271,29 @@ export class CheckMedComponent implements OnInit {
         //   : '',
         freetext2
           ? freetext2.map(function (item: any) {
-              return {
-                text: item.trim(),
-                alignment: 'center',
-                fontSize: 12,
-                bold: true,
-              };
-            })
+            return {
+              text: item.trim(),
+              alignment: 'center',
+              fontSize: 12,
+              bold: true,
+            };
+          })
           : // ? data.drugCode.trim() === 'MIRTA' || data.drugCode.trim() === 'ALEND'
-            //   ? {
-            //       text: data.freetext2.trim(),
-            //       alignment: 'center',
-            //       fontSize: 13,
-            //       bold: true,
-            //     }
-            //   : freetext2.map(function (item: any) {
-            //       return {
-            //         text: item.trim(),
-            //         alignment: 'center',
-            //         fontSize: item.trim().length >= 80 ? 12 : 13,
-            //         bold: true,
-            //       };
-            //     })
-            '',
+          //   ? {
+          //       text: data.freetext2.trim(),
+          //       alignment: 'center',
+          //       fontSize: 13,
+          //       bold: true,
+          //     }
+          //   : freetext2.map(function (item: any) {
+          //       return {
+          //         text: item.trim(),
+          //         alignment: 'center',
+          //         fontSize: item.trim().length >= 80 ? 12 : 13,
+          //         bold: true,
+          //       };
+          //     })
+          '',
       ] as any,
 
       footer: [
@@ -1310,46 +1305,44 @@ export class CheckMedComponent implements OnInit {
         {
           columns: data.checkIndication
             ? [
-                {
-                  width: '*',
-                  text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
-                    data.indication
+              {
+                width: '*',
+                text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${data.indication
                   }`,
-                  fontSize: 12,
-                  bold: true,
-                },
-                // ,
-                // ...(data.qrCode
-                //   ? [
-                //       {
-                //         width: '*',
-                //         qr: `${data.qrCode}`,
-                //         fit: '45',
-                //         margin: [0, 5, 0, 0],
-                //       },
-                //     ]
-                //   : []),
-              ]
+                fontSize: 12,
+                bold: true,
+              },
+              // ,
+              // ...(data.qrCode
+              //   ? [
+              //       {
+              //         width: '*',
+              //         qr: `${data.qrCode}`,
+              //         fit: '45',
+              //         margin: [0, 5, 0, 0],
+              //       },
+              //     ]
+              //   : []),
+            ]
             : [
-                {
-                  width: 195,
-                  text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${
-                    data.indication
+              {
+                width: 195,
+                text: `ชื่อสามัญ : ${data.drugNameTh.trim()} \nข้อบ่งใช้ : ${data.indication
                   }`,
-                  fontSize: 12,
-                  bold: true,
-                },
-                ...(data.qrCode
-                  ? [
-                      {
-                        width: '*',
-                        qr: `${data.qrCode}`,
-                        fit: '45',
-                        margin: [0, 5, 0, 0],
-                      },
-                    ]
-                  : []),
-              ],
+                fontSize: 12,
+                bold: true,
+              },
+              ...(data.qrCode
+                ? [
+                  {
+                    width: '*',
+                    qr: `${data.qrCode}`,
+                    fit: '45',
+                    margin: [0, 5, 0, 0],
+                  },
+                ]
+                : []),
+            ],
         },
       ] as any,
 
@@ -1434,21 +1427,21 @@ export class CheckMedComponent implements OnInit {
             dataPDF.getBase64(async (buffer: any) => {
               !this.checked
                 ? await this.http.Printjs162('convertbuffer', {
-                    data: buffer,
-                    name: data.hn + ' ' + data.drugCode + '.pdf',
-                    ip: this.dataUser.print_ip,
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
 
-                    printName: this.dataUser.print_name,
-                    hn: data.hn + ' ' + data.drugName,
-                  })
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                })
                 : await this.http.PrintjsLocalhost('convertbuffer', {
-                    data: buffer,
-                    name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
-                    ip: this.dataUser.print_ip,
-                    // ip: '192.168.184.163',
-                    printName: this.dataUser.print_name,
-                    hn: data.hn + ' ' + data.drugName,
-                  });
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                });
             });
           }
         });
@@ -1458,21 +1451,21 @@ export class CheckMedComponent implements OnInit {
             dataPDF.getBase64(async (buffer: any) => {
               let getData: any = !this.checked
                 ? await this.http.Printjs162('convertbuffer', {
-                    data: buffer,
-                    name: data.hn + ' ' + data.drugCode + '.pdf',
-                    ip: this.dataUser.print_ip,
-                    // ip: '192.168.184.163',
-                    printName: this.dataUser.print_name,
-                    hn: data.hn + ' ' + data.drugName,
-                  })
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                })
                 : await this.http.PrintjsLocalhost('convertbuffer', {
-                    data: buffer,
-                    name: data.hn + ' ' + data.drugCode + '.pdf',
-                    ip: this.dataUser.print_ip,
-                    // ip: '192.168.184.163',
-                    printName: this.dataUser.print_name,
-                    hn: data.hn + ' ' + data.drugName,
-                  });
+                  data: buffer,
+                  name: data.hn + ' ' + data.drugCode + '.pdf',
+                  ip: this.dataUser.print_ip,
+                  // ip: '192.168.184.163',
+                  printName: this.dataUser.print_name,
+                  hn: data.hn + ' ' + data.drugName,
+                });
 
               if (data.cur_qty && data.qty_cut) {
                 if (data.qty_real > data.qty_cut) {
@@ -1481,22 +1474,22 @@ export class CheckMedComponent implements OnInit {
                       dataPDF.getBase64(async (buffer: any) => {
                         !this.checked
                           ? await this.http.Printjs162('convertbuffer', {
-                              data: buffer,
-                              name: data.hn + ' ' + data.drugCode + '.pdf',
-                              ip: this.dataUser.print_ip,
+                            data: buffer,
+                            name: data.hn + ' ' + data.drugCode + '.pdf',
+                            ip: this.dataUser.print_ip,
 
-                              printName: this.dataUser.print_name,
-                              hn: data.hn + ' ' + data.drugName,
-                            })
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          })
                           : await this.http.PrintjsLocalhost('convertbuffer', {
-                              data: buffer,
-                              name:
-                                data.hn + ' ' + data.drugCode + '_drugcut.pdf',
-                              ip: this.dataUser.print_ip,
-                              // ip: '192.168.184.163',
-                              printName: this.dataUser.print_name,
-                              hn: data.hn + ' ' + data.drugName,
-                            });
+                            data: buffer,
+                            name:
+                              data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                            ip: this.dataUser.print_ip,
+                            // ip: '192.168.184.163',
+                            printName: this.dataUser.print_name,
+                            hn: data.hn + ' ' + data.drugName,
+                          });
                       });
                     }
                   });
@@ -1596,19 +1589,18 @@ export class CheckMedComponent implements OnInit {
         imageUrl: data.pathImage
           ? data.typeNum.indexOf('pack') != -1
             ? this.http.imgPath +
-              data.pathImage[data.typeNum.indexOf('pack')] +
-              this.mathRandom
+            data.pathImage[data.typeNum.indexOf('pack')] +
+            this.mathRandom
             : data.pathImage[data.pathImage.length - 1]
-            ? this.http.imgPath +
+              ? this.http.imgPath +
               data.pathImage[data.pathImage.length - 1] +
               this.mathRandom
-            : ''
+              : ''
           : '',
         imageWidth: 150,
         imageHeight: 150,
-        title: `<strong style="font-size:18px">จำนวน ${data.drugName} คงเหลือ ${
-          data.checkqty
-        } ${data.unitCode ? data.unitCode.trim() : ''}</strong>`,
+        title: `<strong style="font-size:18px">จำนวน ${data.drugName} คงเหลือ ${data.checkqty
+          } ${data.unitCode ? data.unitCode.trim() : ''}</strong>`,
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
@@ -1633,21 +1625,21 @@ export class CheckMedComponent implements OnInit {
                   dataPDF.getBase64(async (buffer: any) => {
                     !this.checked
                       ? await this.http.Printjs162('convertbuffer', {
-                          data: buffer,
-                          name: data.hn + ' ' + data.drugCode + '.pdf',
-                          ip: this.dataUser.print_ip,
+                        data: buffer,
+                        name: data.hn + ' ' + data.drugCode + '.pdf',
+                        ip: this.dataUser.print_ip,
 
-                          printName: this.dataUser.print_name,
-                          hn: data.hn + ' ' + data.drugName,
-                        })
+                        printName: this.dataUser.print_name,
+                        hn: data.hn + ' ' + data.drugName,
+                      })
                       : await this.http.PrintjsLocalhost('convertbuffer', {
-                          data: buffer,
-                          name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
-                          ip: this.dataUser.print_ip,
-                          // ip: '192.168.184.163',
-                          printName: this.dataUser.print_name,
-                          hn: data.hn + ' ' + data.drugName,
-                        });
+                        data: buffer,
+                        name: data.hn + ' ' + data.drugCode + '_drugcut.pdf',
+                        ip: this.dataUser.print_ip,
+                        // ip: '192.168.184.163',
+                        printName: this.dataUser.print_name,
+                        hn: data.hn + ' ' + data.drugName,
+                      });
                     let formData: any = new FormData();
                     formData.append('drugcode', data.drugCode);
                     formData.append('drugname', data.drugName);
@@ -1679,21 +1671,21 @@ export class CheckMedComponent implements OnInit {
                   dataPDF.getBase64(async (buffer: any) => {
                     let getData: any = !this.checked
                       ? await this.http.Printjs162('convertbuffer', {
-                          data: buffer,
-                          name: data.hn + ' ' + data.drugCode + '.pdf',
-                          ip: this.dataUser.print_ip,
+                        data: buffer,
+                        name: data.hn + ' ' + data.drugCode + '.pdf',
+                        ip: this.dataUser.print_ip,
 
-                          printName: this.dataUser.print_name,
-                          hn: data.hn + ' ' + data.drugName,
-                        })
+                        printName: this.dataUser.print_name,
+                        hn: data.hn + ' ' + data.drugName,
+                      })
                       : await this.http.PrintjsLocalhost('convertbuffer', {
-                          data: buffer,
-                          name: data.hn + ' ' + data.drugCode + '.pdf',
-                          ip: this.dataUser.print_ip,
-                          // ip: '192.168.184.163',
-                          printName: this.dataUser.print_name,
-                          hn: data.hn + ' ' + data.drugName,
-                        });
+                        data: buffer,
+                        name: data.hn + ' ' + data.drugCode + '.pdf',
+                        ip: this.dataUser.print_ip,
+                        // ip: '192.168.184.163',
+                        printName: this.dataUser.print_name,
+                        hn: data.hn + ' ' + data.drugName,
+                      });
 
                     if (data.cur_qty && data.qty_cut) {
                       if (data.qty_real > data.qty_cut) {
@@ -1702,29 +1694,29 @@ export class CheckMedComponent implements OnInit {
                             dataPDF.getBase64(async (buffer: any) => {
                               !this.checked
                                 ? await this.http.Printjs162('convertbuffer', {
+                                  data: buffer,
+                                  name:
+                                    data.hn + ' ' + data.drugCode + '.pdf',
+                                  ip: this.dataUser.print_ip,
+
+                                  printName: this.dataUser.print_name,
+                                  hn: data.hn + ' ' + data.drugName,
+                                })
+                                : await this.http.PrintjsLocalhost(
+                                  'convertbuffer',
+                                  {
                                     data: buffer,
                                     name:
-                                      data.hn + ' ' + data.drugCode + '.pdf',
+                                      data.hn +
+                                      ' ' +
+                                      data.drugCode +
+                                      '_drugcut.pdf',
                                     ip: this.dataUser.print_ip,
-
+                                    // ip: '192.168.184.163',
                                     printName: this.dataUser.print_name,
                                     hn: data.hn + ' ' + data.drugName,
-                                  })
-                                : await this.http.PrintjsLocalhost(
-                                    'convertbuffer',
-                                    {
-                                      data: buffer,
-                                      name:
-                                        data.hn +
-                                        ' ' +
-                                        data.drugCode +
-                                        '_drugcut.pdf',
-                                      ip: this.dataUser.print_ip,
-                                      // ip: '192.168.184.163',
-                                      printName: this.dataUser.print_name,
-                                      hn: data.hn + ' ' + data.drugName,
-                                    }
-                                  );
+                                  }
+                                );
                               let formData: any = new FormData();
                               formData.append('drugcode', data.drugCode);
                               formData.append('drugname', data.drugName);
@@ -1791,9 +1783,8 @@ export class CheckMedComponent implements OnInit {
   async changeBarcode(e: any) {
     const { value: result } = await Swal.fire({
       title: 'Input Barcode ',
-      html: `<input id="swal-input1"  value="${
-        e.barCode ? e.barCode : ''
-      }"   class="swal2-input"/>`,
+      html: `<input id="swal-input1"  value="${e.barCode ? e.barCode : ''
+        }"   class="swal2-input"/>`,
 
       showConfirmButton: true,
       focusConfirm: false,
@@ -1978,8 +1969,8 @@ export class CheckMedComponent implements OnInit {
       code: data.drugcode
         ? data.drugcode.trim()
         : data.drugCode
-        ? data.drugCode.trim()
-        : '',
+          ? data.drugCode.trim()
+          : '',
     };
 
     let getDataprint: any = await this.http.postNodejs(
@@ -2050,20 +2041,19 @@ export class CheckMedComponent implements OnInit {
         : '';
     }
     let lamedName = lamed.lamedName ? lamed.lamedName.trim() : '';
-    let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${
-      freetext1[0] ? freetext1[0] : ''
-    }`;
+    let textProbrem = `${lamedName} ${lamed.dosage.trim()} ${freetext_lang} ${freetext1[0] ? freetext1[0] : ''
+      }`;
 
     let nameDrug = data.drugName
       ? data.drugName.trim()
       : data.drugname
-      ? data.drugname.trim()
-      : '';
+        ? data.drugname.trim()
+        : '';
     let drugCode = data.drugcode
       ? data.drugcode.trim()
       : data.drugCode
-      ? data.drugCode.trim()
-      : '';
+        ? data.drugCode.trim()
+        : '';
 
     if (drugCode === 'SOFOS8') {
       nameDrug = nameDrug.substring(0, 36);
@@ -2118,17 +2108,16 @@ export class CheckMedComponent implements OnInit {
             },
             {
               width: '*',
-              text: `#${
-                data.cur_qty +
+              text: `#${data.cur_qty +
                 ' ' +
                 (data.unit
                   ? data.unit.trim()
                   : data.miniUnit
-                  ? data.miniUnit.trim()
-                  : data.unitCode
-                  ? data.unitCode.trim()
-                  : '')
-              }`,
+                    ? data.miniUnit.trim()
+                    : data.unitCode
+                      ? data.unitCode.trim()
+                      : '')
+                }`,
               alignment: 'right',
             },
           ],
@@ -2169,19 +2158,19 @@ export class CheckMedComponent implements OnInit {
             lamed.drugCode.trim() === 'ALEND' ||
             data.drugCode.trim() === 'INSUG2'
             ? {
-                text: lamed.freetext2.trim(),
-                alignment: 'center',
-                fontSize: 13,
-                bold: true,
-              }
+              text: lamed.freetext2.trim(),
+              alignment: 'center',
+              fontSize: 13,
+              bold: true,
+            }
             : freetext2.map(function (item: any) {
-                return {
-                  text: item.trim(),
-                  alignment: 'center',
-                  fontSize: item.trim().length >= 80 ? 12 : 13,
-                  bold: true,
-                };
-              })
+              return {
+                text: item.trim(),
+                alignment: 'center',
+                fontSize: item.trim().length >= 80 ? 12 : 13,
+                bold: true,
+              };
+            })
           : '',
       ] as any,
 
@@ -2192,21 +2181,19 @@ export class CheckMedComponent implements OnInit {
           ],
         },
         {
-          text: `รับยาที่ ${
-            getDataprint.response.datasite[0].site_name
-              ? getDataprint.response.datasite[0].site_name.trim()
-              : ''
-          }`,
+          text: `รับยาที่ ${getDataprint.response.datasite[0].site_name
+            ? getDataprint.response.datasite[0].site_name.trim()
+            : ''
+            }`,
 
           fontSize: 12,
           bold: true,
         },
         {
-          text: `โทร ${
-            getDataprint.response.datasite[0].site_tel
-              ? getDataprint.response.datasite[0].site_tel
-              : ''
-          }`,
+          text: `โทร ${getDataprint.response.datasite[0].site_tel
+            ? getDataprint.response.datasite[0].site_tel
+            : ''
+            }`,
 
           fontSize: 12,
           bold: true,

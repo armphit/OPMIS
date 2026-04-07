@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import moment from 'moment';
+import { HttpService } from 'src/app/services/http.service';
+import Swal from 'sweetalert2';
 declare const $: any;
 @Component({
   selector: 'app-duplicate-check-card',
@@ -11,49 +13,8 @@ export class DuplicateCheckCardComponent implements OnInit {
   @Output() confirm = new EventEmitter<void>();
   data: any = {};
   conditionMeta: any = {};
-  constructor() {
-    // this.data = {
-    //   condition1: [
-    //     {
-    //       currentDrug: 'DEX-E',
-    //       groupName: 'steroid eye drop',
-    //       foundToday: [{ invCode: 'DEX-O', invName: 'DEX-OPH EYE DROP 5 ML.' }],
-    //     },
-    //     {
-    //       currentDrug: 'DEX-O',
-    //       groupName: 'steroid eye drop',
-    //       foundToday: [{ invCode: 'DEX-E', invName: 'DEX-OPH EAR DROP 5 ML.' }],
-    //     },
-    //   ],
-    //   condition2: [
-    //     {
-    //       currentDrug: 'LEVOF3',
-    //       groupName: 'fluoroquinolone',
-    //       foundHistory: [
-    //         {
-    //           duplicateDrugCode: 'LEVOF1',
-    //           duplicateDrug: '(ยา รพ.) LEVOFLOXACIN 500 MG/TAB',
-    //           lastDate: '2026-01-05 15:02:18',
-    //           daysDiff: 4,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    //   condition3: [
-    //     {
-    //       currentDrug: 'TENO6',
-    //       groupName: 'tenofovir based',
-    //       foundHistory: [
-    //         {
-    //           duplicateDrugCode: 'TDF+1',
-    //           duplicateDrug: 'ยา รพ.Teevir (TDF 300+EFV 600+FTC 200 )',
-    //           lastDate: '2025-11-19 15:02:18',
-    //           daysDiff: 51,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // };
+  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+  constructor(private http: HttpService) {
 
     this.conditionMeta = {
       condition1: {
@@ -149,4 +110,125 @@ export class DuplicateCheckCardComponent implements OnInit {
   getDateTime(date: any) {
     return moment(date).format('DD/MM/YYYY HH:mm:ss');
   }
+
+  async sendPE(d: any, currentDrug?: any) {
+    const todayDrugs = this.patient?.todayDrugsHN.find((v: any) => v.invCode === currentDrug);
+    let formData = new FormData();
+    formData.append('currentDrug', currentDrug);
+    formData.append('hn', todayDrugs?.hn);
+    formData.append('lastIssTime', todayDrugs?.lastIssTime);
+    let getData: any = await this.http.post('getPE', formData);
+    if (getData.connect) {
+      if (getData.response.rowCount) {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'บันทึกข้อมูลไม่สำเร็จ เนื่องจากมีข้อมูล PE อยู่แล้ว',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        const { value: pe } = await Swal.fire({
+          title: "Select field validation",
+          input: "select",
+          inputOptions: {
+            "pe5": "การสั่งยาซ้ำซ้อน โดยแพทย์ต่างแผนก/ ต่าง Visit",
+            "pe6": "การสั่งยาซ้ำซ้อน โดยแพทย์ท่านเดียวกัน",
+          },
+          showCancelButton: true,
+          inputValidator: (value) => {
+            return new Promise((resolve) => {
+              if (value) {
+                resolve();
+              } else {
+                resolve("You need to select a field :)");
+              }
+            });
+          }
+        });
+        if (pe) {
+
+          const payload = {
+            hn: todayDrugs?.hn || this.patient?.todayDrugsHN[0]?.hn,
+            toSite: todayDrugs?.toSite || this.patient?.todayDrugsHN[0]?.toSite,
+            lastIssTime: todayDrugs?.lastIssTime || this.patient?.todayDrugsHN[0]?.lastIssTime,
+            doc: todayDrugs?.docName,
+            // .replace('T', ' ')      // เปลี่ยน T เป็นช่องว่าง
+            // .replace('Z', '')      // เอา Z ออก
+            // .slice(0, 10) : this.patient?.todayDrugsHN[0]?.lastIssTime,       // ตัดเอาเฉพาะถึงหลักมิลลิวินาทีที่ 2 (.11),
+            ...d,
+            currentDrug: currentDrug,
+            pe: pe,
+            user: this.dataUser.user,
+            userName: this.dataUser.name
+          }
+          console.log('send PE', payload);
+          // let getData: any = await this.http.postNodejsTest('addPE', payload);
+          // console.log(getData);
+          // if (getData.connect) {
+          //   if (getData.response.length) {
+          //     // this.dataDrug = getData.response.recordset;
+          //     Swal.fire({
+          //       position: 'center',
+          //       icon: 'success',
+          //       title: 'บันทึกข้อมูลสำเร็จ',
+          //       showConfirmButton: false,
+          //       timer: 1500,
+          //     });
+          //   } else {
+          //     Swal.fire('ไม่พบข้อมูล!', '', 'warning');
+          //   }
+          // } else {
+          //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          // }
+
+
+          Object.keys(payload).forEach(key => {
+            const value = payload[key];
+
+            // ตรวจสอบว่าเป็น Object หรือ Array หรือไม่ (เช่น currentDrug หรือ pe)
+            if (typeof value === 'object' && value !== null) {
+              // ถ้าเป็น Object ให้แปลงเป็น String ก่อนส่ง
+              formData.append(key, JSON.stringify(value));
+            } else {
+              // ถ้าเป็นค่าปกติ (String, Number) ส่งไปได้เลย
+              formData.append(key, value ?? '');
+            }
+          });
+
+          let getData: any = await this.http.post('addPE', formData);
+          if (getData.connect) {
+
+
+            if (getData.response.rowCount) {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            } else {
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'บันทึกข้อมูลไม่สำเร็จ',
+                showConfirmButton: false,
+                timer: 1500,
+              });
+
+            }
+          } else {
+            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
+        }
+
+
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+
 }

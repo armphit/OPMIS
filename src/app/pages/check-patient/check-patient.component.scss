@@ -11,10 +11,11 @@
   font-size: 1rem;
 }
 
-.row > .col-md-4 {
+.row>.col-md-4 {
   display: flex;
   flex-direction: column;
 }
+
 .mat-expansion-panel {
   border-radius: 12px;
   margin-bottom: 1rem;
@@ -25,6 +26,7 @@
   font-weight: 600;
   font-size: 1.1rem;
 }
+
 .info-panel {
   line-height: 30px;
 }
@@ -107,7 +109,8 @@ table.mat-table {
 
 /* Header row */
 .mat-header-row {
-  background-color: #1976d2; /* Material Blue */
+  background-color: #1976d2;
+  /* Material Blue */
   color: #fff;
   font-weight: 600;
 }
@@ -134,7 +137,8 @@ table.mat-table {
 
 /* Hover effect for rows */
 .mat-row:hover {
-  background-color: #e3f2fd; /* light blue */
+  background-color: #e3f2fd;
+  /* light blue */
   cursor: pointer;
 }
 
@@ -149,23 +153,28 @@ table.mat-table {
 .mat-card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
+
 .mat-expansion-panel-header.mat-expanded,
 .mat-expansion-panel-header.mat-expanded:hover {
   background-color: #f1f1f1 !important;
   color: #e0f7fa !important;
 }
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
+
   .mat-header-cell,
   .mat-cell {
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
   }
 }
+
 .mat-cell:first-child {
   font-weight: 600;
   color: #1976d2;
 }
+
 .sticky-col {
   position: sticky;
   right: 0;
@@ -182,10 +191,12 @@ table.mat-table {
 .st-td:hover {
   background-color: #e7e4e4;
 }
+
 .modal-table {
   max-height: 400px !important;
   overflow-y: auto !important;
 }
+
 .normal {
   color: #2e7d32;
   font-weight: 600;
@@ -201,6 +212,7 @@ table.mat-table {
   vertical-align: middle;
   white-space: nowrap;
 }
+
 .table-toolbar {
   display: flex;
   justify-content: flex-end;
@@ -218,3 +230,14 @@ table.mat-table {
   }
 }
 
+.btn-xs {
+  padding: 1px 5px;
+  /* ลดพื้นที่ว่างบน-ล่าง และ ซ้าย-ขวา */
+  font-size: 10px;
+  /* ลดขนาดตัวอักษร */
+  line-height: 1.2;
+  /* ปรับความสูงบรรทัดให้แคบลง */
+  border-radius: 3px;
+  margin-bottom: 5px;
+  /* ปรับความโค้งมนให้เข้ากับขนาด */
+}
