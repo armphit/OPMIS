@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Subject } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -110,7 +110,7 @@ export class ElMedComponent implements OnInit {
     this.getData();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   // ngAfterViewInit() {
   //   setTimeout(() => {

@@ -1,0 +1,371 @@
+// ─── Layout ───────────────────────────────────────────────────
+.wrap {
+  padding: 1.25rem 1.5rem;
+
+  margin: 0 auto;
+}
+
+// ─── Scan Bar ─────────────────────────────────────────────────
+.scan-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  input {
+    flex: 1;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid #d0d5dd;
+    font-size: 15px;
+    padding: 0 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+      border-color: #378add;
+      box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15);
+    }
+  }
+
+  button {
+    height: 44px;
+    padding: 0 22px;
+    border-radius: 12px;
+    border: none;
+    background: #185fa5;
+    color: #e6f1fb;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+
+
+    &:hover {
+      background: #1470b8;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+
+// ─── Section Card ─────────────────────────────────────────────
+.section {
+  border-radius: 12px;
+  border: 1px solid #e4e7ec;
+  background: #ffffff;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: #f9fafb;
+  user-select: none;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+
+  >span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a202c;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-body {
+  padding: 16px;
+  border-top: 1px solid #e4e7ec;
+}
+
+// ─── Chevron ──────────────────────────────────────────────────
+.chevron {
+  font-size: 10px;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+  display: inline-block;
+
+  &.open {
+    transform: rotate(90deg);
+  }
+}
+
+// ─── Badges & Pills ───────────────────────────────────────────
+.badge {
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-weight: 500;
+
+  &.badge-blue {
+    background: #e6f1fb;
+    color: #185fa5;
+  }
+
+  &.badge-green {
+    background: #eaf3de;
+    color: #3b6d11;
+  }
+}
+
+.pill {
+  font-size: 12px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-weight: 500;
+
+  &.continue {
+    background: #eaf3de;
+    color: #3b6d11;
+  }
+}
+
+// ─── Patient Info Grid ────────────────────────────────────────
+.pt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 16px;
+}
+
+.pt-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pt-label {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pt-val {
+  font-size: 15px;
+  color: #1a202c;
+  font-weight: 500;
+
+  &.hn {
+    font-size: 18px;
+    color: #185fa5;
+  }
+}
+
+// ─── Divider ──────────────────────────────────────────────────
+.divider {
+  height: 1px;
+  background: #e4e7ec;
+  margin: 14px 0;
+}
+
+// ─── Ward Bar ─────────────────────────────────────────────────
+.ward-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  align-items: center;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.ward-tag {
+  font-size: 13px;
+  color: #64748b;
+
+  strong {
+    color: #1a202c;
+    font-weight: 500;
+  }
+}
+
+// ─── Drug Card ────────────────────────────────────────────────
+.drug-card {
+  border-radius: 10px;
+  border: 1px solid #e4e7ec;
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.drug-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  gap: 10px;
+}
+
+.drug-seq-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.seq-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-size: 10px;
+  color: #64748b;
+  border: 1px solid #e4e7ec;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.drug-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a202c;
+  line-height: 1.4;
+}
+
+.drug-code {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 3px;
+}
+
+.qty-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 54px;
+  background: #e6f1fb;
+  border-radius: 10px;
+  padding: 6px 10px;
+  flex-shrink: 0;
+}
+
+.qty-num {
+  font-size: 24px;
+  font-weight: 500;
+  color: #185fa5;
+  line-height: 1;
+}
+
+.qty-unit {
+  font-size: 11px;
+  color: #378add;
+  margin-top: 2px;
+}
+
+.drug-how {
+  font-size: 13.5px;
+  color: #475569;
+  padding: 8px 14px 12px;
+  line-height: 1.7;
+  border-top: 1px solid #e4e7ec;
+}
+
+.last-mod {
+  font-size: 12px;
+  color: #94a3b8;
+  padding: 0 14px 10px;
+}
+
+// ─── Drug Actions ─────────────────────────────────────────────
+.drug-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 10px;
+}
+
+.btn-pending {
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  background: #f9fafb;
+  color: #475569;
+  cursor: pointer;
+
+
+  &:hover {
+    background: #f1f5f9;
+  }
+}
+
+.btn-dispense {
+  margin-left: auto;
+  font-size: 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid #FFEE8C;
+  background: #FFEE8C;
+  color: black;
+  cursor: pointer;
+
+
+  &:hover {
+    background: #ffee8c69;
+  }
+
+
+}
+
+// ─── Allergy Button ───────────────────────────────────────────
+.btn-allergy {
+  margin-left: auto;
+  font-size: 12px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid #e2a0a0;
+  background: #fff0f0;
+  color: #a32d2d;
+  cursor: pointer;
+
+  font-weight: 500;
+
+  &:hover {
+    background: #fde8e8;
+  }
+}
+
+// ─── Responsive ───────────────────────────────────────────────
+@media (max-width: 600px) {
+  .pt-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ward-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .drug-head {
+    flex-direction: column;
+  }
+
+  .qty-badge {
+    flex-direction: row;
+    gap: 6px;
+    align-self: flex-start;
+    padding: 4px 12px;
+  }
+
+  .qty-num {
+    font-size: 18px;
+  }
+}

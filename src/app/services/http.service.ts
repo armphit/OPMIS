@@ -129,8 +129,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        // .post(this.syncPath + path, data)
-        .post(this.testPath + path, data)
+        .post(this.syncPath + path, data)
+        // .post(this.testPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -151,8 +151,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.testPath + path, data)
-        // .post(this.patientPath + path, data)
+        // .post(this.testPath + path, data)
+        .post(this.patientPath + path, data)
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -264,8 +264,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        // .post(this.printTest + path, data)
-        .post(this.printPath162 + path, data)
+        .post(this.printTest + path, data)
+        // .post(this.printPath162 + path, data)
         // .post(
         //   (this.dataUser.ip == '192.168.185.172'
         //     ? this.printPath162

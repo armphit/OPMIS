@@ -10,7 +10,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 
@@ -84,7 +84,7 @@ export class ReportPharComponent implements OnInit {
     // this.getData2();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   public nameExcel = '';
   public getData = async () => {
     this.dataDrug = null;
@@ -594,16 +594,16 @@ export class ReportPharComponent implements OnInit {
         ? this.medError.value.position_text
         : 'ไม่ระบุข้อความ'
       : this.medError.patchValue({
-          position_text: this.medError.value.position,
-        });
+        position_text: this.medError.value.position,
+      });
 
     this.medError.value.type === 'other'
       ? this.medError.value.type_text
         ? this.medError.value.type_text
         : 'ไม่ระบุข้อความ'
       : this.medError.patchValue({
-          type_text: this.medError.value.type,
-        });
+        type_text: this.medError.value.type,
+      });
 
     this.medError.patchValue({
       interceptor: this.userList.find(
@@ -728,7 +728,7 @@ export class ReportPharComponent implements OnInit {
           ...val,
           valSort:
             val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
+              val.user.toLowerCase().charAt(0) != 'o'
               ? 1
               : 2,
         };
@@ -745,7 +745,7 @@ export class ReportPharComponent implements OnInit {
           ...val,
           valSort:
             val.user.toLowerCase().charAt(0) != 'c' &&
-            val.user.toLowerCase().charAt(0) != 'o'
+              val.user.toLowerCase().charAt(0) != 'o'
               ? 1
               : 2,
         };

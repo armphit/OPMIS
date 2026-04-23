@@ -1,0 +1,106 @@
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-lg-12" style="margin-top: 15px">
+      <form [formGroup]="campaignOne" style="float: right">
+        <mat-form-field style="margin-right: 10px" class="example-form-field" [style.width.px]="200">
+          <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+            <input matStartDate placeholder="Start date" formControlName="start" />
+            <input matEndDate placeholder="End date" formControlName="end"
+              (dateChange)="startChange($event); inputT.value = ''" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+          <input matInput (keyup)="applyFilter($event)" #inputT />
+          <mat-placeholder>ค้นหา</mat-placeholder>
+          <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
+        </mat-form-field>
+      </form>
+    </div>
+  </div>
+
+  <div class="responsive-table" [hidden]="!dataDrug.length">
+    <section class="example-container mat-elevation-z8" tabindex="0">
+      <table mat-table matTableExporter [dataSource]="dataSource" matSort #MatSort="matSort"
+        #exporter="matTableExporter" class="mat-elevation-z8">
+        <ng-container matColumnDef="Action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> </th>
+
+
+
+
+          <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary"
+              *ngIf="element.balanceamount > 0" (click)="cutDispendModal(element)">จ่ายยา</button> </td>
+        </ng-container>
+        <ng-container matColumnDef="hn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> HN </th>
+          <td mat-cell *matCellDef="let element"> {{ element.hn }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="drugname">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> รายการยา </th>
+          <td mat-cell *matCellDef="let element">
+            <div style="font-weight: 500; color: #1a202c;">{{ element.drugname }}</div>
+            <small style="color: #666;">{{ element.drugcode }}</small>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;"> จำนวนจ่าย </th>
+          <td mat-cell *matCellDef="let element" style="text-align: center; font-weight: bold; color: #2c5282;">
+            {{ element.amount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="balanceamount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;"> จำนวนคงเหลือ </th>
+          <td mat-cell *matCellDef="let element" style="text-align: center; font-weight: bold; color: #2c5282;">
+            {{ element.balanceamount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="realamount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="text-align: center;"> จำนวนจ่ายทั้งหมด </th>
+          <td mat-cell *matCellDef="let element" style="text-align: center; font-weight: bold; color: #2c5282;">
+            {{ element.realamount }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="phar">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ผู้ตัดจ่าย </th>
+          <td mat-cell *matCellDef="let element"> {{ element.phar }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDT">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> วันที่ตัดจ่าย </th>
+          <td mat-cell *matCellDef="let element"> {{ element.createdDT | date:'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="receive">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ผู้มารับยา </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="badge-receiver">{{ element.receive }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createDT">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> วันที่มารับยา </th>
+          <td mat-cell *matCellDef="let element"> {{ element.createDT | date:'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </section>
+
+    <div class="footer-action">
+      <button mat-raised-button class="btn-excel"
+        (click)="exporter.exportTable('xlsx', { fileName: Tab === 1 ? 'รายงานค้างจ่ายยา' : 'รายงานการรับยาค้างจ่าย' })">
+        <mat-icon>file_download</mat-icon> Export Excel
+      </button>
+
+      <mat-paginator #MatPaginator="matPaginator" [pageSizeOptions]="[10, 50, 100]"
+        showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+</div>

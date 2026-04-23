@@ -14,7 +14,7 @@ import {
   NgxImageCompressService,
   UploadResponse,
 } from 'ngx-image-compress';
-import * as moment from 'moment';
+import moment from 'moment';
 import {
   Gallery,
   GalleryItem,
@@ -65,7 +65,7 @@ export class AllDrugComponent implements OnInit {
     this.getData();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public rowspan: any = null;
 
@@ -386,10 +386,10 @@ export class AllDrugComponent implements OnInit {
         this.base64ToFile(
           element,
           this.drug_code +
-            '_' +
-            moment(new Date()).format('DDMMYYYYHHmmss') +
-            '_' +
-            (index + 1)
+          '_' +
+          moment(new Date()).format('DDMMYYYYHHmmss') +
+          '_' +
+          (index + 1)
         )
       );
     });
@@ -579,9 +579,9 @@ export class AllDrugComponent implements OnInit {
         name: spt.length ? spt[0] : '',
         type: spt.length
           ? spt[1].substring(
-              0,
-              spt[1].indexOf(`${spt[1].includes('jpg') ? '.jpg' : '.jpeg'}`)
-            )
+            0,
+            spt[1].indexOf(`${spt[1].includes('jpg') ? '.jpg' : '.jpeg'}`)
+          )
           : '',
       });
     }
@@ -632,9 +632,8 @@ export class AllDrugComponent implements OnInit {
   async changeBarcode(e: any) {
     const { value: result } = await Swal.fire({
       title: 'Input Barcode ',
-      html: `<input id="swal-input1"  value="${
-        e.barCode ? e.barCode : ''
-      }"   class="swal2-input"/>`,
+      html: `<input id="swal-input1"  value="${e.barCode ? e.barCode : ''
+        }"   class="swal2-input"/>`,
 
       showConfirmButton: true,
       focusConfirm: false,

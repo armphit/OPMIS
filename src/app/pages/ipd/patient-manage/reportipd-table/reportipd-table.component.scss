@@ -1,0 +1,50 @@
+.example-container {
+  max-height: 500px;
+  overflow: auto;
+  border-radius: 8px;
+}
+
+.mat-header-cell {
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.mat-column-amount {
+  background-color: #f0f7ff;
+  /* เน้นไฮไลท์ช่องจำนวน */
+}
+
+.mat-header-cell,
+.mat-cell {
+  padding-left: 16px;
+  /* เพิ่มระยะห่างด้านซ้าย */
+  padding-right: 16px;
+  /* เพิ่มระยะห่างด้านขวา */
+  white-space: nowrap;
+  /* ป้องกันตัวหนังสือตัดบรรทัดจนดูแน่น */
+}
+
+.badge-receiver {
+  background: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.btn-excel {
+  background-color: #2e7d32;
+  color: white;
+  margin: 15px 0;
+}
+
+.footer-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+td {
+  margin-left: 10px;
+}

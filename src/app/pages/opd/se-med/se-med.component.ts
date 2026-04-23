@@ -13,7 +13,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -149,7 +149,7 @@ export class SeMedComponent implements OnInit {
   //   }, 1000);
   // }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public getDataSEListStock = async () => {
     let getData: any = await this.http.get('SEListStock');

@@ -1,0 +1,280 @@
+<mat-tab-group [(selectedIndex)]="tabIndex" (selectedTabChange)="onTabChange($event.index)">
+  <mat-tab label="Scan">
+    <div class="wrap">
+      <!-- Scan Bar -->
+      <div class="scan-bar">
+        <input [(ngModel)]="patientId" type="text" placeholder="กรอกหรือสแกน HN / ID ผู้ป่วย" (keyup.enter)="scan()" />
+        <button (click)="scan()">สแกน</button>
+      </div>
+      <mat-checkbox class="example-margin" color="primary" [(ngModel)]="checkprint">PRINTER</mat-checkbox>
+      <ng-container *ngIf="patient?.length">
+        <!-- ข้อมูลผู้ป่วย -->
+        <div class="section">
+          <div class="section-header" (click)="togglePanel('patient')">
+            <span>ข้อมูลผู้ป่วย</span>
+            <div class="header-right">
+              <span class="badge badge-blue">IPD</span>
+
+              <span class="chevron" [class.open]="panels['patient']">▶</span>
+            </div>
+          </div>
+          <div class="section-body" *ngIf="panels['patient']">
+            <div class="pt-grid">
+              <div class="pt-item">
+                <span class="pt-label">HN</span>
+                <span class="pt-val hn">{{ patient[0]?.hn }}</span>
+              </div>
+              <div class="pt-item">
+                <span class="pt-label">AN</span>
+                <span class="pt-val">{{ patient[0]?.an }}</span>
+              </div>
+              <div class="pt-item">
+                <span class="pt-label">ชื่อ-นามสกุล</span>
+                <span class="pt-val">{{ patient[0]?.patientname }}</span>
+              </div>
+              <div class="pt-item">
+                <span class="pt-label">เพศ</span>
+                <span class="pt-val">{{ patient[0]?.sex }}</span>
+              </div>
+              <div class="pt-item">
+                <span class="pt-label">วันเกิด</span>
+                <span class="pt-val">{{ patient[0]?.patientdob | date:'d MMM yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="ward-bar">
+              <span class="ward-tag">หอผู้ป่วย: <strong>{{ patient[0]?.wardname }}</strong></span>
+              <span class="ward-tag">เตียง: <strong>{{ patient[0]?.bedcode }}</strong></span>
+              <span class="ward-tag">Ward: <strong>{{ patient[0]?.wardcode }}</strong></span>
+
+              <!-- <button class="btn-allergy">จ่ายยาค้าง</button> -->
+              <button class="btn-dispense" *ngIf="patient[0]?.drugcut == 'Y'"
+                (click)="drugCut(patient[0])">ยาค้างจ่าย</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- รายการยา -->
+        <div class="section">
+          <div class="section-header" (click)="togglePanel('drugs')">
+            <span>รายการยา</span>
+            <div class="header-right">
+              <span class="badge badge-blue">{{ patient.length }} รายการ</span>
+              <span class="pill continue">{{ patient[0]?.prioritydesc }}</span>
+              <span class="chevron" [class.open]="panels['drugs']">▶</span>
+            </div>
+          </div>
+          <div class="section-body" *ngIf="panels['drugs']">
+            <div class="drug-card" *ngFor="let drug of patient">
+              <div class="drug-head">
+                <div class="drug-seq-row">
+                  <span class="seq-dot">{{ drug.seq }}</span>
+                  <div>
+                    <div class="drug-name">{{ drug.orderitemname }}</div>
+                    <div class="drug-code">
+                      รหัส: {{ drug.orderitemcode }} · ใบสั่งยา: {{ drug.prescriptionno }}
+                    </div>
+                  </div>
+                </div>
+                <div class="qty-badge">
+                  <span class="qty-num">{{ drug.orderqty }}</span>
+                  <span class="qty-unit">{{ drug.orderunitcode }}</span>
+                </div>
+              </div>
+              <div class="drug-how">{{ drug.howto }}</div>
+              <div class="drug-actions">
+                <button class="btn-pending" (click)="cutDrug(drug)">ค้างจ่ายยา</button>
+
+              </div>
+              <div class="last-mod">อัปเดตล่าสุด: {{ drug.lastmodified }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </mat-tab>
+  <mat-tab label="ค้างจ่ายยา">
+    <app-reportipd-table [Tab]="tabIndex"></app-reportipd-table>
+  </mat-tab>
+  <!-- <mat-tab label="จ่ายยาค้างจ่าย">
+    <app-reportipd-table [Tab]="tabIndex"></app-reportipd-table>
+  </mat-tab> -->
+</mat-tab-group>
+<div class="modal fade" id="modal_owe">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <p style="font-size: larger; font-weight: bold" class="modal-title" id="exampleModalLabel">
+          รายการยาค้างจ่าย
+        </p>
+        <button type="button" class="close" data-dismiss="modal">
+          &times;
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="table-responsive" style="max-height: 500px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>#</th>
+                <th class="text-nowrap">รหัสยา</th>
+                <th class="text-nowrap">ชื่อยา</th>
+                <th class="text-nowrap">จำนวนจ่ายยา</th>
+                <th class="text-nowrap">จำนวนตัดจ่ายยา</th>
+                <th class="text-nowrap">จำนวนคงเหลือ</th>
+                <th class="text-nowrap">เภสัชกร</th>
+                <th class="text-nowrap">ผู้มารับยา</th>
+                <th class="text-nowrap">รหัสชั้น</th>
+                <th class="text-nowrap">วันที่</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of drugcut; let i = index">
+              <tr>
+                <td style="border-right: 0px; vertical-align: middle">
+                  <div style="display: flex">
+                    <div class="example-button-container" style="margin: 5px; display: flex">
+                      <button matTooltip="ลบข้อมูล" matTooltipPosition="above" style="
+                              width: 30px;
+                              height: 30px;
+                              margin-right: 10px;
+                            " mat-mini-fab color="warn" (click)="deleteCutdrug(drugcut[i])">
+                        <i class="fas fa-trash" style="margin-bottom: 15px; margin-left: 1px"></i>
+                      </button>
+
+                      <!-- <button
+                            [hidden]="!checkprint"
+                            matTooltip="re-print"
+                            matTooltipPosition="above"
+                            style="
+                              width: 30px;
+                              height: 30px;
+                              margin-right: 10px;
+                            "
+                            mat-mini-fab
+                            color="primary"
+                            (click)="sendprint(drugcut[i])"
+                          >
+                            <i
+                              class="fas fa-print"
+                              style="margin-bottom: 15px; margin-left: 1px"
+                            ></i>
+                          </button> -->
+                      <button button mat-raised-button color="primary" type="button" class="butt-sm"
+                        (click)="cutDispendModal(drugcut[i])">
+                        จ่ายยา
+                      </button>
+                    </div>
+                    <div class="example-button-container" style="margin: 5px">
+                      <button *ngIf="drugcut[i].amount[0]" matTooltip="ดูประวัติ" matTooltipPosition="above"
+                        style="width: 30px; height: 30px" data-toggle="collapse" [attr.data-target]="'#demo' + i"
+                        mat-mini-fab color="primary" aria-label="Example icon button with a filter list icon">
+                        <i class="fas fa-eye" style="margin-bottom: 15px; margin-left: 1px"></i>
+                      </button>
+                    </div>
+                  </div>
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ i + 1 }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.drugcode }}
+                </td>
+                <td class="text-nowrap" style="border-right: 0px; vertical-align: middle">
+                  {{ item.drugname }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.realamount }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.cutamount }}
+                </td>
+                <td style="border-right: 0px; vertical-align: middle">
+                  {{ item.balanceamount }}
+                </td>
+                <td class="text-nowrap" style="border-right: 0px; vertical-align: middle">
+                  {{ item.phar_name }}
+                </td>
+                <td class="text-nowrap" style="border-right: 0px; vertical-align: middle">
+                  {{ item.receive }}
+                <td class="text-nowrap" style="border-right: 0px; vertical-align: middle">
+                  {{ item.departmentcode }}
+                </td>
+                <td class="text-nowrap" style="border-right: 0px; vertical-align: middle">
+                  {{ item.createdDT }}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="10" class="hiddenRow">
+                  <div id="demo{{ i }}" class="accordian-body collapse">
+                    <table class="table table-primary">
+                      <thead>
+                        <tr>
+                          <th></th>
+                          <th>จำนวนจ่ายยา</th>
+                          <th>เภสัชกร</th>
+                          <th>ผู้มารับยา</th>
+                          <th>วันที่</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="
+                                let item of drugcut[i].amount;
+                                let j = index
+                              ">
+                          <td width="10px">
+                            <div style="display: flex">
+                              <button matTooltip="ลบข้อมูล" matTooltipPosition="above" style="
+                                      width: 30px;
+                                      height: 30px;
+                                      margin-right: 10px;
+                                    " mat-mini-fab color="warn" (click)="
+                                      deleteCutowe(
+                                        drugcut[i].id,
+                                        drugcut[i].id2[j],
+                                        drugcut[i].amount[j]
+                                      )
+                                    ">
+                                <i class="fas fa-trash" style="
+                                        margin-bottom: 15px;
+                                        margin-left: 1px;
+                                      "></i>
+                              </button>
+
+                            </div>
+                          </td>
+                          <td style="vertical-align: middle">{{ item }}</td>
+                          <td style="vertical-align: middle">
+                            {{ drugcut[i]?.phar2_name[j] }}
+                          </td>
+                          <td style="vertical-align: middle">
+                            {{ drugcut[i]?.receiver?.[j] }}
+                          </td>
+                          <td style="vertical-align: middle">
+                            {{ drugcut[i]?.datetime?.[j] }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -16,7 +16,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { Gallery } from 'ng-gallery';
 import { Lightbox } from 'ng-gallery/lightbox';
 import { HttpService } from 'src/app/services/http.service';
@@ -1207,10 +1207,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       footer: [
         {
           text: `ขอบคุณค่ะ ...${data.interceptor_name
-              ? data.interceptor_name
-              : data.interceptor
-                ? data.interceptor.name
-                : ''
+            ? data.interceptor_name
+            : data.interceptor
+              ? data.interceptor.name
+              : ''
             }... ${this.dataUser.user.toUpperCase().includes('C')
               ? 'เจ้าพนักงานเภสัชกรรม'
               : 'เภสัชกร'
@@ -2759,6 +2759,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   async printPDF(data: any) {
+    console.log(data);
+
     let numHN = data.patientNO ? data.patientNO : data.hn;
 
     let data_send = {
@@ -3008,8 +3010,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             },
             {
               text: `รับยาที่ ${getDataprint.response.datasite[0].site_name
-                  ? getDataprint.response.datasite[0].site_name.trim()
-                  : ''
+                ? getDataprint.response.datasite[0].site_name.trim()
+                : ''
                 }`,
 
               fontSize: 12,
@@ -3017,8 +3019,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             },
             {
               text: `โทร ${getDataprint.response.datasite[0].site_tel
-                  ? getDataprint.response.datasite[0].site_tel
-                  : ''
+                ? getDataprint.response.datasite[0].site_tel
+                : ''
                 }`,
 
               fontSize: 12,
@@ -3039,10 +3041,10 @@ export class PatientListComponent implements OnInit, AfterViewInit {
             font: 'THSarabunNew',
           },
         };
-        pdfMake.createPdf(docDefinition).open();
-        return false;
-        // const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
-        // return pdfDocGenerator;
+        // pdfMake.createPdf(docDefinition).open();
+        // return false;
+        const pdfDocGenerator = await pdfMake.createPdf(docDefinition);
+        return pdfDocGenerator;
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อ getSiteTel!', '', 'error');
         return false;

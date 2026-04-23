@@ -10,7 +10,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import moment from 'moment';
 import { stringify } from 'querystring';
 import { delay } from 'rxjs/operators';
 import { HttpService } from 'src/app/services/http.service';
@@ -112,9 +112,9 @@ export class DrugAppointComponent implements OnInit {
     this.getDataAppiont();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public getDataAppiont = async () => {
     const start_Date = moment(this.startDate2).format('YYYY-MM-DD');
@@ -154,7 +154,7 @@ export class DrugAppointComponent implements OnInit {
     this.dataSource3.filter = filterValue.trim().toLowerCase();
   }
 
-  public applyFilter4(event: Event) {}
+  public applyFilter4(event: Event) { }
 
   public changMed: any = null;
   public async getUnit(med: any) {
@@ -226,11 +226,11 @@ export class DrugAppointComponent implements OnInit {
               Mqty: data.HISPackageRatio
                 ? data.INVamount
                   ? Math.ceil(
-                      ((data.amount * 30) / 100 - data.INVamount) /
-                        data.HISPackageRatio
-                    ) * data.HISPackageRatio
-                  : Math.ceil((data.amount * 30) / 100 / data.HISPackageRatio) *
+                    ((data.amount * 30) / 100 - data.INVamount) /
                     data.HISPackageRatio
+                  ) * data.HISPackageRatio
+                  : Math.ceil((data.amount * 30) / 100 / data.HISPackageRatio) *
+                  data.HISPackageRatio
                 : data.amount,
             };
           })

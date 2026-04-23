@@ -10,7 +10,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
@@ -34,6 +34,12 @@ export class ReportPharComponent implements OnInit {
     'checker_name',
 
     'order',
+    'L_count',
+    'M_count',
+    'N_count',
+    'D_count',
+    'B_count', 'C_count',
+    'null_count',
     'item',
     'error',
   ];
@@ -51,6 +57,11 @@ export class ReportPharComponent implements OnInit {
     'dispenser_name',
 
     'order',
+    'L_count',
+    'M_count',
+    'N_count',
+    'D_count',
+    'B_count', 'C_count', 'null_count',
     'item',
     'error',
   ];
@@ -167,7 +178,7 @@ export class ReportPharComponent implements OnInit {
       // getData = await this.http.post('checkerPhar_copy', formData);
       send.choice = 1;
       getData = await this.http.postNodejs('onusPhar', send);
-      console.log(getData);
+
 
       if (getData.connect) {
         if (getData.response.length > 0) {

@@ -17,7 +17,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 // import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -80,9 +80,9 @@ export class ApMedComponent implements OnInit {
     this.getData();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   public getData = async () => {
     this.nameExcel = null;
     const momentDate = new Date();

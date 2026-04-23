@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApMedComponent } from './ap-med/ap-med.component';
 import { IpdComponent } from './ipd.component';
 import { FloorStockComponent } from './floor-stock/floor-stock.component';
+import { PatientManageComponent } from './patient-manage/patient-manage.component';
 
 const routes: Routes = [
   {
@@ -18,9 +19,12 @@ const routes: Routes = [
         path: 'med-manage',
         component: DrugManageComponent,
       },
-        {
+      {
         path: 'floor-stock',
-        component:FloorStockComponent,
+        component: FloorStockComponent,
+      }, {
+        path: 'patient-manage',
+        component: PatientManageComponent,
       },
       {
         path: '',
@@ -40,4 +44,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class IpdRoutingModule {}
+export class IpdRoutingModule { }

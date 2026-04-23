@@ -9,7 +9,7 @@ import {
   ApexStroke,
   ApexGrid,
 } from 'ng-apexcharts';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
@@ -57,7 +57,7 @@ export class TemperatureMonitorComponent implements OnInit {
     this.getData();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   public dataDrug: any = null;
   public Chumidity: any = null;

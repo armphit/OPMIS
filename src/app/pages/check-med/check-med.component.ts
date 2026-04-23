@@ -14,7 +14,7 @@ import { HttpService } from 'src/app/services/http.service';
 import Swal from 'sweetalert2';
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import * as moment from 'moment';
+import moment from 'moment';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { Http2Service } from 'src/app/services/http2.service';
