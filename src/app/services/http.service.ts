@@ -264,8 +264,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        .post(this.printTest + path, data)
-        // .post(this.printPath162 + path, data)
+        // .post(this.printTest + path, data)
+        .post(this.printPath162 + path, data)
         // .post(
         //   (this.dataUser.ip == '192.168.185.172'
         //     ? this.printPath162

@@ -16,7 +16,7 @@ export class PatientManageComponent implements OnInit {
     patient: true,
     drugs: true,
   };
-  checkprint = false;
+  checkprint = true;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
 
   constructor(private http: HttpService) { }
@@ -59,58 +59,72 @@ export class PatientManageComponent implements OnInit {
   }
 
   cutDrug(val: any): void {
-    //   Swal.fire({
-    //     title: 'ยืนยันการตัดจ่ายยา',
-    //     html: `
-    //   <div style="text-align: left; font-family: 'Sarabun', sans-serif;">
-    //     <div style="background: #f1f5f9; padding: 12px; border-radius: 8px; border-left: 4px solid #185fa5; margin-bottom: 20px;">
-    //       <small style="color: #64748b; display: block; margin-bottom: 4px;">รายการยาที่เลือก:</small>
-    //       <strong style="font-size: 18px; color: #1a202c;">${val.orderitemname}</strong>
-    //     </div>
 
-    //     <label for="qty" style="font-size: 14px; font-weight: 500;">จำนวนที่ตัดจ่าย:</label>
-    //     <input id="qty" class="swal2-input" type="number" placeholder="ระบุจำนวน" style="margin-top: 5px;">
+    //     Swal.fire({
+    //       title: 'ยืนยันการค้างจ่ายยา',
+    //       html: `
+    //     <div style="text-align: left; font-family: 'Sarabun', sans-serif;">
+    //       <div style="background: #e6f1fb; padding: 12px; border-radius: 8px; border: 1px solid #185fa5; margin-bottom: 15px;">
+    //         <small style="color: #185fa5; display: block; margin-bottom: 2px;">รายการยา:</small>
+    //         <strong style="font-size: 16px; color: #1a202c;">${val.orderitemname} &nbsp;&nbsp;&nbsp;&nbsp; ${val.orderqty} ${val.orderunitcode}</strong>
+    //       </div>
 
-    //     <label for="receiver" style="font-size: 14px; font-weight: 500; margin-top: 15px; ">ผู้มารับยา:</label>
-    //     <input id="receiver" class="swal2-input" type="text" placeholder="ระบุชื่อเจ้าหน้าที่" style="margin-top: 5px;">
-    //   </div>
-    // `,
-    //     focusConfirm: false,
-    //     showCancelButton: true,
-    //     confirmButtonText: 'ยืนยันการจ่าย',
-    //     cancelButtonText: 'ยกเลิก',
-    //     confirmButtonColor: '#185fa5', // สีน้ำเงินหลักของ OPMIS
+    //       <label for="qty" style="font-size: 14px; font-weight: 500;">จำนวนที่ตัดจ่าย (${val.orderunitcode}):</label>
+    //       <input id="qty" class="swal2-input" type="number" value="1" style="margin-top: 5px; height: 40px;">
+    //  </div>
+    //   `,
+    //       showCancelButton: true,
+    //       confirmButtonText: 'ยืนยันการจ่าย',
+    //       cancelButtonText: 'ยกเลิก',
+    //       confirmButtonColor: '#185fa5',
 
-    //     // --- เงื่อนไขป้องกันการปิดหน้าต่าง ---
-    //     allowOutsideClick: false, // ห้ามกดพื้นหลังเพื่อปิด
-    //     allowEscapeKey: false,   // ห้ามกด Esc เพื่อปิด
-    //     allowEnterKey: false,    // ห้ามกด Enter เพื่อปิด (ป้องกันการเผลอกด Confirm ก่อนคีย์ครบ)
+    //       // ป้องกันการปิดหน้าต่างโดยไม่ตั้งใจ
+    //       allowOutsideClick: false,
+    //       allowEscapeKey: false,
+    //       allowEnterKey: false,
 
-    //     // --- ส่วนของ Validation ---
-    //     preConfirm: () => {
-    //       // ดึง Element มาไว้ในตัวแปรก่อน
-    //       const qtyEl = document.getElementById('swal-qty') as HTMLInputElement;
-    //       const receiverEl = document.getElementById('swal-receiver') as HTMLInputElement;
+    //       preConfirm: () => {
+    //         // 1. ดึง Element มาตรวจสอบก่อน
+    //         const qtyInput = document.getElementById('qty') as HTMLInputElement;
 
-    //       // ตรวจสอบว่า Element มีตัวตนจริงไหมก่อนอ่านค่า .value
-    //       if (!qtyEl || !receiverEl) {
-    //         console.error("หา Input Element ไม่เจอ! เช็ค ID ใน HTML อีกครั้ง");
-    //         return false;
+
+    //         // 2. ถ้าหา Element ไม่เจอ (กรณี Error ที่คุณเจอ) ให้แจ้งเตือนระบบ
+    //         if (!qtyInput) {
+    //           Swal.showValidationMessage('เกิดข้อผิดพลาดภายในระบบ (หาช่องกรอกไม่เจอ)');
+    //           return false;
+    //         }
+
+    //         const qtyValue = qtyInput.value.trim();
+
+
+    //         // 3. แจ้งผู้ใช้ถ้ากรอกข้อมูลไม่ครบ (User-Friendly Error)
+    //         if (!qtyValue) {
+    //           Swal.showValidationMessage('กรุณาระบุ "จำนวนยา"');
+    //           qtyInput.focus(); // เลื่อนเคอร์เซอร์ไปที่ช่องที่มีปัญหา
+    //           return false;
+    //         } else {
+
+    //           if (Number(qtyValue) < 0 || Number(qtyValue) >= val.orderqty || val.orderqty % Number(qtyValue) !== 0) {
+    //             Swal.showValidationMessage('จำนวนยาไม่ถูกต้อง');
+    //             qtyInput.focus();
+    //             return false;
+    //           }
+
+    //         }
+
+
+
+
+
+    //         // ถ้าผ่านหมด ส่งค่ากลับไปทำงานต่อ
+    //         return {
+    //           qty: qtyValue,
+    //           receiver: val.orderqty / Number(qtyValue),
+
+    //         };
     //       }
-
-    //       const qty = qtyEl.value;
-    //       const receiver = receiverEl.value;
-
-    //       if (!qty || !receiver) {
-    //         Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบ');
-    //         return false;
-    //       }
-
-    //       return { qty, receiver };
-    //     }
-    //   });
     Swal.fire({
-      title: 'ยืนยันการตัดจ่ายยา',
+      title: 'ยืนยันการค้างจ่ายยา',
       html: `
     <div style="text-align: left; font-family: 'Sarabun', sans-serif;">
       <div style="background: #e6f1fb; padding: 12px; border-radius: 8px; border: 1px solid #185fa5; margin-bottom: 15px;">
@@ -119,67 +133,90 @@ export class PatientManageComponent implements OnInit {
       </div>
 
       <label for="qty" style="font-size: 14px; font-weight: 500;">จำนวนที่ตัดจ่าย (${val.orderunitcode}):</label>
-      <input id="qty" class="swal2-input" type="number" value="1" style="margin-top: 5px; height: 40px;">
- </div>
+      <input id="qty" class="swal2-input" type="number" value="1" style="margin-top: 5px; height: 40px; width: 100%; margin-left: 0; margin-right: 0;">
+
+      <div style="margin-top: 15px; display: flex; align-items: center;">
+        <input type="checkbox" id="useCustomDate" style="width: 18px; height: 18px; cursor: pointer;">
+        <label for="useCustomDate" style="margin-left: 8px; font-size: 14px; cursor: pointer;">ระบุวันที่กำหนดจ่าย</label>
+      </div>
+
+      <div id="dateWrapper" style="display: none; margin-top: 10px;">
+        <label for="customDate" style="font-size: 14px; font-weight: 500;">วันที่กำหนด:</label>
+        <input id="customDate" class="swal2-input" type="date" style="margin-top: 5px; height: 40px; width: 100%; margin-left: 0; margin-right: 0;">
+      </div>
+    </div>
   `,
       showCancelButton: true,
       confirmButtonText: 'ยืนยันการจ่าย',
       cancelButtonText: 'ยกเลิก',
       confirmButtonColor: '#185fa5',
-
-      // ป้องกันการปิดหน้าต่างโดยไม่ตั้งใจ
       allowOutsideClick: false,
-      allowEscapeKey: false,
-      allowEnterKey: false,
+
+      didOpen: () => {
+        // จัดการเรื่องการคลิก checkbox เพื่อเปิด/ปิดช่องเลือกวันที่
+        const checkbox = document.getElementById('useCustomDate') as HTMLInputElement;
+        const dateWrapper = document.getElementById('dateWrapper') as HTMLDivElement;
+
+        checkbox.addEventListener('change', () => {
+          dateWrapper.style.display = checkbox.checked ? 'block' : 'none';
+        });
+      },
 
       preConfirm: () => {
-        // 1. ดึง Element มาตรวจสอบก่อน
         const qtyInput = document.getElementById('qty') as HTMLInputElement;
+        const checkbox = document.getElementById('useCustomDate') as HTMLInputElement;
+        const dateInput = document.getElementById('customDate') as HTMLInputElement;
 
-
-        // 2. ถ้าหา Element ไม่เจอ (กรณี Error ที่คุณเจอ) ให้แจ้งเตือนระบบ
         if (!qtyInput) {
-          Swal.showValidationMessage('เกิดข้อผิดพลาดภายในระบบ (หาช่องกรอกไม่เจอ)');
+          Swal.showValidationMessage('เกิดข้อผิดพลาดภายในระบบ');
           return false;
         }
 
         const qtyValue = qtyInput.value.trim();
 
-
-        // 3. แจ้งผู้ใช้ถ้ากรอกข้อมูลไม่ครบ (User-Friendly Error)
+        // ตรวจสอบจำนวนยา
         if (!qtyValue) {
           Swal.showValidationMessage('กรุณาระบุ "จำนวนยา"');
-          qtyInput.focus(); // เลื่อนเคอร์เซอร์ไปที่ช่องที่มีปัญหา
           return false;
-        } else {
-
-          if (Number(qtyValue) < 0 || Number(qtyValue) >= val.orderqty || val.orderqty % Number(qtyValue) !== 0) {
-            Swal.showValidationMessage('จำนวนยาไม่ถูกต้อง');
-            qtyInput.focus();
-            return false;
-          }
-
         }
 
+        if (Number(qtyValue) <= 0 || Number(qtyValue) > val.orderqty) {
+          Swal.showValidationMessage('จำนวนยาไม่ถูกต้อง');
+          return false;
+        }
 
+        // จัดการเรื่องวันที่
+        let finalDate = '';
+        const today = new Date().toISOString().split('T')[0]; // Format yyyy-mm-dd
 
+        if (checkbox.checked) {
+          if (!dateInput.value) {
+            Swal.showValidationMessage('กรุณาเลือกวันที่กำหนด');
+            return false;
+          }
+          finalDate = dateInput.value;
+        } else {
+          // ถ้าไม่เช็ค ให้ใช้ค่า Default เป็นวันนี้
+          finalDate = today;
+        }
 
-
-        // ถ้าผ่านหมด ส่งค่ากลับไปทำงานต่อ
         return {
           qty: qtyValue,
           receiver: val.orderqty / Number(qtyValue),
-
+          targetDate: finalDate // จะได้วันที่ตามที่ต้องการ
         };
       }
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
         let senddata = {
           ...result.value,
           ...val,
         }
-
-        this.insertCutdispend(senddata);
+        // console.log(senddata);
+        // senddata.ip = this.dataUser.ip;
+        // senddata.choice = 1;
+        // const getprint: any = await this.http.Printjs162('stickerIPD', senddata);
+        await this.insertCutdispend(senddata);
 
       }
     });
