@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     passwordCon: new FormControl('', [Validators.required]),
   });
 
-  constructor(private http: HttpService) {}
+  constructor(private http: HttpService) { }
 
   ngOnInit(): void {
     if (sessionStorage.getItem('userLogin') != null) {
@@ -36,55 +36,143 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public submitInput = async () => {
-    let getData: any = await this.http.get('ServeMed/getRemoteHost');
+  // public submitInput = async () => {
+  //   let getData: any = await this.http.get('ServeMed/getRemoteHost');
 
-    if (getData.connect) {
-      if (getData.response) {
-        let data = {
-          email: this.inputGroup.value.name,
-          password: this.inputGroup.value.password,
-          ip: getData.response,
-        };
+  //   if (getData.connect) {
+  //     if (getData.response) {
+  //       let data = {
+  //         email: this.inputGroup.value.name,
+  //         password: this.inputGroup.value.password,
+  //         ip: getData.response,
+  //       };
 
-        this.http
-          .postNodejs('login', data)
-          .then((login: any) => {
-            if (login.connect == true) {
-              sessionStorage.setItem(
-                'userLogin',
-                JSON.stringify(login.response)
-              );
+  //       this.http
+  //         .postNodejs('login', data)
+  //         .then(async (login: any) => {
+  //           if (login.connect == true) {
+  //             console.log(login);
+  //             if (login.response.role == 'opd&ipd') {
+  //               console.log(login.response.role);
+  //               const inputOptionsPromise = new Promise((resolve) => {
+  //                 setTimeout(() => {
+  //                   resolve({
+  //                     "#ff0000": "Red",
+  //                     "#00ff00": "Green",
+  //                     "#0000ff": "Blue"
+  //                   });
+  //                 }, 1000);
+  //               });
 
-              this.http.alertLog('success', 'Login Success.');
-              if (
-                JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
-                'opd'
-              ) {
-                this.http.navRouter('/opd');
-              } else if (
-                JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
-                'ipd'
-              ) {
-                this.http.navRouter('/ipd');
-              } else {
-                this.http.navRouter('/');
-              }
-            } else {
-              this.http.alertLog('error', 'Login failure.');
-            }
-          })
-          .catch((error) => {
-            this.http.alertLog('error', 'Login failure.');
-          });
-      } else {
-        Swal.fire('IP มีปัญหา!', '', 'error');
+  //               try {
+  //                 const { value: role } = await Swal.fire({
+  //                   title: "Select Role",
+  //                   input: "radio",
+  //                   inputOptions: inputOptionsPromise, // ส่ง Promise ให้ Swal จัดการเองได้
+  //                   inputValidator: (value) => {
+  //                     if (!value) return "โปรดเลือกข้อมูล!";
+  //                     return null; // ใน Angular/TS ควร return null หรือ undefined ถ้าผ่าน
+  //                   }
+  //                 });
+
+  //                 if (role) {
+  //                   Swal.fire({ html: `You selected: ${role}` });
+  //                 }
+  //               } catch (error) {
+  //                 console.error('Swal error:', error);
+  //               }
+
+  //             }
+
+  //             sessionStorage.setItem(
+  //               'userLogin',
+  //               JSON.stringify(login.response)
+  //             );
+  //             this.http.alertLog('success', 'Login Success.');
+  //             if (
+  //               JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+  //               'opd'
+  //             ) {
+  //               this.http.navRouter('/opd');
+  //             } else if (
+  //               JSON.parse(sessionStorage.getItem('userLogin') || '{}').role ==
+  //               'ipd'
+  //             ) {
+  //               this.http.navRouter('/ipd');
+  //             } else {
+  //               this.http.navRouter('/');
+  //             }
+  //           } else {
+  //             this.http.alertLog('error', 'Login failure.');
+  //           }
+  //         })
+  //         .catch((error) => {
+  //           this.http.alertLog('error', 'Login failure.');
+  //         });
+  //     } else {
+  //       Swal.fire('IP มีปัญหา!', '', 'error');
+  //     }
+  //   } else {
+  //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //   }
+  // };
+  public submitInput = async (): Promise<void> => { // กำหนด return type ให้ชัดเจน
+    try {
+      const getData: any = await this.http.get('ServeMed/getRemoteHost');
+
+      if (!getData || !getData.connect) {
+        Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+        return; // ต้องมี return เพื่อจบการทำงาน
       }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-    }
-  };
 
+      if (!getData.response) {
+        Swal.fire('IP มีปัญหา!', '', 'error');
+        return; // ต้องมี return
+      }
+
+      const data = {
+        email: this.inputGroup.value.name,
+        password: this.inputGroup.value.password,
+        ip: getData.response,
+      };
+
+      const login: any = await this.http.postNodejs('login', data);
+
+      if (login && login.connect === true) {
+        if (login.response.role === 'opd&ipd') {
+          const { value: role } = await Swal.fire({
+            title: "Select Role",
+            input: "radio",
+            inputOptions: { "opd": "OPD", "ipd": "IPD" },
+            inputValidator: (value) => !value ? "โปรดเลือกข้อมูล!" : null
+          });
+
+          if (role) {
+            login.response.role = role;
+          } else {
+            return; // คืนค่าหากยกเลิกการเลือก
+          }
+        }
+
+        // จัดการ Session และ Navigation
+        sessionStorage.setItem('userLogin', JSON.stringify(login.response));
+        this.http.alertLog('success', 'Login Success.');
+
+        const target = login.response.role === 'opd' ? '/opd' :
+          login.response.role === 'ipd' ? '/ipd' : '/';
+        this.http.navRouter(target);
+
+      } else {
+        this.http.alertLog('error', 'Login failure.');
+      }
+
+    } catch (error) {
+      console.error(error);
+      this.http.alertLog('error', 'An error occurred.');
+    }
+
+    // สุดท้ายฟังก์ชัน async จะคืนค่า Promise<void> โดยอัตโนมัติที่นี่
+  };
   async submitRegister() {
     if (
       this.inputRegister.value.password !== this.inputRegister.value.passwordCon
