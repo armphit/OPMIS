@@ -105,9 +105,9 @@ export class ReportipdTableComponent implements OnInit {
     }
   }
   public applyFilter(event: Event) {
-    // const filterValue = (event.target as HTMLInputElement).value;
+    const filterValue = (event.target as HTMLInputElement).value;
 
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   async cutDispendModal(val: any) {
