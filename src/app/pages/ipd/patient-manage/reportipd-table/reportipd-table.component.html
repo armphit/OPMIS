@@ -2,8 +2,18 @@
   <div class="row">
 
     <div class="col-lg-12" style="margin-top: 15px">
+
+      <div class="scan-bar">
+        <mat-checkbox style="    margin-top: 11px;" class="example-margin" color="primary"
+          (ngModelChange)="inputChange()" [(ngModel)]="checkOwe">ค้นหา
+          HN</mat-checkbox>
+        <input *ngIf="checkOwe" [(ngModel)]="patientId" type="text" placeholder="กรอกหรือสแกน HN / ใบสั่งยาผู้ป่วย"
+          (keyup.enter)="scan()" />
+        <button *ngIf="checkOwe" (click)="scan()">สแกน</button>
+      </div>
       <form [formGroup]="campaignOne" style="float: right">
-        <mat-form-field style="margin-right: 10px" class="example-form-field" [style.width.px]="200">
+
+        <mat-form-field style="margin-right: 10px" class="example-form-field" [style.width.px]="200" *ngIf="!checkOwe">
           <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
             <input matStartDate placeholder="Start date" formControlName="start" />
             <input matEndDate placeholder="End date" formControlName="end"
@@ -13,11 +23,12 @@
           <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width" *ngIf="!checkOwe">
           <input matInput (keyup)="applyFilter($event)" #inputT />
           <mat-placeholder>ค้นหา</mat-placeholder>
           <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
         </mat-form-field>
+
       </form>
     </div>
   </div>

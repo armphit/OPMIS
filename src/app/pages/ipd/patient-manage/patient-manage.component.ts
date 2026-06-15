@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 })
 export class PatientManageComponent implements OnInit {
   patient: any = {};
+  groupedDrugs: any[] = [];
   patientId = '';
   drugcut: any = null;
   panels: Record<string, boolean> = {
@@ -18,7 +19,7 @@ export class PatientManageComponent implements OnInit {
   };
   checkprint = true;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-
+  checkhn = false;
   constructor(private http: HttpService) { }
 
   ngOnInit(): void { }
@@ -27,21 +28,63 @@ export class PatientManageComponent implements OnInit {
     this.panels[key] = !this.panels[key];
   }
 
+  // async scan(): Promise<void> {
+  //   this.patient = {};
+  //   if (!this.patientId) return;
+
+  //   const getData: any = await this.http.postNodejsTest('getdatapatientipd', {
+  //     hn: this.patientId,
+  //     date: moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD'),
+  //     check: 1,
+  //     user: this.dataUser.user,
+  //     checkhn: this.checkhn ? 1 : 0
+  //   });
+
+  //   if (getData.connect) {
+  //     if (getData.response) {
+  //       this.patient = getData.response;
+  //       // Reset panels to expanded on each new scan
+  //       this.panels = { patient: true, drugs: true };
+  //     } else {
+  //       Swal.fire('ไม่สามารถ response ได้!', '', 'error');
+  //     }
+  //   } else {
+  //     this.patient = {};
+  //     if (getData?.response?.status === 404) {
+  //       Swal.fire('ไม่พบข้อมูลผู้ป่วย', '', 'warning');
+  //     } else {
+  //       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  //     }
+  //   }
+
+  //   this.patientId = '';
+  // }
   async scan(): Promise<void> {
     this.patient = {};
+    this.groupedDrugs = []; // เคลียร์ข้อมูลเก่า
     if (!this.patientId) return;
 
     const getData: any = await this.http.postNodejsTest('getdatapatientipd', {
-      hn: this.patientId,
+      hn: this.patientId?.trim(),
       date: moment(new Date()).subtract(1, 'days').format('YYYY-MM-DD'),
       check: 1,
       user: this.dataUser.user,
+      checkhn: this.checkhn ? 1 : 0
     });
 
     if (getData.connect) {
-      if (getData.response) {
+      if (getData.response && Array.isArray(getData.response)) {
+        if (getData.response.length === 0) {
+          Swal.fire('ไม่พบข้อมูลผู้ป่วย', '', 'warning');
+          this.patientId = '';
+          this.patient = {};
+          return;
+        }
         this.patient = getData.response;
-        // Reset panels to expanded on each new scan
+
+        // --- ส่วนการจัดกลุ่มข้อมูล ---
+        this.groupPatientData(getData.response);
+
         this.panels = { patient: true, drugs: true };
       } else {
         Swal.fire('ไม่สามารถ response ได้!', '', 'error');
@@ -54,10 +97,31 @@ export class PatientManageComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     }
-
     this.patientId = '';
   }
 
+  // ฟังก์ชันช่วยจัดกลุ่ม (Helper Function)
+  groupPatientData(data: any[]) {
+    const groups = data.reduce((acc, item) => {
+      const pKey = item.prioritydesc || 'Unknown';
+      const prKey = item.prescriptionno || 'No-Number';
+
+      if (!acc[pKey]) acc[pKey] = {};
+      if (!acc[pKey][prKey]) acc[pKey][prKey] = [];
+
+      acc[pKey][prKey].push(item);
+      return acc;
+    }, {});
+
+    // แปลง Object เป็น Array เพื่อให้ *ngFor ใช้ง่ายๆ
+    this.groupedDrugs = Object.keys(groups).map(priority => ({
+      priorityName: priority,
+      prescriptions: Object.keys(groups[priority]).map(prNo => ({
+        prescriptionNo: prNo,
+        items: groups[priority][prNo]
+      }))
+    }));
+  }
   cutDrug(val: any): void {
 
     //     Swal.fire({
@@ -268,7 +332,7 @@ export class PatientManageComponent implements OnInit {
       showConfirmButton: false
     });
 
-    this.patientId = data.prescriptionno;
+    this.patientId = this.checkhn ? data.hn?.trim() : data.prescriptionno;
     await this.scan();
     return
   }
@@ -436,6 +500,7 @@ export class PatientManageComponent implements OnInit {
               timer: 1500,
             });
             this.patientId = val.prescriptionno;
+            this.patientId = this.checkhn ? val.hn?.trim() : val.prescriptionno;
             await this.scan();
           } else {
             Swal.fire('ไม่สามารถลบข้อมูลได้!', '', 'error');
@@ -573,7 +638,7 @@ export class PatientManageComponent implements OnInit {
               let win: any = window;
 
               win.$('#modal_owe').modal('hide');
-              this.patientId = this.patient[0]?.prescriptionno;
+              this.patientId = this.checkhn ? this.patient[0]?.hn?.trim() : this.patient[0]?.prescriptionno;
               this.scan()
 
             } else {

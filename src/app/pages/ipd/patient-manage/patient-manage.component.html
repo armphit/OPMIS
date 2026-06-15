@@ -3,7 +3,10 @@
     <div class="wrap">
       <!-- Scan Bar -->
       <div class="scan-bar">
-        <input [(ngModel)]="patientId" type="text" placeholder="กรอกหรือสแกน HN / ID ผู้ป่วย" (keyup.enter)="scan()" />
+        <mat-checkbox style="    margin-top: 11px;" class="example-margin" color="primary" [(ngModel)]="checkhn">ค้นหา
+          HN</mat-checkbox>
+        <input [(ngModel)]="patientId" type="text" placeholder="กรอกหรือสแกน HN / ใบสั่งยาผู้ป่วย"
+          (keyup.enter)="scan()" />
         <button (click)="scan()">สแกน</button>
       </div>
       <mat-checkbox class="example-margin" color="primary" [(ngModel)]="checkprint">PRINTER</mat-checkbox>
@@ -62,12 +65,12 @@
             <span>รายการยา</span>
             <div class="header-right">
               <span class="badge badge-blue">{{ patient.length }} รายการ</span>
-              <span class="pill continue">{{ patient[0]?.prioritydesc }}</span>
+
               <span class="chevron" [class.open]="panels['drugs']">▶</span>
             </div>
           </div>
           <div class="section-body" *ngIf="panels['drugs']">
-            <div class="drug-card" *ngFor="let drug of patient">
+            <!-- <div class="drug-card" *ngFor="let drug of patient">
               <div class="drug-head">
                 <div class="drug-seq-row">
                   <span class="seq-dot">{{ drug.seq }}</span>
@@ -89,6 +92,39 @@
 
               </div>
               <div class="last-mod">อัปเดตล่าสุด: {{ drug.lastmodified }}</div>
+            </div> -->
+            <div *ngFor="let pGroup of groupedDrugs" class="priority-section">
+              <div class="priority-title" [ngClass]="pGroup.priorityName.toLowerCase()">
+                {{ pGroup.priorityName == 'H' ? 'HomeMed' : pGroup.priorityName }}
+              </div>
+
+              <!-- วนลูปแยกตามใบสั่งยา (Prescription No) -->
+              <div *ngFor="let pr of pGroup.prescriptions" class="prescription-box">
+                <div class="pr-header">
+                  <span class="pr-label">ใบสั่งยาเลขที่: <strong>{{ pr.prescriptionNo }}</strong></span>
+                  <span class="pr-count">{{ pr.items.length }} รายการ</span>
+                </div>
+
+                <!-- วนลูปรายการยาในใบสั่งนั้นๆ -->
+                <div class="drug-list">
+                  <div class="drug-card-new" *ngFor="let drug of pr.items">
+                    <div class="drug-row">
+                      <div class="drug-main-info">
+                        <div class="d-name">{{ drug.orderitemname }}</div>
+                        <div class="d-how">{{ drug.freetext1 || drug.howto }}</div>
+                        <div class="d-meta">รหัส: {{ drug.orderitemcode }} | {{ drug.lastmodified }}</div>
+                      </div>
+                      <div class="drug-qty-block">
+                        <span class="q-num">{{ drug.orderqty }}</span>
+                        <span class="q-unit">{{ drug.orderunitcode }}</span>
+                      </div>
+                    </div>
+                    <div class="drug-footer">
+                      <button class="btn-pending" (click)="cutDrug(drug)">ค้างจ่ายยา</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -3312,11 +3312,15 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'location',
         'position_text',
         'type_text',
+
         'med_wrong_name',
         'med_wrong_text',
+        'locationWrong',
         'drugAllergy',
+
         'med_good_name',
         'med_good_text',
+        'locationGood',
         'interceptor_name',
         'offender_name',
         'another_offender_name',

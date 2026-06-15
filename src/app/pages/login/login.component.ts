@@ -144,7 +144,9 @@ export class LoginComponent implements OnInit {
             title: "Select Role",
             input: "radio",
             inputOptions: { "opd": "OPD", "ipd": "IPD" },
-            inputValidator: (value) => !value ? "โปรดเลือกข้อมูล!" : null
+            inputValidator: (value) => !value ? "โปรดเลือกข้อมูล!" : null,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
           });
 
           if (role) {
@@ -156,11 +158,23 @@ export class LoginComponent implements OnInit {
 
         // จัดการ Session และ Navigation
         sessionStorage.setItem('userLogin', JSON.stringify(login.response));
-        this.http.alertLog('success', 'Login Success.');
 
         const target = login.response.role === 'opd' ? '/opd' :
           login.response.role === 'ipd' ? '/ipd' : '/';
-        this.http.navRouter(target);
+
+        // รอให้ Swal ปิดสมบูรณ์ก่อน navigate เพื่อป้องกัน backdrop ค้าง
+        await Swal.fire({
+          icon: 'success',
+          title: 'Login Success.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didClose: () => {
+            this.http.navRouter(target);
+          }
+        });
 
       } else {
         this.http.alertLog('error', 'Login failure.');

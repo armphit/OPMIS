@@ -5,6 +5,13 @@ import Swal from 'sweetalert2';
 import { HttpService } from 'src/app/services/http.service';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatTableDataSource } from '@angular/material/table';
+
+export interface DrugInteraction {
+  drug_interaction_type: string;
+  drug_interaction_status: string;
+  userConfirm: string | null;
+}
+
 export interface Prescription {
   prescription: string;
   hn: string;
@@ -13,6 +20,8 @@ export interface Prescription {
   scanDT: string;
   queue: string;
   userCheck: string;
+  departmentcode?: string;
+  details: DrugInteraction[];
 }
 @Component({
   selector: 'app-check-patient',
@@ -22,17 +31,10 @@ export interface Prescription {
 export class CheckPatientComponent implements OnInit {
   patient: any = {};
   patientId = '';
+  selectedSite = 'W8';
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-  displayedColumns: string[] = [
-    'prescription',
-    'hn',
-    'queue',
-    'statusCheck',
-    'scanDT',
-    'userCheck',
-    'Actions',
-  ];
+  displayedColumns: string[] = ['prescription', 'hn', 'statusCheck', 'departmentcode', 'userCheck', 'Actions', 'scanDT', 'drugDetails'];
 
   dataSource: MatTableDataSource<Prescription> =
     new MatTableDataSource<Prescription>([]);
@@ -40,10 +42,42 @@ export class CheckPatientComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (data, filter) => {
-      const text = data.prescription + data.hn + data.queue + data.userCheck;
+      const text = data.prescription + data.hn + data.queue + data.userCheck + data.scanDT;
 
       return text.toLowerCase().includes(filter);
     };
+  }
+
+  /**
+   * Group raw records by prescription into parent-child structure
+   */
+  private groupByPrescription(rawData: any[]): Prescription[] {
+    const map = new Map<string, Prescription>();
+
+    for (const item of rawData) {
+      const key = item.prescription;
+      if (!map.has(key)) {
+        map.set(key, {
+          prescription: item.prescription,
+          hn: item.hn,
+          keyCreateDT: item.keyCreateDT || '',
+          statusCheck: item.statusCheck,
+          scanDT: item.scanDT || item.scanDT,
+          queue: item.queue || '',
+          userCheck: item.userCheck,
+          departmentcode: item.departmentcode || '',
+          details: [], // Will populate below
+        });
+      }
+      const entry = map.get(key)!;
+      entry.details.push({
+        drug_interaction_type: item.drug_interaction_type,
+        drug_interaction_status: item.drug_interaction_status,
+        userConfirm: item.userConfirm,
+      });
+    }
+
+    return Array.from(map.values());
   }
 
   /**
@@ -56,7 +90,7 @@ export class CheckPatientComponent implements OnInit {
         hn: this.patientId,
         date: moment(new Date()).format('YYYY-MM-DD'),
         check: 1,
-        site: 'W8',
+        site: this.dataUser?.role === 'opd' ? this.selectedSite : 'W7',
         user: this.dataUser.user,
       });
 
@@ -90,7 +124,7 @@ export class CheckPatientComponent implements OnInit {
       username: this.dataUser.name,
       queue: this.patient.todayDrugsHN[0]?.queue,
       date: moment(new Date()).format('YYYY-MM-DD'),
-      site: 'W8',
+      site: this.dataUser?.role === 'opd' ? this.selectedSite : 'W7',
       text: data,
       check: 2,
     };
@@ -105,6 +139,8 @@ export class CheckPatientComponent implements OnInit {
         this.patient.finalResult.duplicatemed.result = getData.response.updated;
       } else if (data === 'lab') {
         this.patient.finalResult.lab.result = getData.response.updated;
+      } else if (data === 'dosage') {
+        this.patient.finalResult.dosage.result = getData.response.updated;
       }
 
       Swal.fire({
@@ -119,11 +155,11 @@ export class CheckPatientComponent implements OnInit {
   }
   async getDuplicate() {
     let getData: any = await this.http.post('getDuplicate');
+
     if (getData.connect) {
       if (getData.response.rowCount) {
-        this.dataSource = new MatTableDataSource<Prescription>(
-          getData.response.result,
-        );
+        const grouped = this.groupByPrescription(getData.response.result);
+        this.dataSource = new MatTableDataSource<Prescription>(grouped);
       } else {
         this.dataSource = new MatTableDataSource<Prescription>([]);
       }
@@ -141,8 +177,11 @@ export class CheckPatientComponent implements OnInit {
   }
   tabIndex = 0;
   async goTab2(row: any) {
-    this.patientId = row.hn;
 
+    this.patientId = row.hn;
+    this.selectedSite = row.departmentcode ? row.departmentcode : 'W8';
+    console.log(row);
+    console.log('Selected Site:', this.selectedSite);
     this.tabIndex = 0;
     await this.scan();
   }
@@ -150,13 +189,13 @@ export class CheckPatientComponent implements OnInit {
     const value = (event.target as HTMLInputElement).value;
     this.dataSource.filter = value.trim().toLowerCase();
   }
-  // openPopup() {
-  //   const url = 'http://localhost:4202?hn=1293492';
 
-  //   window.open(
-  //     url,
-  //     'popupWindow',
-  //     'width=900,height=600,left=200,top=100,resizable=yes,scrollbars=yes',
-  //   );
-  // }
+  getInteractionClass(type: string): string {
+    return 'type-' + type.toLowerCase();
+  }
+
+  getStatusClass(status: string): string {
+    return status === '0' ? 'status-confirmed' : 'status-pending';
+  }
+
 }

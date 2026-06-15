@@ -29,19 +29,32 @@ export class ReportPharComponent implements OnInit {
   public endtime = '16:00';
   public dataDrug: any = null;
   public dataSource: any = null;
-  public displayedColumns: string[] = [
+  // คอลัมน์ทั้งหมดที่จะแสดง (ตามลำดับ)
+  // 1. รายชื่อคอลัมน์ทั้งหมดที่จะแสดงในตาราง (เรียงตามลำดับซ้ายไปขวา)
+  displayedColumns: string[] = [
     'checker_id',
     'checker_name',
-
     'order',
-    'L_count',
-    'M_count',
-    'N_count',
-    'D_count',
-    'B_count', 'C_count',
-    'null_count',
+    'L_count', 'L_item',
+    'M_count', 'M_item',
+    'N_count', 'N_item',
+    'D_count', 'D_item',
+    'B_count', 'B_item',
+    'C_count', 'C_item',
+    'null_count', 'null_item',
     'item',
-    'error',
+    'error'
+  ];
+
+  // 2. รายการสำหรับวน Loop (แต่ละคู่จะมี 2 คอลัมน์)
+  statsGroups = [
+    { countDef: 'L_count', itemDef: 'L_item', label: 'L' },
+    { countDef: 'M_count', itemDef: 'M_item', label: 'M' },
+    { countDef: 'N_count', itemDef: 'N_item', label: 'N' },
+    { countDef: 'D_count', itemDef: 'D_item', label: 'D' },
+    { countDef: 'B_count', itemDef: 'B_item', label: 'B' },
+    { countDef: 'C_count', itemDef: 'C_item', label: 'C' },
+    { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
 
   public displayedColumns2: string[] = [
@@ -51,19 +64,31 @@ export class ReportPharComponent implements OnInit {
     'item',
     'error',
   ];
-
+  // 1. รายชื่อคอลัมน์ทั้งหมด (เรียงลำดับตามที่จะให้โชว์ในตาราง)
   public displayedColumns3: string[] = [
     'dispenser_id',
     'dispenser_name',
-
     'order',
-    'L_count',
-    'M_count',
-    'N_count',
-    'D_count',
-    'B_count', 'C_count', 'null_count',
+    'L_count', 'L_item',
+    'M_count', 'M_item',
+    'N_count', 'N_item',
+    'D_count', 'D_item',
+    'B_count', 'B_item',
+    'C_count', 'C_item',
+    'null_count', 'null_item',
     'item',
     'error',
+  ];
+
+  // 2. จับคู่ Count และ Item เพื่อใช้ Loop ใน HTML
+  public statsGroups3 = [
+    { countDef: 'L_count', itemDef: 'L_item', label: 'L' },
+    { countDef: 'M_count', itemDef: 'M_item', label: 'M' },
+    { countDef: 'N_count', itemDef: 'N_item', label: 'N' },
+    { countDef: 'D_count', itemDef: 'D_item', label: 'D' },
+    { countDef: 'B_count', itemDef: 'B_item', label: 'B' },
+    { countDef: 'C_count', itemDef: 'C_item', label: 'C' },
+    { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
   public displayedColumns4: string[] = [
     'patientNO',
@@ -144,6 +169,8 @@ export class ReportPharComponent implements OnInit {
     // formData.forEach((value, key) => {
     //   console.log(key + '=' + value);
     // });
+    console.log(this.numTab);
+
     if (this.numTab == 2) {
       getData = await this.http.post('onusPhar', formData);
       let getData2: any = await this.http.post('getUserall', formData);
@@ -201,6 +228,7 @@ export class ReportPharComponent implements OnInit {
       if (getData.connect) {
         if (getData.response.length > 0) {
           this.dataDrug = getData.response;
+
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort3;
           this.dataSource.paginator = this.paginator3;

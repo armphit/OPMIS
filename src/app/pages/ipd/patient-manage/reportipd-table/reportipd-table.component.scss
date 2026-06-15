@@ -48,3 +48,47 @@
 td {
   margin-left: 10px;
 }
+
+.scan-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  input {
+    flex: 1;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid #d0d5dd;
+    font-size: 15px;
+    padding: 0 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &:focus {
+      border-color: #378add;
+      box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15);
+    }
+  }
+
+  button {
+    height: 44px;
+    padding: 0 22px;
+    border-radius: 12px;
+    border: none;
+    background: #185fa5;
+    color: #e6f1fb;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+
+
+    &:hover {
+      background: #1470b8;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}

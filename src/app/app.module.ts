@@ -36,6 +36,7 @@ import { GalleryModule } from 'ng-gallery';
 import { AllergyCheckCardComponent } from './pages/check-patient/allergy-check-card/allergy-check-card.component';
 import { DuplicateCheckCardComponent } from './pages/check-patient/duplicate-check-card/duplicate-check-card.component';
 import { LaboratoryTestComponent } from './pages/check-patient/laboratory-test/laboratory-test.component';
+import { DosageCheckCardComponent } from './pages/check-patient/dosage-check-card/dosage-check-card.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { LaboratoryTestComponent } from './pages/check-patient/laboratory-test/l
     AllergyCheckCardComponent,
     DuplicateCheckCardComponent,
     LaboratoryTestComponent,
+    DosageCheckCardComponent,
 
   ],
   imports: [

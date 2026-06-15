@@ -13,17 +13,20 @@ import Swal from 'sweetalert2';
 })
 export class ReportipdTableComponent implements OnInit {
   @Input() Tab: any;
+  inputT: any;
+  patientId: any;
   constructor(private http: HttpService,) {
 
   }
-
+  checkOwe: boolean = true;
   ngOnInit(): void {
 
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['Tab']) {
       if (this.Tab) {
-        this.getReport();
+
+        // this.getReport();
       }
 
     }
@@ -68,12 +71,14 @@ export class ReportipdTableComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
   async getReport() {
+
     await Promise.resolve();
 
     let formData = new FormData();
     formData.append('start', this.toLocalDateString(this.campaignOne.value.start));
     formData.append('end', this.toLocalDateString(this.campaignOne.value.end));
     formData.append('tab', this.Tab);
+    formData.append('choice', '1');
     let getData: any = await this.http.post('getReportCutDispendIPD', formData);
     // if (getData.connect) {
     //   if (getData.response) {
@@ -92,16 +97,22 @@ export class ReportipdTableComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
       } else {
 
-        this.dataDrug = [];
+        this.dataDrug = []
+        this.dataSource = []
+        this.dataSource.sort = null
+        this.dataSource.paginator = null
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
+
+
   }
   public async startChange(event: any) {
 
     if (event.target.value) {
       this.getReport();
+
     }
   }
   public applyFilter(event: Event) {
@@ -248,6 +259,57 @@ export class ReportipdTableComponent implements OnInit {
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  async scan() {
+    if (!this.patientId) return
+    let formData = new FormData();
+    formData.append('start', this.toLocalDateString(this.campaignOne.value.start));
+    formData.append('end', this.toLocalDateString(this.campaignOne.value.end));
+    formData.append('tab', this.Tab);
+    formData.append('choice', '2');
+    formData.append('hn', this.patientId);
+    let getData: any = await this.http.post('getReportCutDispendIPD', formData);
+    // if (getData.connect) {
+    //   if (getData.response) {
+
+    //     // Process the report data as needed
+    //   }
+    // }
+
+    if (getData.connect) {
+      if (getData.response.rowCount > 0) {
+
+
+        this.dataDrug = getData.response.result;
+        this.dataSource = new MatTableDataSource(this.dataDrug);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      } else {
+        this.dataDrug = []
+        this.dataSource = []
+        this.dataSource.sort = null
+        this.dataSource.paginator = null
+      }
+    } else {
+      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+  async inputChange() {
+    this.dataDrug = []
+    this.dataSource = []
+    this.dataSource.sort = null
+    this.dataSource.paginator = null
+    console.log('checkOwe:', this.checkOwe);
+    if (!this.checkOwe) {
+
+      await this.scan();
+
+
+    }
+    else {
+      this.patientId = '';
+      this.getReport();
     }
   }
 }

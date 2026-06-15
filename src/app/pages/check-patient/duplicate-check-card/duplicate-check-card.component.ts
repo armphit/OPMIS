@@ -88,7 +88,7 @@ export class DuplicateCheckCardComponent implements OnInit {
   get allergyStatus(): string {
     const a = this.patient?.finalResult?.duplicatemed?.result;
 
-    return !a.statusCheck
+    return !a.drug_interaction_status
       ? Object.keys(a).length
         ? 'PASS'
         : 'PASS (ไม่มียาซ้ำซ้อน)'
@@ -98,8 +98,8 @@ export class DuplicateCheckCardComponent implements OnInit {
   get cardClass() {
     const a = this.patient?.finalResult?.duplicatemed?.result;
     return {
-      'bg-success text-white': !a.statusCheck,
-      'bg-danger text-white': a.statusCheck,
+      'bg-success text-white': !a.drug_interaction_status,
+      'bg-danger text-white': a.drug_interaction_status,
     };
   }
 

@@ -61,89 +61,66 @@
         <section class="example-container mat-elevation-z8" tabindex="0">
           <table mat-table matTableExporter [dataSource]="dataSource" #MatSort2="matSort" matSort
             #exporter2="matTableExporter" class="mat-elevation-z8" matSortActive="checker_id" matSortDirection="desc">
+
+
+            <!-- Fixed Columns -->
             <ng-container matColumnDef="checker_id">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                checker_id
-              </th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.checker_id }}
-              </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Checker ID </th>
+              <td mat-cell *matCellDef="let element"> {{ element.checker_id }} </td>
             </ng-container>
 
             <ng-container matColumnDef="checker_name" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                checker_name
-              </th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.checker_name }}
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="item">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.item }}
-              </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Checker Name </th>
+              <td mat-cell *matCellDef="let element"> {{ element.checker_name }} </td>
             </ng-container>
 
             <ng-container matColumnDef="order">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.order }}
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Order </th>
+              <td mat-cell *matCellDef="let element" class="text-center"> {{ element.order }} </td>
+            </ng-container>
+
+            <!-- Dynamic Columns (Count & Item) -->
+            <ng-container *ngFor="let group of statsGroups">
+
+              <!-- Column สำหรับ Count -->
+              <ng-container [matColumnDef]="group.countDef">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ group.label }} (O) </th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                  {{ element[group.countDef] || 0 }}
+                </td>
+              </ng-container>
+
+              <!-- Column สำหรับ Item -->
+              <ng-container [matColumnDef]="group.itemDef">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header style="color: #666;"> {{ group.label }} (I) </th>
+                <td mat-cell *matCellDef="let element" class="text-center" style="background-color: #fafafa;">
+                  {{ element[group.itemDef] || 0 }}
+                </td>
+              </ng-container>
+
+            </ng-container>
+
+            <!-- Total Item Column -->
+            <ng-container matColumnDef="item">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Item </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <strong>{{ element.item || 0 }}</strong>
               </td>
             </ng-container>
-            <ng-container matColumnDef="L_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>L</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.L_count || 0 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="M_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>M</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.M_count || 0 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="N_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>N</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.N_count || 0 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="D_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>D</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.D_count || 0 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="B_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>B</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.B_count || 0 }}
-              </td>
-            </ng-container>
-            <ng-container matColumnDef="C_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>C</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.C_count
-                || 0 }} </td>
-            </ng-container>
-            <ng-container matColumnDef="null_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>NULL</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.null_count || 0 }}
-              </td>
-            </ng-container>
+
+            <!-- Error Column -->
             <ng-container matColumnDef="error">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>error</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="element.error" (click)="listError(element)">
-                  <i class="fas fa-info-circle fa-lg"></i>&nbsp;
-                  <span class="badge badge-light"> {{ element.error }}</span>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Error </th>
+              <td mat-cell *matCellDef="let element">
+                <button style="margin: 5px;" type="button" class="btn btn-danger btn-sm" *ngIf="element.error"
+                  (click)="listError(element)">
+                  <i class="fas fa-info-circle"></i> {{ element.error }}
                 </button>
               </td>
             </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </section>
         <div>
@@ -221,78 +198,65 @@
       <div class="responsive-table" [hidden]="!dataDrug">
         <section class="example-container mat-elevation-z8" tabindex="0">
           <table mat-table matTableExporter [dataSource]="dataSource" #MatSort3="matSort" matSort
-            #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="checker_id" matSortDirection="desc">
+            #exporter3="matTableExporter" class="mat-elevation-z8" matSortActive="dispenser_id" matSortDirection="desc">
+
+            <!-- Dispenser ID -->
             <ng-container matColumnDef="dispenser_id">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                dispenser_id
-              </th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.dispenser_id }}
-              </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> dispenser_id </th>
+              <td mat-cell *matCellDef="let element" style="padding: 0 20px;"> {{ element.dispenser_id }} </td>
             </ng-container>
 
+            <!-- Dispenser Name (Sticky) -->
             <ng-container matColumnDef="dispenser_name" sticky>
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                dispenser_name
-              </th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.dispenser_name }}
-              </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> dispenser_name </th>
+              <td mat-cell *matCellDef="let element" style="padding: 0 20px;"> {{ element.dispenser_name }} </td>
             </ng-container>
 
-            <ng-container matColumnDef="item">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>item</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.item }}
-              </td>
-            </ng-container>
-
+            <!-- Order -->
             <ng-container matColumnDef="order">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>order</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.order }}
-              </td>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> order </th>
+              <td mat-cell *matCellDef="let element" style="padding: 0 20px;"> {{ element.order }} </td>
             </ng-container>
-            <ng-container matColumnDef="L_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>L</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.L_count
-                || 0 }} </td>
-            </ng-container> <ng-container matColumnDef="M_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>M</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.M_count
-                || 0 }} </td>
-            </ng-container> <ng-container matColumnDef="N_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>N</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.N_count
-                || 0 }} </td>
-            </ng-container> <ng-container matColumnDef="D_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>D</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.D_count
-                || 0 }} </td>
-            </ng-container> <ng-container matColumnDef="B_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>B</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.B_count
-                || 0 }} </td>
-            </ng-container><ng-container matColumnDef="C_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>C</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px"> {{ element.C_count
-                || 0 }} </td>
+
+            <!-- วนลูปสร้างคอลัมน์ Count และ Item แยกกัน -->
+            <ng-container *ngFor="let group of statsGroups3">
+
+              <!-- คอลัมน์ Count (C) -->
+              <ng-container [matColumnDef]="group.countDef">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ group.label }}(C) </th>
+                <td mat-cell *matCellDef="let element" style="padding: 0 20px;">
+                  {{ element[group.countDef] || 0 }}
+                </td>
+              </ng-container>
+
+              <!-- คอลัมน์ Item (I) -->
+              <ng-container [matColumnDef]="group.itemDef">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header style="color: #6c757d;"> {{ group.label }}(I)
+                </th>
+                <td mat-cell *matCellDef="let element" style="padding: 0 20px; background-color: #f8f9fa;">
+                  {{ element[group.itemDef] || 0 }}
+                </td>
+              </ng-container>
+
             </ng-container>
-            <ng-container matColumnDef="null_count">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>NULL</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.null_count || 0 }}
-              </td>
+
+            <!-- Total Item -->
+            <ng-container matColumnDef="item">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> item </th>
+              <td mat-cell *matCellDef="let element" style="padding: 0 20px;"> <strong>{{ element.item }}</strong> </td>
             </ng-container>
+
+            <!-- Error -->
             <ng-container matColumnDef="error">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>error</th>
-              <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> error </th>
+              <td mat-cell *matCellDef="let element" style="padding: 0 20px;">
                 <button type="button" class="btn btn-danger btn-sm" *ngIf="element.error" (click)="listError(element)">
                   <i class="fas fa-info-circle fa-lg"></i>&nbsp;
                   <span class="badge badge-light"> {{ element.error }}</span>
                 </button>
               </td>
             </ng-container>
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
           </table>

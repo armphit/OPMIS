@@ -1,0 +1,154 @@
+<mat-card class="check-card mat-elevation-z2" style="cursor: pointer" [ngClass]="cardClass" (click)="openModal()">
+  <mat-card-title>ตรวจขนาดยา</mat-card-title>
+  <mat-card-content> สถานะ: {{ allergyStatus }} </mat-card-content>
+</mat-card>
+
+<div class="modal fade" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- HEADER -->
+      <div class="modal-header">
+        <h5 class="modal-title">ตรวจสอบขนาดยา (Dosage Check)</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+
+      <!-- BODY -->lab
+      <div class="modal-body">
+        <ng-container *ngIf="patient?.finalResult?.dosage?.valueDosage?.length; else noData">
+          <div *ngFor="let item of patient?.finalResult?.dosage?.valueDosage; let i = index" class="mb-4">
+            <!-- Card for each drug item -->
+            <div class="card" [ngClass]="item.warningTriggered ? 'border-danger' : 'border-success'">
+              <div class="card-header d-flex justify-content-between align-items-center"
+                [ngClass]="item.warningTriggered ? 'bg-danger text-white' : 'bg-success text-white'">
+                <span>
+                  <strong>{{ i + 1 }}. {{ item.patient.invName }}</strong>
+                  <br>
+                  <small>{{ item.patient.invCode }} | Request #{{ item.patient.reqNo }}</small>
+                </span>
+                <span class="badge badge-light" *ngIf="item.warningTriggered">
+                  &#9888; Warning
+                </span>
+              </div>
+
+              <div class="card-body">
+                <div class="row">
+                  <!-- Patient Info Column -->
+                  <div class="col-md-4 mb-3">
+                    <h6 class="text-muted border-bottom pb-1">&#128100; ข้อมูลผู้ป่วย</h6>
+                    <table class="table table-sm table-borderless mb-0">
+                      <tr>
+                        <td class="text-nowrap font-weight-bold" style="width: 100px;">น้ำหนัก:</td>
+                        <td>{{ item.patient.Weight }} kg</td>
+                      </tr>
+                      <tr>
+                        <td class="text-nowrap font-weight-bold">ส่วนสูง:</td>
+                        <td>{{ item.patient.Height }} cm</td>
+                      </tr>
+                      <tr>
+                        <td class="text-nowrap font-weight-bold">จำนวน:</td>
+                        <td>{{ item.patient.qtyReq }} {{ item.patient.unit }}</td>
+                      </tr>
+                      <tr>
+                        <td class="text-nowrap font-weight-bold">ครั้งละ:</td>
+                        <td>{{ item.patient.lamedQty }} {{ item.patient.lamedUnit }}</td>
+                      </tr>
+                    </table>
+                  </div>
+
+                  <!-- Dosage Instruction Column -->
+                  <div class="col-md-4 mb-3">
+                    <h6 class="text-muted border-bottom pb-1">&#128221; คำสั่งการใช้ยา</h6>
+                    <p class="mb-1">
+                      <span class="font-weight-bold">วิธีใช้:</span>
+                    </p>
+                    <p class="mb-0 text-wrap">{{ item.patient.medHow }}</p>
+                    <small class="text-muted">
+                      จำนวนครั้งต่อวัน: {{ item.patient.time_docperday }} ครั้ง
+                    </small>
+                  </div>
+
+                  <!-- Drug Rule Column -->
+                  <div class="col-md-4 mb-3">
+                    <h6 class="text-muted border-bottom pb-1">&#128295; เกณฑ์ขนาดยา</h6>
+                    <table class="table table-sm table-borderless mb-0">
+                      <tr>
+                        <td class="text-nowrap font-weight-bold" style="width: 110px;">ความแรง:</td>
+                        <td>{{ item.matchedDrugRule.strength }} mg</td>
+                      </tr>
+                      <tr>
+                        <td class="text-nowrap font-weight-bold">ช่วงปกติ:</td>
+                        <td>
+                          {{ item.matchedDrugRule.warningMin }} - {{ item.matchedDrugRule.warningMax }} mg/kg
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="text-nowrap font-weight-bold">ประเภท:</td>
+                        <td>
+                          <span class="badge badge-info">{{ item.matchedDrugRule.drugType === 1 ? 'Type 1 (mg/kg)' :
+                            'Type ' + item.matchedDrugRule.drugType }}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Result Section -->
+                <div class="row mt-2">
+                  <div class="col-12">
+                    <div class="p-3 rounded"
+                      [ngClass]="item.warningTriggered ? 'bg-danger-light border border-danger' : 'bg-success-light border border-success'">
+                      <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                          <small class="text-muted d-block">ขนาดยาที่คำนวณได้</small>
+                          <span class="h4 mb-0" [ngClass]="item.warningTriggered ? 'text-danger' : 'text-success'">
+                            <strong>{{ item.calculatedResult | number:'1.2-4' }}</strong>
+                          </span>
+                          <small class="text-muted d-block">mg/kg/day</small>
+                        </div>
+                        <div class="col-md-1 text-center d-none d-md-block">
+                          <span class="h4">
+                            <ng-container *ngIf="item.warningTriggered">&#10060;</ng-container>
+                            <ng-container *ngIf="!item.warningTriggered">&#9989;</ng-container>
+                          </span>
+                        </div>
+                        <div class="col-md-7">
+                          <small class="text-muted d-block">ผลการตรวจสอบ</small>
+                          <span class="font-weight-bold"
+                            [ngClass]="item.warningTriggered ? 'text-danger' : 'text-success'">
+                            {{ item.warningTriggered ? '&#9888; เกินเกณฑ์ที่กำหนด : Warning' : '&#10003; ผ่านเกณฑ์
+                            :Normal' }}
+                          </span>
+                          <br>
+                          <small class="text-muted" *ngIf="item.reason">
+                            <span class="font-weight-bold">เหตุผล:</span> {{ item.reason }}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noData>
+          <div class="alert alert-info text-center mb-0">
+            <span class="h5">&#128203; ไม่มีข้อมูลการตรวจสอบขนาดยา</span>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+
+        <button *ngIf="patient?.finalResult?.dosage?.result?.statusCheck" class="btn btn-primary" (click)="onConfirm()">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
