@@ -7,10 +7,24 @@
         <mat-form-field appearance="outline" class="site-select" *ngIf="dataUser.role == 'opd'">
           <mat-label>Site</mat-label>
           <mat-select [(ngModel)]="selectedSite">
+            <mat-option value="W9">ห้องยาชั้น 1</mat-option>
             <mat-option value="W8">ห้องยาชั้น 2</mat-option>
             <mat-option value="W18">ห้องยาชั้น 3</mat-option>
             <mat-option value="W19">ห้องยา M - Park</mat-option>
+            <mat-option value="W22">ห้องยา
+              ตึกไฟฟ้า</mat-option>
+
+            <mat-option value="W20">ห้องยา ER OPD</mat-option>
+            <mat-option value="W21">ห้องยา ER IPD</mat-option>
+            <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+            <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
           </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="datepicker-input">
+          <mat-label>เลือกวันที่</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <mat-form-field appearance="outline" class="flex-grow-1 patient-input">
           <mat-label>กรอกหรือสแกน ID ผู้ป่วย</mat-label>
@@ -18,7 +32,7 @@
           <input matInput [(ngModel)]="patientId" (keyup.enter)="scan()" placeholder="HN / Patient ID" />
         </mat-form-field>
         <button mat-raised-button color="primary" class="scan-btn" (click)="scan()"
-          style="padding: 8px;margin-bottom: 20px;">
+          style="padding: 8px; margin-bottom: 20px">
           <mat-icon>qr_code_scanner</mat-icon>
           <span>Scan</span>
         </button>
@@ -52,10 +66,12 @@
                   <strong>อายุ:</strong> {{ patient.todayDrugsHN[0]?.Age }} ปี
                 </div>
                 <div>
-                  <strong>น้ำหนัก:</strong> {{ patient.todayDrugsHN[0]?.Weight }} kg
+                  <strong>น้ำหนัก:</strong>
+                  {{ patient.todayDrugsHN[0]?.Weight }} kg
                 </div>
                 <div>
-                  <strong>ส่วนสูง:</strong> {{ patient.todayDrugsHN[0]?.Height }} cm
+                  <strong>ส่วนสูง:</strong>
+                  {{ patient.todayDrugsHN[0]?.Height }} cm
                 </div>
               </div>
 
@@ -109,20 +125,28 @@
             </mat-expansion-panel-header>
             <div class="row" style="padding: 10px" *ngIf="patient.todayDrugsHN.length">
               <div class="col-md-3 mb-3">
-                <app-allergy-check-card [patient]="patient" (confirm)="dataConfirm('allergy')">
+                <app-allergy-check-card [patient]="patient" (confirm)="dataConfirm('Allergy')">
                 </app-allergy-check-card>
               </div>
               <div class="col-md-3 mb-3">
-                <app-duplicate-check-card [patient]="patient" (confirm)="dataConfirm('duplicate')">
+                <app-duplicate-check-card [patient]="patient" (confirm)="dataConfirm('Duplicate')">
                 </app-duplicate-check-card>
               </div>
               <div class="col-md-3 mb-3">
-                <app-laboratory-test [patient]="patient" (confirm)="dataConfirm('lab')">
+                <app-laboratory-test [patient]="patient" (confirm)="dataConfirm('Lab')">
                 </app-laboratory-test>
               </div>
               <div class="col-md-3 mb-3">
-                <app-dosage-check-card [patient]="patient" (confirm)="dataConfirm('dosage')">
+                <app-dosage-check-card [patient]="patient" (confirm)="dataConfirm('Dosage')">
                 </app-dosage-check-card>
+              </div>
+              <div class="col-md-3 mb-3">
+                <app-interdrugaction-check-card [patient]="patient" (confirm)="dataConfirm('Interdrugaction')">
+                </app-interdrugaction-check-card>
+              </div>
+              <div class="col-md-3 mb-3">
+                <app-appropriatedosage-check-card [patient]="patient" (confirm)="dataConfirm('Appropriatedosage')">
+                </app-appropriatedosage-check-card>
               </div>
             </div>
           </mat-expansion-panel>
@@ -137,6 +161,34 @@
           <button class="btn btn-primary toolbar-btn" (click)="getDuplicate()">
             <mat-icon>refresh</mat-icon> <span>Load Data</span>
           </button>
+          <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
+            <mat-label>วันที่เริ่มต้น</mat-label>
+            <input matInput [matDatepicker]="startPicker" [(ngModel)]="reportDateStart" />
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
+            <mat-label>วันที่สิ้นสุด</mat-label>
+            <input matInput [matDatepicker]="endPicker" [(ngModel)]="reportDateEnd" />
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="site-select toolbar-site-select">
+            <mat-label>Site</mat-label>
+            <mat-select [(ngModel)]="reportSelectedSite" (selectionChange)="onReportSiteChange()">
+              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+              <mat-option value="W19">ห้องยา M - Park</mat-option>
+              <mat-option value="W22">ห้องยา
+                ตึกไฟฟ้า</mat-option>
+
+              <mat-option value="W20">ห้องยา ER OPD</mat-option>
+              <mat-option value="W21">ห้องยา ER IPD</mat-option>
+              <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+              <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="toolbar-right">
           <mat-form-field appearance="outline" class="search-box">
@@ -148,7 +200,6 @@
 
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows
         class="report-table mat-elevation-z2 responsive-table">
-
         <!-- Prescription -->
         <ng-container matColumnDef="prescription">
           <th mat-header-cell *matHeaderCellDef>Prescription</th>
@@ -197,7 +248,6 @@
               <button mat-button color="primary" class="action-btn" (click)="goTab2(row)">
                 View Report
               </button>
-
             </div>
           </td>
         </ng-container>
@@ -219,7 +269,9 @@
                   <div class="detail-item">
                     <span class="detail-label">Type</span>
                     <span class="detail-value">
-                      <span class="interaction-badge" [ngClass]="getInteractionClass(detail.drug_interaction_type)">
+                      <span class="interaction-badge" [ngClass]="
+                          getInteractionClass(detail.drug_interaction_type)
+                        ">
                         {{ detail.drug_interaction_type }}
                       </span>
                     </span>
@@ -227,11 +279,21 @@
                   <div class="detail-item">
                     <span class="detail-label">Status</span>
                     <span class="detail-value">
-                      <span class="status-badge" [ngClass]="getStatusClass(detail.drug_interaction_status)">
+                      <span class="status-badge" [ngClass]="
+                          getStatusClass(detail.drug_interaction_status)
+                        ">
                         <mat-icon class="status-icon">
-                          {{ detail.drug_interaction_status === '0' ? 'check_circle' : 'pending' }}
+                          {{
+                          detail.drug_interaction_status === "0"
+                          ? "check_circle"
+                          : "pending"
+                          }}
                         </mat-icon>
-                        {{ detail.drug_interaction_status === '0' ? 'Confirmed' : 'Pending' }}
+                        {{
+                        detail.drug_interaction_status === "0"
+                        ? "Confirmed"
+                        : "Pending"
+                        }}
                       </span>
                     </span>
                   </div>
@@ -247,13 +309,15 @@
                   </div>
                 </div>
               </div>
-              <div *ngIf="row.details.length === 0" class="no-details">No drug details available</div>
+              <div *ngIf="row.details.length === 0" class="no-details">
+                No drug details available
+              </div>
             </div>
           </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="parent-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="parent-row"></tr>
       </table>
       <div *ngIf="dataSource.data.length === 0" class="no-data-message">
         <mat-icon>inbox</mat-icon>

@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
 declare const $: any;
 @Component({
   selector: 'app-laboratory-test',
@@ -8,9 +16,14 @@ declare const $: any;
 export class LaboratoryTestComponent implements OnInit {
   @Input() patient: any;
   @Output() confirm = new EventEmitter<void>();
-  constructor() { }
+  @Output() medError = new EventEmitter<any>();
+  @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
 
-  ngOnInit(): void { }
+  selectedDrugItem: any = null;
+
+  constructor() {}
+
+  ngOnInit(): void {}
   modalId = 'labModal';
 
   openModal() {
@@ -23,6 +36,25 @@ export class LaboratoryTestComponent implements OnInit {
 
   closeModal() {
     $('#' + this.modalId).modal('hide');
+  }
+
+  openMedErrorModal(item: any) {
+    this.selectedDrugItem = {
+      patient: {
+        invName: item.invName,
+        invCode: item.invCode,
+        reqNo: '',
+        Weight: '',
+        checkType: this.patient?.finalResult?.lab?.result.statusInsert,
+      },
+    };
+    setTimeout(() => {
+      this.medErrorModal.openModal();
+    });
+  }
+
+  onMedErrorSave(data: any) {
+    this.medError.emit(data);
   }
 
   get allergyStatus(): string {

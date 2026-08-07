@@ -69,14 +69,7 @@ export class CheckInComponent implements OnInit {
 
   nextId = 1;
 
-  typeleave: Array<string> = [
-    '',
-    'ลาป่วย',
-    'ลากิจ',
-    'ลาพักร้อน',
-    'ขาดงาน',
-    'มาสาย',
-  ];
+  typeleave: Array<string> = ['', 'ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาคลอดบุตร', 'ลาอุปสมบท', 'ขาดงาน', 'มาสาย', 'อื่นๆ'];
   timeleave: Array<string> = ['', 'เต็มเวลา', 'ครึ่งเช้า', 'ครึ่งบ่าย'];
 
   selectedUser: any = null;
@@ -403,7 +396,7 @@ export class CheckInComponent implements OnInit {
 
   displayedColumns2: any = null;
   dataSource2: any = null;
-  leaveTypes: any = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ขาดงาน', 'มาสาย'];
+  leaveTypes: any = ['ลาป่วย', 'ลากิจ', 'ลาพักร้อน', 'ลาคลอดบุตร', 'ลาอุปสมบท', 'ขาดงาน', 'มาสาย', 'อื่นๆ'];
 
   months = [
     { value: 1, name: 'มกราคม' },

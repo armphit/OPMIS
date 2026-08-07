@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
 
 declare const $: any;
 @Component({
@@ -7,23 +15,19 @@ declare const $: any;
   styleUrls: ['../check-patient.component.scss'],
 })
 export class DosageCheckCardComponent implements OnInit {
-
-  // constructor() { }
-
-  // ngOnInit(): void {
-  // }
   @Input() patient: any;
   @Output() confirm = new EventEmitter<void>();
-  constructor() {
+  @Output() medError = new EventEmitter<any>();
+  @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
 
+  selectedDrugItem: any = null;
 
-  }
+  constructor() {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
   modalId = 'dosageModal';
 
   openModal() {
-
     const a = this.patient?.finalResult?.dosage?.valueDosage.length;
 
     if (a) {
@@ -33,6 +37,19 @@ export class DosageCheckCardComponent implements OnInit {
 
   closeModal() {
     $('#' + this.modalId).modal('hide');
+  }
+
+  openMedErrorModal(item: any) {
+    ((item.patient.checkType =
+      this.patient?.finalResult?.dosage?.result.statusInsert),
+      (this.selectedDrugItem = item));
+    setTimeout(() => {
+      this.medErrorModal.openModal();
+    });
+  }
+
+  onMedErrorSave(data: any) {
+    this.medError.emit(data);
   }
 
   get allergyStatus(): string {
@@ -70,5 +87,13 @@ export class DosageCheckCardComponent implements OnInit {
   onConfirm() {
     this.confirm.emit();
     this.closeModal();
+  }
+
+  checkDosage(val: any, max: any, min: any) {
+    return val < min
+      ? `ขนาดยาน้อยเกินที่กำหนด`
+      : val > max
+        ? `ขนาดยามากเกินที่กำหนด`
+        : ``;
   }
 }

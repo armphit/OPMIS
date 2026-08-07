@@ -1,0 +1,156 @@
+<div
+  class="modal fade"
+  [id]="modalId"
+  data-backdrop="static"
+  data-keyboard="false"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">📋 รายงาน Medication Error (PE)</h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Drug Info -->
+        <div class="card mb-3" *ngIf="drugItem">
+          <div class="card-header bg-warning text-dark">
+            <strong>💊 ข้อมูลยาที่แจ้ง error</strong>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p class="mb-1">
+                  <strong>ชื่อยา:</strong> {{ drugItem?.patient?.invName }}
+                </p>
+                <p class="mb-1">
+                  <strong>รหัสยา:</strong> {{ drugItem?.patient?.invCode }}
+                </p>
+                <p class="mb-1">
+                  <strong>Request #:</strong> {{ drugItem?.patient?.reqNo }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1">
+                  <strong>HN:</strong> {{ patient?.todayDrugsHN?.[0]?.hn }}
+                </p>
+                <p class="mb-1">
+                  <strong>ชื่อผู้ป่วย:</strong>
+                  {{ patient?.todayDrugsHN?.[0]?.patientname }}
+                </p>
+                <p class="mb-1">
+                  <strong>น้ำหนัก:</strong> {{ drugItem?.patient?.Weight }} kg
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Med Error Form -->
+        <div class="card">
+          <div class="card-header bg-danger text-white">
+            <strong>⚠️ รายละเอียด Medication Error</strong>
+          </div>
+          <div class="card-body">
+            <!-- ประเภท error -->
+            <div class="form-group">
+              <mat-form-field appearance="outline">
+                <mat-label>รูปแบบความผิด</mat-label>
+
+                <mat-select [(ngModel)]="medErrorType" name="medErrorType">
+                  <mat-option
+                    *ngFor="let item of gettypeE"
+                    [value]="item.id_type"
+                  >
+                    {{ item.name_type }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <mat-form-field class="example-full-width">
+                  <mat-label>ชื่อยาผิด</mat-label>
+                  <input
+                    [(ngModel)]="medWrong"
+                    required
+                    #inputwrong
+                    type="text"
+                    matInput
+                    [matAutocomplete]="auto2"
+                    (input)="filter_wrong()"
+                    (focus)="filter_wrong()"
+                  />
+                  <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                    <mat-option
+                      *ngFor="let option of dataWrong"
+                      [value]="option.name.trim()"
+                    >
+                      {{ option.name.trim() }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <div class="col">
+                <mat-form-field class="example-full-width">
+                  <input
+                    [(ngModel)]="medWrongtext"
+                    matInput
+                    placeholder="รายละเอียดผิด"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <mat-form-field class="example-full-width">
+                  <mat-label>ชื่อยาถูก</mat-label>
+                  <input
+                    [(ngModel)]="medGood"
+                    required
+                    #inputgood
+                    type="text"
+                    matInput
+                    [matAutocomplete]="auto"
+                    (input)="filter_good()"
+                    (focus)="filter_good()"
+                  />
+                  <mat-autocomplete requireSelection #auto="matAutocomplete">
+                    <mat-option
+                      *ngFor="let option of dataGood"
+                      [value]="option.name.trim()"
+                    >
+                      {{ option.name.trim() }}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <div class="col">
+                <mat-form-field class="example-full-width">
+                  <input
+                    [(ngModel)]="medGoodtext"
+                    matInput
+                    placeholder="รายละเอียดถูก"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">ยกเลิก</button>
+        <button
+          class="btn btn-danger"
+          (click)="onSubmit()"
+          [disabled]="!medErrorType"
+        >
+          <span>📤 บันทึก Medication Error</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -13,7 +13,7 @@ import { MatListModule } from '@angular/material/list';
 import { HttpClientModule } from '@angular/common/http';
 import { NavModule } from './components/nav/nav.module';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MaterialModules } from './materialModule';
 import { IpdComponent } from './pages/ipd/ipd.component';
@@ -37,6 +37,9 @@ import { AllergyCheckCardComponent } from './pages/check-patient/allergy-check-c
 import { DuplicateCheckCardComponent } from './pages/check-patient/duplicate-check-card/duplicate-check-card.component';
 import { LaboratoryTestComponent } from './pages/check-patient/laboratory-test/laboratory-test.component';
 import { DosageCheckCardComponent } from './pages/check-patient/dosage-check-card/dosage-check-card.component';
+import { InterdrugactionCheckCardComponent } from './pages/check-patient/interdrugaction-check-card/interdrugaction-check-card.component';
+import { AppropriatedosageCheckCardComponent } from './pages/check-patient/appropriatedosage-check-card/appropriatedosage-check-card.component';
+import { ModalMederrorComponent } from './pages/check-patient/modal-mederror/modal-mederror.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +60,9 @@ import { DosageCheckCardComponent } from './pages/check-patient/dosage-check-car
     DuplicateCheckCardComponent,
     LaboratoryTestComponent,
     DosageCheckCardComponent,
-
+    InterdrugactionCheckCardComponent,
+    AppropriatedosageCheckCardComponent,
+    ModalMederrorComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +77,7 @@ import { DosageCheckCardComponent } from './pages/check-patient/dosage-check-car
     HttpClientModule,
     NavModule,
     MatTableExporterModule,
+    FormsModule,
     ReactiveFormsModule,
     MatGridListModule,
     MaterialModules,

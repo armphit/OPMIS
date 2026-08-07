@@ -1,0 +1,170 @@
+<mat-card
+  class="check-card mat-elevation-z2"
+  style="cursor: pointer"
+  [ngClass]="cardClass"
+  (click)="openModal()"
+>
+  <mat-card-title>ตรวจสอบความเหมาะสมของยา</mat-card-title>
+  <mat-card-content>สถานะ: {{ statusText }}</mat-card-content>
+</mat-card>
+
+<div
+  class="modal fade"
+  [id]="modalId"
+  data-backdrop="static"
+  data-keyboard="false"
+  tabindex="-1"
+>
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg appropriate-modal">
+      <!-- HEADER -->
+      <div class="modal-header align-items-center py-3">
+        <h5 class="modal-title d-flex align-items-center font-weight-bold mb-0">
+          <mat-icon class="header-icon mr-2">medication</mat-icon>
+          ตรวจสอบความเหมาะสมของยา (Appropriate Dosage Check)
+        </h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body p-4">
+        <ng-container *ngIf="data.length; else noData">
+          <!-- Summary Bar -->
+          <div class="summary-bar mb-4">
+            <mat-icon>warning</mat-icon>
+            <span>
+              พบรายการที่ต้องตรวจสอบ <strong>{{ data.length }}</strong> รายการ —
+              &#9888; กรุณาตรวจสอบก่อนดำเนินการ
+            </span>
+          </div>
+
+          <!-- Drug Items -->
+          <div
+            *ngFor="let item of data; let i = index"
+            class="appropriate-card mb-3 border-warning"
+          >
+            <!-- Card Header -->
+            <div class="appropriate-card-header bg-warning text-dark">
+              <div
+                class="d-flex justify-content-between align-items-center w-100"
+              >
+                <div class="d-flex align-items-center">
+                  <span class="item-index mr-2">#{{ i + 1 }}</span>
+                  <div>
+                    <strong>{{ item.invName }}</strong>
+                    <br />
+                    <small class="opacity-75">{{ item.invCode }}</small>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center">
+                  <span class="rule-type-badge mr-2">
+                    {{ getRuleTypeLabel(item.ruleType) }}
+                  </span>
+                  <span class="status-badge status-warning">
+                    <mat-icon class="status-icon">warning</mat-icon>
+                    {{ item.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+              <div class="row">
+                <!-- PE Button -->
+                <div class="col-12 mb-2 text-right">
+                  <button
+                    class="btn btn-warning btn-sm"
+                    (click)="openMedErrorModal(item)"
+                    title="รายงาน Medication Error"
+                  >
+                    <span>⚠️ PE</span>
+                  </button>
+                </div>
+                <!-- Quantity Info -->
+                <div class="col-md-4 mb-3">
+                  <h6 class="text-muted border-bottom pb-1">
+                    <mat-icon class="section-icon">inventory_2</mat-icon>
+                    จำนวนยา
+                  </h6>
+                  <div class="info-row">
+                    <span class="info-label">จำนวนที่ขอ:</span>
+                    <span class="info-value font-weight-bold">{{
+                      item.qtyReq
+                    }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="info-label">Rule Type:</span>
+                    <span class="info-value">
+                      <span class="badge badge-info">{{ item.ruleType }}</span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Status Result -->
+                <div class="col-md-4 mb-3">
+                  <h6 class="text-muted border-bottom pb-1">
+                    <mat-icon class="section-icon">gavel</mat-icon>
+                    ผลการตรวจสอบ
+                  </h6>
+                  <div
+                    class="result-box p-3 rounded bg-warning-light border border-warning"
+                  >
+                    <div class="d-flex align-items-center">
+                      <mat-icon class="mr-2 text-warning">warning</mat-icon>
+                      <span class="font-weight-bold text-warning">
+                        ต้องตรวจสอบ
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reasons -->
+                <div class="col-md-4 mb-3">
+                  <h6 class="text-muted border-bottom pb-1">
+                    <mat-icon class="section-icon">description</mat-icon>
+                    เหตุผล
+                  </h6>
+                  <div class="reasons-box">
+                    <p class="mb-0 reasons-text">{{ item.reasons }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noData>
+          <div class="no-data-box">
+            <mat-icon>check_circle</mat-icon>
+            <p>ไม่พบข้อมูลการตรวจสอบความเหมาะสมของยา</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+        <button
+          *ngIf="patient?.finalResult?.appropriatedosage?.result?.statusCheck"
+          class="btn btn-primary"
+          (click)="onConfirm()"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Medication Error Modal (PE) -->
+<app-modal-mederror
+  #medErrorModal
+  [patient]="patient"
+  [drugItem]="selectedDrugItem"
+  [source]="'AppropriateDosage'"
+  (save)="onMedErrorSave($event)"
+>
+</app-modal-mederror>

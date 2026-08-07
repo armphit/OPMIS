@@ -315,7 +315,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   drugList: any = null;
   dataDrug2: any = [];
   listDrug = async (val: any) => {
-    console.log(val);
+
 
     let formData = new FormData();
     this.hncut = null;

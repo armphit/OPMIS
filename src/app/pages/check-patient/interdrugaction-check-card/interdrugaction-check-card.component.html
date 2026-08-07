@@ -1,0 +1,160 @@
+<mat-card class="check-card mat-elevation-z2" style="cursor: pointer" [ngClass]="cardClass" (click)="openModal()">
+  <mat-card-title>ปฏิกิริยาระหว่างยา</mat-card-title>
+  <mat-card-content>สถานะ: {{ interdrugactionStatus }}</mat-card-content>
+</mat-card>
+
+<div class="modal fade" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg interaction-modal">
+      <div class="modal-header align-items-center py-3">
+        <h5 class="modal-title d-flex align-items-center font-weight-bold mb-0">
+          <mat-icon class="header-icon mr-2">medication_liquid</mat-icon>
+          ตรวจพบอันตรกิริยาระหว่างยา (Drug Interaction)
+        </h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body p-4">
+        <ng-container *ngIf="interactionList.length; else noData">
+          <div class="summary-bar mb-4">
+            <mat-icon>info</mat-icon>
+            <span>พบการโต้ตอบของยา
+              <strong>{{ interactionList.length }}</strong> รายการ —
+              กรุณาตรวจสอบก่อนจ่ายยา</span>
+          </div>
+
+          <div *ngFor="let item of interactionList; let i = index; let last = last" class="interaction-card"
+            [ngClass]="getSeverityCardClass(item.severity)">
+            <div class="interaction-card-header">
+              <span class="interaction-index">#{{ i + 1 }}</span>
+              <span class="interaction-pair-label">คู่ยาที่พบปัญหา</span>
+              <span class="severity-badge" [ngClass]="getSeverityBadgeClass(item.severity)">
+                {{ item.severity }}
+              </span>
+              <button type="button" class="btn btn-sm btn-warning ml-2" (click)="openMedErrorModal(item)">
+                PE
+              </button>
+            </div>
+
+            <div class="drug-pair-section">
+              <!-- ยาตัวที่ 1 -->
+              <div class="drug-block drug-block--current">
+                <div class="drug-block-label">
+                  <mat-icon>local_pharmacy</mat-icon>
+                  ยาตัวที่ 1 (ใบสั่งปัจจุบัน)
+                </div>
+                <div class="drug-name">{{ item.todayDrug?.invName }}</div>
+                <div class="drug-meta">
+                  <span class="meta-chip">
+                    <mat-icon>tag</mat-icon>{{ item.todayDrug?.invCode }}
+                  </span>
+                  <span class="meta-chip">
+                    <mat-icon>location_on</mat-icon>{{ item.todayDrug?.toSite }}
+                  </span>
+                  <span class="meta-chip">
+                    <mat-icon>receipt</mat-icon>Req #{{ item.todayDrug?.reqNo }}
+                  </span>
+                </div>
+                <div class="drug-usage">
+                  <strong>วิธีใช้:</strong>
+                  {{ formatMedHow(item.todayDrug?.medHow) }}
+                  <span class="usage-divider">|</span>
+                  <strong>จำนวน:</strong>
+                  {{ formatQty(item.todayDrug) }}
+                </div>
+              </div>
+
+              <div class="pair-connector" aria-hidden="true">
+                <mat-icon>sync_alt</mat-icon>
+              </div>
+
+              <!-- ยาตัวที่ 2 -->
+              <div class="drug-block drug-block--interacting">
+                <div class="drug-block-label">
+                  <mat-icon>history</mat-icon>
+                  ยาตัวที่ 2 ({{
+                  getInteractingSourceLabel(item.interactingDrug)
+                  }})
+                </div>
+                <div class="drug-name">{{ item.interactingDrug?.invName }}</div>
+                <div class="drug-meta">
+                  <span class="meta-chip">
+                    <mat-icon>tag</mat-icon>{{ item.interactingDrug?.invCode }}
+                  </span>
+                  <span class="meta-chip">
+                    <mat-icon>location_on</mat-icon>{{ item.interactingDrug?.toSite }}
+                  </span>
+                  <span class="meta-chip" *ngIf="item.interactingDrug?.lastIssTime">
+                    <mat-icon>event</mat-icon>
+                    วันที่จ่าย:
+                    {{ formatDate(item.interactingDrug?.lastIssTime) }}
+                  </span>
+                </div>
+                <div class="drug-usage">
+                  <strong>วิธีใช้:</strong>
+                  {{ formatMedHow(item.interactingDrug?.medHow) }}
+                  <span class="usage-divider">|</span>
+                  <strong>จำนวน:</strong>
+                  {{ formatQty(item.interactingDrug) }}
+                </div>
+              </div>
+            </div>
+
+            <div class="interaction-details">
+              <div class="detail-row">
+                <span class="detail-label">
+                  <mat-icon>priority_high</mat-icon>
+                  ระดับความรุนแรง
+                </span>
+                <span class="severity-value" [ngClass]="getSeverityTextClass(item.severity)">
+                  Severity: {{ item.severity }}
+                  <span *ngIf="item.interactionType" class="interaction-type">
+                    ({{ item.interactionType }})
+                  </span>
+                </span>
+              </div>
+
+              <div class="detail-row detail-row--note">
+                <span class="detail-label">
+                  <mat-icon>description</mat-icon>
+                  รายละเอียด (Note)
+                </span>
+                <p class="note-text">
+                  {{
+                  item.note ||
+                  item.interaction?.Note ||
+                  "ไม่มีรายละเอียดเพิ่มเติม"
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <hr *ngIf="!last" class="interaction-divider" />
+          </div>
+        </ng-container>
+
+        <ng-template #noData>
+          <div class="no-data-box">
+            <mat-icon>check_circle</mat-icon>
+            <p>ไม่พบอันตรกิริยาระหว่างยา</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+        <button *ngIf="patient?.finalResult?.druginteraction?.result?.statusCheck" class="btn btn-primary"
+          (click)="onConfirm()">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Medication Error Modal (PE) -->
+<app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'DrugInteraction'"
+  (save)="onMedErrorSave($event)">
+</app-modal-mederror>

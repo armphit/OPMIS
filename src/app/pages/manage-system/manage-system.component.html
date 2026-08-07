@@ -48,9 +48,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/web-interface/#/" target="_blank"
-            >ระบบจ่ายยา</a
-          >
+          <a href="http://192.168.185.160/web-interface/#/" target="_blank">ระบบจ่ายยา</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -60,9 +58,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/dashboard/#/opdqueue" target="_blank"
-            >ระบบเวลาคิวผู้ป่วย</a
-          >
+          <a href="http://192.168.185.160/dashboard/#/opdqueue" target="_blank">ระบบเวลาคิวผู้ป่วย</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -73,9 +69,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/OnHand" target="_blank"
-            >ระบบ On Hand</a
-          >
+          <a href="http://192.168.185.160/OnHand" target="_blank">ระบบ On Hand</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -85,9 +79,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/dashboard/#/opdstock" target="_blank"
-            >ระบบ Stock SE-Med</a
-          >
+          <a href="http://192.168.185.160/dashboard/#/opdstock" target="_blank">ระบบ Stock SE-Med</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -98,15 +90,10 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/BasketShelf/" target="_blank"
-            >ระบบชั้นวางยารอจ่ายยาผู้ป่วย</a
-          >
+          <a href="http://192.168.185.160/BasketShelf/" target="_blank">ระบบชั้นวางยารอจ่ายยาผู้ป่วย</a>
         </div>
       </div>
-      <div
-        class="col-lg-3 col-md-3 col-sm-3 col-xs-12"
-        *ngIf="dataUser == 'admin'"
-      >
+      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" *ngIf="dataUser == 'admin'">
         <div class="box-part text-center" [ngStyle]="test">
           <i class="fas fa-tasks fa-5x"></i>
 
@@ -114,9 +101,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.102:8790/DIH_PMPFSite/" target="_blank"
-            >ระบบจัดการ DIH</a
-          >
+          <a href="http://192.168.185.102:8790/DIH_PMPFSite/" target="_blank">ระบบจัดการ DIH</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -127,9 +112,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/RobotAnalysis/#/" target="_blank"
-            >ระบบวิเคราะห์การจ่ายยา Robot</a
-          >
+          <a href="http://192.168.185.160/RobotAnalysis/#/" target="_blank">ระบบวิเคราะห์การจ่ายยา Robot</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -140,9 +123,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/dashboard/#/drugimage" target="_blank"
-            >ระบบดูรูปยา</a
-          >
+          <a href="http://192.168.185.160/dashboard/#/drugimage" target="_blank">ระบบดูรูปยา</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -153,9 +134,7 @@
             <h4></h4>
           </div>
 
-          <a href="http://192.168.185.160/dashboard-mederror" target="_blank"
-            >ระบบรายงาน Med Error</a
-          >
+          <a href="http://192.168.185.160/dashboard-mederror" target="_blank">ระบบรายงาน Med Error</a>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
@@ -166,9 +145,14 @@
             <h4></h4>
           </div>
 
-          <a [routerLink]="['/check-post']" [routerLinkActive]="['active']"
+          <!-- <a [routerLink]="['/check-post']" [routerLinkActive]="['active']"
             >ระบบรายงานไปรษณีย์</a
-          >
+          > -->
+          <!-- <a (click)="sendData()">ระบบรายงานไปรษณีย์</a> -->
+          <a [href]="'http://192.168.185.160/drug-refill-management-system/?user=' + dataUser.user" target="_blank"
+            rel="noopener noreferrer">
+            ระบบรายงานไปรษณีย์
+          </a>
         </div>
       </div>
     </div>

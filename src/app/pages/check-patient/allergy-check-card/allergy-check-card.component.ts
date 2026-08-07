@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
+import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
 
 declare const $: any;
 
@@ -11,11 +18,15 @@ export class AllergyCheckCardComponent {
   @Input() patient: any;
 
   @Output() confirm = new EventEmitter<void>();
+  @Output() medError = new EventEmitter<any>();
+  @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
 
   modalId = 'allergyModal';
+  selectedDrugItem: any = null;
 
   openModal() {
     const a = this.patient?.finalResult?.allergymed?.[0];
+
     if (a?.cid) {
       $('#' + this.modalId).modal('show');
     }
@@ -25,8 +36,27 @@ export class AllergyCheckCardComponent {
     $('#' + this.modalId).modal('hide');
   }
 
+  openMedErrorModal(drug: any) {
+    console.log();
+    this.selectedDrugItem = {
+      patient: {
+        ...drug?.drug,
+        checkType: this.patient?.finalResult?.allergyresult[0]?.statusInsert,
+      },
+    };
+
+    setTimeout(() => {
+      this.medErrorModal.openModal();
+    });
+  }
+
+  onMedErrorSave(data: any) {
+    this.medError.emit(data);
+  }
+
   get allergyStatus(): string {
     const a = this.patient?.finalResult?.allergymed?.[0];
+
     if (!a?.cid) return 'PASS (ไม่มีแพ้ยา)';
     return a.timestamp ? 'PASS' : 'FAIL';
   }

@@ -214,9 +214,73 @@
             </div>
           </div>
         </div>
+
+        <div class="row" style="margin-top: 20px">
+          <div class="col-12">
+            <span style="font-weight: bold; color: #0056b3">
+              รายการยาล่าสุด
+            </span>
+
+            <div class="table-responsive modal-table">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                  <tr>
+                    <th style="white-space: nowrap; text-align: center">
+                      ลำดับ
+                    </th>
+                    <th style="white-space: nowrap">ชื่อยา</th>
+                    <th style="white-space: nowrap; text-align: center">
+                      จำนวน
+                    </th>
+                    <th style="white-space: nowrap; text-align: center">
+                      หน่วย
+                    </th>
+                    <th style="white-space: nowrap">วิธีใช้</th>
+                    <th style="white-space: nowrap">แพทย์</th>
+                    <th style="white-space: nowrap">วันที่จ่าย</th>
+                    <th style="white-space: nowrap">คิว</th>
+                    <th style="white-space: nowrap; text-align: center">PE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let drug of patient.todayDrugsHN; let x = index">
+                    <td style="text-align: center; vertical-align: middle">
+                      {{ x + 1 }}
+                    </td>
+                    <td style="vertical-align: middle">{{ drug.invName }}</td>
+                    <td style="text-align: center; vertical-align: middle">
+                      {{ drug.qtyReq }}
+                    </td>
+                    <td style="text-align: center; vertical-align: middle">
+                      {{ drug.unit }}
+                    </td>
+                    <td style="vertical-align: middle">{{ drug.medHow }}</td>
+                    <td style="vertical-align: middle; white-space: nowrap">
+                      {{ drug.docName }}
+                    </td>
+                    <td style="vertical-align: middle; white-space: nowrap">
+                      {{ drug.lastIssTime | date: "dd/MM/yyyy HH:mm" }}
+                    </td>
+                    <td style="vertical-align: middle; white-space: nowrap">
+                      {{ drug.queue }}
+                    </td>
+                    <td style="text-align: center; vertical-align: middle">
+                      <button
+                        class="btn btn-warning btn-sm"
+                        (click)="openMedErrorModal({ drug })"
+                        title="รายงาน Medication Error"
+                      >
+                        ⚠️ PE
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- FOOTER -->
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="closeModal()">Close</button>
 
@@ -231,3 +295,12 @@
     </div>
   </div>
 </div>
+
+<app-modal-mederror
+  #medErrorModal
+  [patient]="patient"
+  [drugItem]="selectedDrugItem"
+  [source]="'Allergy'"
+  (save)="onMedErrorSave($event)"
+>
+</app-modal-mederror>

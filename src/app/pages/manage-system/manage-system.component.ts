@@ -8,11 +8,11 @@ import { HttpService } from 'src/app/services/http.service';
 })
 export class ManageSystemComponent implements OnInit {
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}')
-    .role;
-  constructor(private http: HttpService) {}
+
+  constructor(private http: HttpService) { }
 
   ngOnInit(): void {
-    if (this.dataUser == 'ipd') {
+    if (this.dataUser.role == 'ipd') {
       this.http.navRouter('/ipd/ap-med');
       this.test = false;
     }

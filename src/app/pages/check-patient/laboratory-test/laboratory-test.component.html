@@ -38,6 +38,7 @@
                 <th>เงื่อนไข</th>
                 <th class="text-center">ขนาดยา/วัน</th>
                 <th class="text-center">สถานะ</th>
+                <th class="text-center">PE</th>
               </tr>
             </thead>
 
@@ -82,6 +83,16 @@
                     ปกติ
                   </span>
                 </td>
+
+                <td class="text-center">
+                  <button
+                    class="btn btn-warning btn-sm"
+                    (click)="openMedErrorModal(r)"
+                    title="รายงาน Medication Error"
+                  >
+                    ⚠️ PE
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -103,3 +114,13 @@
     </div>
   </div>
 </div>
+
+<!-- Medication Error Modal (PE) -->
+<app-modal-mederror
+  #medErrorModal
+  [patient]="patient"
+  [drugItem]="selectedDrugItem"
+  [source]="'Lab'"
+  (save)="onMedErrorSave($event)"
+>
+</app-modal-mederror>

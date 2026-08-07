@@ -15,7 +15,6 @@ export class DuplicateCheckCardComponent implements OnInit {
   conditionMeta: any = {};
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   constructor(private http: HttpService) {
-
     this.conditionMeta = {
       condition1: {
         title: 'ยาวันนี้อยู่กลุ่มเดียวกัน',
@@ -112,7 +111,9 @@ export class DuplicateCheckCardComponent implements OnInit {
   }
 
   async sendPE(d: any, currentDrug?: any) {
-    const todayDrugs = this.patient?.todayDrugsHN.find((v: any) => v.invCode === currentDrug);
+    const todayDrugs = this.patient?.todayDrugsHN.find(
+      (v: any) => v.invCode === currentDrug,
+    );
     let formData = new FormData();
     formData.append('currentDrug', currentDrug);
     formData.append('hn', todayDrugs?.hn);
@@ -129,11 +130,11 @@ export class DuplicateCheckCardComponent implements OnInit {
         });
       } else {
         const { value: pe } = await Swal.fire({
-          title: "Select field validation",
-          input: "select",
+          title: 'Select field validation',
+          input: 'select',
           inputOptions: {
-            "pe5": "การสั่งยาซ้ำซ้อน โดยแพทย์ต่างแผนก/ ต่าง Visit",
-            "pe6": "การสั่งยาซ้ำซ้อน โดยแพทย์ท่านเดียวกัน",
+            pe5: 'การสั่งยาซ้ำซ้อน โดยแพทย์ต่างแผนก/ ต่าง Visit',
+            pe6: 'การสั่งยาซ้ำซ้อน โดยแพทย์ท่านเดียวกัน',
           },
           showCancelButton: true,
           inputValidator: (value) => {
@@ -141,17 +142,18 @@ export class DuplicateCheckCardComponent implements OnInit {
               if (value) {
                 resolve();
               } else {
-                resolve("You need to select a field :)");
+                resolve('You need to select a field :)');
               }
             });
-          }
+          },
         });
         if (pe) {
-
           const payload = {
             hn: todayDrugs?.hn || this.patient?.todayDrugsHN[0]?.hn,
             toSite: todayDrugs?.toSite || this.patient?.todayDrugsHN[0]?.toSite,
-            lastIssTime: todayDrugs?.lastIssTime || this.patient?.todayDrugsHN[0]?.lastIssTime,
+            lastIssTime:
+              todayDrugs?.lastIssTime ||
+              this.patient?.todayDrugsHN[0]?.lastIssTime,
             doc: todayDrugs?.docName,
             // .replace('T', ' ')      // เปลี่ยน T เป็นช่องว่าง
             // .replace('Z', '')      // เอา Z ออก
@@ -160,8 +162,8 @@ export class DuplicateCheckCardComponent implements OnInit {
             currentDrug: currentDrug,
             pe: pe,
             user: this.dataUser.user,
-            userName: this.dataUser.name
-          }
+            userName: this.dataUser.name,
+          };
           console.log('send PE', payload);
           // let getData: any = await this.http.postNodejsTest('addPE', payload);
           // console.log(getData);
@@ -182,8 +184,7 @@ export class DuplicateCheckCardComponent implements OnInit {
           //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           // }
 
-
-          Object.keys(payload).forEach(key => {
+          Object.keys(payload).forEach((key) => {
             const value = payload[key];
 
             // ตรวจสอบว่าเป็น Object หรือ Array หรือไม่ (เช่น currentDrug หรือ pe)
@@ -198,8 +199,6 @@ export class DuplicateCheckCardComponent implements OnInit {
 
           let getData: any = await this.http.post('addPE', formData);
           if (getData.connect) {
-
-
             if (getData.response.rowCount) {
               Swal.fire({
                 position: 'center',
@@ -216,19 +215,14 @@ export class DuplicateCheckCardComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1500,
               });
-
             }
           } else {
             Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
           }
         }
-
-
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-
-
 }

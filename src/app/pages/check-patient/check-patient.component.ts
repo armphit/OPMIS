@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import { HttpService } from 'src/app/services/http.service';
 import { MatTabGroup } from '@angular/material/tabs';
 import { MatTableDataSource } from '@angular/material/table';
+import { DateAdapter } from '@angular/material/core';
 
 export interface DrugInteraction {
   drug_interaction_type: string;
@@ -32,18 +33,38 @@ export class CheckPatientComponent implements OnInit {
   patient: any = {};
   patientId = '';
   selectedSite = 'W8';
+  selectedDate: Date = new Date();
+  reportDateStart: Date = new Date();
+  reportDateEnd: Date = new Date();
+  reportSelectedSite = 'W8';
+  private _rawResult: any[] = [];
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-  displayedColumns: string[] = ['prescription', 'hn', 'statusCheck', 'departmentcode', 'userCheck', 'Actions', 'scanDT', 'drugDetails'];
+  displayedColumns: string[] = [
+    'prescription',
+    'hn',
+    'statusCheck',
+    'departmentcode',
+    'userCheck',
+    'Actions',
+    'scanDT',
+    'drugDetails',
+  ];
 
   dataSource: MatTableDataSource<Prescription> =
     new MatTableDataSource<Prescription>([]);
-  constructor(private http: HttpService) { }
+  constructor(
+    private http: HttpService,
+    private dateAdapter: DateAdapter<Date>,
+  ) {
+    this.dateAdapter.setLocale('th-TH');
+    this.scan();
+  }
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (data, filter) => {
-      const text = data.prescription + data.hn + data.queue + data.userCheck + data.scanDT;
-
+      const text =
+        data.prescription + data.hn + data.queue + data.userCheck + data.scanDT;
       return text.toLowerCase().includes(filter);
     };
   }
@@ -85,10 +106,16 @@ export class CheckPatientComponent implements OnInit {
    */
   async scan() {
     this.patient = {};
+    // this.patientId = '1277500';
     if (this.patientId) {
+      const dateStr = this.selectedDate
+        ? moment(this.selectedDate).format('YYYY-MM-DD')
+        : // moment('2026-07-16').format('YYYY-MM-DD')
+        moment(new Date()).format('YYYY-MM-DD');
+
       const getData: any = await this.http.postNodejsTest('getdatacpoe', {
         hn: this.patientId,
-        date: moment(new Date()).format('YYYY-MM-DD'),
+        date: dateStr,
         check: 1,
         site: this.dataUser?.role === 'opd' ? this.selectedSite : 'W7',
         user: this.dataUser.user,
@@ -117,13 +144,29 @@ export class CheckPatientComponent implements OnInit {
    */
   async dataConfirm(data: string) {
     if (!this.patient?.todayDrugsHN?.length) return;
-
+    let id = '';
+    const dateStr = this.selectedDate
+      ? moment(this.selectedDate).format('YYYY-MM-DD')
+      : moment(new Date()).format('YYYY-MM-DD');
+    // if (data === 'allergy') {
+    //   console.log(this.patient.finalResult.allergymed);
+    // } else if (data === 'Duplicate') {
+    //   console.log(this.patient.finalResult.duplicatemed.result);
+    // } else if (data === 'Lab') {
+    //   console.log(this.patient.finalResult.lab.result);
+    // } else if (data === 'Dosage') {
+    //   console.log(this.patient.finalResult.dosage.result);
+    // } else if (data === 'Interdrugaction') {
+    //   console.log(this.patient.finalResult.druginteraction.result);
+    // } else if (data === 'Appropriatedosage') {
+    //   console.log(this.patient.finalResult.appropriatedosage.result);
+    // }
     const payload = {
       hn: this.patient.todayDrugsHN[0]?.hn,
       user: this.dataUser.user,
       username: this.dataUser.name,
       queue: this.patient.todayDrugsHN[0]?.queue,
-      date: moment(new Date()).format('YYYY-MM-DD'),
+      date: dateStr,
       site: this.dataUser?.role === 'opd' ? this.selectedSite : 'W7',
       text: data,
       check: 2,
@@ -133,14 +176,22 @@ export class CheckPatientComponent implements OnInit {
 
     if (getData.connect && getData.response) {
       // update เฉพาะผล allergy
-      if (data === 'allergy') {
+
+
+      if (data === 'Allergy') {
         this.patient.finalResult.allergymed = getData.response.moph_patient;
-      } else if (data === 'duplicate') {
+      } else if (data === 'Duplicate') {
         this.patient.finalResult.duplicatemed.result = getData.response.updated;
-      } else if (data === 'lab') {
+      } else if (data === 'Lab') {
         this.patient.finalResult.lab.result = getData.response.updated;
-      } else if (data === 'dosage') {
+      } else if (data === 'Dosage') {
         this.patient.finalResult.dosage.result = getData.response.updated;
+      } else if (data === 'Interdrugaction') {
+        this.patient.finalResult.druginteraction.result =
+          getData.response.updated;
+      } else if (data === 'Appropriatedosage') {
+        this.patient.finalResult.appropriatedosage.result =
+          getData.response.updated;
       }
 
       Swal.fire({
@@ -154,17 +205,53 @@ export class CheckPatientComponent implements OnInit {
     }
   }
   async getDuplicate() {
-    let getData: any = await this.http.post('getDuplicate');
+    const dateStart = this.reportDateStart
+      ? moment(this.reportDateStart).format('YYYY-MM-DD')
+      : '';
+    const dateEnd = this.reportDateEnd
+      ? moment(this.reportDateEnd).format('YYYY-MM-DD')
+      : '';
+    let formData = new FormData();
+    formData.append('dateEnd', dateEnd);
+    formData.append('dateStart', dateStart);
+    let getData: any = await this.http.post('getDuplicate2', formData);
 
     if (getData.connect) {
       if (getData.response.rowCount) {
-        const grouped = this.groupByPrescription(getData.response.result);
-        this.dataSource = new MatTableDataSource<Prescription>(grouped);
+        this._rawResult = getData.response.result;
+
+        this.applyDepartmentFilter();
       } else {
+        this._rawResult = [];
         this.dataSource = new MatTableDataSource<Prescription>([]);
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+  }
+
+  private applyDepartmentFilter() {
+    const site = this.reportSelectedSite;
+    let filtered = this._rawResult;
+
+    if (site === 'W8') {
+      // W8 => departmentcode = null
+      filtered = filtered.filter(
+        (item: any) =>
+          !item.departmentcode ||
+          item.departmentcode === null ||
+          item.departmentcode === '' ||
+          item.departmentcode === 'W8',
+      );
+    } else {
+      filtered = filtered.filter((item: any) => item.departmentcode === site);
+    }
+
+    if (filtered.length) {
+      const grouped = this.groupByPrescription(filtered);
+      this.dataSource = new MatTableDataSource<Prescription>(grouped);
+    } else {
+      this.dataSource = new MatTableDataSource<Prescription>([]);
     }
   }
   onTabChange(index: any) {
@@ -177,11 +264,12 @@ export class CheckPatientComponent implements OnInit {
   }
   tabIndex = 0;
   async goTab2(row: any) {
-
+    if (row.scanDT) {
+      this.selectedDate = moment(row.scanDT, 'YYYY-MM-DD').toDate();
+    }
     this.patientId = row.hn;
     this.selectedSite = row.departmentcode ? row.departmentcode : 'W8';
-    console.log(row);
-    console.log('Selected Site:', this.selectedSite);
+
     this.tabIndex = 0;
     await this.scan();
   }
@@ -198,4 +286,7 @@ export class CheckPatientComponent implements OnInit {
     return status === '0' ? 'status-confirmed' : 'status-pending';
   }
 
+  onReportSiteChange() {
+    this.applyDepartmentFilter();
+  }
 }
