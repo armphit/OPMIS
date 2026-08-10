@@ -1,7 +1,5 @@
 ::ng-deep.mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
-::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(
-    .mat-tab-disabled
-  ) {
+::ng-deep.mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled) {
   color: #3f51b5;
   font-weight: bold;
 }
@@ -22,6 +20,7 @@
   display: block;
   width: 100%;
   overflow-x: auto;
+
   .mat-table {
     width: 100%;
     max-width: 100%;
@@ -30,10 +29,12 @@
     border-collapse: collapse;
     margin: 0px;
   }
+
   .mat-row,
   .mat-header-row {
     display: table-row;
   }
+
   .mat-cell,
   .mat-header-cell {
     word-wrap: initial;
@@ -46,4 +47,75 @@
     vertical-align: middle;
     text-align: center;
   }
+
+}
+
+/* Container หลักจัดวางแบบ Flexbox */
+.filter-bar-container {
+  display: flex;
+  flex-wrap: nowrap;
+  /* บังคับให้อยู่ในแถวเดียวกัน */
+  align-items: center;
+  /* จัดให้อยู่ตรงกลางแนวตั้งเท่ากัน */
+  gap: 12px;
+  /* เว้นระยะห่างระหว่างแต่ละคอมโพเนนต์ */
+  width: 100%;
+  overflow-x: auto;
+  /* หากจอเล็กเกินไปจะเลื่อนดูได้ ไม่พังทลาย */
+  padding: 8px 0;
+}
+
+/* กำหนดความกว้างของ Form Field แต่ละประเภท */
+.form-field-date {
+  width: 210px;
+  flex-shrink: 0;
+}
+
+.form-field-time {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.form-field-site {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.form-field-search {
+  width: 200px;
+  flex-shrink: 0;
+  margin-left: auto;
+  /* ดันช่องค้นหาไปขวาตัวสุด (ถ้ามีพื้นที่เหลือ) */
+}
+
+/* จัดรูปแบบตัวอักษรเชื่อมเวลา */
+.time-separator {
+  font-weight: bold;
+  margin-bottom: 16px;
+  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
+}
+
+/* กลุ่ม Checkbox */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
+}
+
+/* กลุ่ม ปุ่มกด */
+.button-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
+}
+
+/* แก้ไขระยะย่อ/ขอบของ Angular Material ให้กึ่งกลางพอดีกันทุกชิ้น */
+::ng-deep .filter-bar-container .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+  /* ซ่อนพื้นที่จองสำหรับ error/hint เพื่อให้แนวนอนตรงกันพอดี */
 }

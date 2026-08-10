@@ -44,6 +44,7 @@ export class ReportPharComponent implements OnInit {
     'N_count', 'N_item',
     'T_count', 'T_item',
     'GP_count', 'GP_item',
+    'PM_count', 'PM_item',
     'null_count', 'null_item',
     'item',
     'error'
@@ -60,6 +61,7 @@ export class ReportPharComponent implements OnInit {
     { countDef: 'A_count', itemDef: 'A_item', label: 'A' },
     { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
     { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
+    { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
     { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
 
@@ -84,6 +86,7 @@ export class ReportPharComponent implements OnInit {
     'N_count', 'N_item',
     'T_count', 'T_item',
     'GP_count', 'GP_item',
+    'PM_count', 'PM_item',
     'null_count', 'null_item',
     'item',
     'error',
@@ -100,6 +103,7 @@ export class ReportPharComponent implements OnInit {
     { countDef: 'A_count', itemDef: 'A_item', label: 'A' },
     { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
     { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
+    { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
     { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
   public displayedColumns4: string[] = [
@@ -117,7 +121,9 @@ export class ReportPharComponent implements OnInit {
 
   select = '';
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
-
+  holiday = false;
+  weekend = false;
+  normalday = true;
   @ViewChild('MatSort') sort!: MatSort;
   @ViewChild('MatSort2') sort2!: MatSort;
   @ViewChild('MatSort3') sort3!: MatSort;
@@ -177,6 +183,9 @@ export class ReportPharComponent implements OnInit {
       date1: start,
       date2: end,
       site: this.select,
+      normalday: this.normalday,
+      weekend: this.weekend,
+      holiday: this.holiday,
     };
     // formData.forEach((value, key) => {
     //   console.log(key + '=' + value);

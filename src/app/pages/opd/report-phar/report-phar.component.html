@@ -1,63 +1,73 @@
 <mat-tab-group (selectedTabChange)="getTab($event.index)" [(selectedIndex)]="numTab">
   <mat-tab label="ภาระงานเภสัชตรวจยา" [disabled]="dataUser.role === 'officer' || dataUser.user.includes('C')">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-6">
-          <mat-form-field class="example-form-field" [style.width.px]="200">
-            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
-              <input matStartDate placeholder="Start date" formControlName="start" />
-              <input matEndDate placeholder="End date" formControlName="end" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
-          </mat-form-field>
-          &nbsp;
-          <span style="display: inline-block">
-            <mat-form-field [style.width.px]="70">
-              <mat-label>Start time</mat-label>
-              <input type="time" matInput [(ngModel)]="starttime" />
-            </mat-form-field>
-            -
-            <mat-form-field [style.width.px]="70">
-              <mat-label>End time</mat-label>
-              <input type="time" matInput [(ngModel)]="endtime" />
-            </mat-form-field>
-            &nbsp;
-            <button (click)="valuechange()" mat-icon-button color="primary"
-              aria-label="Example icon button with a menu icon">
-              <mat-icon>check_circle</mat-icon>
-            </button>
-            <button (click)="clearValue()" mat-icon-button color="accent"
-              aria-label="Example icon button with a menu icon">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </span>
-        </div>
-        <div class="col-lg-3">
-          <mat-form-field>
-            <mat-label>Select Site</mat-label>
-            <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
-              <mat-option value="">All</mat-option>
-              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
-              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
-              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-              <mat-option value="W19">ห้องยา M - Park</mat-option><mat-option value="W20">ห้องยา ER OPD</mat-option>
-              <mat-option value="W22">ห้องยา ตึกไฟฟ้า</mat-option>
-              <mat-option value="W21">ห้องยา ER IPD</mat-option>
-              <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
-            </mat-select>
-          </mat-form-field>
+
+      <div class="filter-bar-container">
+        <!-- 1. Range Datepicker -->
+        <mat-form-field appearance="outline" class="form-field-date">
+          <mat-label>ช่วงวันที่</mat-label>
+          <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker">
+            <input matStartDate placeholder="Start date" formControlName="start" />
+            <input matEndDate placeholder="End date" formControlName="end" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+        </mat-form-field>
+
+        <!-- 2. Start Time -->
+        <mat-form-field appearance="outline" class="form-field-time">
+          <mat-label>เวลาเริ่ม</mat-label>
+          <input type="time" matInput [(ngModel)]="starttime" />
+        </mat-form-field>
+
+        <span class="time-separator">-</span>
+
+        <!-- 3. End Time -->
+        <mat-form-field appearance="outline" class="form-field-time">
+          <mat-label>เวลาสิ้นสุด</mat-label>
+          <input type="time" matInput [(ngModel)]="endtime" />
+        </mat-form-field>
+
+        <!-- 4. Checkboxes -->
+        <!-- <div class="checkbox-group">
+          <mat-checkbox [(ngModel)]="normalday" color="primary">วันธรรมดา</mat-checkbox>
+          <mat-checkbox [(ngModel)]="weekend" color="primary">เสาร์-อาทิตย์</mat-checkbox>
+          <mat-checkbox [(ngModel)]="holiday" color="primary">วันหยุดนักขัตฤกษ์</mat-checkbox>
+        </div> -->
+
+        <!-- 5. Action Buttons -->
+        <div class="button-group">
+          <button (click)="valuechange()" mat-icon-button color="primary" aria-label="Apply filter">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button (click)="clearValue()" mat-icon-button color="accent" aria-label="Clear filter">
+            <mat-icon>clear</mat-icon>
+          </button>
         </div>
 
-        <div class="col-lg-3">
-          <mat-form-field class="example-full-width" style="float: right">
-            <input matInput (keyup)="applyFilter($event)" #input />
-            <mat-placeholder>ค้นหา</mat-placeholder>
-            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-          </mat-form-field>
-        </div>
+        <!-- 6. Select Site -->
+        <mat-form-field appearance="outline" class="form-field-site">
+          <mat-label>Select Site</mat-label>
+          <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
+            <mat-option value="">All</mat-option>
+            <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+            <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+            <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+            <mat-option value="W19">ห้องยา M - Park</mat-option>
+            <mat-option value="W20">ห้องยา ER OPD</mat-option>
+            <mat-option value="W22">ห้องยา ตึกไฟฟ้า</mat-option>
+            <mat-option value="W21">ห้องยา ER IPD</mat-option>
+            <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- 7. Search Bar -->
+        <mat-form-field appearance="outline" class="form-field-search">
+          <mat-label>ค้นหา</mat-label>
+          <input matInput (keyup)="applyFilter($event)" #input />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
       </div>
-
       <div class="responsive-table" [hidden]="!dataDrug">
         <section class="example-container mat-elevation-z8" tabindex="0">
           <table mat-table matTableExporter [dataSource]="dataSource" #MatSort2="matSort" matSort
@@ -156,57 +166,71 @@
   </mat-tab>
   <mat-tab label="ภาระงานเภสัชจ่ายยา" [disabled]="dataUser.role === 'officer' || dataUser.user.includes('C')">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-6">
-          <mat-form-field class="example-form-field" [style.width.px]="200">
-            <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker2">
-              <input matStartDate placeholder="Start date" formControlName="start" />
-              <input matEndDate placeholder="End date" formControlName="end" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle matSuffix [for]="campaignOnePicker2"></mat-datepicker-toggle>
-            <mat-date-range-picker #campaignOnePicker2></mat-date-range-picker>
-          </mat-form-field>
-          &nbsp;
-          <span style="display: inline-block">
-            <mat-form-field [style.width.px]="70">
-              <mat-label>Start time</mat-label>
-              <input type="time" matInput [(ngModel)]="starttime" />
-            </mat-form-field>
-            -
-            <mat-form-field [style.width.px]="70">
-              <mat-label>End time</mat-label>
-              <input type="time" matInput [(ngModel)]="endtime" />
-            </mat-form-field>
-            &nbsp;
-            <button (click)="valuechange()" mat-icon-button color="primary"
-              aria-label="Example icon button with a menu icon">
-              <mat-icon>check_circle</mat-icon>
-            </button>
-            <button (click)="clearValue()" mat-icon-button color="accent"
-              aria-label="Example icon button with a menu icon">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </span>
+      <div class="filter-bar-container">
+        <!-- 1. Range Datepicker -->
+        <mat-form-field appearance="outline" class="form-field-date">
+          <mat-label>ช่วงวันที่</mat-label>
+          <mat-date-range-input [formGroup]="campaignOne" [rangePicker]="campaignOnePicker2">
+            <input matStartDate placeholder="Start date" formControlName="start" />
+            <input matEndDate placeholder="End date" formControlName="end" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="campaignOnePicker2"></mat-datepicker-toggle>
+          <mat-date-range-picker #campaignOnePicker2></mat-date-range-picker>
+        </mat-form-field>
+
+        <!-- 2. Start Time -->
+        <mat-form-field appearance="outline" class="form-field-time">
+          <mat-label>เวลาเริ่ม</mat-label>
+          <input type="time" matInput [(ngModel)]="starttime" />
+        </mat-form-field>
+
+        <span class="time-separator">-</span>
+
+        <!-- 3. End Time -->
+        <mat-form-field appearance="outline" class="form-field-time">
+          <mat-label>เวลาสิ้นสุด</mat-label>
+          <input type="time" matInput [(ngModel)]="endtime" />
+        </mat-form-field>
+
+        <!-- 4. Checkboxes -->
+        <!-- <div class="checkbox-group">
+          <mat-checkbox [(ngModel)]="normalday" color="primary">วันธรรมดา</mat-checkbox>
+          <mat-checkbox [(ngModel)]="weekend" color="primary">เสาร์-อาทิตย์</mat-checkbox>
+          <mat-checkbox [(ngModel)]="holiday" color="primary">วันหยุดนักขัตฤกษ์</mat-checkbox>
+        </div> -->
+
+        <!-- 5. Action Buttons -->
+        <div class="button-group">
+          <button (click)="valuechange()" mat-icon-button color="primary" aria-label="Apply filter">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button (click)="clearValue()" mat-icon-button color="accent" aria-label="Clear filter">
+            <mat-icon>clear</mat-icon>
+          </button>
         </div>
-        <div class="col-lg-2">
-          <mat-form-field>
-            <mat-label>Select Site</mat-label>
-            <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
-              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
-              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
-              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-              <mat-option value="W19">ห้องยา M - Park</mat-option><mat-option value="W22">ห้องยา
-                ตึกไฟฟ้า</mat-option><mat-option value="W4">ห้องยา ER</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col-lg-4">
-          <mat-form-field class="example-full-width" style="float: right">
-            <input matInput (keyup)="applyFilter($event)" #input />
-            <mat-placeholder>ค้นหา</mat-placeholder>
-            <mat-icon matSuffix style="font-size: 1.2em">search</mat-icon>
-          </mat-form-field>
-        </div>
+
+        <!-- 6. Select Site -->
+        <mat-form-field appearance="outline" class="form-field-site">
+          <mat-label>Select Site</mat-label>
+          <mat-select [(ngModel)]="select" (ngModelChange)="changeFloor()">
+            <mat-option value="">All</mat-option>
+            <mat-option value="W9">ห้องยาชั้น 1</mat-option>
+            <mat-option value="W8">ห้องยาชั้น 2</mat-option>
+            <mat-option value="W18">ห้องยาชั้น 3</mat-option>
+            <mat-option value="W19">ห้องยา M - Park</mat-option>
+            <mat-option value="W20">ห้องยา ER OPD</mat-option>
+            <mat-option value="W22">ห้องยา ตึกไฟฟ้า</mat-option>
+            <mat-option value="W21">ห้องยา ER IPD</mat-option>
+            <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- 7. Search Bar -->
+        <mat-form-field appearance="outline" class="form-field-search">
+          <mat-label>ค้นหา</mat-label>
+          <input matInput (keyup)="applyFilter($event)" #input />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
       </div>
 
       <div class="responsive-table" [hidden]="!dataDrug">

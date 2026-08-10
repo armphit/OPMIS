@@ -179,9 +179,11 @@ export class OtherMedComponent implements OnInit {
     let getData: any = await this.http.post('listOtherDrug', formData);
 
     if (getData.connect) {
-      if (getData.response.rowCount > 0) {
+      if (Object.values(getData.response[1]).length > 0) {
         this.getHidden = 1;
-        this.http.drug = getData.response.result;
+
+
+        this.http.drug = Object.values(getData.response[1])
 
         this.dataSource = new MatTableDataSource(this.http.drug);
         this.dataSource.sort = this.sort;
