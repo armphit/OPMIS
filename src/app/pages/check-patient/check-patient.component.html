@@ -29,7 +29,7 @@
         <mat-form-field appearance="outline" class="flex-grow-1 patient-input">
           <mat-label>กรอกหรือสแกน ID ผู้ป่วย</mat-label>
           <mat-icon matPrefix>search</mat-icon>
-          <input matInput [(ngModel)]="patientId" (keyup.enter)="scan()" placeholder="HN / Patient ID" />
+          <input matInput [(ngModel)]="patientId.hn" (keyup.enter)="scan()" placeholder="HN / Patient ID" />
         </mat-form-field>
         <button mat-raised-button color="primary" class="scan-btn" (click)="scan()"
           style="padding: 8px; margin-bottom: 20px">
@@ -272,7 +272,7 @@
                       <span class="interaction-badge" [ngClass]="
                           getInteractionClass(detail.drug_interaction_type)
                         ">
-                        {{ detail.drug_interaction_type }}
+                        {{ changeName(detail.drug_interaction_type) }}
                       </span>
                     </span>
                   </div>

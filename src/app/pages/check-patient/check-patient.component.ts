@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import { HttpService } from 'src/app/services/http.service';
-import { MatTabGroup } from '@angular/material/tabs';
 import { MatTableDataSource } from '@angular/material/table';
 import { DateAdapter } from '@angular/material/core';
 
@@ -23,6 +22,7 @@ export interface Prescription {
   userCheck: string;
   departmentcode?: string;
   details: DrugInteraction[];
+  statusInsert?: string; // Optional property for statusInsert
 }
 @Component({
   selector: 'app-check-patient',
@@ -31,7 +31,7 @@ export interface Prescription {
 })
 export class CheckPatientComponent implements OnInit {
   patient: any = {};
-  patientId = '';
+  patientId = { hn: '' };
   selectedSite = 'W8';
   selectedDate: Date = new Date();
   reportDateStart: Date = new Date();
@@ -49,6 +49,7 @@ export class CheckPatientComponent implements OnInit {
     'Actions',
     'scanDT',
     'drugDetails',
+
   ];
 
   dataSource: MatTableDataSource<Prescription> =
@@ -87,7 +88,8 @@ export class CheckPatientComponent implements OnInit {
           queue: item.queue || '',
           userCheck: item.userCheck,
           departmentcode: item.departmentcode || '',
-          details: [], // Will populate below
+          details: [],
+          statusInsert: item.statusInsert || '',
         });
       }
       const entry = map.get(key)!;
@@ -107,14 +109,15 @@ export class CheckPatientComponent implements OnInit {
   async scan() {
     this.patient = {};
     // this.patientId = '1277500';
-    if (this.patientId) {
+
+    if (this.patientId.hn) {
       const dateStr = this.selectedDate
         ? moment(this.selectedDate).format('YYYY-MM-DD')
         : // moment('2026-07-16').format('YYYY-MM-DD')
         moment(new Date()).format('YYYY-MM-DD');
 
       const getData: any = await this.http.postNodejsTest('getdatacpoe', {
-        hn: this.patientId,
+        ...this.patientId,
         date: dateStr,
         check: 1,
         site: this.dataUser?.role === 'opd' ? this.selectedSite : 'W7',
@@ -136,7 +139,7 @@ export class CheckPatientComponent implements OnInit {
           Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
         }
       }
-      this.patientId = '';
+      this.patientId = { hn: '' };
     }
   }
   /**
@@ -258,16 +261,17 @@ export class CheckPatientComponent implements OnInit {
     if (index === 1) {
       this.getDuplicate();
     } else if (index === 0) {
-      this.patientId = '';
+      this.patientId = { hn: '' };
       this.scan();
     }
   }
   tabIndex = 0;
   async goTab2(row: any) {
+
     if (row.scanDT) {
       this.selectedDate = moment(row.scanDT, 'YYYY-MM-DD').toDate();
     }
-    this.patientId = row.hn;
+    this.patientId = row
     this.selectedSite = row.departmentcode ? row.departmentcode : 'W8';
 
     this.tabIndex = 0;
@@ -288,5 +292,8 @@ export class CheckPatientComponent implements OnInit {
 
   onReportSiteChange() {
     this.applyDepartmentFilter();
+  }
+  changeName(name: string): string {
+    return name === 'Appropriatedosage' ? 'QUANTITY' : name;
   }
 }

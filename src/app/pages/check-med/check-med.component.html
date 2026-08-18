@@ -147,7 +147,7 @@
                             <button *ngIf="
                                 countcheck !== patient_drug.length &&
                                 sumcheck &&
-                                select == 'W19'
+                                (select == 'W19' || select == 'W22')
                               " mat-raised-button color="primary" (click)="dataFix(patient_drug)"
                               style="margin-right: 10px">
                               Print All
