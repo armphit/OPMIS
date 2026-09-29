@@ -12,7 +12,7 @@ declare const $: any;
 @Component({
   selector: 'app-dosage-check-card',
   templateUrl: './dosage-check-card.component.html',
-  styleUrls: ['../check-patient.component.scss'],
+  styleUrls: ['../check-patient.component.scss', './dosage-check-card.component.scss'],
 })
 export class DosageCheckCardComponent implements OnInit {
   @Input() patient: any;
@@ -22,10 +22,59 @@ export class DosageCheckCardComponent implements OnInit {
 
   selectedDrugItem: any = null;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   modalId = 'dosageModal';
+
+  get patientInfo(): any {
+    return this.patient?.todayDrugsHN?.[0] || {};
+  }
+
+  get problemCount(): number {
+    return this.patient?.finalResult?.dosage?.valueDosage?.length || 0;
+  }
+
+  get doctorName(): string {
+
+    return this.patient?.todayDrugsHN?.[0]?.docName || this.patientInfo.doctorName || this.patientInfo.doctor || '-';
+  }
+
+  get clinicName(): string {
+    return this.patient?.todayDrugsHN?.[0]?.clinicName || this.patient?.clinicName || this.patient?.departmentName || this.patientInfo.clinicName || '-';
+  }
+
+  get servicePoint(): string {
+    return this.patient?.todayDrugsHN?.[0]?.toSite || this.patient?.toSite || this.patient?.site || this.patientInfo.toSite || this.patientInfo.site || '-';
+  }
+
+  dailyDose(item: any): number {
+    const weight = Number(item?.patient?.Weight || this.patientInfo.Weight || 0);
+    return Number(item?.calculatedResult || 0) * weight;
+  }
+
+  statusInfo(item: any): { label: string; deltaLabel: string; icon: string; className: string; delta: number | null } {
+
+    const value = Number(item?.calculatedResult);
+    const warningNotequalto = item.matchedDrugRule.warningNotequalto
+    const min = Number(item?.matchedDrugRule?.warningMin);
+    const max = Number(item?.matchedDrugRule?.warningMax);
+    if (warningNotequalto) {
+      if (value < warningNotequalto) return { label: 'ต่ำกว่าขนาดต่ำสุด', deltaLabel: 'ขาด', icon: '●', className: 'status-low', delta: warningNotequalto };
+      if (value > warningNotequalto) return { label: 'เกินขนาดยาสูงสุด', deltaLabel: 'เกิน', icon: '●', className: 'status-high', delta: warningNotequalto };
+      return { label: 'อยู่ในช่วงมาตรฐาน', deltaLabel: '', icon: '✓', className: 'status-ok', delta: null };
+    } else {
+      if (value < min) return { label: 'ต่ำกว่าขนาดต่ำสุด', deltaLabel: 'ขาด', icon: '●', className: 'status-low', delta: min - value };
+      if (value > max) return { label: 'เกินขนาดยาสูงสุด', deltaLabel: 'เกิน', icon: '●', className: 'status-high', delta: value - max };
+      return { label: 'อยู่ในช่วงมาตรฐาน', deltaLabel: '', icon: '✓', className: 'status-ok', delta: null };
+    }
+
+  }
+
+  copyHn(): void {
+    const hn = this.patientInfo.hn || this.patientInfo.HN || '';
+    if (hn && navigator.clipboard) navigator.clipboard.writeText(String(hn));
+  }
 
   openModal() {
     const a = this.patient?.finalResult?.dosage?.valueDosage.length;

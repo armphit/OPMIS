@@ -41,11 +41,13 @@ export class ModalMederrorComponent implements OnInit {
   constructor(
     private http: HttpService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   async openModal() {
+
+
     // Force Angular change detection to update @Input() bindings (drugItem, patient)
     // before we read them. This prevents drugItem from being null on first click
     // when the parent sets selectedDrugItem and immediately calls openModal().
@@ -55,19 +57,17 @@ export class ModalMederrorComponent implements OnInit {
     this.medErrorDetail = '';
     this.medErrorSeverity = '';
     this.medErrorNote = '';
-    console.log(this.patient);
-    console.log(this.drugItem);
+
     this.medWrong = this.drugItem.patient.invName;
     this.medGood =
       this.source == 'AppropriateDosage' || this.source == 'Dosage'
         ? this.drugItem.patient.invName
         : this.medGood;
 
-    // if(this.source = )
+    const modalEl = $('#' + this.modalId);
+    // โหลดประเภท error + รายการยาเป็น background หลัง modal แสดงแล้ว
     await this.getDataPosition();
     await this.getDrug();
-    const modalEl = $('#' + this.modalId);
-
     // Remove any previous hidden handler to avoid duplicates
     modalEl.off('hidden.bs.modal');
     // When child modal closes (by any means: close btn, backdrop click, Escape key),
@@ -87,7 +87,13 @@ export class ModalMederrorComponent implements OnInit {
       // this.cdr.detectChanges();
     });
 
+    // IMPORTANT: แสดง Bootstrap modal ก่อน await ด้านล่าง
+    // เพื่อให้ modal ขึ้นบนจอทันที ไม่ต้องรอ (หรือค้าง) กับ HTTP requests
+    // (getType / getCompiler) ซึ่งถ้า server อยู่นอกเครือข่าย/ค้าง จะทำให้
+    // การกดปุ่ม PE ดูเหมือน "ไม่มีอะไรเกิดขึ้น" และ modal ไม่เคยแสดง
     modalEl.modal('show');
+
+
   }
 
   closeModal() {
@@ -114,13 +120,13 @@ export class ModalMederrorComponent implements OnInit {
     // } else {
     //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     // }
+
+
     const payload: any = {
       hn: this.patient?.todayDrugsHN?.[0]?.hn || '',
       toSite: this.patient?.todayDrugsHN?.[0]?.toSite?.trim() || '',
       lastIssTime:
-        new Intl.DateTimeFormat('sv-SE', {
-          timeZone: 'Asia/Bangkok',
-        }).format(new Date(this.patient?.todayDrugsHN?.[0]?.scrnTime)) || '',
+        this.patient?.todayDrugsHN?.[0]?.scrnTime || '',
       doc: this.patient?.todayDrugsHN?.[0]?.docName?.trim() || '',
       med:
         this.drugItem.patient.invName == this.medWrong
@@ -143,7 +149,7 @@ export class ModalMederrorComponent implements OnInit {
         ? 'CPOE'
         : 'nonCPOE',
     };
-
+    console.log('Payload:', payload); // Log the payload to check its structure and values
     Object.keys(payload).forEach((key) => {
       const value = payload[key];
 

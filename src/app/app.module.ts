@@ -40,6 +40,7 @@ import { DosageCheckCardComponent } from './pages/check-patient/dosage-check-car
 import { InterdrugactionCheckCardComponent } from './pages/check-patient/interdrugaction-check-card/interdrugaction-check-card.component';
 import { AppropriatedosageCheckCardComponent } from './pages/check-patient/appropriatedosage-check-card/appropriatedosage-check-card.component';
 import { ModalMederrorComponent } from './pages/check-patient/modal-mederror/modal-mederror.component';
+import { DrugdiseaseCheckCardComponent } from './pages/check-patient/drugdisease-check-card/drugdisease-check-card.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ModalMederrorComponent } from './pages/check-patient/modal-mederror/mod
     InterdrugactionCheckCardComponent,
     AppropriatedosageCheckCardComponent,
     ModalMederrorComponent,
+    DrugdiseaseCheckCardComponent,
   ],
   imports: [
     BrowserModule,
@@ -96,4 +98,4 @@ import { ModalMederrorComponent } from './pages/check-patient/modal-mederror/mod
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

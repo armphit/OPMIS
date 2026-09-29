@@ -30,12 +30,28 @@ export class InterdrugactionCheckCardComponent implements OnInit {
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   modalId = 'interdrugactionModal';
 
+  /** Cached enrichedItems.
+   * Built once in ngOnInit and reused, so the DOM isn't rebuilt on every
+   * change-detection cycle. (Previously a getter returned fresh objects each
+   * time, which made ngFor recreate the cards ----- and the PE button inside
+   * the ngFor got destroyed/rebuilt mid-click, so the click never fired.) */
+  private _enrichedItems: any[] = [];
+
   constructor(private http: HttpService) { }
 
   ngOnInit(): void {
     const raw =
       this.patient?.finalResult?.druginteraction?.valueDrugInteraction;
     this.data = Array.isArray(raw) ? raw : raw ? [raw] : [];
+    this._enrichedItems = this.buildEnrichedItems();
+  }
+
+  /** Stable trackBy key for the *ngFor so Angular reuses the same DOM nodes
+   *  (no destroy/rebuild on each change-detection cycle). */
+  trackByDrug(index: number, item: any): string {
+    const code =
+      item?.todayDrug?.invCode || item?.interactingDrug?.invCode || '';
+    return `${index}::${code}`;
   }
 
   get interactionList(): any[] {
@@ -59,6 +75,10 @@ export class InterdrugactionCheckCardComponent implements OnInit {
   }
 
   openMedErrorModal(item: any) {
+    // Safety: ข้อความ summary bar อาจส่ง item = undefined (อยู่นอก *ngFor)
+    // หรือ item ที่ไม่มี todayDrug -> กันไม่ให้ throw error ตรงบรรทัดแรก
+    // (ก่อนจะถึง console.log) ซึ่งทำให้เหมือน "ไม่ได้เข้า function"
+
 
     this.selectedDrugItem = {
       patient: {
@@ -70,8 +90,11 @@ export class InterdrugactionCheckCardComponent implements OnInit {
           this.patient?.finalResult?.druginteraction?.result.statusInsert,
       },
     };
+
+    // ใช้ setTimeout เพื่อให้ Angular อัปเดต @Input selectedDrugItem
+    // ให้กับ app-modal-mederror ก่อนเรียก openModal()
     setTimeout(() => {
-      this.medErrorModal.openModal();
+      this.medErrorModal?.openModal();
     });
   }
 
@@ -122,6 +145,7 @@ export class InterdrugactionCheckCardComponent implements OnInit {
   }
 
   getInteractingSourceLabel(drug: any): string {
+
     if (drug?.source === 'today') {
       return 'ใบสั่งวันนี้';
     }
@@ -161,5 +185,116 @@ export class InterdrugactionCheckCardComponent implements OnInit {
     if (key === 'moderate') return 'severity-text--moderate';
     if (key === 'minor') return 'severity-text--minor';
     return 'severity-text--default';
+  }
+
+  /** ข้อมูลผู้ป่วยใน Header (HN, ชื่อ-สกุล, ห้องยา) */
+  get patientInfo(): any {
+    return this.patient?.todayDrugsHN?.[0] || {};
+  }
+
+  /** จำนวนคู่ยาที่พบปัญหา */
+  get problemCount(): number {
+    return this.interactionList.length;
+  }
+
+  /** จำนวนคู่ยาที่พบจากใบสั่งปัจจุบัน (interactingDrug.source === 'today') */
+  get todayProblemCount(): number {
+    return this.interactionList.filter(
+      (item: any) => item.interactingDrug?.source === 'today',
+    ).length;
+  }
+
+  /** จำนวนคู่ยาที่พบจากประวัติย้อนหลัง (interactingDrug.source === 'history') */
+  get historyProblemCount(): number {
+    return this.interactionList.filter(
+      (item: any) => item.interactingDrug?.source === 'history',
+    ).length;
+  }
+
+  /** ตรวจพบการโต้ตอบจากประวัติย้อนหลังหรือไม่ */
+  get detectedFromHistory(): boolean {
+    return this.historyProblemCount > 0;
+  }
+
+  /**
+   * รายการโต้ตอบที่ถูกเสริมข้อมูลจาก todayDrugsHN
+   * (ผู้สั่ง/แพทย์, แผนก/ห้องตรวจ) พร้อมคำนวณจำนวนวันที่ยาเก่ายังเหลือ
+   */
+  get enrichedItems(): any[] {
+    // return cached, not recompute every change-detection cycle
+    return this._enrichedItems;
+  }
+
+  /** Build enrichedItems once (in ngOnInit) and cache it */
+  private buildEnrichedItems(): any[] {
+    const drugs: any[] = this.patient?.todayDrugsHN || [];
+
+    return this.interactionList.map((item: any) => {
+      const lookup = (code: string) =>
+        drugs.find((d: any) => d.invCode === code) || {};
+
+      const todayDrug = {
+        ...item.todayDrug,
+        ...lookup(item.todayDrug?.invCode),
+      };
+      const interactingDrug = {
+        ...item.interactingDrug,
+        lastIssTime: item.interactingDrug?.lastIssTime || null,
+      };
+
+      return {
+        ...item,
+        todayDrug,
+        interactingDrug,
+        todayRemainingDays: this.calcRemainingDays(todayDrug),
+        interactingRemainingDays: this.calcRemainingDays(interactingDrug),
+        isHistorical: this.isHistoricalDrug(interactingDrug),
+      };
+    });
+  }
+
+  /** จำนวนเม็ด/ครั้งต่อวัน สำหรับคำนวณจำนวนวันที่ยาหมด */
+  getPerDay(drug: any): number {
+    const lamedQty = drug?.lamedQty != null ? Number(drug.lamedQty) : 1;
+    const timePerDay =
+      drug?.time_docperday != null ? Number(drug.time_docperday) : 1;
+    const perDay = lamedQty * timePerDay;
+    return perDay > 0 ? perDay : 1;
+  }
+
+  /**
+   * คำนวณ "ยาเก่ายังเหลืออีก X วัน"
+   * = (จำนวนที่จ่าย / ใช้ต่อวัน) - จำนวนวันที่ล่วงเลยนับจากวันที่รับยาครั้งล่าสุด
+   */
+  calcRemainingDays(drug: any): number | null {
+    if (!drug) return null;
+    const qty = Number(drug.qtyReq) || 0;
+    const perDay = this.getPerDay(drug);
+    const daysAvailable = perDay > 0 ? Math.floor(qty / perDay) : 0;
+    if (!drug.lastIssTime) {
+      return Math.max(daysAvailable, 0);
+    }
+    const elapsed = moment()
+      .startOf('day')
+      .diff(moment(drug.lastIssTime).startOf('day'), 'days');
+    const remaining = daysAvailable - elapsed;
+    return Math.max(remaining, 0);
+  }
+
+  /** รายการยาที่มาจากประวัติย้อนหลัง (ประวัติยาเดิม) */
+  isHistoricalDrug(drug: any): boolean {
+    if (drug?.source === 'history') return true;
+    if (drug?.lastIssTime) {
+      const months = moment().diff(moment(drug.lastIssTime), 'months');
+      if (months >= 3) return true;
+    }
+    return false;
+  }
+
+  /** ข้อความจำนวนวันที่ยาคงเหลือ เช่น "เหลืออีก 30 วัน" */
+  remainingDaysText(days: number | null): string {
+    if (days == null) return '';
+    if (days <= 0) return 'ยาคงเหลือหมดแล้ว';
+    return `เหลืออีก ${days} วัน`;
   }
 }

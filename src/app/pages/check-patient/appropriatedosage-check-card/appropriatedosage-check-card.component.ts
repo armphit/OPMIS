@@ -27,12 +27,48 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
   selectedDrugItem: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   modalId = 'AppropriateDosageModal';
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
-    this.data =
-      this.patient?.finalResult?.appropriatedosage?.valueAppropriateDosage ||
-      [];
+    this.buildData();
+  }
+
+  buildData() {
+    const list: any[] =
+      this.patient?.finalResult?.appropriatedosage?.valueAppropriateDosage || [];
+    const drugs: any[] = this.patient?.todayDrugsHN || [];
+
+    this.data = (list || []).map((item: any) => {
+      const drug = drugs.find((d: any) => d.invCode === item.invCode) || {};
+      const qtyReq = Number(item.qtyReq ?? drug.qtyReq ?? 0);
+      const perDay = this.getPerDay(drug);
+      const daysNeed = Number(drug.DayApp != null ? drug.DayApp : 0);
+      const daysAvailable = perDay > 0 ? Math.floor(qtyReq / perDay) : 0;
+      const shouldReceiveQty = perDay * daysNeed;
+      const diffDays = daysAvailable - daysNeed;
+      const st = this.getStatusInfo({ diffDays: diffDays });
+
+      return {
+        ...item,
+        ...drug,
+        qtyReq,
+        perDay,
+        daysNeed,
+        daysAvailable,
+        shouldReceiveQty,
+        diffDays,
+        statusCls: st.cls,
+        statusText: st.text,
+        ruleTypeLabel: this.getRuleTypeLabel(item.ruleType),
+      };
+    });
+  }
+
+  getPerDay(drug: any): number {
+    const lamedQty = drug.lamedQty != null ? Number(drug.lamedQty) : 1;
+    const timePerDay = drug.time_docperday != null ? Number(drug.time_docperday) : 1;
+    const perDay = lamedQty * timePerDay;
+    return perDay > 0 ? perDay : 1;
   }
 
   openModal() {
@@ -46,13 +82,15 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
   }
 
   openMedErrorModal(item: any) {
+    const drugs: any[] = this.patient?.todayDrugsHN || [];
+    const drug = drugs.find((d: any) => d.invCode === item.invCode) || {};
     // Construct drugItem in the format expected by modal-mederror
     this.selectedDrugItem = {
       patient: {
         invName: item.invName,
         invCode: item.invCode,
-        reqNo: item.reqNo || '',
-        Weight: item.Weight || '',
+        reqNo: item.reqNo || drug.remark || '',
+        Weight: item.Weight || drug.Weight || '',
         checkType:
           this.patient?.finalResult?.appropriatedosage?.result.statusInsert,
       },
@@ -76,6 +114,42 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
       'bg-success text-white': !a.drug_interaction_status,
       'bg-danger text-white': a.drug_interaction_status,
     };
+  }
+
+  get patientInfo(): any {
+
+    return this.patient?.todayDrugsHN?.[0] || {};
+  }
+
+  get problemCount(): number {
+    return this.data.length;
+  }
+
+  get clinicName(): string {
+    return (
+      this.patient?.clinicName ||
+      this.patient?.departmentName ||
+      this.patientInfo?.clinicName ||
+      ''
+    ).trim();
+  }
+
+  get apptDaysText(): string {
+    const days = this.data.length ? this.data[0]?.daysNeed : this.patientInfo?.DayApp;
+    return days != null && days !== '' ? String(days) : '';
+  }
+
+  getStatusInfo(item: any) {
+    if (!item || item.diffDays == null) {
+      return { text: '', cls: '' };
+    }
+    if (item.diffDays > 0) {
+      return { text: `เกิน ${item.diffDays} วัน`, cls: 'status-over' };
+    }
+    if (item.diffDays < 0) {
+      return { text: `ขาด ${Math.abs(item.diffDays)} วัน`, cls: 'status-short' };
+    }
+    return { text: 'พอดี', cls: 'status-ok' };
   }
 
   getRuleTypeLabel(ruleType: string): string {

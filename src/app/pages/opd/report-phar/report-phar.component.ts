@@ -280,11 +280,13 @@ export class ReportPharComponent implements OnInit {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
       }
     } else if (this.numTab == 4) {
-      getData = await this.http.post('reportPharCheckandDispend', formData);
+      // getData = await this.http.post('reportPharCheckandDispend', formData);
+      getData = await this.http.postNodejsTest('reportPharCheckandDispend', send);
+
 
       if (getData.connect) {
-        if (getData.response.rowCount > 0) {
-          this.dataDrug = getData.response.result;
+        if (getData.response.length > 0) {
+          this.dataDrug = getData.response;
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort4;
           this.dataSource.paginator = this.paginator4;

@@ -1,20 +1,9 @@
-<mat-card
-  class="check-card mat-elevation-z2"
-  style="cursor: pointer"
-  [ngClass]="cardClass"
-  (click)="openModal()"
->
+<mat-card class="check-card mat-elevation-z2" style="cursor: pointer" [ngClass]="cardClass" (click)="openModal()">
   <mat-card-title>ตรวจสอบความเหมาะสมของยา</mat-card-title>
   <mat-card-content>สถานะ: {{ statusText }}</mat-card-content>
 </mat-card>
 
-<div
-  class="modal fade"
-  [id]="modalId"
-  data-backdrop="static"
-  data-keyboard="false"
-  tabindex="-1"
->
+<div class="modal fade" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg appropriate-modal">
       <!-- HEADER -->
@@ -31,8 +20,35 @@
       <!-- BODY -->
       <div class="modal-body p-4">
         <ng-container *ngIf="data.length; else noData">
+          <!-- Patient Info Header Bar -->
+          <div class="patient-info-bar">
+            <div class="patient-info-item">
+              <span class="info-label">HN</span>
+              <span class="info-value">{{ patientInfo.hn }}</span>
+            </div>
+            <div class="patient-info-item">
+              <span class="info-label">ชื่อ-สกุลผู้ป่วย</span>
+              <span class="info-value">{{ patientInfo.patientname }}</span>
+            </div>
+            <div class="patient-info-item">
+              <span class="info-label">วันนัดถัดไป</span>
+              <span class="info-value">
+                {{ patientInfo.NextApp }}
+                <small class="info-sub" *ngIf="apptDaysText">(คงเหลือ {{ apptDaysText }} วัน)</small>
+              </span>
+            </div>
+            <div class="patient-info-item">
+              <span class="info-label">แผนก</span>
+              <span class="info-value">{{ patientInfo.clinicName || patientInfo.toSite || '-' }}</span>
+            </div>
+            <div class="problem-tag">
+              <mat-icon>warning</mat-icon>
+              <span>พบปัญหา: {{ problemCount }} รายการ</span>
+            </div>
+          </div>
+
           <!-- Summary Bar -->
-          <div class="summary-bar mb-4">
+          <div class="summary-bar mb-3">
             <mat-icon>warning</mat-icon>
             <span>
               พบรายการที่ต้องตรวจสอบ <strong>{{ data.length }}</strong> รายการ —
@@ -40,98 +56,57 @@
             </span>
           </div>
 
-          <!-- Drug Items -->
-          <div
-            *ngFor="let item of data; let i = index"
-            class="appropriate-card mb-3 border-warning"
-          >
-            <!-- Card Header -->
-            <div class="appropriate-card-header bg-warning text-dark">
-              <div
-                class="d-flex justify-content-between align-items-center w-100"
-              >
-                <div class="d-flex align-items-center">
-                  <span class="item-index mr-2">#{{ i + 1 }}</span>
-                  <div>
-                    <strong>{{ item.invName }}</strong>
-                    <br />
-                    <small class="opacity-75">{{ item.invCode }}</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <span class="rule-type-badge mr-2">
-                    {{ getRuleTypeLabel(item.ruleType) }}
-                  </span>
-                  <span class="status-badge status-warning">
-                    <mat-icon class="status-icon">warning</mat-icon>
-                    {{ item.status }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Body -->
-            <div class="card-body">
-              <div class="row">
-                <!-- PE Button -->
-                <div class="col-12 mb-2 text-right">
-                  <button
-                    class="btn btn-warning btn-sm"
-                    (click)="openMedErrorModal(item)"
-                    title="รายงาน Medication Error"
-                  >
-                    <span>⚠️ PE</span>
-                  </button>
-                </div>
-                <!-- Quantity Info -->
-                <div class="col-md-4 mb-3">
-                  <h6 class="text-muted border-bottom pb-1">
-                    <mat-icon class="section-icon">inventory_2</mat-icon>
-                    จำนวนยา
-                  </h6>
-                  <div class="info-row">
-                    <span class="info-label">จำนวนที่ขอ:</span>
-                    <span class="info-value font-weight-bold">{{
-                      item.qtyReq
-                    }}</span>
-                  </div>
-                  <div class="info-row">
-                    <span class="info-label">Rule Type:</span>
-                    <span class="info-value">
-                      <span class="badge badge-info">{{ item.ruleType }}</span>
-                    </span>
-                  </div>
-                </div>
-
-                <!-- Status Result -->
-                <div class="col-md-4 mb-3">
-                  <h6 class="text-muted border-bottom pb-1">
-                    <mat-icon class="section-icon">gavel</mat-icon>
-                    ผลการตรวจสอบ
-                  </h6>
-                  <div
-                    class="result-box p-3 rounded bg-warning-light border border-warning"
-                  >
-                    <div class="d-flex align-items-center">
-                      <mat-icon class="mr-2 text-warning">warning</mat-icon>
-                      <span class="font-weight-bold text-warning">
-                        ต้องตรวจสอบ
-                      </span>
+          <!-- Drug Items Table -->
+          <div class="table-responsive appropriate-table-wrap">
+            <table class="table table-bordered table-hover appropriate-table mb-0">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-center">#</th>
+                  <th>รายการยา</th>
+                  <th>วิธีรับประทาน</th>
+                  <th class="text-center">จำนวนจ่าย</th>
+                  <th class="text-center">กินได้</th>
+                  <th class="text-center">ควรได้รับ ({{ apptDaysText }} วัน)</th>
+                  <th>สถานะ / ผลต่าง</th>
+                  <th class="text-center">ดำเนินการ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of data; let i = index">
+                  <td class="text-center">{{ i + 1 }}</td>
+                  <td>
+                    <div class="drug-name">
+                      <strong>{{ item.invName }}</strong>
+                      <div class="drug-meta">
+                        <small class="text-muted">{{ item.invCode }}</small>
+                        <small class="rule-type-badge ml-2">{{ item.ruleTypeLabel }}</small>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </td>
+                  <td class="med-how-cell">{{ item.medHow || '-' }}</td>
+                  <td class="text-center">{{ item.qtyReq }} <small class="text-muted">เม็ด</small></td>
+                  <td class="text-center">{{ item.daysAvailable }} <small class="text-muted">วัน</small></td>
+                  <td class="text-center">{{ item.shouldReceiveQty }} <small class="text-muted">เม็ด</small></td>
+                  <td>
+                    <span class="status-tag" [ngClass]="item.statusCls">
+                      {{ item.statusText }}
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-warning btn-sm" (click)="openMedErrorModal(item)" title="บันทึก PE">
+                      <span>⚠️ บันทึก PE</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-                <!-- Reasons -->
-                <div class="col-md-4 mb-3">
-                  <h6 class="text-muted border-bottom pb-1">
-                    <mat-icon class="section-icon">description</mat-icon>
-                    เหตุผล
-                  </h6>
-                  <div class="reasons-box">
-                    <p class="mb-0 reasons-text">{{ item.reasons }}</p>
-                  </div>
-                </div>
-              </div>
+          <!-- Reasons -->
+          <div *ngIf="data.length" class="reasons-summary mt-3">
+            <div *ngFor="let item of data" class="reason-row">
+              <strong>{{ item.invName }}:</strong>
+              <span>{{ item.reasons }}</span>
             </div>
           </div>
         </ng-container>
@@ -147,11 +122,8 @@
       <!-- FOOTER -->
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="closeModal()">Close</button>
-        <button
-          *ngIf="patient?.finalResult?.appropriatedosage?.result?.statusCheck"
-          class="btn btn-primary"
-          (click)="onConfirm()"
-        >
+        <button *ngIf="patient?.finalResult?.appropriatedosage?.result?.drug_interaction_status" class="btn btn-primary"
+          (click)="onConfirm()">
           Confirm
         </button>
       </div>
@@ -160,11 +132,6 @@
 </div>
 
 <!-- Medication Error Modal (PE) -->
-<app-modal-mederror
-  #medErrorModal
-  [patient]="patient"
-  [drugItem]="selectedDrugItem"
-  [source]="'AppropriateDosage'"
-  (save)="onMedErrorSave($event)"
->
+<app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'AppropriateDosage'"
+  (save)="onMedErrorSave($event)">
 </app-modal-mederror>

@@ -148,6 +148,10 @@
                 <app-appropriatedosage-check-card [patient]="patient" (confirm)="dataConfirm('Appropriatedosage')">
                 </app-appropriatedosage-check-card>
               </div>
+              <div class="col-md-3 mb-3">
+                <app-drugdisease-check-card [patient]="patient" (confirm)="dataConfirm('Drugdisease')">
+                </app-drugdisease-check-card>
+              </div>
             </div>
           </mat-expansion-panel>
         </mat-accordion>
@@ -155,170 +159,127 @@
     </div>
   </mat-tab>
   <mat-tab label="Report">
-    <div class="container-fluid mt-3 table-wrapper">
-      <div class="table-toolbar">
-        <div class="toolbar-left">
-          <button class="btn btn-primary toolbar-btn" (click)="getDuplicate()">
-            <mat-icon>refresh</mat-icon> <span>Load Data</span>
-          </button>
-          <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
-            <mat-label>วันที่เริ่มต้น</mat-label>
-            <input matInput [matDatepicker]="startPicker" [(ngModel)]="reportDateStart" />
-            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-            <mat-datepicker #startPicker></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
-            <mat-label>วันที่สิ้นสุด</mat-label>
-            <input matInput [matDatepicker]="endPicker" [(ngModel)]="reportDateEnd" />
-            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-            <mat-datepicker #endPicker></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="site-select toolbar-site-select">
-            <mat-label>Site</mat-label>
-            <mat-select [(ngModel)]="reportSelectedSite" (selectionChange)="onReportSiteChange()">
-              <mat-option value="W9">ห้องยาชั้น 1</mat-option>
-              <mat-option value="W8">ห้องยาชั้น 2</mat-option>
-              <mat-option value="W18">ห้องยาชั้น 3</mat-option>
-              <mat-option value="W19">ห้องยา M - Park</mat-option>
-              <mat-option value="W22">ห้องยา
-                ตึกไฟฟ้า</mat-option>
+    <div class="container-fluid mt-3 report-view">
+      <div class="status-tabs" role="tablist" aria-label="Report status">
+        <button type="button" class="status-tab pending-tab" [class.active]="reportStatus === 'pending'"
+          (click)="setReportStatus('pending')">
+          <mat-icon>hourglass_top</mat-icon> รอตรวจสอบ <span>{{ getReportCount('pending') }}</span>
+        </button>
+        <button type="button" class="status-tab confirmed-tab" [class.active]="reportStatus === 'confirmed'"
+          (click)="setReportStatus('confirmed')">
+          <mat-icon>check_circle</mat-icon> ยืนยันแล้ว <span>{{ getReportCount('confirmed') }}</span>
+        </button>
+        <button type="button" class="status-tab all-tab" [class.active]="reportStatus === 'all'"
+          (click)="setReportStatus('all')">
+          <mat-icon>format_list_bulleted</mat-icon> ทั้งหมด <span>{{ getReportCount('all') }}</span>
+        </button>
+      </div>
 
-              <mat-option value="W20">ห้องยา ER OPD</mat-option>
-              <mat-option value="W21">ห้องยา ER IPD</mat-option>
-              <mat-option value="W13">ห้องยา ตึกมะเร็ง</mat-option>
-              <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="toolbar-right">
-          <mat-form-field appearance="outline" class="search-box">
-            <mat-label>Search</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="ค้นหา HN / Prescription / User" />
-          </mat-form-field>
-        </div>
+      <div class="report-filters">
+        <button class="btn btn-primary toolbar-btn" (click)="getDuplicate()">
+          <mat-icon>refresh</mat-icon> <span>โหลดข้อมูล</span>
+        </button>
+        <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
+          <mat-label>วันที่เริ่มต้น</mat-label>
+          <input matInput [matDatepicker]="startPicker" [(ngModel)]="reportDateStart" />
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">
+          <mat-label>วันที่สิ้นสุด</mat-label>
+          <input matInput [matDatepicker]="endPicker" [(ngModel)]="reportDateEnd" />
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="toolbar-site-select">
+          <mat-label>ห้องยา / แผนก</mat-label>
+          <mat-select [(ngModel)]="reportSelectedSite" (selectionChange)="onReportSiteChange()">
+            <mat-option value="W9">ห้องยาชั้น 1 (W9)</mat-option>
+            <mat-option value="W8">ห้องยาชั้น 2 (W8)</mat-option>
+            <mat-option value="W18">ห้องยาชั้น 3 (W18)</mat-option>
+            <mat-option value="W19">ห้องยา M - Park</mat-option>
+            <mat-option value="W22">ห้องยาตึกไฟฟ้า</mat-option>
+            <mat-option value="W20">ห้องยา ER OPD</mat-option>
+            <mat-option value="W21">ห้องยา ER IPD</mat-option>
+            <mat-option value="W13">ห้องยาตึกมะเร็ง</mat-option>
+            <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="risk-select">
+          <mat-label>ประเภทความเสี่ยง</mat-label>
+          <mat-select [(ngModel)]="reportRisk" (selectionChange)="onReportRiskChange()">
+            <mat-option value="all">ทุกประเภทความเสี่ยง</mat-option>
+            <mat-option value="allergy">Allergy</mat-option>
+            <mat-option value="Duplicate">Duplicate</mat-option>
+            <mat-option value="Lab">Lab</mat-option>
+            <mat-option value="Dosage">Dosage</mat-option>
+            <mat-option value="Interdrugaction">Drug Interaction</mat-option>
+            <mat-option value="Appropriatedosage">Quantity</mat-option>
+            <mat-option value="Drugdisease">Drug-Disease Interaction</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="search-box">
+          <mat-label>ค้นหา HN หรือชื่อผู้ป่วย</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput (input)="onReportSearch($event)" placeholder="HN / ชื่อ-นามสกุล" />
+        </mat-form-field>
       </div>
 
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows
         class="report-table mat-elevation-z2 responsive-table">
-        <!-- Prescription -->
-        <ng-container matColumnDef="prescription">
-          <th mat-header-cell *matHeaderCellDef>Prescription</th>
-          <td mat-cell *matCellDef="let row" data-label="Prescription">
-            {{ row.prescription }}
+        <ng-container matColumnDef="queue">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let row" data-label="Queue">
+            {{ row.queue }}
           </td>
         </ng-container>
-
-        <!-- HN -->
-        <ng-container matColumnDef="hn">
-          <th mat-header-cell *matHeaderCellDef>HN</th>
-          <td mat-cell *matCellDef="let row" data-label="HN">
-            {{ row.hn }}
+        <ng-container matColumnDef="checkedAt">
+          <th mat-header-cell *matHeaderCellDef>เวลาที่ตรวจ</th>
+          <td mat-cell *matCellDef="let row" data-label="เวลาที่ตรวจ">
+            <strong>{{ row.scanDT | date:'HH:mm:ss' }}</strong><small>{{ row.scanDT | date:'dd/MM/yyyy' }}</small>
           </td>
         </ng-container>
-
-        <!-- Status -->
-        <ng-container matColumnDef="statusCheck">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let row" data-label="Status">
-            <span [class.badge-checked]="row.statusCheck === '0'" [class.badge-pending]="row.statusCheck !== '0'">
-              {{ row.statusCheck === "0" ? "Checked" : "Pending" }}
-            </span>
+        <ng-container matColumnDef="patient">
+          <th mat-header-cell *matHeaderCellDef>ผู้ป่วย (HN)</th>
+          <td mat-cell *matCellDef="let row" data-label="ผู้ป่วย">
+            <div class="patient-cell"><strong>{{ row.hn }}</strong>
+              <button type="button" class="copy-button" title="คัดลอก HN"
+                (click)="copyPatient(row.hn,row)"><mat-icon>content_copy</mat-icon></button>
+            </div><span>{{ row.patientname || '-' }}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="departmentcode">
-          <th mat-header-cell *matHeaderCellDef>Site</th>
+          <th mat-header-cell *matHeaderCellDef>ห้องตรวจ / แผนก</th>
           <td mat-cell *matCellDef="let row" data-label="departmentcode">
-            {{ row.departmentcode }}
+            <strong>{{ row.departmentcode || 'W8' }}</strong><small>{{ row.departmentcode ? 'ห้องยา' : 'ห้องยาชั้น 2'
+              }}</small>
           </td>
         </ng-container>
-
-        <!-- User -->
-        <ng-container matColumnDef="userCheck">
-          <th mat-header-cell *matHeaderCellDef>User</th>
-          <td mat-cell *matCellDef="let row" data-label="User">
-            {{ row.userCheck }}
-          </td>
+        <ng-container matColumnDef="riskType">
+          <th mat-header-cell *matHeaderCellDef>ประเภทที่เตือน</th>
+          <td mat-cell *matCellDef="let row" data-label="ประเภทที่เตือน"><span class="risk-badge"
+              *ngFor="let detail of row.details"
+              [ngClass]="getInteractionClass(detail.drug_interaction_type)"><mat-icon>{{
+                getRiskIcon(detail.drug_interaction_type) }}</mat-icon>{{ getRiskLabel(detail.drug_interaction_type)
+              }}</span></td>
         </ng-container>
-
-        <!-- Actions -->
-        <ng-container matColumnDef="Actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let row" data-label="Actions">
-            <div class="action-btn-group">
-              <button mat-button color="primary" class="action-btn" (click)="goTab2(row)">
-                View Report
-              </button>
-            </div>
-          </td>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>สถานะ</th>
+          <td mat-cell *matCellDef="let row" data-label="สถานะ"><span class="status-badge"
+              [ngClass]="getStatusClass(row.statusCheck)"><mat-icon>{{ isConfirmed(row) ? 'check_circle' : 'schedule'
+                }}</mat-icon>{{ isConfirmed(row) ? 'Confirmed' : 'Pending' }}</span></td>
         </ng-container>
-
-        <ng-container matColumnDef="scanDT">
-          <th mat-header-cell *matHeaderCellDef>Scan Date</th>
-          <td mat-cell *matCellDef="let row" data-label="Scan Date">
-            {{ row.scanDT }}
-          </td>
-        </ng-container>
-
-        <!-- Drug Details Column (always visible) -->
-        <ng-container matColumnDef="drugDetails">
-          <th mat-header-cell *matHeaderCellDef>Drug Details</th>
-          <td mat-cell *matCellDef="let row" data-label="Drug Details">
-            <div class="detail-row">
-              <div *ngIf="row.details.length > 0">
-                <div class="detail-card" *ngFor="let detail of row.details">
-                  <div class="detail-item">
-                    <span class="detail-label">Type</span>
-                    <span class="detail-value">
-                      <span class="interaction-badge" [ngClass]="
-                          getInteractionClass(detail.drug_interaction_type)
-                        ">
-                        {{ changeName(detail.drug_interaction_type) }}
-                      </span>
-                    </span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="detail-label">Status</span>
-                    <span class="detail-value">
-                      <span class="status-badge" [ngClass]="
-                          getStatusClass(detail.drug_interaction_status)
-                        ">
-                        <mat-icon class="status-icon">
-                          {{
-                          detail.drug_interaction_status === "0"
-                          ? "check_circle"
-                          : "pending"
-                          }}
-                        </mat-icon>
-                        {{
-                        detail.drug_interaction_status === "0"
-                        ? "Confirmed"
-                        : "Pending"
-                        }}
-                      </span>
-                    </span>
-                  </div>
-                  <div class="detail-item">
-                    <span class="detail-label">Confirmed By</span>
-                    <span class="detail-value">
-                      <span *ngIf="detail.userConfirm">
-                        <mat-icon class="person-icon">person</mat-icon>
-                        {{ detail.userConfirm }}
-                      </span>
-                      <span *ngIf="!detail.userConfirm">-</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div *ngIf="row.details.length === 0" class="no-details">
-                No drug details available
-              </div>
-            </div>
-          </td>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>ดำเนินการ</th>
+          <td mat-cell *matCellDef="let row" data-label="ดำเนินการ"><button type="button" class="report-action"
+              [ngClass]="isConfirmed(row) ? 'confirmed-action' : 'pending-action'"
+              (click)="goTab2(row)"><mat-icon>search</mat-icon> ดูรายละเอียด</button></td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns" class="parent-row"></tr>
       </table>
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
       <div *ngIf="dataSource.data.length === 0" class="no-data-message">
         <mat-icon>inbox</mat-icon>
         <span>No data available</span>

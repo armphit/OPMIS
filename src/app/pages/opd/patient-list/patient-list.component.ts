@@ -598,7 +598,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     }
 
     let drugAllergy = this.drugList.find(
-      (data: any) => data.code.trim() === val.drugAllergy.trim(),
+      (data: any) => data.code?.trim() === val.drugAllergy?.trim(),
     );
 
     if (drugAllergy) {
@@ -3175,6 +3175,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.getData(null);
     } else if (this.getTab == 4) {
       this.reportCheckmed();
+    } else if (this.getTab == 5) {
+      this.reportTimeDispend();
     }
   }
 
@@ -3194,6 +3196,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.getData(null);
     } else if (this.getTab == 4) {
       this.reportCheckmed();
+    } else if (this.getTab == 5) {
+      this.reportTimeDispend();
     }
   }
 
@@ -3458,6 +3462,8 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         datestart: moment(this.campaignOne.value.start).format('YYYY-MM-DD'),
         dateend: moment(this.campaignOne.value.end).format('YYYY-MM-DD'),
         site: this.select,
+        time1: this.starttime + ':00',
+        time2: this.endtime + ':00',
       };
 
       let getData: any = await this.http.postNodejs(

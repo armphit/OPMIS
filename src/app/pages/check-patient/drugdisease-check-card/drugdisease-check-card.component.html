@@ -1,0 +1,103 @@
+<mat-card class="check-card mat-elevation-z2" style="cursor: pointer" [ngClass]="cardClass" (click)="openModal()">
+  <mat-card-title>ตรวจยากับโรค</mat-card-title>
+  <mat-card-content>
+    <span class="dd-card-status">{{ statusText }}</span>
+    <span class="dd-card-count" *ngIf="diseaseItems.length">พบ {{ diseaseItems.length }} รายการ</span>
+  </mat-card-content>
+</mat-card>
+
+<div class="modal fade" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg dd-modal">
+      <div class="modal-header align-items-center py-3">
+        <h5 class="modal-title d-flex align-items-center font-weight-bold mb-0">
+          <mat-icon class="header-icon mr-2">heart_broken</mat-icon>
+          ตรวจสอบความปลอดภัยของยาต่อโรค (Drug &amp; Disease)
+        </h5>
+        <button type="button" class="close" (click)="closeModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body p-4">
+        <ng-container *ngIf="diseaseItems.length; else noData">
+          <!-- ข้อมูลผู้ป่วย + สรุป -->
+          <div class="patient-info-bar">
+            <div class="patient-info-main">
+              <div class="patient-info-item">
+                <span class="info-label">HN</span>
+                <span class="info-value">{{ patientInfo.hn }}</span>
+              </div>
+              <div class="patient-info-item">
+                <span class="info-label">ชื่อ-สกุลผู้ป่วย</span>
+                <span class="info-value">{{ patientInfo.patientname }}</span>
+              </div>
+              <div class="patient-info-item">
+                <span class="info-label">ใบสั่งยา</span>
+                <span class="info-value">{{ diseaseResult?.prescription || '-' }}</span>
+              </div>
+            </div>
+            <div class="problem-tag">
+              <mat-icon>warning_amber</mat-icon>
+              <span>พบข้อห้ามใช้: <strong>{{ totalCount }}</strong> รายการ</span>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="dd-summary-bar mb-4">
+            <mat-icon>info</mat-icon>
+            <span>พบยาที่ห้ามใช้กับโรค/ภาวะของผู้ป่วย <strong>{{ totalCount }}</strong> รายการ —
+              กรุณาตรวจสอบและยืนยันก่อนจ่ายยา</span>
+          </div>
+
+          <!-- จัดกลุ่มตามข้อห้าม -->
+          <div *ngFor="let group of diseaseGroups; let gi = index" class="dd-group">
+            <div class="dd-group-header">
+              <span class="dd-group-index">{{ gi + 1 }}</span>
+              <span class="dd-group-title">{{ group.name }}</span>
+              <span class="dd-group-count">{{ group.items.length }} รายการ</span>
+            </div>
+
+            <div *ngFor="let item of group.items; let i = index; trackBy: trackByItem" class="dd-drug-row">
+              <div class="dd-drug-main">
+                <span class="dd-drug-index">{{ i + 1 }}</span>
+                <div class="dd-drug-info">
+                  <span class="dd-drug-name">{{ item.drugName || '-' }}</span>
+                  <span class="dd-drug-code" *ngIf="item.drugCode">รหัสยา: {{ item.drugCode }}</span>
+                </div>
+              </div>
+              <div class="dd-drug-note" *ngIf="item.note">
+                <mat-icon>notes</mat-icon>
+                <span>{{ item.note }}</span>
+              </div>
+              <!-- <button type="button" class="btn btn-sm btn-warning dd-pe-btn"
+                (click)="openMedErrorModal(item)" title="รายงาน Medication Error">
+                PE
+              </button> -->
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noData>
+          <div class="dd-no-data">
+            <mat-icon>check_circle</mat-icon>
+            <p>ไม่พบยาที่ห้ามใช้กับโรค/ภาวะของผู้ป่วย</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">ปิด</button>
+        <button *ngIf="diseaseItems.length && !isConfirmed" class="btn btn-primary dd-confirm-btn"
+          (click)="onConfirm()">
+          <mat-icon class="dd-confirm-icon">verified</mat-icon>
+          ยืนยันผลการตรวจ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'DrugDisease'"
+  (save)="onMedErrorSave($event)">
+</app-modal-mederror>

@@ -11,7 +11,7 @@
   font-size: 1rem;
 }
 
-.row > .col-md-4 {
+.row>.col-md-4 {
   display: flex;
   flex-direction: column;
 }
@@ -473,6 +473,11 @@
   color: #1565c0; // Blue 800
 }
 
+.type-drugdisease {
+  background-color: #f3e5f5; // Purple 50
+  color: #6a1b9a; // Purple 800
+}
+
 .type-lab {
   background-color: #e8f5e9; // Green 50
   color: #2e7d32; // Green 800
@@ -578,4 +583,231 @@
   color: #9e9e9e;
   padding: 8px 0;
   font-style: italic;
+}
+
+/* Report dashboard */
+.report-view {
+  color: #344054;
+  background: #f8fafc;
+  padding-top: 10px;
+  padding-bottom: 24px;
+}
+
+.status-tabs {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  margin-bottom: 18px;
+  background: #fff;
+  border: 1px solid #e4e9f0;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(38, 50, 56, 0.08);
+}
+
+.status-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef3f8;
+  color: #53657d;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.status-tab mat-icon {
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+}
+
+.status-tab span {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.status-tab.active.pending-tab {
+  background: #ed003c;
+  color: #fff;
+}
+
+.status-tab.active.confirmed-tab {
+  background: #dff7ed;
+  color: #087443;
+}
+
+.status-tab.active.all-tab {
+  background: #dce8f7;
+  color: #24558b;
+}
+
+.report-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.report-filters .mat-form-field {
+  margin-bottom: -1.25em;
+}
+
+.risk-select {
+  width: 205px;
+}
+
+.report-filters .search-box {
+  width: 280px;
+  margin-left: auto;
+}
+
+.report-table .mat-header-row {
+  background: #f5f8fc;
+  color: #52627a;
+  border-bottom: 1px solid #dce4ee;
+}
+
+.report-table .mat-header-cell {
+  padding: 13px 12px !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.02em;
+}
+
+.report-table .mat-cell {
+  padding: 13px 12px !important;
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.report-table .mat-row {
+  min-height: 76px !important;
+  background: #fff;
+}
+
+.report-table .mat-row:nth-child(even) {
+  background: #fcfdff;
+}
+
+.report-table .mat-cell small,
+.report-table .mat-cell>span {
+  display: block;
+  color: #718096;
+  font-size: 0.78rem;
+}
+
+.patient-cell {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #2455b2;
+}
+
+.copy-button {
+  display: inline-flex;
+  padding: 2px;
+  border: 0;
+  background: transparent;
+  color: #9aa9bc;
+  cursor: pointer;
+}
+
+.copy-button mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.risk-badge,
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 2px 4px 2px 0;
+  padding: 5px 10px;
+  border-radius: 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.risk-badge mat-icon,
+.status-badge mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  flex: 0 0 15px;
+  vertical-align: bottom;
+  margin-right: 3px;
+}
+
+.report-table .status-badge {
+  display: inline-flex;
+  padding: 5px 11px;
+}
+
+.report-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 126px;
+  justify-content: center;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-action mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.pending-action {
+  background: #ff9d00;
+}
+
+.confirmed-action {
+  background: #48c795;
+}
+
+@media (max-width: 900px) {
+  .report-filters .search-box {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .report-table {
+    min-width: 920px;
+  }
+
+  .report-view {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .status-tabs {
+    overflow-x: auto;
+  }
+
+  .status-tab {
+    flex: 1 0 auto;
+    padding: 0 11px;
+  }
 }

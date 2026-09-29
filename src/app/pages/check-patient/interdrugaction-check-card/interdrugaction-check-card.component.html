@@ -18,15 +18,48 @@
 
       <div class="modal-body p-4">
         <ng-container *ngIf="interactionList.length; else noData">
+          <!-- Header / ข้อมูลผู้ป่วย + สรุปสถานะ -->
+          <div class="patient-info-bar">
+            <div class="patient-info-main">
+              <div class="patient-info-item">
+                <span class="info-label">HN</span>
+                <span class="info-value">{{ patientInfo.hn }}</span>
+              </div>
+              <div class="patient-info-item">
+                <span class="info-label">ชื่อ-สกุลผู้ป่วย</span>
+                <span class="info-value">{{ patientInfo.patientname }}</span>
+              </div>
+              <div class="patient-info-item">
+                <span class="info-label">ห้องยา</span>
+                <span class="info-value">
+                  {{ enrichedItems[0]?.todayDrug?.toSite || patientInfo.toSite || '-' }}
+                </span>
+              </div>
+            </div>
+            <div class="problem-tag">
+              <mat-icon>warning</mat-icon>
+              <span>
+                พบปัญหา: <strong>{{ problemCount }}</strong> คู่
+                <span class="problem-tag-count" *ngIf="todayProblemCount">
+                  ใบสั่งปัจจุบัน: <strong>{{ todayProblemCount }}</strong> คู่
+                </span>
+                <span class="history-note" *ngIf="historyProblemCount">
+                  ประวัติย้อนหลัง: <strong>{{ historyProblemCount }}</strong> คู่
+                </span>
+              </span>
+            </div>
+          </div>
+
           <div class="summary-bar mb-4">
             <mat-icon>info</mat-icon>
             <span>พบการโต้ตอบของยา
-              <strong>{{ interactionList.length }}</strong> รายการ —
+              <strong>{{ interactionList.length }}</strong> คู่ —
               กรุณาตรวจสอบก่อนจ่ายยา</span>
+
           </div>
 
-          <div *ngFor="let item of interactionList; let i = index; let last = last" class="interaction-card"
-            [ngClass]="getSeverityCardClass(item.severity)">
+          <div *ngFor="let item of enrichedItems; let i = index; let last = last; trackBy: trackByDrug"
+            class="interaction-card" [ngClass]="getSeverityCardClass(item.severity)">
             <div class="interaction-card-header">
               <span class="interaction-index">#{{ i + 1 }}</span>
               <span class="interaction-pair-label">คู่ยาที่พบปัญหา</span>
@@ -39,7 +72,7 @@
             </div>
 
             <div class="drug-pair-section">
-              <!-- ยาตัวที่ 1 -->
+              <!-- ยาตัวที่ 1 (ใบสั่งปัจจุบัน) -->
               <div class="drug-block drug-block--current">
                 <div class="drug-block-label">
                   <mat-icon>local_pharmacy</mat-icon>
@@ -51,18 +84,36 @@
                     <mat-icon>tag</mat-icon>{{ item.todayDrug?.invCode }}
                   </span>
                   <span class="meta-chip">
-                    <mat-icon>location_on</mat-icon>{{ item.todayDrug?.toSite }}
-                  </span>
-                  <span class="meta-chip">
                     <mat-icon>receipt</mat-icon>Req #{{ item.todayDrug?.reqNo }}
                   </span>
                 </div>
+
+                <!-- ผู้สั่ง / แผนก -->
+                <div class="prescriber-block">
+                  <div class="prescriber-row">
+                    <mat-icon>person</mat-icon>
+                    <span>
+                      <strong>ผู้สั่ง:</strong> {{ formatMedHow(item.todayDrug?.docName) }}
+                    </span>
+                  </div>
+                  <div class="prescriber-row">
+                    <mat-icon>business</mat-icon>
+                    <span>
+                      <strong>แผนก/ห้องตรวจ:</strong>
+                      {{ item.todayDrug?.clinicName || item.todayDrug?.toSite || '-' }}
+                    </span>
+                  </div>
+                </div>
+
                 <div class="drug-usage">
-                  <strong>วิธีใช้:</strong>
-                  {{ formatMedHow(item.todayDrug?.medHow) }}
-                  <span class="usage-divider">|</span>
-                  <strong>จำนวน:</strong>
-                  {{ formatQty(item.todayDrug) }}
+                  <div class="usage-row">
+                    <mat-icon>medication</mat-icon>
+                    <span><strong>วิธีใช้:</strong> {{ formatMedHow(item.todayDrug?.medHow) }}</span>
+                  </div>
+                  <div class="usage-row">
+                    <mat-icon>inventory_2</mat-icon>
+                    <span><strong>จำนวนที่สั่ง:</strong> {{ formatQty(item.todayDrug) }}</span>
+                  </div>
                 </div>
               </div>
 
@@ -70,7 +121,7 @@
                 <mat-icon>sync_alt</mat-icon>
               </div>
 
-              <!-- ยาตัวที่ 2 -->
+              <!-- ยาตัวที่ 2 (ยาที่มีปฏิกิริยา) -->
               <div class="drug-block drug-block--interacting">
                 <div class="drug-block-label">
                   <mat-icon>history</mat-icon>
@@ -83,21 +134,52 @@
                   <span class="meta-chip">
                     <mat-icon>tag</mat-icon>{{ item.interactingDrug?.invCode }}
                   </span>
-                  <span class="meta-chip">
-                    <mat-icon>location_on</mat-icon>{{ item.interactingDrug?.toSite }}
-                  </span>
                   <span class="meta-chip" *ngIf="item.interactingDrug?.lastIssTime">
                     <mat-icon>event</mat-icon>
-                    วันที่จ่าย:
-                    {{ formatDate(item.interactingDrug?.lastIssTime) }}
+                    รับไปเมื่อ {{ formatDate(item.interactingDrug?.lastIssTime) }}
                   </span>
                 </div>
+
+                <!-- ผู้สั่ง / แผนก -->
+                <div class="prescriber-block">
+                  <div class="prescriber-row">
+                    <mat-icon>person</mat-icon>
+                    <span>
+                      <strong>ผู้สั่ง:</strong> {{ formatMedHow(item.interactingDrug?.docName) }}
+                    </span>
+                  </div>
+                  <div class="prescriber-row">
+                    <mat-icon>business</mat-icon>
+                    <span>
+                      <strong>แผนก/ห้องตรวจ:</strong>
+                      {{ item.interactingDrug?.clinicName || item.interactingDrug?.toSite || '-' }}
+                    </span>
+                  </div>
+                </div>
+
                 <div class="drug-usage">
-                  <strong>วิธีใช้:</strong>
-                  {{ formatMedHow(item.interactingDrug?.medHow) }}
-                  <span class="usage-divider">|</span>
-                  <strong>จำนวน:</strong>
-                  {{ formatQty(item.interactingDrug) }}
+                  <div class="usage-row">
+                    <mat-icon>medication</mat-icon>
+                    <span><strong>วิธีใช้:</strong> {{ formatMedHow(item.interactingDrug?.medHow) }}</span>
+                  </div>
+                  <div class="usage-row">
+                    <mat-icon>inventory_2</mat-icon>
+                    <span><strong>จำนวนที่สั่ง:</strong> {{ formatQty(item.interactingDrug) }}</span>
+                  </div>
+                </div>
+
+                <!-- แถบ Highlight ยาประวัติ (ประวัติยาเดิม) -->
+                <div *ngIf="item.isHistorical" class="history-banner">
+                  <mat-icon class="history-icon">history</mat-icon>
+                  <div class="history-info">
+                    <span class="history-status">ประวัติยาเดิม</span>
+                    <span *ngIf="item.interactingDrug?.lastIssTime" class="history-line">
+                      รับไปเมื่อ {{ formatDate(item.interactingDrug.lastIssTime) }}
+                    </span>
+                    <span class="history-line history-remaining">
+                      {{ item.remainingDays }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

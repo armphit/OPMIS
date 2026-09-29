@@ -659,7 +659,7 @@
                 check_time
               </th>
               <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.check_time }}
+                {{ element.check_time | date: "dd/MM/yyyy HH:mm:ss":"UTC" }}
               </td>
             </ng-container>
             <ng-container matColumnDef="dispenser_id">
@@ -683,7 +683,7 @@
                 dispens_time
               </th>
               <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.dispens_time }}
+                {{ element.dispens_time | date: "dd/MM/yyyy HH:mm:ss":"UTC" }}
               </td>
             </ng-container>
             <ng-container matColumnDef="createDT_Q">
@@ -691,7 +691,7 @@
                 createDT_Q
               </th>
               <td mat-cell *matCellDef="let element" style="padding-left: 20px; padding-right: 20px">
-                {{ element.createDT_Q }}
+                {{ element.createDT_Q | date: "dd/MM/yyyy HH:mm:ss":"UTC" }}
               </td>
             </ng-container>
 

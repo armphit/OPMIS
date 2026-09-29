@@ -1,84 +1,290 @@
-/* คุมความกว้าง 50/50 */
-.mat-column-currentSide,
-.mat-column-duplicateSide {
-  width: 50%;
-  padding: 15px !important;
+/* ===================== Modal / Header Bar ===================== */
+.dup-modal {
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-/* พื้นหลังฝั่งซ้าย-ขวา ให้ต่างกันนิดหน่อยเพื่อแยกสายตา */
-.mat-column-currentSide {
-  background-color: #ffffff;
+.dup-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #eceff1;
+  padding: 16px 20px;
+
+  .header-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .close-btn {
+    align-self: flex-start;
+    opacity: 0.7;
+
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+  }
 }
 
-.mat-column-duplicateSide {
-  background-color: #fff8f8;
+.dup-header-left {
+  flex: 1 1 auto;
+  min-width: 260px;
 }
 
-/* Wrapper สำหรับเนื้อหายา */
-.drug-item-box {
+.patient-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-top: 6px;
+}
+
+.patient-info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  font-size: 14px;
+
+  .info-label {
+    font-size: 11px;
+    color: #78909c;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+  }
+
+  .info-value {
+    font-weight: 600;
+    color: #263238;
+    font-size: 0.95rem;
+  }
+
+  .hn-copy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .copy-btn {
+      padding: 0 8px;
+      font-size: 11px;
+      line-height: 20px;
+    }
+  }
 }
 
-.drug-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1a73e8;
-  /* สีน้ำเงินสำหรับยาปัจจุบัน */
-}
-
-.duplicate-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #d93025;
-  /* สีแดงสำหรับยาที่ซ้ำ */
-}
-
-.usage-info {
-  font-size: 0.9rem;
-  color: #3c4043;
-  line-height: 1.4;
-  padding: 8px;
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 6px;
-}
-
-.meta-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-
-}
-
-.label-pill {
-  font-size: 11px;
-  padding: 2px 8px;
+/* Badge จำนวนคู่ที่พบ (Header) */
+.summary-badge {
+  flex-shrink: 0;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
   border-radius: 12px;
-  background: #e8eaed;
-  color: #5f6368;
-  font-weight: 500;
+  padding: 8px 14px;
+  text-align: center;
+
+  .summary-badge-total {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #b71c1c;
+    font-weight: 600;
+    white-space: nowrap;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    strong {
+      font-size: 1.05rem;
+    }
+  }
+
+  .summary-badge-counters {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .cnt {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .cnt-green { background: #c8e6c9; color: #1b5e20; }
+    .cnt-yellow { background: #ffe082; color: #8a6d00; }
+    .cnt-red { background: #ffcdd2; color: #b71c1c; }
+  }
 }
 
-.mat-icon {
-  width: 0 !important;
-  height: 0 !important;
-  vertical-align: middle !important;
-}
-
-/* ลบเส้นคั่นระหว่างแถวที่ไม่จำเป็นออกเพื่อให้ดู Smooth */
-.mat-table {
+/* ===================== ตาราง 5 คอลัมน์ ===================== */
+.dup-table {
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0 8px;
+
+  .mat-header-cell {
+    background: #f5f7fa;
+    color: #455a64;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    white-space: nowrap;
+    padding: 10px 12px !important;
+  }
+
+  .mat-row {
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    transition: transform 0.15s;
+  }
+
+  .mat-row:hover {
+    transform: scale(1.003);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-cell {
+    padding: 12px !important;
+    border: none;
+    vertical-align: top;
+  }
+
+  .col-seq { width: 48px; }
+  .col-group { width: 130px; }
+  .col-action { width: 130px; text-align: center; }
 }
 
-.mat-row {
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+/* ลำดับ */
+.seq-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eceff1;
+  color: #546e7a;
+  font-weight: 700;
+  font-size: 0.8rem;
 }
 
-.mat-row:hover {
-  transform: scale(1.002);
-  background-color: #fbfbfb;
+/* กลุ่มยา */
+.group-chip {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  background: #e3f2fd;
+  color: #1565c0;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid #bbdefb;
+}
+
+/* ชื่อยา */
+.drug-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a237e;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+/* วิธีใช้ */
+.drug-usage {
+  font-size: 0.85rem;
+  color: #455a64;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+
+  .usage-head {
+    font-weight: 700;
+    color: #37474f;
+    margin-bottom: 2px;
+  }
+}
+
+/* กล่องแพทย์ + แผนก */
+.prescriber-box {
+  border: 1px dashed #b0bec5;
+  background: #f5f7fa;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.8rem;
+
+  .pr-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #37474f;
+    line-height: 1.5;
+
+    + .pr-row { margin-top: 4px; }
+
+    mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+      color: #90a4ae;
+    }
+  }
+
+  /* กล่องสีเหลืองสำหรับยาเดิม (ประวัติ) */
+  &--history {
+    border: 1px solid #ffe082;
+    background: #fffde7;
+  }
+}
+
+/* Status Badge ยาที่ 2 */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+
+  &.badge-green { background: #c8e6c9; color: #1b5e20; border: 1px solid #a5d6a7; }
+  &.badge-yellow { background: #fff9c4; color: #b26a00; border: 1px solid #fff176; }
+  &.badge-red { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+}
+
+.pe-btn {
+  white-space: nowrap;
+}
+
+.muted-text {
+  color: #90a4ae;
+  font-style: italic;
+}
+
+/* ไม่มีข้อมูล */
+.dup-intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 30px;
+  color: #78909c;
+  font-size: 1rem;
+
+  mat-icon {
+    color: #4caf50;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
 }

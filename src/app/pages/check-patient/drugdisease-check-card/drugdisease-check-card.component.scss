@@ -1,0 +1,158 @@
+/* ===== Modal header ===== */
+.dd-modal {
+  .modal-header {
+    background: linear-gradient(135deg, #ad1457 0%, #e91e63 100%);
+    color: #fff;
+    border-bottom: none;
+
+    .modal-title { color: #fff; font-size: 1.15rem; }
+    .header-icon { font-size: 26px; width: 26px; height: 26px; }
+    .close { color: #fff; opacity: 0.9; text-shadow: none; mat-icon { font-size: 24px; } }
+  }
+  .modal-body { background: #f5f7fa; }
+}
+
+/* Card : สถานะ + จำนวน */
+.dd-card-status { font-weight: 700; }
+.dd-card-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.8rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* ===== Patient info bar ===== */
+.patient-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #fce4ec, #fff5f7);
+  border: 1px solid #f8bbd0;
+  border-left: 5px solid #c2185b;
+  border-radius: 10px;
+
+  .patient-info-main { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+}
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+.info-label {
+  font-size: 11px; color: #78909c;
+  text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600;
+}
+.info-value { font-weight: 600; color: #263238; }
+
+.problem-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #ffecb3;
+  color: #e65100;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: auto;
+  mat-icon { flex-shrink: 0; }
+}
+
+/* ===== Summary ===== */
+.dd-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #fff3e0;
+  border-left: 4px solid #fb8c00;
+  border-radius: 8px;
+  color: #5d4037;
+  font-size: 0.95rem;
+  mat-icon { color: #ef6c00; font-size: 22px; width: 22px; height: 22px; flex-shrink: 0; }
+}
+
+/* ===== Group ===== */
+.dd-group {
+  background: #fff;
+  border-radius: 12px;
+  padding: 4px 8px 8px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #ef5350;
+}
+.dd-group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 10px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+.dd-group-index {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fce4ec; color: #c2185b;
+  font-size: 0.8rem; font-weight: 700;
+}
+.dd-group-title { font-size: 1rem; font-weight: 700; color: #37474f; flex: 1; }
+.dd-group-count {
+  padding: 2px 10px; border-radius: 12px;
+  background: #ffebee; color: #c62828;
+  font-size: 0.75rem; font-weight: 700; white-space: nowrap;
+}
+
+/* ===== Drug row ===== */
+.dd-drug-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: #fafafa; }
+}
+.dd-drug-main { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.dd-drug-index {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 6px;
+  background: #eceff1; color: #546e7a;
+  font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+}
+.dd-drug-info { display: flex; flex-direction: column; min-width: 0; }
+.dd-drug-name { font-weight: 600; color: #263238; }
+.dd-drug-code { font-size: 0.78rem; color: #78909c; }
+.dd-drug-note {
+  display: flex; align-items: center; gap: 6px;
+  max-width: 45%;
+  padding: 8px 12px;
+  background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px;
+  color: #6d5b00; font-size: 0.85rem;
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: #f9a825; flex-shrink: 0; }
+}
+.dd-pe-btn { flex-shrink: 0; }
+
+/* ===== No data ===== */
+.dd-no-data {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 48px 0; color: #78909c;
+  mat-icon { font-size: 52px; width: 52px; height: 52px; color: #66bb6a; }
+}
+
+/* ===== Footer confirm ===== */
+.dd-confirm-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.dd-confirm-icon { font-size: 18px; width: 18px; height: 18px; }
+
+@media (max-width: 768px) {
+  .dd-drug-row { flex-wrap: wrap; }
+  .dd-drug-note { max-width: 100%; }
+}

@@ -80,6 +80,14 @@
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
+  /* หลักประกัน: กัน stacking-context/overlay ที่มองไม่เห็นทับปุ่ม PE ใน header */
+  position: relative;
+  z-index: 1;
+
+  .btn-warning {
+    position: relative;
+    z-index: 2;
+  }
 }
 
 .interaction-index {
@@ -351,4 +359,193 @@
     font-size: 1.05rem;
     font-weight: 500;
   }
+}
+
+/* ===== Header / ข้อมูลผู้ป่วย + สรุปสถานะ ===== */
+.patient-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #e3f2fd, #f5fbff);
+  border: 1px solid #cfe5f7;
+  border-left: 5px solid #1565c0;
+  border-radius: 10px;
+
+  .patient-info-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+}
+
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.info-label {
+  font-size: 11px;
+  color: #78909c;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-weight: 600;
+  color: #263238;
+}
+
+.problem-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background-color: #ffecb3;
+  color: #e65100;
+  font-weight: 600;
+  font-size: 14px;
+  margin-left: auto;
+  max-width: 100%;
+
+  > mat-icon {
+    flex-shrink: 0;
+  }
+
+  > span {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+  }
+
+  .problem-tag-count,
+  .history-note {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .problem-tag-count {
+    color: #1b5e20;
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+  }
+
+  .history-note {
+    color: #6d4c41;
+    background-color: #fff3e0;
+    border: 1px solid #ffe0b2;
+  }
+}
+
+/* ===== ผู้สั่งยา / แผนก ===== */
+.prescriber-block {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 6px;
+  border: 1px dashed #cfd8dc;
+}
+
+.prescriber-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: #37474f;
+  line-height: 1.5;
+
+  + .prescriber-row {
+    margin-top: 4px;
+  }
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    color: #78909c;
+    flex-shrink: 0;
+  }
+
+  strong {
+    color: #455a64;
+  }
+}
+
+/* ===== รายละเอียดการสั่ง: วิธีใช้ / จำนวน ===== */
+.usage-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.5;
+
+  + .usage-row {
+    margin-top: 6px;
+  }
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #78909c;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+}
+
+/* ===== แถบ Highlight ยาประวัติ (ประวัติยาเดิม) ===== */
+.history-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: #fffde7;
+  border: 1px solid #ffe082;
+  border-left: 4px solid #f9a825;
+  border-radius: 8px;
+
+  .history-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: #f9a825;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.history-status {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #8d6e14;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-line {
+  font-size: 0.82rem;
+  color: #6d5b00;
+}
+
+.history-remaining {
+  font-weight: 700;
+  color: #e65100;
 }

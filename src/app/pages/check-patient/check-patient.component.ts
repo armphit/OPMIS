@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
 import { HttpService } from 'src/app/services/http.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { DateAdapter } from '@angular/material/core';
+import { MatPaginator } from '@angular/material/paginator';
 
 export interface DrugInteraction {
   drug_interaction_type: string;
@@ -15,6 +16,7 @@ export interface DrugInteraction {
 export interface Prescription {
   prescription: string;
   hn: string;
+  patientname?: string;
   keyCreateDT: string;
   statusCheck: string;
   scanDT: string;
@@ -29,7 +31,7 @@ export interface Prescription {
   templateUrl: './check-patient.component.html',
   styleUrls: ['./check-patient.component.scss'],
 })
-export class CheckPatientComponent implements OnInit {
+export class CheckPatientComponent implements OnInit, AfterViewInit {
   patient: any = {};
   patientId = { hn: '' };
   selectedSite = 'W8';
@@ -37,23 +39,26 @@ export class CheckPatientComponent implements OnInit {
   reportDateStart: Date = new Date();
   reportDateEnd: Date = new Date();
   reportSelectedSite = 'W8';
+  reportStatus: 'pending' | 'confirmed' | 'all' = 'all';
+  reportRisk = 'all';
+  reportSearch = '';
   private _rawResult: any[] = [];
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   displayedColumns: string[] = [
-    'prescription',
-    'hn',
-    'statusCheck',
+    'queue',
+    'checkedAt',
+    'patient',
     'departmentcode',
-    'userCheck',
-    'Actions',
-    'scanDT',
-    'drugDetails',
-
+    'riskType',
+    'status',
+    'actions',
   ];
 
   dataSource: MatTableDataSource<Prescription> =
     new MatTableDataSource<Prescription>([]);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private http: HttpService,
     private dateAdapter: DateAdapter<Date>,
@@ -64,16 +69,29 @@ export class CheckPatientComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (data, filter) => {
-      const text =
-        data.prescription + data.hn + data.queue + data.userCheck + data.scanDT;
+      const text = [
+        data.prescription,
+        data.hn,
+        data.patientname,
+        data.queue,
+        data.userCheck,
+        data.scanDT,
+      ]
+        .map((value) => value || '')
+        .join(' ');
       return text.toLowerCase().includes(filter);
     };
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Group raw records by prescription into parent-child structure
    */
   private groupByPrescription(rawData: any[]): Prescription[] {
+
     const map = new Map<string, Prescription>();
 
     for (const item of rawData) {
@@ -82,9 +100,10 @@ export class CheckPatientComponent implements OnInit {
         map.set(key, {
           prescription: item.prescription,
           hn: item.hn,
+          patientname: item.patientname || item.patientName || '',
           keyCreateDT: item.keyCreateDT || '',
           statusCheck: item.statusCheck,
-          scanDT: item.scanDT || item.scanDT,
+          scanDT: item.scanDT || item.keyCreateDT || '',
           queue: item.queue || '',
           userCheck: item.userCheck,
           departmentcode: item.departmentcode || '',
@@ -181,6 +200,7 @@ export class CheckPatientComponent implements OnInit {
       // update เฉพาะผล allergy
 
 
+
       if (data === 'Allergy') {
         this.patient.finalResult.allergymed = getData.response.moph_patient;
       } else if (data === 'Duplicate') {
@@ -195,6 +215,11 @@ export class CheckPatientComponent implements OnInit {
       } else if (data === 'Appropriatedosage') {
         this.patient.finalResult.appropriatedosage.result =
           getData.response.updated;
+      } else if (data === 'Drugdisease') {
+
+        this.patient.finalResult.drugdisease.result =
+          getData.response.updated?.[0];
+        ;
       }
 
       Swal.fire({
@@ -223,17 +248,18 @@ export class CheckPatientComponent implements OnInit {
       if (getData.response.rowCount) {
         this._rawResult = getData.response.result;
 
-        this.applyDepartmentFilter();
+        this.applyReportFilters();
       } else {
         this._rawResult = [];
         this.dataSource = new MatTableDataSource<Prescription>([]);
+        this.dataSource.paginator = this.paginator;
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
 
-  private applyDepartmentFilter() {
+  private applyReportFilters() {
     const site = this.reportSelectedSite;
     let filtered = this._rawResult;
 
@@ -250,12 +276,107 @@ export class CheckPatientComponent implements OnInit {
       filtered = filtered.filter((item: any) => item.departmentcode === site);
     }
 
-    if (filtered.length) {
-      const grouped = this.groupByPrescription(filtered);
-      this.dataSource = new MatTableDataSource<Prescription>(grouped);
-    } else {
-      this.dataSource = new MatTableDataSource<Prescription>([]);
+    let grouped = this.groupByPrescription(filtered);
+    grouped = grouped.filter((row) => {
+      const matchesStatus =
+        this.reportStatus === 'all' ||
+        (this.reportStatus === 'confirmed' && this.isConfirmed(row)) ||
+        (this.reportStatus === 'pending' && !this.isConfirmed(row));
+      const matchesRisk =
+        this.reportRisk === 'all' ||
+        row.details.some(
+          (detail) => detail.drug_interaction_type === this.reportRisk,
+        );
+      return matchesStatus && matchesRisk;
+    });
+
+    grouped.sort((first, second) =>
+      this.isConfirmed(first) === this.isConfirmed(second)
+        ? 0
+        : this.isConfirmed(first)
+          ? 1
+          : -1,
+    );
+    this.dataSource = new MatTableDataSource<Prescription>(grouped);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.filterPredicate = (data, filter) => {
+      const text = [
+        data.prescription,
+        data.hn,
+        data.patientname,
+        data.queue,
+        data.userCheck,
+      ]
+        .map((value) => value || '')
+        .join(' ');
+      return text.toLowerCase().includes(filter);
+    };
+    this.dataSource.filter = this.reportSearch.trim().toLowerCase();
+  }
+
+  isConfirmed(row: Prescription): boolean {
+    return String(row.statusCheck) === '0';
+  }
+
+  getReportCount(status: 'pending' | 'confirmed' | 'all'): number {
+    const rows = this.groupByPrescription(this.getSiteFilteredResults());
+    if (status === 'all') return rows.length;
+    return rows.filter((row) =>
+      status === 'confirmed' ? this.isConfirmed(row) : !this.isConfirmed(row),
+    ).length;
+  }
+
+  private getSiteFilteredResults(): any[] {
+    if (this.reportSelectedSite === 'W8') {
+      return this._rawResult.filter(
+        (item: any) =>
+          !item.departmentcode ||
+          item.departmentcode === null ||
+          item.departmentcode === '' ||
+          item.departmentcode === 'W8',
+      );
     }
+    return this._rawResult.filter(
+      (item: any) => item.departmentcode === this.reportSelectedSite,
+    );
+  }
+
+  setReportStatus(status: 'pending' | 'confirmed' | 'all') {
+    this.reportStatus = status;
+    this.applyReportFilters();
+  }
+
+  onReportRiskChange() {
+    this.applyReportFilters();
+  }
+
+  onReportSearch(event: Event) {
+    this.reportSearch = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = this.reportSearch.trim().toLowerCase();
+  }
+
+  copyPatient(hn: string, row: any) {
+    console.log('Copying HN:', hn, 'Row:', row);
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(hn);
+    }
+  }
+
+  getRiskLabel(type: string): string {
+    return type === 'Appropriatedosage' ? 'QUANTITY' : type;
+  }
+
+  getRiskIcon(type: string): string {
+    const icons: { [key: string]: string } = {
+      Allergy: 'block',
+      Duplicate: 'medication',
+      Lab: 'science',
+      Dosage: 'vaccines',
+      Interdrugaction: 'sync_problem',
+      Appropriatedosage: 'format_list_numbered',
+      Drugdisease: 'healing',
+    };
+    return icons[type] || 'warning';
   }
   onTabChange(index: any) {
     if (index === 1) {
@@ -279,19 +400,20 @@ export class CheckPatientComponent implements OnInit {
   }
   applyFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
+    this.reportSearch = value;
     this.dataSource.filter = value.trim().toLowerCase();
   }
 
   getInteractionClass(type: string): string {
-    return 'type-' + type.toLowerCase();
+    return 'type-' + String(type || '').toLowerCase();
   }
 
   getStatusClass(status: string): string {
-    return status === '0' ? 'status-confirmed' : 'status-pending';
+    return String(status) === '0' ? 'status-confirmed' : 'status-pending';
   }
 
   onReportSiteChange() {
-    this.applyDepartmentFilter();
+    this.applyReportFilters();
   }
   changeName(name: string): string {
     return name === 'Appropriatedosage' ? 'QUANTITY' : name;
