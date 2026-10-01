@@ -6,11 +6,21 @@ import { HttpService } from 'src/app/services/http.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { DateAdapter } from '@angular/material/core';
 import { MatPaginator } from '@angular/material/paginator';
+import { AllergyCheckCardComponent } from './allergy-check-card/allergy-check-card.component';
+import { DuplicateCheckCardComponent } from './duplicate-check-card/duplicate-check-card.component';
+import { LaboratoryTestComponent } from './laboratory-test/laboratory-test.component';
+import { DosageCheckCardComponent } from './dosage-check-card/dosage-check-card.component';
+import { InterdrugactionCheckCardComponent } from './interdrugaction-check-card/interdrugaction-check-card.component';
+import { AppropriatedosageCheckCardComponent } from './appropriatedosage-check-card/appropriatedosage-check-card.component';
+import { DrugdiseaseCheckCardComponent } from './drugdisease-check-card/drugdisease-check-card.component';
+
+declare const $: any;
 
 export interface DrugInteraction {
   drug_interaction_type: string;
   drug_interaction_status: string;
   userConfirm: string | null;
+  userCheck?: string | null;
 }
 
 export interface Prescription {
@@ -43,6 +53,8 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   reportRisk = 'all';
   reportSearch = '';
   private _rawResult: any[] = [];
+  /** warning ที่ผู้ใช้คลิกแล้ว modal ไม่เปิด (ไม่พบข้อมูล) — ซ่อนเฉพาะ badge นี้ */
+  private hiddenRiskTypes = new Set<string>();
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   displayedColumns: string[] = [
@@ -58,6 +70,14 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<Prescription> =
     new MatTableDataSource<Prescription>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild(AllergyCheckCardComponent) allergyCard?: AllergyCheckCardComponent;
+  @ViewChild(DuplicateCheckCardComponent) duplicateCard?: DuplicateCheckCardComponent;
+  @ViewChild(LaboratoryTestComponent) labCard?: LaboratoryTestComponent;
+  @ViewChild(DosageCheckCardComponent) dosageCard?: DosageCheckCardComponent;
+  @ViewChild(InterdrugactionCheckCardComponent) interCard?: InterdrugactionCheckCardComponent;
+  @ViewChild(AppropriatedosageCheckCardComponent) appropCard?: AppropriatedosageCheckCardComponent;
+  @ViewChild(DrugdiseaseCheckCardComponent) drugDiseaseCard?: DrugdiseaseCheckCardComponent;
 
   constructor(
     private http: HttpService,
@@ -115,11 +135,31 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
       entry.details.push({
         drug_interaction_type: item.drug_interaction_type,
         drug_interaction_status: item.drug_interaction_status,
-        userConfirm: item.userConfirm,
+        userConfirm: item.userConfirm ?? null,
+        userCheck: item.userCheck ?? null,
       });
     }
 
     return Array.from(map.values());
+  }
+
+  /**
+   * กรอง warning ที่ถูกซ่อน (ผู้ใช้คลิกแล้ว modal ไม่เปิด/ไม่พบข้อมูล) ออก
+   * และตัด row ที่ไม่เหลือ warning ใด ๆ ทิ้ง
+   * ทำงานที่ชั้น render จึงทนต่อการ reload ข้อมูลจาก getDuplicate()
+   */
+  private removeHiddenRiskTypes(rows: Prescription[]): Prescription[] {
+    return rows
+      .map((row) => ({
+        ...row,
+        details: row.details.filter(
+          (detail) =>
+            !this.hiddenRiskTypes.has(
+              `${row.prescription}|${detail.drug_interaction_type}`,
+            ),
+        ),
+      }))
+      .filter((row) => row.details.length > 0);
   }
 
   /**
@@ -232,7 +272,11 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-  async getDuplicate() {
+  async getDuplicate(resetHidden = false) {
+    // ปุ่ม "โหลดข้อมูล" = รีเฟรชใหม่ -> ล้างรายการที่ซ่อนไว้ ให้กลับมาเหมือนเดิม
+    if (resetHidden) {
+      this.hiddenRiskTypes.clear();
+    }
     const dateStart = this.reportDateStart
       ? moment(this.reportDateStart).format('YYYY-MM-DD')
       : '';
@@ -277,6 +321,7 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     }
 
     let grouped = this.groupByPrescription(filtered);
+    grouped = this.removeHiddenRiskTypes(grouped);
     grouped = grouped.filter((row) => {
       const matchesStatus =
         this.reportStatus === 'all' ||
@@ -319,7 +364,9 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   }
 
   getReportCount(status: 'pending' | 'confirmed' | 'all'): number {
-    const rows = this.groupByPrescription(this.getSiteFilteredResults());
+    const rows = this.removeHiddenRiskTypes(
+      this.groupByPrescription(this.getSiteFilteredResults()),
+    );
     if (status === 'all') return rows.length;
     return rows.filter((row) =>
       status === 'confirmed' ? this.isConfirmed(row) : !this.isConfirmed(row),
@@ -366,6 +413,15 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     return type === 'Appropriatedosage' ? 'QUANTITY' : type;
   }
 
+  /**
+   * ผู้ที่ยืนยันความเสี่ยงแต่ละประเภท
+   * รองรับทั้งฟิลด์ userCheck และ userConfirm (แล้วแต่โครงสร้างที่ API ส่งกลับมา)
+   */
+  getConfirmUser(detail: DrugInteraction): string {
+
+    return detail?.userConfirm || '';
+  }
+
   getRiskIcon(type: string): string {
     const icons: { [key: string]: string } = {
       Allergy: 'block',
@@ -398,6 +454,74 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     this.tabIndex = 0;
     await this.scan();
   }
+
+  /**
+   * คลิกที่ risk-badge ในแท็บ Report -> โหลดข้อมูลผู้ป่วย (goTab2)
+   * แล้วเด้ง modal ของการ์ดที่ตรงกับประเภทความเสี่ยงนั้นทันที
+   * เมื่อปิด/ยืนยัน modal จะสลับกลับมาที่แท็บ Report อัตโนมัติ
+   */
+  async openRiskDetail(row: any, type: string) {
+    await this.goTab2(row);
+    // รอให้ Angular สร้างการ์ด (ผ่าน *ngIf="patient.todayDrugsHN") หลัง scan เสร็จ
+    setTimeout(() => {
+      const card: any = this.getRiskCard(type);
+
+      if (!card) {
+        this.tabIndex = 1;
+        return;
+      }
+      const modal = $('#' + card.modalId);
+      // กลับไปแท็บ Report เมื่องานเสร็จ (Close / Confirm) แล้วโหลดสถานะใหม่
+      modal.one('hidden.bs.modal', () => {
+        this.tabIndex = 1;
+        this.getDuplicate();
+      });
+      card.openModal();
+      // กันเหนียว: ถ้า modal ไม่เปิด (ไม่พบข้อมูล) ให้กลับแท็บ Report
+      setTimeout(async () => {
+        if (!$('body').hasClass('modal-open')) {
+
+          // modal ไม่เปิด (ไม่พบข้อมูล) → ซ่อนเฉพาะ warning badge ที่คลิก
+
+          let formData = new FormData();
+          formData.append('prescription', row.prescription);
+          formData.append('type', type);
+          let getData: any = await this.http.post('getDuplicate3', formData);
+
+          if (getData.connect) {
+            if (getData.response.isQuery) {
+              this.hiddenRiskTypes.add(`${row.prescription}|${type}`);
+              this.applyReportFilters();
+              this.tabIndex = 1;
+            } else {
+              this._rawResult = [];
+              this.dataSource = new MatTableDataSource<Prescription>([]);
+              this.dataSource.paginator = this.paginator;
+            }
+          } else {
+            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+          }
+
+        }
+      }, 600);
+    });
+  }
+
+  /** หา component การ์ดตามประเภทความเสี่ยง */
+  private getRiskCard(type: string): any {
+    return (
+      {
+        allergy: this.allergyCard,
+        Duplicate: this.duplicateCard,
+        Lab: this.labCard,
+        Dosage: this.dosageCard,
+        Interdrugaction: this.interCard,
+        Appropriatedosage: this.appropCard,
+        Drugdisease: this.drugDiseaseCard,
+      } as { [key: string]: any }
+    )[type];
+  }
+
   applyFilter(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.reportSearch = value;

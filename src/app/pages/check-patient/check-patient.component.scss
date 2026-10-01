@@ -739,6 +739,15 @@
   white-space: nowrap;
 }
 
+/* คลิกที่ risk-badge ในแท็บ Report เพื่อเปิด modal รายละเอียดได้ */
+.risk-badge {
+  cursor: pointer;
+}
+
+.risk-badge:hover {
+  filter: brightness(0.95);
+}
+
 .risk-badge mat-icon,
 .status-badge mat-icon {
   display: inline-flex;

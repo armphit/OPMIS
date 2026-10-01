@@ -46,15 +46,15 @@
                   <td>
                     <div class="dose-comparison">
                       <div><span>ขนาดยาที่ได้รับจริง:</span><strong>{{ item.calculatedResult |
-                          number: '1.1-1' }} mg/kg/day</strong><small>({{ dailyDose(item) |
-                          number: '1.1-1' }} mg/day)</small></div>
+                          number: '1.2-2' }} mg/kg/day</strong><small>({{ dailyDose(item) |
+                          number: '1.2-2' }} mg/day)</small></div>
                       <div><span>ช่วงเกณฑ์มาตรฐาน:</span> <strong>
                           {{
                           item.matchedDrugRule?.warningNotequalto
-                          ? item.matchedDrugRule.warningNotequalto
-                          : (item.matchedDrugRule?.warningMin | number:'1.1-1')
+                          ? (item.matchedDrugRule.warningNotequalto | number:'1.2-2')
+                          : (item.matchedDrugRule?.warningMin | number:'1.2-2')
                           + ' - ' +
-                          (item.matchedDrugRule?.warningMax | number:'1.1-1')
+                          (item.matchedDrugRule?.warningMax | number:'1.2-2')
                           }}
                           mg/kg/day
                         </strong></div>
@@ -64,7 +64,7 @@
                     <div class="status-badge" [ngClass]="statusInfo(item).className"><strong>{{ statusInfo(item).label
                         }}</strong><small *ngIf="statusInfo(item).delta !== null">({{
                         statusInfo(item).deltaLabel }} {{ statusInfo(item).delta | number:
-                        '1.1-1' }} mg/kg/day)</small></div>
+                        '1.2-2' }} mg/kg/day)</small></div>
                   </td>
                   <td class="action-cell"><button type="button" class="pe-button" (click)="openMedErrorModal(item)"
                       title="บันทึก PE">📝<span>บันทึก<br />PE</span></button></td>

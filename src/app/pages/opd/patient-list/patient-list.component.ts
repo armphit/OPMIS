@@ -1639,6 +1639,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         formData.append('user', this.dataUser.user);
         formData.append('name', this.dataUser.name);
         formData.append('floor', this.select);
+        formData.append('date', this.dataP.createdDT);
         let getData: any = await this.http.post('add_moph_confirm', formData);
         if (getData.connect) {
           if (getData.response.rowCount > 0) {
