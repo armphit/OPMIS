@@ -656,7 +656,19 @@ export class CheckMedComponent implements OnInit {
                           formData
                         );
                         formData = null;
-
+                        if (pdf.connect) {
+                          if (pdf.response.connect === 'success') {
+                            await this.updateCheckmed(value);
+                          } else {
+                            Swal.fire(
+                              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                              '',
+                              'error'
+                            );
+                          }
+                        } else {
+                          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!1', '', 'error');
+                        }
                       });
                     }
                   });
@@ -684,26 +696,26 @@ export class CheckMedComponent implements OnInit {
                             hn: value.hn + ' ' + value.drugName,
                           });
 
-
+                        if (pdf.connect) {
+                          if (pdf.response.connect === 'success') {
+                            await this.updateCheckmed(value);
+                          } else {
+                            Swal.fire(
+                              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                              '',
+                              'error'
+                            );
+                          }
+                        } else {
+                          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!1', '', 'error');
+                        }
                       });
                     }
                   });
 
 
                 }
-                if (pdf.connect) {
-                  if (pdf.response.connect === 'success') {
-                    await this.updateCheckmed(value);
-                  } else {
-                    Swal.fire(
-                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                      '',
-                      'error'
-                    );
-                  }
-                } else {
-                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!1', '', 'error');
-                }
+
 
 
 
@@ -897,6 +909,26 @@ export class CheckMedComponent implements OnInit {
                                 formData
                               );
                               formData = null;
+                              if (getData.connect) {
+                                if (getData.response.connect === 'success') {
+                                  value.currentqty = 0;
+                                  value.HisPackageRatio = value.checkqty;
+
+                                  await this.updateCheckmed(value);
+                                } else {
+                                  Swal.fire(
+                                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                                    '',
+                                    'error'
+                                  );
+                                }
+                              } else {
+                                Swal.fire(
+                                  'ไม่สามารถสร้างไฟล์ PDF ได้!2',
+                                  '',
+                                  'error'
+                                );
+                              }
                             });
                           }
                         });
@@ -928,32 +960,32 @@ export class CheckMedComponent implements OnInit {
                                   }
                                 );
 
+                              if (getData.connect) {
+                                if (getData.response.connect === 'success') {
+                                  value.currentqty = 0;
+                                  value.HisPackageRatio = value.checkqty;
 
+                                  await this.updateCheckmed(value);
+                                } else {
+                                  Swal.fire(
+                                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                                    '',
+                                    'error'
+                                  );
+                                }
+                              } else {
+                                Swal.fire(
+                                  'ไม่สามารถสร้างไฟล์ PDF ได้!2',
+                                  '',
+                                  'error'
+                                );
+                              }
 
                             });
                           }
                         });
                       }
-                      if (getData.connect) {
-                        if (getData.response.connect === 'success') {
-                          value.currentqty = 0;
-                          value.HisPackageRatio = value.checkqty;
 
-                          await this.updateCheckmed(value);
-                        } else {
-                          Swal.fire(
-                            'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                            '',
-                            'error'
-                          );
-                        }
-                      } else {
-                        Swal.fire(
-                          'ไม่สามารถสร้างไฟล์ PDF ได้!2',
-                          '',
-                          'error'
-                        );
-                      }
                     }
                   } else {
                     value.currentqty = 0;
@@ -1472,6 +1504,19 @@ export class CheckMedComponent implements OnInit {
                     printName: this.dataUser.print_name,
                     hn: data.hn + ' ' + data.drugName,
                   });
+                if (getData.connect) {
+                  if (getData.response.connect === 'success') {
+                    Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+                  } else {
+                    Swal.fire(
+                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                      '',
+                      'error'
+                    );
+                  }
+                } else {
+                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!3', '', 'error');
+                }
               });
             }
           });
@@ -1500,25 +1545,25 @@ export class CheckMedComponent implements OnInit {
                   });
 
 
-
+                if (getData.connect) {
+                  if (getData.response.connect === 'success') {
+                    Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
+                  } else {
+                    Swal.fire(
+                      'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                      '',
+                      'error'
+                    );
+                  }
+                } else {
+                  Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!3', '', 'error');
+                }
 
               });
             }
           });
         }
-        if (getData.connect) {
-          if (getData.response.connect === 'success') {
-            Swal.fire('ส่งข้อมูลสำเร็จ', '', 'success');
-          } else {
-            Swal.fire(
-              'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-              '',
-              'error'
-            );
-          }
-        } else {
-          Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!3', '', 'error');
-        }
+
       }
     }
     if (evt) {
@@ -1676,7 +1721,7 @@ export class CheckMedComponent implements OnInit {
 
               let getData: any = {}
               if (data.cur_qty && data.qty_cut && data.qty_real > data.qty_cut) {
-                this.printAll(data).then((dataPDF: any) => {
+                this.printAll(data).then(async (dataPDF: any) => {
                   if (dataPDF) {
                     dataPDF.getBase64(async (buffer: any) => {
                       getData = !this.checked
@@ -1727,15 +1772,33 @@ export class CheckMedComponent implements OnInit {
                         formData
                       );
                       formData = null;
+                      data.currentqty = 0;
+                      data.HisPackageRatio = data.checkqty;
+                      if (getData.connect) {
+                        if (getData.response.connect === 'success') {
+
+
+                          await this.updateCheckmed(data);
+                        } else {
+                          Swal.fire(
+                            'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                            '',
+                            'error'
+                          );
+                        }
+                      } else {
+                        Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!4', '', 'error');
+                      }
                     });
-                    data.currentqty = 0;
-                    data.HisPackageRatio = data.checkqty;
+
                   }
                 });
 
               } else {
+
                 this.sendPDF(data).then((dataPDF: any) => {
                   if (dataPDF) {
+
                     dataPDF.getBase64(async (buffer: any) => {
                       getData = !this.checked
                         ? await this.http.Printjs162('convertbuffer', {
@@ -1757,26 +1820,27 @@ export class CheckMedComponent implements OnInit {
 
                       data.currentqty = 0;
                       data.HisPackageRatio = data.checkqty;
+                      if (getData.connect) {
+                        if (getData.response.connect === 'success') {
+
+
+                          await this.updateCheckmed(data);
+                        } else {
+                          Swal.fire(
+                            'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
+                            '',
+                            'error'
+                          );
+                        }
+                      } else {
+                        Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!4', '', 'error');
+                      }
                     });
                   }
                 });
               }
 
-              if (getData.connect) {
-                if (getData.response.connect === 'success') {
 
-
-                  await this.updateCheckmed(data);
-                } else {
-                  Swal.fire(
-                    'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ Printer ได้!',
-                    '',
-                    'error'
-                  );
-                }
-              } else {
-                Swal.fire('ไม่สามารถสร้างไฟล์ PDF ได้!4', '', 'error');
-              }
 
             }
           } else {
