@@ -41,6 +41,7 @@ import { InterdrugactionCheckCardComponent } from './pages/check-patient/interdr
 import { AppropriatedosageCheckCardComponent } from './pages/check-patient/appropriatedosage-check-card/appropriatedosage-check-card.component';
 import { ModalMederrorComponent } from './pages/check-patient/modal-mederror/modal-mederror.component';
 import { DrugdiseaseCheckCardComponent } from './pages/check-patient/drugdisease-check-card/drugdisease-check-card.component';
+import { ModalInterventionComponent } from './pages/check-patient/modal-intervention/modal-intervention.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { DrugdiseaseCheckCardComponent } from './pages/check-patient/drugdisease
     AppropriatedosageCheckCardComponent,
     ModalMederrorComponent,
     DrugdiseaseCheckCardComponent,
+    ModalInterventionComponent,
   ],
   imports: [
     BrowserModule,
