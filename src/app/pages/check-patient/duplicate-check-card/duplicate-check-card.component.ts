@@ -151,6 +151,7 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
   private buildRow(seq: number, cfg: any, groupName: string, current: any, paired: any): any {
     const isToday = cfg.priority === 1;
     const remaining = paired?.remainingDays;
+    console.log('buildRow', current, paired,);
     return {
       seq,
       groupName: this.norm(groupName) || '-',
@@ -160,7 +161,7 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
       badgeText: isToday
         ? 'สั่งวันนี้'
         : remaining != null
-          ? `ยาเดิมเหลือ ${remaining} วัน`
+          ? `ยาเดิมเหลือ ${remaining}  วัน`
           : 'ยาเดิม',
       currentDrug: current,
       pairedDrug: paired,

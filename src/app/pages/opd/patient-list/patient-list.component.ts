@@ -3117,6 +3117,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
         'drugname',
         'amount',
         'createDT',
+        'cutDT'
       ];
 
       let getData: any = await this.http.post('getReportdispenddrug', formData);
