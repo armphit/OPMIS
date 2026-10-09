@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 declare const $: any;
 @Component({
   selector: 'app-laboratory-test',
@@ -18,12 +19,14 @@ export class LaboratoryTestComponent implements OnInit {
   @Output() confirm = new EventEmitter<void>();
   @Output() medError = new EventEmitter<any>();
   @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
 
   selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
   modalId = 'labModal';
 
   openModal() {
@@ -40,6 +43,7 @@ export class LaboratoryTestComponent implements OnInit {
 
   openMedErrorModal(item: any) {
     this.selectedDrugItem = {
+      ...item,
       patient: {
         invName: item.invName,
         invCode: item.invCode,
@@ -50,6 +54,21 @@ export class LaboratoryTestComponent implements OnInit {
     };
     setTimeout(() => {
       this.medErrorModal.openModal();
+    });
+  }
+
+  openInterventionModal(item: any) {
+    this.selectedInterventionItem = {
+      ...item,
+      patient: {
+        invName: item?.invName,
+        invCode: item?.invCode,
+        reqNo: '',
+        Weight: '',
+      },
+    };
+    setTimeout(() => {
+      this.interventionModal?.openModal();
     });
   }
 

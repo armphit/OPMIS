@@ -38,7 +38,7 @@
                 <th>เงื่อนไข</th>
                 <th class="text-center">ขนาดยา/วัน</th>
                 <th class="text-center">สถานะ</th>
-                <th class="text-center">PE</th>
+                <th class="text-center">PE / IVT</th>
               </tr>
             </thead>
 
@@ -85,13 +85,16 @@
                 </td>
 
                 <td class="text-center">
-                  <button
-                    class="btn btn-warning btn-sm"
-                    (click)="openMedErrorModal(r)"
-                    title="รายงาน Medication Error"
-                  >
-                    ⚠️ PE
-                  </button>
+                  <div class="pe-ivt-group">
+                    <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal(r)"
+                      title="บันทึก Pharmaceutical Care (PE)">
+                      <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                    </button>
+                    <button type="button" class="btn btn-ivt btn-sm"
+                      (click)="$event.stopPropagation(); openInterventionModal(r)" title="บันทึก Intervention">
+                      <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -124,3 +127,12 @@
   (save)="onMedErrorSave($event)"
 >
 </app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention
+  #interventionModal
+  [patient]="patient"
+  [drugItem]="selectedInterventionItem"
+  [source]="'Lab'"
+>
+</app-modal-intervention>

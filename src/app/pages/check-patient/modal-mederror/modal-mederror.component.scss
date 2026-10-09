@@ -1,0 +1,105 @@
+// Clinical Intervention (inline checkbox, แยกจาก modal-intervention เดิม)
+.civ-inline-header {
+  background: linear-gradient(135deg, #0a6a70 0%, #0d7d84 55%, #11939a 100%);
+}
+
+.civ-step {
+  margin-bottom: 16px;
+}
+
+.civ-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.civ-chip {
+  padding: 9px 20px;
+  border: 1.5px solid #d9e0e8;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.civ-chip:hover {
+  border-color: #0d7d84;
+}
+
+.civ-chip-active {
+  border-color: #0d7d84;
+  background: #ecfdf5;
+  color: #0b6f75;
+  box-shadow: 0 2px 8px rgba(13, 125, 132, 0.18);
+}
+
+.ivt-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border: 1px solid #7ccdd2;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b6f75;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ivt-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.ivt-num {
+  margin-right: 4px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.ivt-label-en {
+  margin: 0 2px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.ivt-req {
+  color: #ef4444;
+}
+
+.ivt-select,
+.ivt-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid #d9e0e8;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 15px;
+  color: #1f2937;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ivt-select:focus,
+.ivt-input:focus {
+  outline: none;
+  border-color: #0d7d84;
+  box-shadow: 0 0 0 3px rgba(13, 125, 132, 0.15);
+}
+
+.ivt-input::placeholder {
+  color: #a3adbb;
+}
+
+@media (max-width: 768px) {
+  .civ-chip-row {
+    flex-direction: column;
+  }
+}
+

@@ -93,9 +93,16 @@
                     </span>
                   </td>
                   <td class="text-center">
-                    <button class="btn btn-warning btn-sm" (click)="openMedErrorModal(item)" title="บันทึก PE">
-                      <span>⚠️ บันทึก PE</span>
-                    </button>
+                    <div class="pe-ivt-group">
+                      <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal(item)"
+                        title="บันทึก Pharmaceutical Care (PE)">
+                        <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                      </button>
+                      <button type="button" class="btn btn-ivt btn-sm"
+                        (click)="$event.stopPropagation(); openInterventionModal(item)" title="บันทึก Intervention">
+                        <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -135,3 +142,7 @@
 <app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'AppropriateDosage'"
   (save)="onMedErrorSave($event)">
 </app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'AppropriateDosage'">
+</app-modal-intervention>

@@ -239,7 +239,7 @@
                     <th style="white-space: nowrap">แพทย์</th>
                     <th style="white-space: nowrap">วันที่จ่าย</th>
                     <th style="white-space: nowrap">คิว</th>
-                    <th style="white-space: nowrap; text-align: center">PE</th>
+                    <th style="white-space: nowrap; text-align: center">PE / IVT</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -265,13 +265,17 @@
                       {{ drug.queue }}
                     </td>
                     <td style="text-align: center; vertical-align: middle">
-                      <button
-                        class="btn btn-warning btn-sm"
-                        (click)="openMedErrorModal({ drug })"
-                        title="รายงาน Medication Error"
-                      >
-                        ⚠️ PE
-                      </button>
+                      <div class="pe-ivt-group">
+                        <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal({ drug })"
+                          title="บันทึก Pharmaceutical Care (PE)">
+                          <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                        </button>
+                        <button type="button" class="btn btn-ivt btn-sm"
+                          (click)="$event.stopPropagation(); openInterventionModal({ drug })"
+                          title="บันทึก Intervention">
+                          <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -304,3 +308,12 @@
   (save)="onMedErrorSave($event)"
 >
 </app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention
+  #interventionModal
+  [patient]="patient"
+  [drugItem]="selectedInterventionItem"
+  [source]="'Allergy'"
+>
+</app-modal-intervention>

@@ -313,7 +313,7 @@
                     <div class="usage-head">วิธีใช้ (#{{ row.pairedDrug.qty }} {{ row.pairedDrug.unit }})</div>
                     <div class="usage-text">{{ row.pairedDrug.medHow }}</div>
                     <div class="usage-text">
-                      เมื่อ : {{ (row.pairedDrug.lastDate | date:'dd/MM/yyyy HH:mm:ss') || '-' }}
+                      เมื่อ : {{ (row.pairedDrug.lastDate | date:'dd/MM/yyyy HH:mm:ss':'UTC') || '-' }}
                     </div>
                   </div>
                   <div class="prescriber-box" [ngClass]="{ 'prescriber-box--history': row.isHistory }">
@@ -331,10 +331,19 @@
             <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef class="col-action">ดำเนินการ</th>
               <td mat-cell *matCellDef="let row" class="col-action">
-                <button type="button" class="btn btn-primary btn-sm pe-btn"
-                  (click)="sendPE(row.pairedDrug?.raw, row.currentDrug.invCode)" [disabled]="!row.pairedDrug">
-                  📝 บันทึก PE
-                </button>
+                <div class="pe-ivt-group pe-ivt-group--stack">
+                  <button type="button" class="btn btn-pe btn-sm"
+                    (click)="$event.stopPropagation(); sendPE(row.pairedDrug?.raw, row.currentDrug.invCode,row)"
+                    [disabled]="!row.pairedDrug" title="บันทึก Pharmaceutical Care (PE)">
+                    <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                  </button>
+                  <div class="action-sep"><span>หรือ</span></div>
+                  <button type="button" class="btn btn-ivt btn-sm"
+                    (click)="$event.stopPropagation(); openInterventionModal(row)" [disabled]="!row.pairedDrug"
+                    title="บันทึก Clinical Intervention">
+                    <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                  </button>
+                </div>
               </td>
             </ng-container>
 
@@ -353,3 +362,12 @@
     </div>
   </div>
 </div>
+
+<!-- Medication Error Modal (PE) -->
+<app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'Duplicate'"
+  (save)="onMedErrorSave($event)">
+</app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem"
+  [source]="'Duplicate'"></app-modal-intervention>

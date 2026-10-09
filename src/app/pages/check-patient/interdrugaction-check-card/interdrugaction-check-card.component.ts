@@ -9,6 +9,7 @@ import {
 import moment from 'moment';
 import { HttpService } from 'src/app/services/http.service';
 import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 declare const $: any;
 
 @Component({
@@ -24,9 +25,11 @@ export class InterdrugactionCheckCardComponent implements OnInit {
   @Output() confirm = new EventEmitter<void>();
   @Output() medError = new EventEmitter<any>();
   @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
 
   data: any[] = [];
   selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   modalId = 'interdrugactionModal';
 
@@ -81,6 +84,11 @@ export class InterdrugactionCheckCardComponent implements OnInit {
 
 
     this.selectedDrugItem = {
+      todayDrug: item?.todayDrug,
+      interactingDrug: item?.interactingDrug,
+      severity: item?.severity,
+      interactionType: item?.interactionType,
+      note: item?.note || item?.interaction?.Note,
       patient: {
         invName: item.todayDrug?.invName || item.interactingDrug?.invName,
         invCode: item.todayDrug?.invCode || item.interactingDrug?.invCode,
@@ -95,6 +103,25 @@ export class InterdrugactionCheckCardComponent implements OnInit {
     // ให้กับ app-modal-mederror ก่อนเรียก openModal()
     setTimeout(() => {
       this.medErrorModal?.openModal();
+    });
+  }
+
+  openInterventionModal(item: any) {
+    if (!item?.todayDrug && !item?.interactingDrug) return;
+    // ส่งคู่ยาทั้งคู่ให้ modal-intervention แยก today/interacting ได้เอง
+    this.selectedInterventionItem = {
+      todayDrug: item?.todayDrug,
+      interactingDrug: item?.interactingDrug,
+      severity: item?.severity,
+      interactionType: item?.interactionType,
+      note: item?.note || item?.interaction?.Note,
+      patient: {
+        invName: item?.todayDrug?.invName || item?.interactingDrug?.invName,
+        invCode: item?.todayDrug?.invCode || item?.interactingDrug?.invCode,
+      },
+    };
+    setTimeout(() => {
+      this.interventionModal?.openModal();
     });
   }
 

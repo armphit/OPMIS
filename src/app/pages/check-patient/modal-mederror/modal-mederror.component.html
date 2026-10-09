@@ -1,10 +1,4 @@
-<div
-  class="modal fade"
-  [id]="modalId"
-  data-backdrop="static"
-  data-keyboard="false"
-  tabindex="-1"
->
+<div class="modal fade" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -60,94 +54,133 @@
                 <mat-label>รูปแบบความผิด</mat-label>
 
                 <mat-select [(ngModel)]="medErrorType" name="medErrorType">
-                  <mat-option
-                    *ngFor="let item of gettypeE"
-                    [value]="item.id_type"
-                  >
+                  <mat-option *ngFor="let item of gettypeE" [value]="item.id_type">
                     {{ item.name_type }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
-
-            <div class="row">
-              <div class="col">
-                <mat-form-field class="example-full-width">
-                  <mat-label>ชื่อยาผิด</mat-label>
-                  <input
-                    [(ngModel)]="medWrong"
-                    required
-                    #inputwrong
-                    type="text"
-                    matInput
-                    [matAutocomplete]="auto2"
-                    (input)="filter_wrong()"
-                    (focus)="filter_wrong()"
-                  />
-                  <mat-autocomplete requireSelection #auto2="matAutocomplete">
-                    <mat-option
-                      *ngFor="let option of dataWrong"
-                      [value]="option.name.trim()"
-                    >
-                      {{ option.name.trim() }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
+            <div *ngIf="source !== 'Duplicate'">
+              <div class="row">
+                <div class="col">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>ชื่อยาผิด</mat-label>
+                    <input [(ngModel)]="medWrong" required #inputwrong type="text" matInput [matAutocomplete]="auto2"
+                      (input)="filter_wrong()" (focus)="filter_wrong()" />
+                    <mat-autocomplete requireSelection #auto2="matAutocomplete">
+                      <mat-option *ngFor="let option of dataWrong" [value]="option.name.trim()">
+                        {{ option.name.trim() }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="col">
+                  <mat-form-field class="example-full-width">
+                    <input [(ngModel)]="medWrongtext" matInput placeholder="รายละเอียดผิด" />
+                  </mat-form-field>
+                </div>
               </div>
-              <div class="col">
-                <mat-form-field class="example-full-width">
-                  <input
-                    [(ngModel)]="medWrongtext"
-                    matInput
-                    placeholder="รายละเอียดผิด"
-                  />
-                </mat-form-field>
+              <div class="row">
+                <div class="col">
+                  <mat-form-field class="example-full-width">
+                    <mat-label>ชื่อยาถูก</mat-label>
+                    <input [(ngModel)]="medGood" required #inputgood type="text" matInput [matAutocomplete]="auto"
+                      (input)="filter_good()" (focus)="filter_good()" />
+                    <mat-autocomplete requireSelection #auto="matAutocomplete">
+                      <mat-option *ngFor="let option of dataGood" [value]="option.name.trim()">
+                        {{ option.name.trim() }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="col">
+                  <mat-form-field class="example-full-width">
+                    <input [(ngModel)]="medGoodtext" matInput placeholder="รายละเอียดถูก" />
+                  </mat-form-field>
+                </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col">
-                <mat-form-field class="example-full-width">
-                  <mat-label>ชื่อยาถูก</mat-label>
-                  <input
-                    [(ngModel)]="medGood"
-                    required
-                    #inputgood
-                    type="text"
-                    matInput
-                    [matAutocomplete]="auto"
-                    (input)="filter_good()"
-                    (focus)="filter_good()"
-                  />
-                  <mat-autocomplete requireSelection #auto="matAutocomplete">
-                    <mat-option
-                      *ngFor="let option of dataGood"
-                      [value]="option.name.trim()"
-                    >
-                      {{ option.name.trim() }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Intervention checkbox: ติ๊กแล้วโชว์ฟอร์มต่อท้าย (ไม่ใช่ modal) -->
+        <div class="form-check mt-3 mb-2">
+          <input class="form-check-input" type="checkbox" id="ivtCheck" [(ngModel)]="showIntervention"
+            name="showIntervention" (change)="onToggleIntervention()" />
+          <label class="form-check-label font-weight-bold" for="ivtCheck">
+            ✚ Intervention (บันทึกการแทรกแซงทางเภสัชกรรมร่วมด้วย)
+          </label>
+        </div>
+
+        <!-- Clinical Intervention (inline, แยกจาก modal-intervention เดิม) -->
+        <div class="card civ-inline" *ngIf="showIntervention">
+          <div class="card-header civ-inline-header text-white">
+            <strong>การแทรกแซงทางเภสัชกรรม (CLINICAL INTERVENTION)</strong>
+            <span class="ivt-trigger ml-2">Trigger: {{ ivtTrigger }}</span>
+          </div>
+          <div class="card-body">
+            <!-- ขั้นตอนที่ 1: ช่องทาง -->
+            <div class="civ-step">
+              <label class="ivt-label">
+                <span class="ivt-num">ขั้นตอนที่ 1</span> ช่องทาง <span class="ivt-req">*</span>
+              </label>
+              <div class="civ-chip-row">
+                <button type="button" class="civ-chip" *ngFor="let c of civChannels"
+                  [class.civ-chip-active]="civChannel === c.value" (click)="civChannel = c.value">
+                  {{ c.label }}
+                </button>
               </div>
-              <div class="col">
-                <mat-form-field class="example-full-width">
-                  <input
-                    [(ngModel)]="medGoodtext"
-                    matInput
-                    placeholder="รายละเอียดถูก"
-                  />
-                </mat-form-field>
+            </div>
+
+            <!-- ขั้นตอนที่ 2: Action (editable combobox) -->
+            <div class="civ-step">
+              <label class="ivt-label">
+                <span class="ivt-num">ขั้นตอนที่ 2</span> สิ่งที่เภสัชกรแนะนำ <span class="ivt-req">*</span>
+              </label>
+              <mat-form-field class="example-full-width" style="width: 100%" appearance="outline">
+                <input type="text" matInput [(ngModel)]="civAction" name="civAction" [matAutocomplete]="civActionAuto"
+                  placeholder="เลือกหรือพิมพ์เพิ่มเติมได้ เช่น ขนาดยาไม่เหมาะสม แนะนำปรับขนาดยา เนื่องจาก eGFR ลดลง" />
+                <mat-autocomplete #civActionAuto="matAutocomplete">
+                  <mat-option *ngFor="let opt of civActionOptions" [value]="opt">
+                    {{ opt }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <!-- ขั้นตอนที่ 3: Outcome -->
+            <div class="civ-step">
+              <label class="ivt-label">
+                <span class="ivt-num">ขั้นตอนที่ 3</span> ผลตอบรับจากแพทย์ <span class="ivt-req">*</span>
+              </label>
+              <div class="civ-chip-row">
+                <button type="button" class="civ-chip" *ngFor="let o of civOutcomes"
+                  [class.civ-chip-active]="civOutcome === o.value" (click)="civOutcome = o.value">
+                  {{ o.label }}
+                </button>
               </div>
+            </div>
+
+            <!-- ขั้นตอนที่ 4: การแก้ไขของแพทย์ -->
+            <div class="civ-step">
+              <label class="ivt-label">
+                <span class="ivt-num">ขั้นตอนที่ 4</span> การแก้ไขของแพทย์
+              </label>
+              <select class="ivt-select" [(ngModel)]="civFix" name="civFix" (change)="onCivFixChange()">
+                <option value="">-- กรุณาเลือก (ถ้ามี) --</option>
+                <option *ngFor="let f of civFixOptions" [value]="f">{{ f }}</option>
+              </select>
+              <input type="text" class="ivt-input mt-2" [(ngModel)]="civFixDetail" name="civFixDetail"
+                *ngIf="civFix === 'เปลี่ยนชนิดยา' || civFix === 'ปรับขนาดยาใหม่' || civFix === 'ปรับจำนวนยาให้พอดีวันนัด'"
+                [placeholder]="civFix === 'เปลี่ยนชนิดยา' ? 'ระบุชื่อยาใหม่...' : 'ชื่อยาเดิม (auto-fill แก้ไขได้)'" />
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="closeModal()">ยกเลิก</button>
-        <button
-          class="btn btn-danger"
-          (click)="onSubmit()"
-          [disabled]="!medErrorType"
-        >
+        <button class="btn btn-danger" (click)="onSubmit()"
+          [disabled]="!medErrorType || (showIntervention && !isInterventionValid)">
           <span>📤 บันทึก Medication Error</span>
         </button>
       </div>

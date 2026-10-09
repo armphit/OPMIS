@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 
 declare const $: any;
 @Component({
@@ -22,9 +23,11 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
   @Output() confirm = new EventEmitter<void>();
   @Output() medError = new EventEmitter<any>();
   @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
 
   data: any[] = [];
   selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   modalId = 'AppropriateDosageModal';
   constructor() { }
@@ -86,6 +89,7 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
     const drug = drugs.find((d: any) => d.invCode === item.invCode) || {};
     // Construct drugItem in the format expected by modal-mederror
     this.selectedDrugItem = {
+      ...item,
       patient: {
         invName: item.invName,
         invCode: item.invCode,
@@ -97,6 +101,21 @@ export class AppropriatedosageCheckCardComponent implements OnInit {
     };
     setTimeout(() => {
       this.medErrorModal.openModal();
+    });
+  }
+
+  openInterventionModal(item: any) {
+    this.selectedInterventionItem = {
+      ...item,
+      patient: {
+        invName: item?.invName,
+        invCode: item?.invCode,
+        reqNo: item?.reqNo || '',
+        Weight: item?.Weight || '',
+      },
+    };
+    setTimeout(() => {
+      this.interventionModal?.openModal();
     });
   }
 

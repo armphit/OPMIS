@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 
 declare const $: any;
 
@@ -20,9 +21,11 @@ export class AllergyCheckCardComponent {
   @Output() confirm = new EventEmitter<void>();
   @Output() medError = new EventEmitter<any>();
   @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
 
   modalId = 'allergyModal';
   selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
 
   openModal() {
     const a = this.patient?.finalResult?.allergymed?.[0];
@@ -47,6 +50,17 @@ export class AllergyCheckCardComponent {
 
     setTimeout(() => {
       this.medErrorModal.openModal();
+    });
+  }
+
+  openInterventionModal(drug: any) {
+    this.selectedInterventionItem = {
+      patient: {
+        ...drug?.drug,
+      },
+    };
+    setTimeout(() => {
+      this.interventionModal?.openModal();
     });
   }
 

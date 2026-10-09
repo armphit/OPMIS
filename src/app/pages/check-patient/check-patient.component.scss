@@ -820,3 +820,117 @@
     padding: 0 11px;
   }
 }
+/* ============ Shared PE / IVT action buttons (ทุกการ์ดใช้ร่วมกัน) ============ */
+.pe-ivt-group {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pe-ivt-group--stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-width: 150px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px;
+  gap: 8px;
+}
+
+.pe-ivt-group--stack .action-sep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #90a4ae;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pe-ivt-group--stack .action-sep::before,
+.pe-ivt-group--stack .action-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #cfd8dc;
+}
+
+.btn-pe,
+.btn-ivt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.btn-pe mat-icon,
+.btn-ivt mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.btn-pe {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  border-color: #1565c0;
+  box-shadow: 0 2px 6px rgba(21, 101, 192, 0.35);
+}
+
+.btn-pe:hover:not(:disabled) {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.4);
+}
+
+.btn-ivt {
+  background: linear-gradient(135deg, #0097a7 0%, #00796b 100%);
+  border-color: #00796b;
+  box-shadow: 0 2px 6px rgba(0, 121, 107, 0.35);
+}
+
+.btn-ivt:hover:not(:disabled) {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 121, 107, 0.4);
+}
+
+.btn-pe:active:not(:disabled),
+.btn-ivt:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-pe:focus-visible,
+.btn-ivt:focus-visible {
+  outline: 2px solid #0d47a1;
+  outline-offset: 2px;
+}
+
+.btn-pe:disabled,
+.btn-ivt:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.pe-ivt-group--stack .btn-pe,
+.pe-ivt-group--stack .btn-ivt {
+  width: 100%;
+  border-radius: 10px;
+  padding: 8px 12px;
+}

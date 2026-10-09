@@ -66,10 +66,18 @@
                         statusInfo(item).deltaLabel }} {{ statusInfo(item).delta | number:
                         '1.2-2' }} mg/kg/day)</small></div>
                   </td>
-                  <td class="action-cell"><button type="button" class="pe-button" (click)="openMedErrorModal(item)"
-                      title="บันทึก PE">📝<span>บันทึก<br />PE</span></button>
-                    <button type="button" class="ivt-button" (click)="openMedErrorModal(item)"
-                      title="บันทึก Intervention">📝<span>บันทึก<br />IVT</span></button>
+                  <td class="action-cell">
+                    <div class="pe-ivt-group pe-ivt-group--stack">
+                      <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal(item)"
+                        title="บันทึก Pharmaceutical Care (PE)">
+                        <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                      </button>
+                      <div class="action-sep"><span>หรือ</span></div>
+                      <button type="button" class="btn btn-ivt btn-sm" (click)="openInterventionModal(item)"
+                        title="บันทึก Intervention">
+                        <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -91,3 +99,6 @@
 
 <app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'Dosage'"
   (save)="onMedErrorSave($event)"></app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'Dosage'"></app-modal-intervention>

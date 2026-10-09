@@ -1,1 +1,130 @@
-<p>modal-intervention works!</p>
+<div class="modal fade ivt-modal" [id]="modalId" data-backdrop="static" data-keyboard="false" tabindex="-1">
+  <div class="modal-dialog modal-lg ivt-dialog">
+    <div class="modal-content ivt-content">
+
+      <div class="ivt-header">
+        <div class="ivt-header-icon">✚</div>
+        <div class="ivt-header-text">
+          <h5 class="ivt-title">บันทึกการแทรกแซงทางเภสัชกรรม (Clinical Intervention)</h5>
+          <p class="ivt-subtitle">บันทึกการประสานงานกับแพทย์ • ตามขั้นตอน • เฉพาะเหตุฉุกเฉินที่เลือกไว้ (Non-PE)</p>
+        </div>
+        <button type="button" class="ivt-close" aria-label="ปิด" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="ivt-patientbar">
+        <div class="ivt-patient-info">
+          <span class="ivt-hn"><strong>HN:</strong> {{ hn }}</span>
+          <span class="ivt-meta">(เพศ {{ patientInfo.sex || '-' }} • น้ำหนัก {{ patientInfo.Weight || '-' }} kg •
+            ส่วนสูง {{ patientInfo.Height || '-' }} cm)</span>
+          <span class="ivt-pipe">|</span>
+          <span class="ivt-dept"><strong>แผนกผู้ป่วย:</strong> {{ clinicName }}</span>
+        </div>
+        <span class="ivt-trigger">🛡 Trigger: {{ trigger }}</span>
+      </div>
+      <div class="ivt-body">
+
+        <section class="ivt-panel ivt-target">
+          <div class="ivt-panel-title">👀 Regimen ที่เป็นเป้าหมายการประเมิน (Target Regimen)</div>
+          <div class="ivt-regimen-grid">
+            <div class="ivt-regimen-item" *ngFor="let drug of targetDrugs; let i = index">
+              <span class="ivt-regimen-label">รายการ {{ i + 1 }} (รับประทาน)</span>
+              <strong class="ivt-regimen-name">{{ drug }}</strong>
+            </div>
+          </div>
+        </section>
+        <!-- ปุ่มเลือก 3 กลุ่ม -->
+        <div class="ivt-field">
+          <label class="ivt-label">เลือกกลุ่มผู้รับการแทรกแซง <span class="ivt-req">*</span></label>
+          <div class="ivt-group-grid">
+            <button type="button" class="ivt-group" *ngFor="let g of groups"
+              [class.ivt-group-active]="activeGroup === g.key" (click)="selectGroup(g.key)">
+              <span class="ivt-group-icon">{{ g.icon }}</span>
+              <span class="ivt-group-body">
+                <span class="ivt-group-title">{{ g.label }}</span>
+                <span class="ivt-group-desc">{{ g.desc }}</span>
+              </span>
+              <span class="ivt-group-check" *ngIf="activeGroup === g.key">✓</span>
+            </button>
+          </div>
+        </div>
+        <div class="ivt-field">
+          <label class="ivt-label">
+            <span class="ivt-num">Part 1.</span> ประเด็น/หัวข้อที่เตือน
+            <span class="ivt-label-en">(Issue)</span>
+          </label>
+          <input type="text" class="ivt-input" [(ngModel)]="issueTopic" placeholder="เช่น ยาซ้ำซ้อน" />
+          <textarea class="ivt-input ivt-textarea" rows="2" [(ngModel)]="issueDetail"
+            placeholder="รายละเอียดที่เตือน เช่น ยาอะไรกับอะไร..."></textarea>
+        </div>
+        <div class="ivt-field">
+          <label class="ivt-label">
+            <span class="ivt-num">Part 2.</span> การจัดการ
+            <span class="ivt-label-en">({{ activeGroupMeta.short }} • Management)</span> <span class="ivt-req">*</span>
+          </label>
+          <select class="ivt-select" [(ngModel)]="management">
+            <option value="" disabled>-- กรุณาเลือกการจัดการ --</option>
+            <option *ngFor="let item of currentManagements" [value]="item.value">{{ item.label }}</option>
+          </select>
+          <div class="ivt-hint" *ngIf="selectedManagement">{{ selectedManagement.desc }}</div>
+        </div>
+        <div class="ivt-field">
+          <label class="ivt-label">
+            <span class="ivt-num">Part 3.</span> ผลการตอบรับ / ผลการปฏิบัติ
+            <span class="ivt-label-en">(Outcome)</span> <span class="ivt-req">*</span>
+          </label>
+          <div class="ivt-outcome-grid" [ngClass]="'ivt-outcome-count-' + currentOutcomes.length">
+            <label class="ivt-outcome" *ngFor="let item of currentOutcomes" [ngClass]="'ivt-outcome-' + item.value"
+              [class.ivt-selected]="outcome === item.value">
+              <input type="radio" name="ivtOutcome" [value]="item.value" [(ngModel)]="outcome" />
+              <span class="ivt-outcome-body">
+                <span class="ivt-outcome-title">{{ item.label }}</span>
+                <span class="ivt-outcome-desc">{{ item.desc }}</span>
+              </span>
+            </label>
+          </div>
+          <div class="ivt-field ivt-subfield" *ngIf="needConfirmReason">
+            <label class="ivt-label">เหตุผลทางคลินิกที่แพทย์ยืนยันใช้เดิม <span class="ivt-req">*</span></label>
+            <select class="ivt-select" [(ngModel)]="confirmReason">
+              <option value="" disabled>-- กรุณาเลือกเหตุผล --</option>
+              <option *ngFor="let r of doctorConfirmReasons" [value]="r">{{ r }}</option>
+            </select>
+          </div>
+        </div>
+        <!-- <div class="ivt-grid2">
+          <div class="ivt-field">
+            <label class="ivt-label">ผู้บันทึกรายการ</label>
+            <input type="text" class="ivt-input" [(ngModel)]="recorder" placeholder="รหัส-ชื่อผู้บันทึก" />
+          </div>
+          <div class="ivt-field">
+            <label class="ivt-label ivt-checkline">
+              <input type="checkbox" [(ngModel)]="isNonPE" /> บันทึก NON-PE
+            </label>
+            <div class="ivt-hint">ติ๊กไว้ = บันทึกเฉพาะเหตุที่เลือก (ไม่เป็นรายงาน PE)</div>
+          </div>
+        </div> -->
+        <div class="ivt-field">
+          <label class="ivt-label">ข้อความบันทึกช่วยจำ / หมายเหตุ <span class="ivt-label-en">(Quick
+              Remarks)</span></label>
+          <div class="ivt-tag-row">
+            <button type="button" class="ivt-tag" *ngFor="let t of quickRemarkTags" (click)="appendQuickRemarkTag(t)">+
+              {{ t }}</button>
+          </div>
+          <textarea #quickRemarkBox class="ivt-input ivt-textarea" rows="2" [(ngModel)]="quickRemark"
+            placeholder="เช่น นัด F/U อาการ... / แจ้งจุดจ่ายยา... / สอนวิธีใช้ยา..."></textarea>
+        </div>
+      </div>
+
+      <div class="ivt-footer">
+
+        <div class="ivt-footer-actions">
+          <button type="button" class="ivt-btn ivt-btn-save" [disabled]="!isValid" (click)="onSubmit()">💾 บันทึก
+            Intervention</button>
+          <button type="button" class="ivt-btn ivt-btn-close" (click)="closeModal()">ปิดหน้าต่าง</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

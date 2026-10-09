@@ -51,7 +51,7 @@
           </div>
 
           <!-- จัดกลุ่มตามข้อห้าม -->
-          <div *ngFor="let group of diseaseGroups; let gi = index" class="dd-group">
+          <div *ngFor="let group of diseaseGroups; let gi = index; trackBy: trackByGroup" class="dd-group">
             <div class="dd-group-header">
               <span class="dd-group-index">{{ gi + 1 }}</span>
               <span class="dd-group-title">{{ group.name }}</span>
@@ -70,10 +70,16 @@
                 <mat-icon>notes</mat-icon>
                 <span>{{ item.note }}</span>
               </div>
-              <!-- <button type="button" class="btn btn-sm btn-warning dd-pe-btn"
-                (click)="openMedErrorModal(item)" title="รายงาน Medication Error">
-                PE
-              </button> -->
+              <div class="dd-actions">
+                <button type="button" class="btn btn-sm btn-warning dd-pe-btn"
+                  (click)="$event.stopPropagation(); openMedErrorModal(item)" title="รายงาน Medication Error">
+                  PE
+                </button>
+                <button type="button" class="btn btn-sm dd-ivt-btn"
+                  (click)="$event.stopPropagation(); openInterventionModal(item)" title="บันทึก Intervention">
+                  📝 IVT
+                </button>
+              </div>
             </div>
           </div>
         </ng-container>
@@ -101,3 +107,7 @@
 <app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'DrugDisease'"
   (save)="onMedErrorSave($event)">
 </app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'DrugDisease'">
+</app-modal-intervention>

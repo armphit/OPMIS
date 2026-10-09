@@ -66,9 +66,16 @@
               <span class="severity-badge" [ngClass]="getSeverityBadgeClass(item.severity)">
                 {{ item.severity }}
               </span>
-              <button type="button" class="btn btn-sm btn-warning ml-2" (click)="openMedErrorModal(item)">
-                PE
-              </button>
+              <div class="pe-ivt-group ml-2">
+                <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal(item)"
+                  title="บันทึก Pharmaceutical Care (PE)">
+                  <mat-icon>edit_note</mat-icon><span>บันทึก PE</span>
+                </button>
+                <button type="button" class="btn btn-ivt btn-sm"
+                  (click)="$event.stopPropagation(); openInterventionModal(item)" title="บันทึก Intervention">
+                  <mat-icon>medical_services</mat-icon><span>บันทึก IVT</span>
+                </button>
+              </div>
             </div>
 
             <div class="drug-pair-section">
@@ -240,3 +247,7 @@
 <app-modal-mederror #medErrorModal [patient]="patient" [drugItem]="selectedDrugItem" [source]="'DrugInteraction'"
   (save)="onMedErrorSave($event)">
 </app-modal-mederror>
+
+<!-- Clinical Intervention Modal (IVT) -->
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'DrugInteraction'">
+</app-modal-intervention>

@@ -161,7 +161,7 @@
 
   .col-seq { width: 48px; }
   .col-group { width: 130px; }
-  .col-action { width: 130px; text-align: center; }
+  .col-action { width: 172px; min-width: 172px; text-align: center; }
 }
 
 /* ลำดับ */
@@ -262,10 +262,7 @@
   &.badge-red { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
 }
 
-.pe-btn {
-  white-space: nowrap;
-}
-
+/* ความกว้างคอลัมน์ดำเนินการรองรับปุ่ม PE/IVT แบบ stacked (สไตล์ปุ่มอยู่กลางใน check-patient.component.scss) */
 .muted-text {
   color: #90a4ae;
   font-style: italic;

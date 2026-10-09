@@ -7,6 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 
 declare const $: any;
 @Component({
@@ -19,8 +20,10 @@ export class DosageCheckCardComponent implements OnInit {
   @Output() confirm = new EventEmitter<void>();
   @Output() medError = new EventEmitter<any>();
   @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
 
   selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
 
   constructor() { }
 
@@ -94,6 +97,13 @@ export class DosageCheckCardComponent implements OnInit {
       (this.selectedDrugItem = item));
     setTimeout(() => {
       this.medErrorModal.openModal();
+    });
+  }
+
+  openInterventionModal(item: any) {
+    this.selectedInterventionItem = item;
+    setTimeout(() => {
+      this.interventionModal?.openModal();
     });
   }
 

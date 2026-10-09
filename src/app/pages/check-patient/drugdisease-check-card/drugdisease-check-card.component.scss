@@ -138,6 +138,15 @@
   mat-icon { font-size: 18px; width: 18px; height: 18px; color: #f9a825; flex-shrink: 0; }
 }
 .dd-pe-btn { flex-shrink: 0; }
+.dd-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.dd-ivt-btn {
+  background: #099196cc;
+  border: 1px solid #099196cc;
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.dd-ivt-btn:hover { background: #099196; border-color: #099196; color: #fff; }
 
 /* ===== No data ===== */
 .dd-no-data {

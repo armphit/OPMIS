@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import moment from 'moment';
-import { HttpService } from 'src/app/services/http.service';
+import { ModalMederrorComponent } from '../modal-mederror/modal-mederror.component';
+import { ModalInterventionComponent } from '../modal-intervention/modal-intervention.component';
 import Swal from 'sweetalert2';
 declare const $: any;
 
@@ -15,6 +16,7 @@ declare const $: any;
 export class DuplicateCheckCardComponent implements OnInit, OnChanges {
   @Input() patient: any;
   @Output() confirm = new EventEmitter<void>();
+  @Output() medError = new EventEmitter<any>();
 
   data: any = {};
 
@@ -25,7 +27,10 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
    * ทำให้ event (click) บนปุ่มถูกทิ้ง (กดแล้วไม่ทำงาน / ไม่ log)
    */
   rows: any[] = [];
-  public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
+  @ViewChild('medErrorModal') medErrorModal!: ModalMederrorComponent;
+  @ViewChild('interventionModal') interventionModal!: ModalInterventionComponent;
+  selectedDrugItem: any = null;
+  selectedInterventionItem: any = null;
   modalId = 'duplicateModal';
 
   /** คอลัมน์ตาราง 5 คอลัมน์ ตามข้อกำหนด UI */
@@ -41,7 +46,7 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
     { key: 'condition3', priority: 3, badge: 'badge-red', history: true },
   ];
 
-  constructor(private http: HttpService) { }
+  constructor() { }
 
   ngOnChanges(): void {
     this.data = this.patient?.finalResult?.duplicatemed;
@@ -151,18 +156,19 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
   private buildRow(seq: number, cfg: any, groupName: string, current: any, paired: any): any {
     const isToday = cfg.priority === 1;
     const remaining = paired?.remainingDays;
-    console.log('buildRow', current, paired,);
+    const isLastDateToday = paired.lastDate?.slice(0, 10) ===
+      new Date().toISOString().slice(0, 10);
     return {
       seq,
       groupName: this.norm(groupName) || '-',
       priority: cfg.priority,
       badgeClass: cfg.badge,
       isHistory: cfg.history,
-      badgeText: isToday
+      badgeText: isToday || isLastDateToday
         ? 'สั่งวันนี้'
         : remaining != null
-          ? `ยาเดิมเหลือ ${remaining}  วัน`
-          : 'ยาเดิม',
+          ? `ยาเดิมเหลือ ${remaining} วัน`
+          : 'ยาเดิมเหลือ - วัน',
       currentDrug: current,
       pairedDrug: paired,
     };
@@ -332,125 +338,55 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
   //     Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
   //   }
   // }
-  async sendPE(d: any, currentDrug?: any) {
-
+  async sendPE(d: any, currentDrug?: any, row?: any) {
     if (!d || !currentDrug) {
-
       Swal.fire('ไม่พบข้อมูลคู่ยา!', '', 'error');
       return;
     }
-    const todayDrugs = this.patient?.todayDrugsHN.find(
+    const todayDrug = (this.patient?.todayDrugsHN || []).find(
       (v: any) => v.invCode === currentDrug,
-    );
-    let formData = new FormData();
-    formData.append('currentDrug', currentDrug);
-    formData.append('hn', todayDrugs?.hn);
-    formData.append('lastIssTime', todayDrugs?.lastIssTime);
-    let getData: any = await this.http.post('getPE', formData);
-    if (getData.connect) {
-      if (getData.response.rowCount) {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: 'บันทึกข้อมูลไม่สำเร็จ เนื่องจากมีข้อมูล PE อยู่แล้ว',
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        const { value: pe } = await Swal.fire({
-          title: 'Select field validation',
-          input: 'select',
-          inputOptions: {
-            pe5: 'การสั่งยาซ้ำซ้อน โดยแพทย์ต่างแผนก/ ต่าง Visit',
-            pe6: 'การสั่งยาซ้ำซ้อน โดยแพทย์ท่านเดียวกัน',
-          },
-          showCancelButton: true,
-          inputValidator: (value) => {
-            return new Promise((resolve) => {
-              if (value) {
-                resolve();
-              } else {
-                resolve('You need to select a field :)');
-              }
-            });
-          },
-        });
-        if (pe) {
-          const payload = {
-            hn: todayDrugs?.hn || this.patient?.todayDrugsHN[0]?.hn,
-            toSite: todayDrugs?.toSite || this.patient?.todayDrugsHN[0]?.toSite,
-            lastIssTime:
-              this.patient?.todayDrugsHN[0]?.scrnTime || this.patient?.todayDrugsHN[0]?.lastIssTime,
-            doc: todayDrugs?.docName,
-            // .replace('T', ' ')      // เปลี่ยน T เป็นช่องว่าง
-            // .replace('Z', '')      // เอา Z ออก
-            // .slice(0, 10) : this.patient?.todayDrugsHN[0]?.lastIssTime,       // ตัดเอาเฉพาะถึงหลักมิลลิวินาทีที่ 2 (.11),
-            ...d,
-            currentDrug: currentDrug,
-            pe: pe,
-            user: this.dataUser.user,
-            userName: this.dataUser.name,
-          };
+    ) || {};
+    // ส่งข้อมูลให้ modal-mederror ในรูปแบบเดียวกับการ์ดอื่น (drugItem.patient)
+    // โดยเก็บข้อมูลดิบของคู่นี้ไว้สำหรับสร้าง payload เดิมตอนบันทึก
+    this.selectedDrugItem = {
+      ...row,
+      patient: {
+        invName: todayDrug.invName || d.invName || d.duplicateDrug || '',
+        invCode: currentDrug,
+        reqNo: todayDrug.reqNo || todayDrug.remark || '',
+        Weight: todayDrug.Weight || '',
+        checkType: this.patient?.finalResult?.duplicatemed?.result?.statusInsert || '',
+      },
+      duplicate: {
+        ...d,
+        currentDrug: currentDrug,
+        todayDrug: todayDrug,
+      },
+    };
+    setTimeout(() => {
+      this.medErrorModal?.openModal();
+    });
+  }
 
-          // let getData: any = await this.http.postNodejsTest('addPE', payload);
-          // console.log(getData);
-          // if (getData.connect) {
-          //   if (getData.response.length) {
-          //     // this.dataDrug = getData.response.recordset;
-          //     Swal.fire({
-          //       position: 'center',
-          //       icon: 'success',
-          //       title: 'บันทึกข้อมูลสำเร็จ',
-          //       showConfirmButton: false,
-          //       timer: 1500,
-          //     });
-          //   } else {
-          //     Swal.fire('ไม่พบข้อมูล!', '', 'warning');
-          //   }
-          // } else {
-          //   Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-          // }
+  onMedErrorSave(data: any) {
+    this.medError.emit(data);
+  }
 
-          Object.keys(payload).forEach((key) => {
-            const value = payload[key];
-
-            // ตรวจสอบว่าเป็น Object หรือ Array หรือไม่ (เช่น currentDrug หรือ pe)
-            if (typeof value === 'object' && value !== null) {
-              // ถ้าเป็น Object ให้แปลงเป็น String ก่อนส่ง
-              formData.append(key, JSON.stringify(value));
-            } else {
-              // ถ้าเป็นค่าปกติ (String, Number) ส่งไปได้เลย
-              formData.append(key, value ?? '');
-            }
-          });
-
-          let getData: any = await this.http.post('addPE', formData);
-          if (getData.connect) {
-            if (getData.response.rowCount) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'บันทึกข้อมูลสำเร็จ',
-                showConfirmButton: false,
-                timer: 1500,
-              });
-            } else {
-              Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'บันทึกข้อมูลไม่สำเร็จ',
-                showConfirmButton: false,
-                timer: 1500,
-              });
-            }
-          } else {
-            Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
-          }
-        }
-      }
-    } else {
-      Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+  openInterventionModal(row: any) {
+    if (!row?.pairedDrug) {
+      Swal.fire('ไม่พบข้อมูลคู่ยา!', '', 'error');
+      return;
     }
+    // ส่ง row ทั้งแถวให้ modal-intervention แยกยาตัวที่ 1/2 ได้เอง
+    // และกัน modal หลัก (duplicateModal) ถูกปิด/เสีย focus ด้านหลังแบบเคส dosage
+    this.selectedInterventionItem = {
+      ...row,
+      invName: row.currentDrug?.drugName,
+      invCode: row.currentDrug?.invCode,
+    };
+    setTimeout(() => {
+      this.interventionModal?.openModal();
+    });
   }
 
 }
