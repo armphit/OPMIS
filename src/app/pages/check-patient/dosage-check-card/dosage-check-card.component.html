@@ -48,23 +48,37 @@
                       <div><span>ขนาดยาที่ได้รับจริง:</span><strong>{{ item.calculatedResult |
                           number: '1.2-2' }} mg/kg/day</strong><small>({{ dailyDose(item) |
                           number: '1.2-2' }} mg/day)</small></div>
-                      <div><span>ช่วงเกณฑ์มาตรฐาน:</span> <strong>
+                      <div>
+                        <span>ช่วงเกณฑ์มาตรฐาน:</span>
+                        <strong>
                           {{
-                          item.matchedDrugRule?.warningNotequalto
+                          item.matchedDrugRule?.noteStandard
+                          ? item.matchedDrugRule.noteStandard
+                          : item.matchedDrugRule?.warningNotequalto != null
                           ? (item.matchedDrugRule.warningNotequalto | number:'1.2-2')
-                          : (item.matchedDrugRule?.warningMin | number:'1.2-2')
+                          : item.matchedDrugRule?.warningMin != null &&
+                          item.matchedDrugRule?.warningMax != null
+                          ? (item.matchedDrugRule.warningMin | number:'1.2-2')
                           + ' - ' +
-                          (item.matchedDrugRule?.warningMax | number:'1.2-2')
+                          (item.matchedDrugRule.warningMax | number:'1.2-2')
+                          + ' mg/kg/day'
+                          : item.matchedDrugRule?.warningMin != null
+                          ? (item.matchedDrugRule.warningMin | number:'1.2-2')
+                          + ' mg/kg/day'
+                          : item.matchedDrugRule?.warningMax != null
+                          ? (item.matchedDrugRule.warningMax | number:'1.2-2')
+                          + ' mg/kg/day'
+                          : '-'
                           }}
-                          mg/kg/day
-                        </strong></div>
+                        </strong>
+                      </div>
                     </div>
                   </td>
                   <td>
                     <div class="status-badge" [ngClass]="statusInfo(item).className"><strong>{{ statusInfo(item).label
                         }}</strong><small *ngIf="statusInfo(item).delta !== null">({{
                         statusInfo(item).deltaLabel }} {{ statusInfo(item).delta | number:
-                        '1.2-2' }} mg/kg/day)</small></div>
+                        '1.2-2' }} {{item.matchedDrugRule?.noteStandard?'':'mg/kg/day'}})</small></div>
                   </td>
                   <td class="action-cell">
                     <div class="pe-ivt-group pe-ivt-group--stack">
@@ -101,4 +115,5 @@
   (save)="onMedErrorSave($event)"></app-modal-mederror>
 
 <!-- Clinical Intervention Modal (IVT) -->
-<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'Dosage'"></app-modal-intervention>
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem"
+  [source]="'Dosage'"></app-modal-intervention>
