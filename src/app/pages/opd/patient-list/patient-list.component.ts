@@ -371,6 +371,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
       this.dataDrug = [];
     }
 
+
     formData.append('hn', val.patientNO);
     formData.append(
       'date',

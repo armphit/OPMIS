@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import { catchError, timeout } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -11,7 +11,23 @@ import Swal from 'sweetalert2';
 export class HttpService {
   // public rootPath: string = 'http://localhost/api/index.php/';
   public apiPath: string = 'http://localhost/api/';
-  public loading: boolean = false;
+  /**
+   * จำนวน request ที่กำลังทำงานอยู่ (ref-count)
+   * loading = true เมื่อมีอย่างน้อย 1 request ค้างอยู่ — ป้องกันไม่ให้
+   * overlay ของ ngx-loading ดับผิดจังหวะ/ค้างถาวรเมื่อมีหลาย request รันพร้อมกัน
+   * (เช่น Confirm + refresh ตาราง ใน flow Report)
+   */
+  private _loadingCount = 0;
+  public get loading(): boolean {
+    return this._loadingCount > 0;
+  }
+  public set loading(value: boolean) {
+    if (value) {
+      this._loadingCount++;
+    } else {
+      this._loadingCount = Math.max(0, this._loadingCount - 1);
+    }
+  }
   public rootPath: string = 'http://192.168.185.160:88/api/index.php/';
   public imgPath: string = 'http://192.168.185.160:88/api';
   public nodePath: string = 'http://192.168.185.160:3000/';
@@ -41,6 +57,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .post(this.rootPath + path, formdata)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -58,6 +75,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .post(this.idenPath + path, formdata)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -75,6 +93,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .get(this.rootPath + path)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -93,6 +112,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .post(this.drugAppointPath, formdata)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -113,6 +133,7 @@ export class HttpService {
         .get(
           'http://192.168.185.160:3000/reportq/checker_other/2022-07-18/2022-07-18/08:00/16:00/W9',
         )
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -131,6 +152,7 @@ export class HttpService {
       this.http
         .post(this.syncPath + path, data)
         // .post(this.testPath + path, data)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -153,6 +175,7 @@ export class HttpService {
       this.http
         // .post(this.testPath + path, data)
         .post(this.patientPath + path, data)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -175,6 +198,7 @@ export class HttpService {
       this.http
         .post(this.syncPath160 + path, data)
         // .post(this.testPath + path, data)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -196,6 +220,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .get(path)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -213,6 +238,7 @@ export class HttpService {
     return new Promise((resolve) => {
       this.http
         .get('http://192.168.185.160:4000/drugs')
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -231,6 +257,7 @@ export class HttpService {
       this.http
         // .post(this.printTest + path, data)
         .post(this.printPath + path, data)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -248,6 +275,7 @@ export class HttpService {
       this.http
         .post(this.printTest + path, data)
         // .post(this.printPath + path, data)
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });
@@ -272,6 +300,7 @@ export class HttpService {
         //     : this.printPath) + path,
         //   data
         // )
+        .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
           resolve({ connect: true, response: value });

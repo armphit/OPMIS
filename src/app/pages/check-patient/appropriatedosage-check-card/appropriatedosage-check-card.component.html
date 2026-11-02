@@ -63,11 +63,12 @@
                 <tr>
                   <th class="text-center">#</th>
                   <th>รายการยา</th>
-                  <th>วิธีรับประทาน</th>
+                  <th>เหตุผล</th>
+                  <!-- <th>วิธีรับประทาน</th>
                   <th class="text-center">จำนวนจ่าย</th>
                   <th class="text-center">กินได้</th>
                   <th class="text-center">ควรได้รับ ({{ apptDaysText }} วัน)</th>
-                  <th>สถานะ / ผลต่าง</th>
+                  <th>สถานะ / ผลต่าง</th> -->
                   <th class="text-center">ดำเนินการ</th>
                 </tr>
               </thead>
@@ -83,15 +84,16 @@
                       </div>
                     </div>
                   </td>
-                  <td class="med-how-cell">{{ item.medHow || '-' }}</td>
+                  <td class="med-how-cell">{{ item.reasons || '-' }}
+                    <!-- <td class="med-how-cell">{{ item.medHow || '-' }}</td>
                   <td class="text-center">{{ item.qtyReq }} <small class="text-muted">เม็ด</small></td>
                   <td class="text-center">{{ item.daysAvailable }} <small class="text-muted">วัน</small></td>
                   <td class="text-center">{{ item.shouldReceiveQty }} <small class="text-muted">เม็ด</small></td>
                   <td>
                     <span class="status-tag" [ngClass]="item.statusCls">
-                      {{ item.statusText }}
+                       {{ item.statusText }}
                     </span>
-                  </td>
+                  </td> -->
                   <td class="text-center">
                     <div class="pe-ivt-group">
                       <button type="button" class="btn btn-pe btn-sm" (click)="openMedErrorModal(item)"
@@ -110,12 +112,12 @@
           </div>
 
           <!-- Reasons -->
-          <div *ngIf="data.length" class="reasons-summary mt-3">
+          <!-- <div *ngIf="data.length" class="reasons-summary mt-3">
             <div *ngFor="let item of data" class="reason-row">
               <strong>{{ item.invName }}:</strong>
               <span>{{ item.reasons }}</span>
             </div>
-          </div>
+          </div> -->
         </ng-container>
 
         <ng-template #noData>
@@ -144,5 +146,6 @@
 </app-modal-mederror>
 
 <!-- Clinical Intervention Modal (IVT) -->
-<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem" [source]="'AppropriateDosage'">
+<app-modal-intervention #interventionModal [patient]="patient" [drugItem]="selectedInterventionItem"
+  [source]="'AppropriateDosage'">
 </app-modal-intervention>

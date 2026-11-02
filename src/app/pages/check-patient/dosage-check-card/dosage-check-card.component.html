@@ -45,9 +45,12 @@
                       item.patient?.qtyReq || '-' }} {{ item.patient?.unit || '' }}</span></td>
                   <td>
                     <div class="dose-comparison">
-                      <div><span>ขนาดยาที่ได้รับจริง:</span><strong>{{ item.calculatedResult |
-                          number: '1.2-2' }} mg/kg/day</strong><small>({{ dailyDose(item) |
-                          number: '1.2-2' }} mg/day)</small></div>
+                      <div><span>ขนาดยาที่ได้รับจริง:</span><strong>{{ (Math.trunc(item.calculatedResult * 100) / 100)
+                          }}
+                          {{item.matchedDrugRule?.unitStandrad?item.matchedDrugRule?.unitStandrad:'mg/kg/day'}}</strong>
+                        <!-- <small>({{ dailyDose(item) |
+                          number: '1.2-2' }} mg/day)</small> -->
+                      </div>
                       <div>
                         <span>ช่วงเกณฑ์มาตรฐาน:</span>
                         <strong>

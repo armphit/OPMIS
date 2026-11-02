@@ -313,7 +313,7 @@
                     <div class="usage-head">วิธีใช้ (#{{ row.pairedDrug.qty }} {{ row.pairedDrug.unit }})</div>
                     <div class="usage-text">{{ row.pairedDrug.medHow }}</div>
                     <div class="usage-text">
-                      เมื่อ : {{ (row.pairedDrug.lastDate | date:'dd/MM/yyyy HH:mm:ss':'UTC') || '-' }}
+                      เมื่อ : {{ formatLastDate(row.pairedDrug.lastDate) }}
                     </div>
                   </div>
                   <div class="prescriber-box" [ngClass]="{ 'prescriber-box--history': row.isHistory }">

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -55,6 +55,10 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   private _rawResult: any[] = [];
   /** warning ที่ผู้ใช้คลิกแล้ว modal ไม่เปิด (ไม่พบข้อมูล) — ซ่อนเฉพาะ badge นี้ */
   private hiddenRiskTypes = new Set<string>();
+  /** กันกด Confirm ซ้ำระหว่าง request ยังไม่จบ (modal จะปิดเองหลังบันทึกสำเร็จ) */
+  private confirming = false;
+  /** ผู้ใช้ปิด modal ระหว่าง confirm ยังค้าง — รอให้ dataConfirm เสร็จแล้วค่อย reload ตาราง */
+  private refreshPending = false;
 
   public dataUser = JSON.parse(sessionStorage.getItem('userLogin') || '{}');
   displayedColumns: string[] = [
@@ -82,6 +86,7 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   constructor(
     private http: HttpService,
     private dateAdapter: DateAdapter<Date>,
+    private ngZone: NgZone,
   ) {
     this.dateAdapter.setLocale('th-TH');
     this.scan();
@@ -206,6 +211,9 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
    */
   async dataConfirm(data: string) {
     if (!this.patient?.todayDrugsHN?.length) return;
+    // กันกด Confirm ซ้ำระหว่าง request ยังไม่จบ — modal เปิดค้างจนกว่าบันทึกสำเร็จ
+    if (this.confirming) return;
+    this.confirming = true;
     let id = '';
     const dateStr = this.selectedDate
       ? moment(this.selectedDate).format('YYYY-MM-DD')
@@ -235,6 +243,12 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     };
 
     const getData: any = await this.http.postNodejsTest('getdatacpoe', payload);
+    this.confirming = false;
+    if (this.refreshPending) {
+      // ผู้ใช้ปิด modal ระหว่าง confirm ยังค้าง — server commit แล้ว ค่อย reload ตอนนี้
+      this.refreshPending = false;
+      this.getDuplicate();
+    }
 
     if (getData.connect && getData.response) {
       // update เฉพาะผล allergy
@@ -268,6 +282,13 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
         showConfirmButton: false,
         timer: 1500,
       });
+
+      // ปิด modal หลังบันทึกสำเร็จ — event 'hidden.bs.modal' (ที่ openRiskDetail สมัครไว้)
+      // จะสลับกลับแท็บ Report + เรียก getDuplicate() refresh ตารางให้ (Confirmed / ตัวนับ +1)
+      const card: any = this.getRiskCard(data);
+      if (card?.modalId) {
+        $('#' + card.modalId).modal('hide');
+      }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
@@ -472,9 +493,18 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
       }
       const modal = $('#' + card.modalId);
       // กลับไปแท็บ Report เมื่องานเสร็จ (Close / Confirm) แล้วโหลดสถานะใหม่
-      modal.one('hidden.bs.modal', () => {
-        this.tabIndex = 1;
-        this.getDuplicate();
+      // .off กัน handler เก่าสะสม และครอบด้วย ngZone.run() ให้การอัปเดต
+      // tabIndex/dataSource ผ่าน change detection ทันที (ไม่ค้างจนกว่าผู้ใช้จะคลิก)
+      modal.off('hidden.bs.modal').one('hidden.bs.modal', () => {
+        this.ngZone.run(() => {
+          this.tabIndex = 1;
+          if (this.confirming) {
+            // confirm ยังไม่จบ — ให้ dataConfirm เป็นคนสั่ง reload หลัง server บันทึกเสร็จ
+            this.refreshPending = true;
+          } else {
+            this.getDuplicate();
+          }
+        });
       });
       card.openModal();
       // กันเหนียว: ถ้า modal ไม่เปิด (ไม่พบข้อมูล) ให้กลับแท็บ Report
@@ -507,19 +537,18 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** หา component การ์ดตามประเภทความเสี่ยง */
+  /** หา component การ์ดตามประเภทความเสี่ยง (ไม่สนตัวพิมพ์ — 'Allergy'/'allergy' ใช้ได้ทั้งคู่) */
   private getRiskCard(type: string): any {
-    return (
-      {
-        allergy: this.allergyCard,
-        Duplicate: this.duplicateCard,
-        Lab: this.labCard,
-        Dosage: this.dosageCard,
-        Interdrugaction: this.interCard,
-        Appropriatedosage: this.appropCard,
-        Drugdisease: this.drugDiseaseCard,
-      } as { [key: string]: any }
-    )[type];
+    const cards: { [key: string]: any } = {
+      allergy: this.allergyCard,
+      duplicate: this.duplicateCard,
+      lab: this.labCard,
+      dosage: this.dosageCard,
+      interdrugaction: this.interCard,
+      appropriatedosage: this.appropCard,
+      drugdisease: this.drugDiseaseCard,
+    };
+    return cards[String(type || '').toLowerCase()];
   }
 
   applyFilter(event: Event) {

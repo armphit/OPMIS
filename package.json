@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node --openssl-legacy-provider --max-old-space-size=12288 ./node_modules/@angular/cli/bin/ng serve --aot=false --source-map=false",
-    "build": "node --max-old-space-size=12288 ./node_modules/@angular/cli/bin/ng build --configuration production --output-hashing=all --base-href=/opmis/",
+    "build": "node --openssl-legacy-provider --max-old-space-size=12288 ./node_modules/@angular/cli/bin/ng build --configuration production --output-hashing=all --base-href=/opmis/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

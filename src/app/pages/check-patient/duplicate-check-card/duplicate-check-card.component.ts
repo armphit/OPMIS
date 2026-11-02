@@ -93,6 +93,7 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
       for (const item of list) {
         const current = this.buildCurrentDrug(item);
         const pairs: any[] = item.foundToday || item.foundHistory || [];
+
         for (const p of pairs) {
           seq++;
           rows.push(
@@ -154,6 +155,7 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
 
   /** ประกอบแถวข้อมูล 1 แถว สำหรับตาราง */
   private buildRow(seq: number, cfg: any, groupName: string, current: any, paired: any): any {
+
     const isToday = cfg.priority === 1;
     const remaining = paired?.remainingDays;
     const isLastDateToday = paired.lastDate?.slice(0, 10) ===
@@ -208,8 +210,9 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
   }
 
   onConfirm() {
+    // ไม่ปิด modal ที่นี่ — รอให้ dataConfirm (check-patient) บันทึกสำเร็จก่อน
+    // แล้วค่อยปิด + refresh ตาราง Report (กันโหลดค้าง/ข้อความถูก overlay บัง)
     this.confirm.emit();
-    this.closeModal();
   }
 
   getDateTime(date: any) {
@@ -386,6 +389,31 @@ export class DuplicateCheckCardComponent implements OnInit, OnChanges {
     };
     setTimeout(() => {
       this.interventionModal?.openModal();
+    });
+  }
+  formatLastDate(value: string | Date | null | undefined): string {
+    if (!value) return '-';
+
+    // รูปแบบ SQL Server: 2026-10-21 07:06:37
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value)) {
+      const [date, time] = value.split(' ');
+      const [year, month, day] = date.split('-');
+      return `${day}/${month}/${year} ${time}`;
+    }
+
+    // รูปแบบ ISO หรือรูปแบบอื่น
+    const parsed = new Date(value);
+    if (isNaN(parsed.getTime())) return '-';
+
+    return parsed.toLocaleString('en-GB', {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
     });
   }
 

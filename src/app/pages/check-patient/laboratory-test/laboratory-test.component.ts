@@ -109,7 +109,8 @@ export class LaboratoryTestComponent implements OnInit {
     return `${day}/${month}/${year}`;
   }
   onConfirm() {
+    // ไม่ปิด modal ที่นี่ — รอให้ dataConfirm (check-patient) บันทึกสำเร็จก่อน
+    // แล้วค่อยปิด + refresh ตาราง Report (กันโหลดค้าง/ข้อความถูก overlay บัง)
     this.confirm.emit();
-    this.closeModal();
   }
 }

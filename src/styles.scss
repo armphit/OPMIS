@@ -183,3 +183,9 @@ body {
 .mat-mdc-raised-button.mat-primary {
   background-color: #0288d1 !important;
 }
+
+/* SweetAlert2 ต้องอยู่เหนือ overlay ของ ngx-loading (z-index: 9999) เสมอ
+   กันข้อความ "การยืนยันเสร็จสิ้น" ถูกบังจนผู้ใช้ไม่เห็น */
+.swal2-container {
+  z-index: 10060 !important;
+}

@@ -45,9 +45,11 @@ export class ReportPharComponent implements OnInit {
     'T_count', 'T_item',
     'GP_count', 'GP_item',
     'PM_count', 'PM_item',
+    'S_count', 'S_item',
+    'PK_count', 'PK_item',
     'null_count', 'null_item',
     'item',
-    'error'
+    'error',
   ];
 
   // 2. รายการสำหรับวน Loop (แต่ละคู่จะมี 2 คอลัมน์)
@@ -62,16 +64,11 @@ export class ReportPharComponent implements OnInit {
     { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
     { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
     { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
+    { countDef: 'S_count', itemDef: 'S_item', label: 'S' },
+    { countDef: 'PK_count', itemDef: 'PK_item', label: 'ปก' },
     { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
 
-  public displayedColumns2: string[] = [
-    'staff',
-    'staffName',
-    'order',
-    'item',
-    'error',
-  ];
   // 1. รายชื่อคอลัมน์ทั้งหมด (เรียงลำดับตามที่จะให้โชว์ในตาราง)
   public displayedColumns3: string[] = [
     'dispenser_id',
@@ -87,6 +84,8 @@ export class ReportPharComponent implements OnInit {
     'T_count', 'T_item',
     'GP_count', 'GP_item',
     'PM_count', 'PM_item',
+    'S_count', 'S_item',
+    'PK_count', 'PK_item',
     'null_count', 'null_item',
     'item',
     'error',
@@ -104,6 +103,8 @@ export class ReportPharComponent implements OnInit {
     { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
     { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
     { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
+    { countDef: 'S_count', itemDef: 'S_item', label: 'S' },
+    { countDef: 'PK_count', itemDef: 'PK_item', label: 'ปก' },
     { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
   ];
   public displayedColumns4: string[] = [
@@ -162,7 +163,9 @@ export class ReportPharComponent implements OnInit {
       drugCode: '',
     });
     this.note = dataUser.response.note;
-    delete this.note.groupedNotes.อื่นๆ;
+    if (this.note?.groupedNotes) {
+      delete this.note.groupedNotes['อื่นๆ'];
+    }
     this.dataDrug = null;
     const start = moment(this.campaignOne.value.start).format('YYYY-MM-DD');
     const end = moment(this.campaignOne.value.end).format('YYYY-MM-DD');
@@ -190,7 +193,7 @@ export class ReportPharComponent implements OnInit {
     // formData.forEach((value, key) => {
     //   console.log(key + '=' + value);
     // });
-    console.log(this.numTab);
+
 
     if (this.numTab == 2) {
       getData = await this.http.post('onusPhar', formData);
