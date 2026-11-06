@@ -191,19 +191,18 @@
           <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
           <mat-datepicker #endPicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="toolbar-site-select">
+        <mat-form-field appearance="outline" class="toolbar-site-select multi-site">
           <mat-label>ห้องยา / แผนก</mat-label>
-          <mat-select [(ngModel)]="reportSelectedSite" (selectionChange)="onReportSiteChange()">
-            <mat-option value="W9">ห้องยาชั้น 1 (W9)</mat-option>
-            <mat-option value="W8">ห้องยาชั้น 2 (W8)</mat-option>
-            <mat-option value="W18">ห้องยาชั้น 3 (W18)</mat-option>
-            <mat-option value="W19">ห้องยา M - Park</mat-option>
-            <mat-option value="W22">ห้องยาตึกไฟฟ้า</mat-option>
-            <mat-option value="W20">ห้องยา ER OPD</mat-option>
-            <mat-option value="W21">ห้องยา ER IPD</mat-option>
-            <mat-option value="W13">ห้องยาตึกมะเร็ง</mat-option>
-            <mat-option value="W11">ห้องยา รพ.หัวทะเล</mat-option>
+          <mat-select [(ngModel)]="reportSelectedSite" multiple (selectionChange)="onReportSiteChange()">
+            <mat-select-trigger>
+              <span *ngIf="reportSelectedSite.length === 0">ทั้งหมดทุกห้อง</span>
+              <span *ngIf="reportSelectedSite.length > 0">{{ getSelectedSitesLabel() }}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let site of reportSites" [value]="site.code">
+              {{ site.label }}
+            </mat-option>
           </mat-select>
+          <mat-hint>แตะเลือกได้หลายห้อง ถ้าไม่เลือกระบบจะแสดงทุกห้อง</mat-hint>
         </mat-form-field>
         <mat-form-field appearance="outline" class="risk-select">
           <mat-label>ประเภทความเสี่ยง</mat-label>

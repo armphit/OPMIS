@@ -48,10 +48,32 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   selectedDate: Date = new Date();
   reportDateStart: Date = new Date();
   reportDateEnd: Date = new Date();
-  reportSelectedSite = 'W8';
+  reportSelectedSite: string[] = [];
   reportStatus: 'pending' | 'confirmed' | 'all' = 'all';
   reportRisk = 'all';
   reportSearch = '';
+
+  reportSites = [
+    { code: 'W9', label: 'ห้องยาชั้น 1 (W9)' },
+    { code: 'W8', label: 'ห้องยาชั้น 2 (W8)' },
+    { code: 'W18', label: 'ห้องยาชั้น 3 (W18)' },
+    { code: 'W19', label: 'ห้องยา M - Park' },
+    { code: 'W22', label: 'ห้องยาตึกไฟฟ้า' },
+    { code: 'W20', label: 'ห้องยา ER OPD' },
+    { code: 'W21', label: 'ห้องยา ER IPD' },
+    { code: 'W13', label: 'ห้องยาตึกมะเร็ง' },
+    { code: 'W11', label: 'ห้องยา รพ.หัวทะเล' },
+  ];
+
+  siteLabel(code: string): string {
+    const s = this.reportSites.find((x) => x.code === code);
+    return s ? s.label : code;
+  }
+
+  getSelectedSitesLabel(): string {
+    if (!this.reportSelectedSite || this.reportSelectedSite.length === 0) return '';
+    return this.reportSelectedSite.map((code) => this.siteLabel(code)).join(', ');
+  }
   private _rawResult: any[] = [];
   /** warning ที่ผู้ใช้คลิกแล้ว modal ไม่เปิด (ไม่พบข้อมูล) — ซ่อนเฉพาะ badge นี้ */
   private hiddenRiskTypes = new Set<string>();
@@ -325,20 +347,19 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   }
 
   private applyReportFilters() {
-    const site = this.reportSelectedSite;
+    const sites = this.reportSelectedSite;
     let filtered = this._rawResult;
 
-    if (site === 'W8') {
-      // W8 => departmentcode = null
-      filtered = filtered.filter(
-        (item: any) =>
-          !item.departmentcode ||
-          item.departmentcode === null ||
-          item.departmentcode === '' ||
-          item.departmentcode === 'W8',
-      );
-    } else {
-      filtered = filtered.filter((item: any) => item.departmentcode === site);
+    // ถ้าไม่ได้เลือกห้องยาเลย → แสดงทุกห้อง (ไม่กรอง site)
+    if (sites && sites.length > 0) {
+      filtered = filtered.filter((item: any) => {
+        const dc = item.departmentcode;
+        // W8 หมายถึง รายการที่ไม่มีห้องยาระบุ / ค่าว่าง
+        if (sites.includes('W8') && (!dc || dc === null || dc === '' || dc === 'W8')) {
+          return true;
+        }
+        return sites.includes(dc);
+      });
     }
 
     let grouped = this.groupByPrescription(filtered);
@@ -395,18 +416,13 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   }
 
   private getSiteFilteredResults(): any[] {
-    if (this.reportSelectedSite === 'W8') {
-      return this._rawResult.filter(
-        (item: any) =>
-          !item.departmentcode ||
-          item.departmentcode === null ||
-          item.departmentcode === '' ||
-          item.departmentcode === 'W8',
-      );
-    }
-    return this._rawResult.filter(
-      (item: any) => item.departmentcode === this.reportSelectedSite,
-    );
+    const sites = this.reportSelectedSite;
+    if (!sites || sites.length === 0) return this._rawResult;
+    return this._rawResult.filter((item: any) => {
+      const dc = item.departmentcode;
+      if (sites.includes('W8') && (!dc || dc === null || dc === '' || dc === 'W8')) return true;
+      return sites.includes(dc);
+    });
   }
 
   setReportStatus(status: 'pending' | 'confirmed' | 'all') {

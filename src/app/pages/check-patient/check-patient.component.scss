@@ -288,8 +288,11 @@
 }
 
 .toolbar-site-select {
-  width: 180px;
+  width: 210px;
   margin-bottom: -1.25em;
+  mat-select {
+    width: 100%;
+  }
 }
 
 /* mobile */
