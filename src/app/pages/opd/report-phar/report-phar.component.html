@@ -133,11 +133,12 @@
 
             <!-- Error Column -->
             <ng-container matColumnDef="error">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Error</th>
-              <td mat-cell *matCellDef="let element">
-                <button style="margin: 5px" type="button" class="btn btn-danger btn-sm" *ngIf="element.error"
-                  (click)="listError(element)">
-                  <i class="fas fa-info-circle"></i> {{ element.error }}
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Error</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <button type="button" class="btn btn-error btn-sm"
+                  *ngIf="element.error !== null && element.error !== undefined && element.error !== ''"
+                  (click)="listError(element)" title="ดูรายละเอียดข้อผิดพลาด">
+                  <i class="fas fa-info-circle me-1"></i> {{ element.error }}
                 </button>
               </td>
             </ng-container>
@@ -298,11 +299,12 @@
 
             <!-- Error -->
             <ng-container matColumnDef="error">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>error</th>
-              <td mat-cell *matCellDef="let element" style="padding: 0 20px">
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="element.error" (click)="listError(element)">
-                  <i class="fas fa-info-circle fa-lg"></i>&nbsp;
-                  <span class="badge badge-light"> {{ element.error }}</span>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Error</th>
+              <td mat-cell *matCellDef="let element" class="text-center" style="padding: 0 20px">
+                <button type="button" class="btn btn-error btn-sm"
+                  *ngIf="element.error !== null && element.error !== undefined && element.error !== ''"
+                  (click)="listError(element)" title="ดูรายละเอียดข้อผิดพลาด">
+                  <i class="fas fa-info-circle me-1"></i> {{ element.error }}
                 </button>
               </td>
             </ng-container>

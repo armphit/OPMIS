@@ -29,84 +29,13 @@ export class ReportPharComponent implements OnInit {
   public endtime = '16:00';
   public dataDrug: any = null;
   public dataSource: any = null;
-  // คอลัมน์ทั้งหมดที่จะแสดง (ตามลำดับ)
-  // 1. รายชื่อคอลัมน์ทั้งหมดที่จะแสดงในตาราง (เรียงตามลำดับซ้ายไปขวา)
-  displayedColumns: string[] = [
-    'checker_id',
-    'checker_name',
-    'order',
-    'A_count', 'A_item',
-    'B_count', 'B_item',
-    'C_count', 'C_item',
-    'D_count', 'D_item',
-    'L_count', 'L_item',
-    'M_count', 'M_item',
-    'N_count', 'N_item',
-    'T_count', 'T_item',
-    'GP_count', 'GP_item',
-    'PM_count', 'PM_item',
-    'S_count', 'S_item',
-    'PK_count', 'PK_item',
-    'null_count', 'null_item',
-    'item',
-    'error',
-  ];
+  // คอลัมน์ที่แสดงผลแบบไดนามิกสำหรับตรวจยา (ถูกสร้างจากข้อมูล API จริง)
+  displayedColumns: string[] = [];
+  statsGroups: any[] = [];
 
-  // 2. รายการสำหรับวน Loop (แต่ละคู่จะมี 2 คอลัมน์)
-  statsGroups = [
-    { countDef: 'L_count', itemDef: 'L_item', label: 'L' },
-    { countDef: 'M_count', itemDef: 'M_item', label: 'M' },
-    { countDef: 'N_count', itemDef: 'N_item', label: 'N' },
-    { countDef: 'D_count', itemDef: 'D_item', label: 'D' },
-    { countDef: 'B_count', itemDef: 'B_item', label: 'B' },
-    { countDef: 'C_count', itemDef: 'C_item', label: 'C' },
-    { countDef: 'A_count', itemDef: 'A_item', label: 'A' },
-    { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
-    { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
-    { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
-    { countDef: 'S_count', itemDef: 'S_item', label: 'S' },
-    { countDef: 'PK_count', itemDef: 'PK_item', label: 'ปก' },
-    { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
-  ];
-
-  // 1. รายชื่อคอลัมน์ทั้งหมด (เรียงลำดับตามที่จะให้โชว์ในตาราง)
-  public displayedColumns3: string[] = [
-    'dispenser_id',
-    'dispenser_name',
-    'order',
-    'A_count', 'A_item',
-    'B_count', 'B_item',
-    'C_count', 'C_item',
-    'D_count', 'D_item',
-    'L_count', 'L_item',
-    'M_count', 'M_item',
-    'N_count', 'N_item',
-    'T_count', 'T_item',
-    'GP_count', 'GP_item',
-    'PM_count', 'PM_item',
-    'S_count', 'S_item',
-    'PK_count', 'PK_item',
-    'null_count', 'null_item',
-    'item',
-    'error',
-  ];
-
-  // 2. จับคู่ Count และ Item เพื่อใช้ Loop ใน HTML
-  public statsGroups3 = [
-    { countDef: 'L_count', itemDef: 'L_item', label: 'L' },
-    { countDef: 'M_count', itemDef: 'M_item', label: 'M' },
-    { countDef: 'N_count', itemDef: 'N_item', label: 'N' },
-    { countDef: 'D_count', itemDef: 'D_item', label: 'D' },
-    { countDef: 'B_count', itemDef: 'B_item', label: 'B' },
-    { countDef: 'C_count', itemDef: 'C_item', label: 'C' },
-    { countDef: 'A_count', itemDef: 'A_item', label: 'A' },
-    { countDef: 'T_count', itemDef: 'T_item', label: 'T' },
-    { countDef: 'GP_count', itemDef: 'GP_item', label: 'GP' },
-    { countDef: 'PM_count', itemDef: 'PM_item', label: 'PM' },
-    { countDef: 'S_count', itemDef: 'S_item', label: 'S' },
-    { countDef: 'PK_count', itemDef: 'PK_item', label: 'ปก' },
-    { countDef: 'null_count', itemDef: 'null_item', label: 'NULL' },
-  ];
+  // คอลัมน์ที่แสดงผลแบบไดนามิกสำหรับจ่ายยา (ถูกสร้างจากข้อมูล API จริง)
+  public displayedColumns3: string[] = [];
+  public statsGroups3: any[] = [];
   public displayedColumns4: string[] = [
     'patientNO',
     'QN',
@@ -118,6 +47,14 @@ export class ReportPharComponent implements OnInit {
     'dispenser_name',
     'dispens_time',
     'createDT_Q',
+  ];
+
+  public displayedColumns2: string[] = [
+    'staff',
+    'staffName',
+    'order',
+    'item',
+    'error',
   ];
 
   select = '';
@@ -153,6 +90,69 @@ export class ReportPharComponent implements OnInit {
   }
 
   ngOnInit(): void { }
+
+  /**
+   * สร้างคอลัมน์ Count/Item แบบไดนามิกจากคีย์ที่มีอยู่ในข้อมูลจริง
+   * โดยจับคู่ *_count กับ *_item เข้าด้วยกันตาม label (ส่วนหน้าก่อน _count / _item)
+   */
+  buildDynamicColumns(data: any[], isChecker: boolean): void {
+    if (!data || data.length === 0) {
+      if (isChecker) {
+        this.displayedColumns = ['checker_id', 'checker_name', 'order', 'item', 'error'];
+        this.statsGroups = [];
+      } else {
+        this.displayedColumns3 = ['dispenser_id', 'dispenser_name', 'order', 'item', 'error'];
+        this.statsGroups3 = [];
+      }
+      return;
+    }
+
+    const countKeys = new Set<string>();
+    data.forEach((row) => {
+      Object.keys(row).forEach((key) => {
+        if (key.endsWith('_count')) {
+          countKeys.add(key);
+        }
+      });
+    });
+
+    const sortedCountKeys = Array.from(countKeys).sort();
+    const groups: any[] = [];
+
+    sortedCountKeys.forEach((countKey) => {
+      const label = countKey.replace(/_count$/, '');
+      groups.push({
+        countDef: countKey,
+        itemDef: label + '_item',
+        label: label,
+      });
+    });
+
+    const dynamicCols = groups.flatMap((g) => [g.countDef, g.itemDef]);
+
+    if (isChecker) {
+      this.statsGroups = groups;
+      this.displayedColumns = [
+        'checker_id',
+        'checker_name',
+        'order',
+        ...dynamicCols,
+        'item',
+        'error',
+      ];
+    } else {
+      this.statsGroups3 = groups;
+      this.displayedColumns3 = [
+        'dispenser_id',
+        'dispenser_name',
+        'order',
+        ...dynamicCols,
+        'item',
+        'error',
+      ];
+    }
+  }
+
   public nameExcel = '';
   public getData = async () => {
     let dataUser: any = await this.http.postNodejsTest('positionError', {
@@ -234,12 +234,15 @@ export class ReportPharComponent implements OnInit {
       if (getData.connect) {
         if (getData.response.length > 0) {
           this.dataDrug = getData.response;
+          this.buildDynamicColumns(this.dataDrug, true);
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort2;
           this.dataSource.paginator = this.paginator2;
           this.nameExcel = `ภาระงานเภสัชตรวจยา(${this.select}) ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
         } else {
           this.dataDrug = null;
+          this.displayedColumns = [];
+          this.statsGroups = [];
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -252,6 +255,7 @@ export class ReportPharComponent implements OnInit {
       if (getData.connect) {
         if (getData.response.length > 0) {
           this.dataDrug = getData.response;
+          this.buildDynamicColumns(this.dataDrug, false);
 
           this.dataSource = new MatTableDataSource(this.dataDrug);
           this.dataSource.sort = this.sort3;
@@ -259,6 +263,8 @@ export class ReportPharComponent implements OnInit {
           this.nameExcel = `ภาระงานเภสัชจ่ายยา(${this.select}) ${start} ${this.starttime}:00 - ${end} ${this.endtime}:00`;
         } else {
           this.dataDrug = null;
+          this.displayedColumns3 = [];
+          this.statsGroups3 = [];
         }
       } else {
         Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
@@ -504,9 +510,9 @@ export class ReportPharComponent implements OnInit {
       choice: 1,
       site: this.select,
     };
-
+    console.log(datasend);
     let getData: any = await this.http.postNodejs('reportcheckmed', datasend);
-    let dataDrug = getData.response.datadrugcheck;
+    let dataDrug = getData.response?.datadrugcheck;
     this.displayedColumns5 = [
       'hn',
       'location',
@@ -531,20 +537,39 @@ export class ReportPharComponent implements OnInit {
 
       'hnDT',
     ];
-
+    console.log(getData);
     if (getData.connect) {
-      if (dataDrug.length) {
+      if (dataDrug && dataDrug.length) {
         this.dataSource5 = new MatTableDataSource(dataDrug);
         this.dataSource5.sort = this.sort5;
         this.dataSource5.paginator = this.paginator5;
         this.nameExcel5 = `รายงาน MED-Error ${datasend.datestart}_${datasend.dateend}`;
         // this.nameExcel5 = `รายงานเจ้าหน้าที่เช็คยา ${datestart}_${dateend}`;
-        let win: any = window;
-        win.$('#exampleModal').modal('show');
+
+        // เปิด modal แบบปลอดภัย (รองรับทั้ง jQuery/Bootstrap และกรณีที่ไม่มี jQuery)
+        setTimeout(() => {
+          const win: any = window;
+          if (win.$ && win.$('#exampleModal').length) {
+            win.$('#exampleModal').modal('show');
+          } else {
+            const modalEl = document.getElementById('exampleModal');
+            if (modalEl) {
+              (modalEl as any).style.display = 'block';
+              (modalEl as any).classList.add('show');
+              document.body.classList.add('modal-open');
+              const backdrop = document.createElement('div');
+              backdrop.className = 'modal-backdrop fade show';
+              backdrop.setAttribute('aria-hidden', 'true');
+              document.body.appendChild(backdrop);
+            }
+          }
+        }, 50);
 
         setTimeout(() => {
-          this.input5.nativeElement.focus();
-        }, 100);
+          if (this.input5 && this.input5.nativeElement) {
+            this.input5.nativeElement.focus();
+          }
+        }, 150);
       } else {
         this.dataSource5 = null;
       }

@@ -533,6 +533,7 @@ export class CheckMedComponent implements OnInit {
               : '';
             value.device = val.device;
             if (currentqty || !this.checkprint) {
+              value.onCom = 'Y';
               await this.updateCheckmed(value);
             } else {
               if (value.qty_cut === 0) {
@@ -576,6 +577,7 @@ export class CheckMedComponent implements OnInit {
                       );
                       await this.http.post('insertCutDispendDrug', formData);
                       formData = null;
+                      value.onCom = 'Y';
                       await this.updateCheckmed(value);
                       // if (getData.connect) {
                       //   if (getData.response.rowCount > 0) {
@@ -658,6 +660,7 @@ export class CheckMedComponent implements OnInit {
                         formData = null;
                         if (pdf.connect) {
                           if (pdf.response.connect === 'success') {
+                            value.onCom = 'Y';
                             await this.updateCheckmed(value);
                           } else {
                             Swal.fire(
@@ -698,6 +701,7 @@ export class CheckMedComponent implements OnInit {
 
                         if (pdf.connect) {
                           if (pdf.response.connect === 'success') {
+                            value.onCom = 'Y';
                             await this.updateCheckmed(value);
                           } else {
                             Swal.fire(
@@ -821,6 +825,7 @@ export class CheckMedComponent implements OnInit {
                             value.currentqty = 0;
                             value.HisPackageRatio = value.checkqty;
 
+                            value.onCom = 'Y';
                             await this.updateCheckmed(value);
                           });
                         }
@@ -914,6 +919,7 @@ export class CheckMedComponent implements OnInit {
                                   value.currentqty = 0;
                                   value.HisPackageRatio = value.checkqty;
 
+                                  value.onCom = 'Y';
                                   await this.updateCheckmed(value);
                                 } else {
                                   Swal.fire(
@@ -965,6 +971,7 @@ export class CheckMedComponent implements OnInit {
                                   value.currentqty = 0;
                                   value.HisPackageRatio = value.checkqty;
 
+                                  value.onCom = 'Y';
                                   await this.updateCheckmed(value);
                                 } else {
                                   Swal.fire(
@@ -991,6 +998,7 @@ export class CheckMedComponent implements OnInit {
                     value.currentqty = 0;
                     value.HisPackageRatio = value.checkqty;
 
+                    value.onCom = 'Y';
                     await this.updateCheckmed(value);
                   }
                 }
@@ -1014,6 +1022,7 @@ export class CheckMedComponent implements OnInit {
   }
   sumcheck: any = null;
   async updateCheckmed(value: any) {
+
     let data_send = {
       id: value.id,
       currentqty: value.currentqty,
@@ -1026,6 +1035,7 @@ export class CheckMedComponent implements OnInit {
       site: this.select,
       checkAccept: value.dataCheck,
       hn: value.hn,
+      onCom: value.onCom ? value.onCom : '',
     };
 
     let getData: any = await this.http.postNodejs('updatecheckmed', data_send);

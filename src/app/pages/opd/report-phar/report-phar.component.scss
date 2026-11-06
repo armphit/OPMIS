@@ -16,56 +16,133 @@
   white-space: nowrap;
 }
 
-.table-responsive {
-  display: block;
-  width: 100%;
+/* ==================== ปุ่ม Error (สไตล์ใหม่) ==================== */
+.btn-error {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-error:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.35);
+}
+
+.btn-error:active {
+  transform: translateY(0);
+}
+
+/* ==================== ตารางหลัก (responsive-table) ==================== */
+.responsive-table {
   overflow-x: auto;
+  margin-top: 16px;
 
   .mat-table {
     width: 100%;
-    max-width: 100%;
-    margin-bottom: 1rem;
-    display: table;
-    border-collapse: collapse;
-    margin: 0px;
-  }
-
-  .mat-row,
-  .mat-header-row {
-    display: table-row;
-  }
-
-  .mat-cell,
-  .mat-header-cell {
-    word-wrap: initial;
-    display: table-cell;
-    padding: 0px 5px;
-    line-break: unset;
-    width: auto;
-    white-space: nowrap;
+    min-width: 700px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 8px;
     overflow: hidden;
-    vertical-align: middle;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .mat-header-row {
+    background: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-header-cell {
+    padding: 10px 8px !important;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+  }
+
+  .mat-row {
+    border-bottom: 1px solid #e9ecef;
+    transition: background 0.15s ease;
+  }
+
+  .mat-row:nth-child(even) {
+    background: #fafbfc;
+  }
+
+  .mat-row:hover {
+    background: #f0f5ff !important;
+  }
+
+  .mat-cell {
+    padding: 10px 8px !important;
+    font-size: 0.85rem;
+    color: #343a40;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+  }
+
+  /* คอลัมน์ Count — สีพื้นอ่อนๆ ให้อ่านง่าย */
+  .mat-cell[data-column*="count"],
+  .mat-header-cell[data-column*="count"] {
+    background-color: #e8f4fd;
+  }
+
+  /* คอลัมน์ Item — สีพื้นต่างจาก Count */
+  .mat-cell[data-column*="item"]:not([data-column*="Total"]),
+  .mat-header-cell[data-column*="item"]:not([data-column*="Total"]) {
+    background-color: #fdf7ec;
+  }
+
+  .mat-cell.text-center,
+  .mat-header-cell.text-center {
     text-align: center;
   }
 
+  .mat-cell strong {
+    color: #222;
+    font-weight: 700;
+  }
+
+  /* Paginator */
+  .mat-paginator {
+    margin-top: 12px;
+  }
 }
 
-/* Container หลักจัดวางแบบ Flexbox */
+/* ==================== Filter bar ==================== */
 .filter-bar-container {
   display: flex;
   flex-wrap: nowrap;
-  /* บังคับให้อยู่ในแถวเดียวกัน */
   align-items: center;
-  /* จัดให้อยู่ตรงกลางแนวตั้งเท่ากัน */
   gap: 12px;
-  /* เว้นระยะห่างระหว่างแต่ละคอมโพเนนต์ */
   width: 100%;
   overflow-x: auto;
-  /* หากจอเล็กเกินไปจะเลื่อนดูได้ ไม่พังทลาย */
   padding: 8px 0;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid #e9ecef;
 }
 
-/* กำหนดความกว้างของ Form Field แต่ละประเภท */
 .form-field-date {
   width: 210px;
   flex-shrink: 0;
@@ -85,37 +162,64 @@
   width: 200px;
   flex-shrink: 0;
   margin-left: auto;
-  /* ดันช่องค้นหาไปขวาตัวสุด (ถ้ามีพื้นที่เหลือ) */
 }
 
-/* จัดรูปแบบตัวอักษรเชื่อมเวลา */
 .time-separator {
   font-weight: bold;
   margin-bottom: 16px;
-  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
+  align-self: center;
 }
 
-/* กลุ่ม Checkbox */
 .checkbox-group {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
   margin-bottom: 16px;
-  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
 }
 
-/* กลุ่ม ปุ่มกด */
 .button-group {
   display: flex;
   align-items: center;
   flex-shrink: 0;
   margin-bottom: 16px;
-  /* ชดเชยกับระยะด้านล่างของ mat-form-field */
 }
 
-/* แก้ไขระยะย่อ/ขอบของ Angular Material ให้กึ่งกลางพอดีกันทุกชิ้น */
 ::ng-deep .filter-bar-container .mat-mdc-form-field-subscript-wrapper {
   display: none;
-  /* ซ่อนพื้นที่จองสำหรับ error/hint เพื่อให้แนวนอนตรงกันพอดี */
+}
+
+/* ==================== Modal ==================== */
+.modal-content {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.25rem;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: #dc3545;
+}
+
+.modal-body {
+  padding: 1.25rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 1.25rem;
+}
+
+/* ปิด modal backdrop ของ Bootstrap ให้ไม่ซ้อนทับ */
+.modal-backdrop {
+  z-index: 1050;
+}
+
+.modal {
+  z-index: 1060;
 }
