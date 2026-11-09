@@ -1,4 +1,4 @@
-<mat-tab-group [(selectedIndex)]="tabIndex" (selectedIndexChange)="onTabChange($event)">
+﻿<mat-tab-group [(selectedIndex)]="tabIndex" (selectedIndexChange)="onTabChange($event)">
   <mat-tab label="Scan">
     <div class="container-fluid mt-3">
       <h2 class="mb-4">🔍 สแกน ID ผู้ป่วย</h2>
@@ -176,7 +176,7 @@
       </div>
 
       <div class="report-filters">
-        <button class="btn btn-primary toolbar-btn" (click)="getDuplicate(true)">
+        <button class="btn btn-primary toolbar-btn" (click)="getDuplicate(true, true)">
           <mat-icon>refresh</mat-icon> <span>โหลดข้อมูล</span>
         </button>
         <mat-form-field appearance="outline" class="datepicker-input toolbar-datepicker">

@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, NgZone, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import moment from 'moment';
+import { EMPTY, from, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap } from 'rxjs/operators';
 import Swal from 'sweetalert2';
 
 import { HttpService } from 'src/app/services/http.service';
@@ -41,7 +43,7 @@ export interface Prescription {
   templateUrl: './check-patient.component.html',
   styleUrls: ['./check-patient.component.scss'],
 })
-export class CheckPatientComponent implements OnInit, AfterViewInit {
+export class CheckPatientComponent implements OnInit, AfterViewInit, OnDestroy {
   patient: any = {};
   patientId = { hn: '' };
   selectedSite = 'W8';
@@ -52,6 +54,9 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
   reportStatus: 'pending' | 'confirmed' | 'all' = 'all';
   reportRisk = 'all';
   reportSearch = '';
+
+  /** Subscription for auto refresh of Report tab (cancelled when leaving tab or component destroyed) */
+  private reportRefreshSub?: Subscription;
 
   reportSites = [
     { code: 'W9', label: 'ห้องยาชั้น 1 (W9)' },
@@ -132,6 +137,36 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy(): void {
+    this.stopReportAutoRefresh();
+  }
+
+  /**
+   * Start auto refresh report data every 30 seconds while on Report tab
+   * Use timer(0, 30000) + exhaustMap to prevent concurrent requests
+   * Wrap with ngZone.run() so Angular detects dataSource changes automatically
+   */
+  private startReportAutoRefresh(): void {
+    this.stopReportAutoRefresh();
+    this.reportRefreshSub = this.ngZone.run(() =>
+      timer(0, 30000).pipe(
+        exhaustMap(() => from(this.getDuplicate()).pipe(catchError(() => EMPTY)))
+      ).subscribe()
+    );
+  }
+
+  /** Stop auto refresh of Report tab and dispose subscription */
+  private stopReportAutoRefresh(): void {
+    this.reportRefreshSub?.unsubscribe();
+    this.reportRefreshSub = undefined;
+  }
+
+  /** Reset auto refresh timer (used when user clicks reload manually) */
+  private resetReportTimer(): void {
+    this.stopReportAutoRefresh();
+    this.startReportAutoRefresh();
   }
 
   /**
@@ -315,7 +350,7 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
     }
   }
-  async getDuplicate(resetHidden = false) {
+  async getDuplicate(resetHidden = false, manual = false) {
     // ปุ่ม "โหลดข้อมูล" = รีเฟรชใหม่ -> ล้างรายการที่ซ่อนไว้ ให้กลับมาเหมือนเดิม
     if (resetHidden) {
       this.hiddenRiskTypes.clear();
@@ -343,6 +378,10 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
       }
     } else {
       Swal.fire('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้!', '', 'error');
+    }
+    // Reset timer 30s when user manually clicks reload
+    if (manual) {
+      this.resetReportTimer();
     }
   }
 
@@ -472,8 +511,12 @@ export class CheckPatientComponent implements OnInit, AfterViewInit {
     return icons[type] || 'warning';
   }
   onTabChange(index: any) {
+    // Cancel old auto refresh every time tab changes, prevent subscription leak
+    this.stopReportAutoRefresh();
+
     if (index === 1) {
-      this.getDuplicate();
+      // Enter Report tab → fetch immediately then every 30 seconds
+      this.startReportAutoRefresh();
     } else if (index === 0) {
       this.patientId = { hn: '' };
       this.scan();
