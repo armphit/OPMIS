@@ -173,8 +173,8 @@ export class HttpService {
     this.loading = true;
     return new Promise((resolve) => {
       this.http
-        // .post(this.testPath + path, data)
-        .post(this.patientPath + path, data)
+        .post(this.testPath + path, data)
+        // .post(this.patientPath + path, data)
         .pipe(timeout(60000))
         .toPromise()
         .then((value) => {
